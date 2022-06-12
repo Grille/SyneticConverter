@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyneticConverter", "SyneticConverter\SyneticConverter.csproj", "{5841A098-0E19-40B6-8BCB-BD821BDDE554}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5841A098-0E19-40B6-8BCB-BD821BDDE554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5841A098-0E19-40B6-8BCB-BD821BDDE554}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5841A098-0E19-40B6-8BCB-BD821BDDE554}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5841A098-0E19-40B6-8BCB-BD821BDDE554}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6A5E5192-4654-47E2-95B5-B7B883F32C81}
+	EndGlobalSection
+EndGlobal
