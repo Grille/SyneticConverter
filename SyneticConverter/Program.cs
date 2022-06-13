@@ -26,6 +26,7 @@ namespace SyneticConverter
             scn.Variants[0].LoadData();
 
             scn.Variants[0].Terrain.Mesh.ExportObj("world.obj");
+            scn.Variants[0].Terrain.Mesh.ExportSbi("world.sbi");
 
             foreach (var obj in scn.Variants[0].WorldMaterials)
             {

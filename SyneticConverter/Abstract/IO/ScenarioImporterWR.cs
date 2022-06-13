@@ -151,15 +151,15 @@ public class ScenarioImporterWR : ScenarioImporter
         var vertices = mesh.Vertices = new Vertex[vtx.Vertices.Length];
         for (int i = 0; i < vtx.Vertices.Length; i++)
         {
-            ref var src = ref vtx.Vertices[i];
-            ref var dst = ref vertices[i];
+            ref var srcvtx = ref vtx.Vertices[i];
+            var dstvtx = vertices[i] = new Vertex();
 
-            dst.Position = src.Position;
-            dst.UV = src.UV;
-            dst.Normal = new Vector4(src.nX / 255f, src.nY / 255f, src.nZ / 255f, src.n0 / 255f);
-            dst.Blending = new Vector3(src.BlendR, src.BlendG, src.BlendB);
-            dst.Color = src.Color;
-            dst.Shadow = src.Shadow;
+            dstvtx.Position = srcvtx.Position;
+            dstvtx.UV = srcvtx.UV;
+            dstvtx.Normal = new Vector4(srcvtx.Normal.B / 255f, srcvtx.Normal.G / 255f, srcvtx.Normal.R / 255f, srcvtx.Normal.A / 255f);
+            dstvtx.Blending = new Vector3(srcvtx.Blend.B, srcvtx.Blend.G, srcvtx.Blend.R);
+            dstvtx.Color = srcvtx.Color;
+            dstvtx.Shadow = srcvtx.Blend.Shadow;
         }
 
         mesh.Indecies = new int[idx.Indices.Length];

@@ -39,18 +39,6 @@ public class MeshExporterObj : MeshExporter
                 sw.WriteLine($"vt {uv.X} {uv.Y}");
             }
 
-            for (int i = 0; i < target.Vertices.Length; i++)
-            {
-                var v = target.Vertices[i].Blending;
-                sw.WriteLine($"vb {v.X} {v.Y} {v.Z}");
-            }
-
-            for (int i = 0; i < target.Vertices.Length; i++)
-            {
-                var v = target.Vertices[i].Color;
-                sw.WriteLine($"vc {v.R} {v.G} {v.B} {v.A}");
-            }
-
             sw.WriteLine("s on");
             foreach (var reg in target.PolyRegion)
             {
@@ -76,13 +64,6 @@ public class MeshExporterObj : MeshExporter
                 var mat = target.Materials[i];
 
                 sw.WriteLine($"newmtl {mat.Name}");
-                sw.WriteLine($"Type {mat.Mode}");
-                sw.WriteLine($"Tex0 {mat.Tex0.Texture.Name}");
-                sw.WriteLine($"Tex1 {mat.Tex1.Texture.Name}");
-                sw.WriteLine($"Tex2 {mat.Tex2.Texture.Name}");
-                sw.WriteLine($"Transform0 {mat.Tex0.Transform}");
-                sw.WriteLine($"Transform1 {mat.Tex1.Transform}");
-                sw.WriteLine($"Transform2 {mat.Tex2.Transform}");
                 sw.WriteLine($"Kd {rnd.NextDouble()} {rnd.NextDouble()} {rnd.NextDouble()}");
                 sw.WriteLine();
             } 

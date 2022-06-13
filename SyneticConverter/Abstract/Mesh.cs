@@ -37,4 +37,10 @@ public class Mesh
 
         exp.Save(path);
     }
+
+    public void ExportSbi(string path)
+    {
+        var exp = new MeshExporterSbi(this);
+        exp.Save(path);
+    }
 }

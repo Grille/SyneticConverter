@@ -93,9 +93,9 @@ public abstract class QadFile : SyneticFile
     }
 }
 
-public abstract class QadFile<TMObjProp, TMLight> : QadFile  where TMObjProp : unmanaged where TMLight : unmanaged
+public abstract class QadFile<TMPropClass, TMLight> : QadFile  where TMPropClass : unmanaged where TMLight : unmanaged
 {
-    public TMObjProp[] PropClasses;
+    public TMPropClass[] PropClasses;
     public TMLight[] Lights;
 
     public unsafe override void Read(BinaryViewReader br)
@@ -106,7 +106,7 @@ public abstract class QadFile<TMObjProp, TMLight> : QadFile  where TMObjProp : u
         BumpTexName = br.ReadArray<String32>(Head.BumpTexturesFiles);
         PropObjNames = br.ReadArray<String32>(Head.PropClassCount);
 
-        PropClasses = br.ReadArray<TMObjProp>(Head.PropClassCount);
+        PropClasses = br.ReadArray<TMPropClass>(Head.PropClassCount);
 
         Blocks = new BMlock[Head.BlocksZ, Head.BlocksX];
 

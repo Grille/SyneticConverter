@@ -25,7 +25,10 @@ public class MeshImporterMox : MeshImporter
         target.Vertices = new Vertex[mox.Vertecis.Length];
         for (int i = 0; i < mox.Vertecis.Length; i++)
         {
-            target.Vertices[i].Position = mox.Vertecis[i].Position;
+            ref var srcvtx = ref mox.Vertecis[i];
+            var vertex = target.Vertices[i] = new Vertex();
+
+            vertex.Position = srcvtx.Position;
         }
 
         target.Poligons = new Vector3Int[mox.Indices.Length];

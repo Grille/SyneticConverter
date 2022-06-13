@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 
 namespace SyneticConverter;
-public struct Vertex
+public class Vertex
 {
     public Vector3 Position;
     public Vector4 Normal;
