@@ -10,6 +10,8 @@ public class Texture
     public string Name;
     public int Id = 0;
     public byte[] Data;
+    public bool AlphaClip = false;
+    public float Specular = 0;
 
     public Texture(string name)
     {

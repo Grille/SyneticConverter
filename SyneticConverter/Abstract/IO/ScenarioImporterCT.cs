@@ -7,56 +7,45 @@ using System.IO;
 using System.Numerics;
 
 namespace SyneticConverter;
-public class ScenarioImporterWR : ScenarioImporter
+public class ScenarioImporterCT : ScenarioImporter
 {
     private GameVersion format;
-    private IdxFile idx;
-    private LvlFile lvl;
-    private SniFile sni;
-    private VtxFile vtx;
-    private QadFile qad;
-    private SkyFile sky;
+    GeoFile geo;
+    LvlFile lvl;
+    QadFile qad;
+    SniFile sni;
 
-    public ScenarioImporterWR(ScenarioVariant target) : base(target)
+    public ScenarioImporterCT(ScenarioVariant target) : base(target)
     {
         format = target.Owner.Game.Version;
-        if (!(format == GameVersion.WR1 || format == GameVersion.WR2))
+        if (format < GameVersion.C11)
             throw new NotImplementedException();
 
-        idx = new();
+        geo = new();
         lvl = new();
         sni = new();
-        vtx = new();
-        qad = format switch
-        {
-            GameVersion.WR1 => new QadFileWR1(),
-            GameVersion.WR2 => new QadFileWR2(),
-        };
-        sky = format switch
-        {
-            GameVersion.WR1 => null,
-            GameVersion.WR2 => new(),
-        };
+        qad = (format >= GameVersion.CT2BW) ? new QadFileCT2() : new QadFileWR2();
+
+        if (format >= GameVersion.CT5U)
+            geo.HasX16VertexBlock = true;
     }
 
     public override void Load()
     {
         var filePath = Path.Combine(target.RootDir, target.Owner.Name);
 
-        idx.Load(filePath + ".idx");
+        geo.Load(filePath + ".geo");
         lvl.Load(filePath + ".lvl");
-        sni.Load(filePath + ".sni");
-        vtx.Load(filePath + ".vtx");
         qad.Load(filePath + ".qad");
-        if (sky != null)
-            sky.Load(filePath + ".sky");
+        if (File.Exists(filePath + ".sni"))
+            sni.Load(filePath + ".sni");
     }
 
     public override void Assign()
     {
         AssignTextures();
-        AssignObjects();
-        AssignTerrain(idx, vtx, qad);
+        //AssignObjects();
+        AssignTerrain(geo, geo, qad);
     }
 
     public void AssignTextures()
@@ -76,15 +65,16 @@ public class ScenarioImporterWR : ScenarioImporter
         }
         */
 
-        for (int i = 0; i< qad.Materials.Length; i++)
+        for (int i = 0; i < qad.Materials.Length; i++)
         {
             var qmat = qad.Materials[i];
             var mat = new Material();
-            var tex0 = target.WorldTextures[qmat.Tex0Id];
-            var tex1 = target.WorldTextures[qmat.Tex1Id];
-            var tex2 = target.WorldTextures[qmat.Tex2Id];
+            //var tex0 = target.WorldTextures[qmat.Tex0Id];
+            //var tex1 = target.WorldTextures[qmat.Tex1Id];
+            //var tex2 = target.WorldTextures[qmat.Tex2Id];
             string id = i.ToString("X").PadLeft(3, '0');
-            mat.Name = $"{id}_{tex0.Name}";
+            mat.Name = $"{id}_{"j"}";
+            /*
             mat.Mode = (MaterialType)qmat.Mode;
             mat.Tex0.Texture = tex0;
             mat.Tex1.Texture = tex1;
@@ -92,6 +82,7 @@ public class ScenarioImporterWR : ScenarioImporter
             mat.Tex0.Transform = qmat.Mat1;
             mat.Tex1.Transform = qmat.Mat2;
             mat.Tex2.Transform = qmat.Mat3;
+            */
 
             target.WorldMaterials.Add(mat);
         }
@@ -110,7 +101,7 @@ public class ScenarioImporterWR : ScenarioImporter
 
                 target.PropClasses.Add(new PropClass(name, target.PropTextures)
                 {
-                    
+
                 }); ;
             }
         }
@@ -143,6 +134,4 @@ public class ScenarioImporterWR : ScenarioImporter
         }
     }
 
-
-    
 }

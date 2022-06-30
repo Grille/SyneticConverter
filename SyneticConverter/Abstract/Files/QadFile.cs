@@ -11,6 +11,9 @@ namespace SyneticConverter;
 
 public abstract class QadFile : SyneticFile
 {
+    public bool HasMagic = false;
+    public bool Has56DataBlock = false;
+
     public MHead Head;
     public String32[] TextureName;
     public String32[] BumpTexName;
@@ -45,7 +48,8 @@ public abstract class QadFile : SyneticFile
 
     public struct MPolygonRegionPtr
     {
-        public int FirstPoly, NumPoly, SurfaceID;
+        public int FirstPoly, NumPoly;
+        public ushort SurfaceID, SurfaceID2;
     }
 
     public struct MMaterialDef
@@ -100,7 +104,13 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile  where TMPropClass
 
     public unsafe override void Read(BinaryViewReader br)
     {
+        if (HasMagic)
+            br.Position += 8;
+
         Head = br.Read<MHead>();
+
+        if (Has56DataBlock)
+            br.ReadArray<byte>(56);
 
         TextureName = br.ReadArray<String32>(Head.TexturesFiles);
         BumpTexName = br.ReadArray<String32>(Head.BumpTexturesFiles);
@@ -118,14 +128,14 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile  where TMPropClass
             }
         }
 
-        var blockx16 = Head.BlocksTotal * 16;
+        var blockX16 = Head.BlocksTotal * 16;
 
-        ChunkDataPtr = new int[blockx16 + 1];
-        br.ReadToIList(ChunkDataPtr, 0, blockx16);
-        ChunkDataPtr[blockx16] = Head.ColliSize;
+        ChunkDataPtr = new int[blockX16 + 1];
+        br.ReadToIList(ChunkDataPtr, 0, blockX16);
+        ChunkDataPtr[blockX16] = Head.ColliSize;
 
-        ChunkData = new ushort[blockx16][];
-        for (var i = 0; i < blockx16; i++)
+        ChunkData = new ushort[blockX16][];
+        for (var i = 0; i < blockX16; i++)
         {
             var size = (ChunkDataPtr[i + 1] - ChunkDataPtr[i]) / 2;
             ChunkData[i] = br.ReadArray<ushort>(size);

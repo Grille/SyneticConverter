@@ -40,7 +40,7 @@ public class Mesh
 
     public void ExportSbi(string path)
     {
-        var exp = new MeshExporterSbi(this);
+        var exp = new MeshExporterSynX(this);
         exp.Save(path);
     }
 }

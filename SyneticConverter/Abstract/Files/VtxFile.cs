@@ -7,32 +7,53 @@ using System.Numerics;
 using GGL.IO;
 
 namespace SyneticConverter;
-public class VtxFile : SyneticFile
+public class VtxFile : SyneticFile, IVertexData
 {
-    public int[] VtxQty;
-    public MVertex[] Vertices;
+    public int[] VtxQty { get; set; }
+    public Vertex[] Vertices { get; set; }
 
     public unsafe override void Read(BinaryViewReader br)
     {
         VtxQty = br.ReadArray<int>(64);
 
-        int length = 0;
+        int vertexCount = 0;
         for (int i = 0; i < VtxQty.Length; i++)
-            length += VtxQty[i];
+            vertexCount += VtxQty[i];
 
-        long finalpos = br.Position + length * sizeof(MVertex);
+        long finalpos = br.Position + vertexCount * sizeof(MVertex);
         if (br.Length != finalpos)
             throw new InvalidOperationException($"{br.Length} != {finalpos}");
 
-        Vertices = br.ReadArray<MVertex>(length);
-
+        Vertices = new Vertex[vertexCount];
+        for (int i = 0; i < vertexCount; i++)
+        {
+            var src = br.Read<MVertex>();
+            Vertices[i] = new Vertex()
+            {
+                Position = src.Position,
+                Normal = new Vector4(src.Normal.B / 255f, src.Normal.G / 255f, src.Normal.R / 255f, src.Normal.A / 255f),
+                UV0 = src.UV,
+                UV1 = Vector2.Zero,
+                Blending = new Vector3(src.Blend.B, src.Blend.G, src.Blend.R),
+                Shadow = src.Blend.Shadow,
+                Color = src.Color,
+            };
+        }
     }
 
     public override void Write(BinaryViewWriter bw)
     {
         bw.WriteArray(VtxQty, LengthPrefix.None);
-        bw.WriteArray(Vertices, LengthPrefix.None);
-    }
+
+        for (int i = 0; i < Vertices.Length; i++)
+        {
+            var src = Vertices[i];
+            bw.Write<MVertex>(new()
+            {
+                Position = src.Position,
+            });
+        }
+}
 
     public struct MVertex
     {

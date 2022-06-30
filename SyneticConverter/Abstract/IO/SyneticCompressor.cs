@@ -3,20 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace SyneticConverter;
-public enum TargetFormat
+public class SyneticCompressor
 {
-    NICE,
-    NICE2,
-    MBTR,
-    WR1,
-    WR2,
-    FVR,
-    AFCN,
-    CT1AP,
-    CT2BW,
-    CT3HN,
-    CT4TS,
-    CT5U,
+    public static void Decompress(Stream src, Stream dst, int size)
+    {
+
+    }
 }

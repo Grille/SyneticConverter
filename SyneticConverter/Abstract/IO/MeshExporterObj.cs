@@ -35,10 +35,11 @@ public class MeshExporterObj : MeshExporter
 
             for (int i = 0; i < target.Vertices.Length; i++)
             {
-                var uv = target.Vertices[i].UV;
+                var uv = target.Vertices[i].UV0;
                 sw.WriteLine($"vt {uv.X} {uv.Y}");
             }
 
+            
             sw.WriteLine("s on");
             foreach (var reg in target.PolyRegion)
             {
@@ -51,6 +52,7 @@ public class MeshExporterObj : MeshExporter
                     sw.WriteLine($"f {poly.X + 1} {poly.Y + 1} {poly.Z + 1}");
                 }
             }
+            
         }
 
         {

@@ -10,7 +10,8 @@ public class Vertex
 {
     public Vector3 Position;
     public Vector4 Normal;
-    public Vector2 UV;
+    public Vector2 UV0;
+    public Vector2 UV1;
     public Vector3 Blending;
     public BgraColor Color;
     public float Shadow;

@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticConverter;
-public class TextureList : List<Texture>
+public interface IVertexData
 {
+    public int[] VtxQty { get; set; }
+    public Vertex[] Vertices { get; set; }
 }
-

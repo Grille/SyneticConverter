@@ -67,7 +67,7 @@ public class Scenario
 
     }
 
-    public void SaveAs(string name, string rootPath, TargetFormat format)
+    public void SaveAs(string name, string rootPath, GameVersion format)
     {
 
     }

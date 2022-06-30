@@ -47,8 +47,21 @@ public partial class ScenarioVariant
 
     public void LoadData()
     {
-        var io = new ScenarioImporterWR(this);
-        io.LoadAndAssign();
+        switch (Owner.Game.Version)
+        {
+            case >= GameVersion.C11:
+            {
+                var io = new ScenarioImporterCT(this);
+                io.LoadAndAssign();
+            }
+            break;
+            case >= GameVersion.WR1:
+            {
+                var io = new ScenarioImporterWR(this);
+                io.LoadAndAssign();
+            }
+            break;
+        }
     }
 
     public void SaveData()

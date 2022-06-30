@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticConverter;
-public class TextureList : List<Texture>
+public interface IIndexData
 {
+    public ushort[] Indices { get; set; }
 }
-

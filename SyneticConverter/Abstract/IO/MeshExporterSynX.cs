@@ -8,10 +8,10 @@ using System.Numerics;
 using GGL.IO;
 
 namespace SyneticConverter;
-public class MeshExporterSbi : MeshExporter
+public class MeshExporterSynX : MeshExporter
 {
     public Vector3 PositionMultiplier = Vector3.One;
-    public MeshExporterSbi(Mesh target) : base(target)
+    public MeshExporterSynX(Mesh target) : base(target)
     {
 
     }
@@ -28,7 +28,7 @@ public class MeshExporterSbi : MeshExporter
             var vertex = target.Vertices[i];
             var pos = vertex.Position * PositionMultiplier;
             var normal = vertex.Normal;
-            var uv = vertex.UV;
+            var uv = vertex.UV0;
             var blend = vertex.Blending;
             var color = vertex.Color;
             var shadow = vertex.Shadow;

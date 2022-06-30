@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using GGL.IO;
 
 namespace SyneticConverter;
-internal class IdxFile : SyneticFile
+internal class IdxFile : SyneticFile, IIndexData
 {
-    public ushort[] Indices;
+    public ushort[] Indices { get; set; }
 
     public override void Read(BinaryViewReader br)
     {

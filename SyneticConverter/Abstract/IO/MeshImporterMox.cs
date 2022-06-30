@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SyneticConverter;
 public class MeshImporterMox : MeshImporter
 {
-    private TargetFormat format;
+    private GameVersion format;
     private MoxFile mox;
 
     public MeshImporterMox(Mesh target) : base(target)

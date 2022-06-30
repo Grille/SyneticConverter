@@ -9,7 +9,7 @@ using SyneticConverter;
 namespace SyneticConverter;
 public class ReadProcess
 {
-    public TargetFormat Target;
+    public GameVersion Target;
     public BinaryViewReader Reader;
 
     List<string> Info;

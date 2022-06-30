@@ -7,25 +7,52 @@ using System.Numerics;
 using GGL.IO;
 
 namespace SyneticConverter;
-public class GeoFile : SyneticFile
+public class GeoFile : SyneticFile, IIndexData, IVertexData
 {
+    public bool HasX16VertexBlock = false;
+
     public MHead Head;
 
-    public int[] VtxQty;
-    public MVertex[] Vertices;
+    public int[] VtxQty { get; set; }
+    public Vertex[] Vertices { get; set; }
+    public ushort[] Indices { get; set; }
 
-
-    public override void Read(BinaryViewReader br)
+    public unsafe override void Read(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
 
         VtxQty = br.ReadArray<int>(64);
 
-        int length = 0;
+        int vertexCount = 0;
         for (int i = 0; i < VtxQty.Length; i++)
-            length += VtxQty[i];
+            vertexCount += VtxQty[i];
 
-        Vertices = br.ReadArray<MVertex>();
+        long calculatedEndPos = br.Position + vertexCount * sizeof(MVertex) + Head.IndicesCount * sizeof(ushort);
+        if (HasX16VertexBlock)
+            calculatedEndPos += vertexCount * 16;
+
+        if (calculatedEndPos != br.Length)
+            throw new Exception($"{calculatedEndPos} != {br.Length} diff:{calculatedEndPos - br.Length}");
+
+        Vertices = new Vertex[vertexCount];
+        for (int i = 0; i< vertexCount; i++)
+        {
+            var src = br.Read<MVertex>();
+            Vertices[i] = new Vertex()
+            {
+                Position = src.Position,
+                Normal = new Vector4(src.Normal.B / 255f, src.Normal.G / 255f, src.Normal.R / 255f, src.Normal.A / 255f),
+                UV0 = src.UV0,
+                UV1 = src.UV1,
+                Blending = new Vector3(src.Blend.B, src.Blend.G, src.Blend.R),
+                Shadow = src.Blend.Shadow,
+                Color = src.Color,
+            };
+        }
+
+        if (HasX16VertexBlock)
+            br.ReadArray<byte>(vertexCount * 16);
+        Indices = br.ReadArray<ushort>(Head.IndicesCount);
     }
 
     public override void Write(BinaryViewWriter bw)
@@ -36,10 +63,10 @@ public class GeoFile : SyneticFile
     public struct MHead
     {
         public String4 Magic;
-        public int X2, X3, SizeX, SizeZ, XZ, Qty, Density;
+        public int MaxSectionRange, X3, SectionCount, IndicesCount, XZ, Qty, Density;
     }
 
-    public struct MVertex
+    private struct MVertex
     {
         public Vector3 Position;
         public BgraColor Normal;
