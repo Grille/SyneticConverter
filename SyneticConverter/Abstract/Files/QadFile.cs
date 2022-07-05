@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace SyneticConverter;
 
-public abstract class QadFile : SyneticFile
+public abstract class QadFile : SyneticBinFile
 {
     public bool HasMagic = false;
     public bool Has56DataBlock = false;

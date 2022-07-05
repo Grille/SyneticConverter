@@ -8,7 +8,7 @@ using System.IO;
 using GGL.IO;
 
 namespace SyneticConverter;
-public abstract class SyneticFile
+public abstract class SyneticBinFile
 {
     public abstract void Read(BinaryViewReader br);
 

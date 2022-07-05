@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GGL.IO;
 
 namespace SyneticConverter.Abstract.Files;
-public class SynFile : SyneticFile
+public class SynFile : SyneticBinFile
 {
     MHead Head;
     public override void Read(BinaryViewReader br)

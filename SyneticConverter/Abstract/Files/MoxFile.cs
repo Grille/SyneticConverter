@@ -8,7 +8,7 @@ using GGL.IO;
 using System.Runtime.InteropServices;
 
 namespace SyneticConverter;
-public class MoxFile : SyneticFile
+public class MoxFile : SyneticBinFile
 {
     public MHead Head;
 

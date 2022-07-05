@@ -12,6 +12,10 @@ public  class GameFolder
     public string RootDir;
     public GameVersion Version;
 
+    public Dictionary<string, Scenario> Scenarios = new();
+    public Dictionary<string, Car> Cars = new();
+    public Dictionary<string, RessourcePtr> Ressources = new();
+
 
     public GameFolder(string path, GameVersion target = GameVersion.Auto)
     {
@@ -31,16 +35,49 @@ public  class GameFolder
 
     public Dictionary<string, Scenario> GetAllScenarios()
     {
-        var scnRootDir = Directory.GetDirectories(Path.Combine(RootDir, "Scenarios"));
+        RefreshScenarios();
 
-        var dict = new Dictionary<string, Scenario>();
+        return Scenarios;
+    }
+
+    public void Refresh()
+    {
+        RefreshScenarios();
+        RefreshCars();
+        RefreshRessources();
+    }
+
+    public void RefreshScenarios()
+    {
+        string scnRootDirPath = Path.Combine(RootDir, "Scenarios");
+        if (!Directory.Exists(scnRootDirPath))
+            return;
+
+        var scnRootDir = Directory.GetDirectories(scnRootDirPath);
+
+        Scenarios.Clear();
         foreach (var path in scnRootDir)
         {
             var name = Path.GetFileName(path);
-            dict.Add(name, GetScenario(name));
+            Scenarios.Add(name, GetScenario(name));
         }
+    }
 
-        return dict;
+    public void RefreshCars()
+    {
+        var carRootDir = Directory.GetDirectories(Path.Combine(RootDir, "Autos"));
+
+        Cars.Clear();
+        foreach (var path in carRootDir)
+        {
+            var name = Path.GetFileName(path);
+            Cars.Add(name, new Car());
+        }
+    }
+
+    public void RefreshRessources()
+    {
+
     }
 
     public Scenario GetScenario(string name)

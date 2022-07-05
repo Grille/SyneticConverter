@@ -91,7 +91,7 @@ public class ScenarioImporterCT : ScenarioImporter
     private void AssignObjects()
     {
         var mode = target.Owner.Game.Version;
-        if (mode == GameVersion.WR1)
+        if (mode == GameVersion.MBWR)
         {
             var sqad = (QadFileWR1)qad;
             for (int i = 0; i < qad.Head.PropClassCount; i++)

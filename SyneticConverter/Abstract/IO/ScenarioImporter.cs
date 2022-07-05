@@ -71,10 +71,10 @@ public abstract class ScenarioImporter
 
 
 
-        mesh.PolyRegion = new PolyRegion[qad.Poly.Length];
+        mesh.MaterialRegion = new MaterialRegion[qad.Poly.Length];
         for (int i = 0; i < qad.Poly.Length; i++)
         {
-            mesh.PolyRegion[i] = new PolyRegion()
+            mesh.MaterialRegion[i] = new MaterialRegion()
             {
                 Offset = qad.Poly[i].FirstPoly,
                 Count = qad.Poly[i].NumPoly,

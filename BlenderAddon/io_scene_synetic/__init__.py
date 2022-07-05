@@ -60,14 +60,14 @@ class ImportSBI(bpy.types.Operator, ImportHelper):
 
     def execute(self, context):
         # print("Selected: " + context.active_object.name)
-        from . import import_sbi
+        from . import import_sbx
 
         keywords = self.as_keywords()
         if bpy.data.is_saved and context.preferences.filepaths.use_relative_paths:
             import os
             keywords["relpath"] = os.path.dirname(bpy.data.filepath)
 
-        return import_sbi.load(context, **keywords)
+        return import_sbx.load(context, **keywords)
 
     def draw(self, context):
         pass
@@ -98,10 +98,10 @@ class ExportSBI(bpy.types.Operator, ExportHelper):
     check_extension = True
 
     def execute(self, context):
-        from . import export_sbi
+        from . import export_sbx
 
         keywords = []
-        return export_sbi.save(context, **keywords)
+        return export_sbx.save(context, **keywords)
 
     def draw(self, context):
         pass

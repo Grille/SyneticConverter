@@ -8,7 +8,7 @@ using GGL.IO;
 
 namespace SyneticConverter;
 
-public class LvlFile : SyneticFile
+public class LvlFile : SyneticBinFile
 {
     public MData Data;
 

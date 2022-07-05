@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GGL.IO;
 
 namespace SyneticConverter.Abstract.Files;
-public class TreeFile : SyneticFile
+public class TreeFile : SyneticBinFile
 {
     public override void Read(BinaryViewReader br)
     {

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyneticConverter", "SyneticConverter\SyneticConverter.csproj", "{5841A098-0E19-40B6-8BCB-BD821BDDE554}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticConverter", "SyneticConverter\SyneticConverter.csproj", "{5841A098-0E19-40B6-8BCB-BD821BDDE554}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticTool", "SyneticTool\SyneticTool.csproj", "{F13F1CAB-988C-453E-9F06-8ED9B95B7049}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{5841A098-0E19-40B6-8BCB-BD821BDDE554}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5841A098-0E19-40B6-8BCB-BD821BDDE554}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5841A098-0E19-40B6-8BCB-BD821BDDE554}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F13F1CAB-988C-453E-9F06-8ED9B95B7049}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F13F1CAB-988C-453E-9F06-8ED9B95B7049}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F13F1CAB-988C-453E-9F06-8ED9B95B7049}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F13F1CAB-988C-453E-9F06-8ED9B95B7049}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

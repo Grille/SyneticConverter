@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GGL.IO;
 
 namespace SyneticConverter;
-public class SkyFile : SyneticFile
+public class SkyFile : SyneticBinFile
 {
     public override void Read(BinaryViewReader br)
     {

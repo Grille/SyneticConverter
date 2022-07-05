@@ -14,7 +14,7 @@ public class Mesh
     public int[] Indecies;
     public Vertex[] Vertices;
     public Vector3Int[] Poligons;
-    public PolyRegion[] PolyRegion;
+    public MaterialRegion[] MaterialRegion;
     public MaterialList Materials;
 
     public Mesh(MaterialList materials)
@@ -38,9 +38,10 @@ public class Mesh
         exp.Save(path);
     }
 
-    public void ExportSbi(string path)
+    public void ExportSbx(string path)
     {
-        var exp = new MeshExporterSynX(this);
+        var exp = new MeshExporterSbx(this);
         exp.Save(path);
     }
+
 }

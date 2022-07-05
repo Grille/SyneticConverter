@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SyneticConverter;
 
-public class PolyRegion
+public class MaterialRegion
 {
     public int Offset;
     public int Count;

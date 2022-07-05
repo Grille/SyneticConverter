@@ -8,10 +8,10 @@ using System.Numerics;
 using GGL.IO;
 
 namespace SyneticConverter;
-public class MeshExporterSynX : MeshExporter
+public class MeshExporterSbx : MeshExporter
 {
     public Vector3 PositionMultiplier = Vector3.One;
-    public MeshExporterSynX(Mesh target) : base(target)
+    public MeshExporterSbx(Mesh target) : base(target)
     {
 
     }
@@ -47,9 +47,9 @@ public class MeshExporterSynX : MeshExporter
             bw.Write(poly);
         }
 
-        for (int i = 0; i< target.PolyRegion.Length; i++)
+        for (int i = 0; i< target.MaterialRegion.Length; i++)
         {
-            var region = target.PolyRegion[i];
+            var region = target.MaterialRegion[i];
             bw.Write(region.Offset);
             bw.Write(region.Count);
             bw.Write(target.Materials.IndexOf(region.Material));

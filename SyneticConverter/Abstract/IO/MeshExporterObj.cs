@@ -41,7 +41,7 @@ public class MeshExporterObj : MeshExporter
 
             
             sw.WriteLine("s on");
-            foreach (var reg in target.PolyRegion)
+            foreach (var reg in target.MaterialRegion)
             {
                 sw.WriteLine($"usemtl {reg.Material.Name}");
                 int begin = reg.Offset;

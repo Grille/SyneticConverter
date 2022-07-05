@@ -7,7 +7,7 @@ using System.Numerics;
 using GGL.IO;
 
 namespace SyneticConverter;
-public class VtxFile : SyneticFile, IVertexData
+public class VtxFile : SyneticBinFile, IVertexData
 {
     public int[] VtxQty { get; set; }
     public Vertex[] Vertices { get; set; }

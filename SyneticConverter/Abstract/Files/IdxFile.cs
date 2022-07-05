@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GGL.IO;
 
 namespace SyneticConverter;
-internal class IdxFile : SyneticFile, IIndexData
+internal class IdxFile : SyneticBinFile, IIndexData
 {
     public ushort[] Indices { get; set; }
 

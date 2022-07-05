@@ -55,7 +55,7 @@ public partial class ScenarioVariant
                 io.LoadAndAssign();
             }
             break;
-            case >= GameVersion.WR1:
+            case >= GameVersion.MBWR:
             {
                 var io = new ScenarioImporterWR(this);
                 io.LoadAndAssign();

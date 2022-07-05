@@ -16,7 +16,7 @@ public class ReadProcess
     List<string> Warnings;
     List<string> Error;
 
-    public T Load<T>(string path) where T : SyneticFile, new()
+    public T Load<T>(string path) where T : SyneticBinFile, new()
     {
         var obj = new T();
         obj.Load(path);

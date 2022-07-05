@@ -9,7 +9,7 @@ using GGL.IO;
 using System.Runtime.InteropServices;
 
 namespace SyneticConverter;
-public class SniFile : SyneticFile
+public class SniFile : SyneticBinFile
 {
     public MHead Head;
 

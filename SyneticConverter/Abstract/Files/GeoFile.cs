@@ -7,7 +7,7 @@ using System.Numerics;
 using GGL.IO;
 
 namespace SyneticConverter;
-public class GeoFile : SyneticFile, IIndexData, IVertexData
+public class GeoFile : SyneticBinFile, IIndexData, IVertexData
 {
     public bool HasX16VertexBlock = false;
 
@@ -52,6 +52,7 @@ public class GeoFile : SyneticFile, IIndexData, IVertexData
 
         if (HasX16VertexBlock)
             br.ReadArray<byte>(vertexCount * 16);
+
         Indices = br.ReadArray<ushort>(Head.IndicesCount);
     }
 

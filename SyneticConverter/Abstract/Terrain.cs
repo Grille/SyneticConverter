@@ -17,5 +17,10 @@ public class Terrain
         Mesh = new Mesh(materials);
     }
 
+    public void Chunkify()
+    {
+        var list = new List<Chunk>();
 
+        //return list;
+    }
 }

@@ -20,7 +20,7 @@ public class ScenarioImporterWR : ScenarioImporter
     public ScenarioImporterWR(ScenarioVariant target) : base(target)
     {
         format = target.Owner.Game.Version;
-        if (!(format == GameVersion.WR1 || format == GameVersion.WR2))
+        if (!(format == GameVersion.MBWR || format == GameVersion.WR2))
             throw new NotImplementedException();
 
         idx = new();
@@ -29,12 +29,12 @@ public class ScenarioImporterWR : ScenarioImporter
         vtx = new();
         qad = format switch
         {
-            GameVersion.WR1 => new QadFileWR1(),
+            GameVersion.MBWR => new QadFileWR1(),
             GameVersion.WR2 => new QadFileWR2(),
         };
         sky = format switch
         {
-            GameVersion.WR1 => null,
+            GameVersion.MBWR => null,
             GameVersion.WR2 => new(),
         };
     }
@@ -100,7 +100,7 @@ public class ScenarioImporterWR : ScenarioImporter
     private void AssignObjects()
     {
         var mode = target.Owner.Game.Version;
-        if (mode == GameVersion.WR1)
+        if (mode == GameVersion.MBWR)
         {
             var sqad = (QadFileWR1)qad;
             for (int i = 0; i < qad.Head.PropClassCount; i++)
