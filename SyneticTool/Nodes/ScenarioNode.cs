@@ -3,31 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using System.Windows.Forms;
 
-using SyneticConverter;
+using SyneticLib;
 
 namespace SyneticTool;
 
 internal class ScenarioNode : TreeNode
 {
+    public Scenario Value;
     public ScenarioNode(string folder, Scenario scenario)
     {
-        this.Text = folder;
+        Text = folder;
+        Value = scenario;
 
-        var menuItemInspect = new ToolStripMenuItem("Inspect");
-        menuItemInspect.Click += (object sender, EventArgs e) =>
+        var variants = scenario.Variants;
+        for (int i = 0; i < variants.Length; i++)
         {
-            new ScenarioInspector(scenario).Show();
-        };
+            Nodes.Add(new ScenarioNodeVariant($"V{i + 1}", variants[i]));
+        }
+    }
 
-        var menuItemExport = new ToolStripMenuItem("Export");
-        menuItemExport.Click += (object sender, EventArgs e) =>
+    public ScenarioNodeVariant V1
+    {
+        get => Nodes.Count > 0 ? (ScenarioNodeVariant)Nodes[0] : null;
+    }
+
+    public void UpdateColor()
+    {
+        ForeColor = Value.State switch
         {
-
+            ScenarioState.Initialized => Color.Green,
+            ScenarioState.Failed => Color.Red,
+            _ => Color.Black,
         };
-        ContextMenuStrip = new ContextMenuStrip();
-        ContextMenuStrip.Items.Add(menuItemInspect);
-        ContextMenuStrip.Items.Add(menuItemExport);
     }
 }

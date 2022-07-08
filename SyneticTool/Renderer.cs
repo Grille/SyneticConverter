@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Numerics;
-using SyneticConverter;
+using SyneticLib;
 namespace SyneticTool;
 
 internal class Renderer

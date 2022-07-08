@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>net6</TargetFrameworks>
+    <LangVersion>10</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GGL.BinaryView" Version="2.3.0" />
+    <PackageReference Include="OpenTK" Version="4.7.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Grille\source\repos\SyneticConverter\SyneticLib\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Graphics\Shaders\Fragment.glsl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Graphics\Shaders\Fragment.glsl" />
+    <EmbeddedResource Include="Graphics\Shaders\Vertex.glsl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\Grille\source\repos\SyneticConverter\SyneticLib\.editorconfig" />
+  </ItemGroup>
+
+</Project>

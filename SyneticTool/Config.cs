@@ -4,13 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Text.Json;
 
 namespace SyneticTool;
 
 internal class Config
 {
+    string path;
     ConfigSection UsedSection;
     List<ConfigSection> ConfigSections;
+
+    public Config(string path)
+    {
+        this.path = path;
+    }
 
     public void UseSection(string name)
     {
@@ -32,15 +39,35 @@ internal class Config
         return "";
     }
 
-    public void Load(string path)
+    public bool Exists()
+    {
+        return File.Exists(path);
+    }
+
+    public void Load()
     {
         var lines = File.ReadAllLines(path);
 
         for (int i = 0; i < lines.Length; i++)
         {
-            var line = lines[0].Split(new[] { "//","#" }, StringSplitOptions.TrimEntries)[0];
+            var line = lines[0].Trim();
+
+            if (line.Length == 0)
+                continue;
+
+            if (line[0] == '[')
+            {
+
+            }
 
         }
+    }
+
+    public void Save()
+    {
+        var sb = new StringBuilder();
+
+        File.WriteAllText(path, sb.ToString());
     }
 }
 

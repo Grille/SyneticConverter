@@ -1,6 +1,6 @@
 using System;
 using System.Windows.Forms;
-using OpenTK.WinForms;
+
 namespace SyneticTool;
 
 internal static class Program

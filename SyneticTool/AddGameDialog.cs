@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
-using SyneticConverter;
+using SyneticLib;
 
 
 namespace SyneticTool;
@@ -17,12 +17,12 @@ public partial class AddGameDialog : Form
 {
     public string GameName;
     public string GamePath;
-    public AddGameDialog()
+    public Games Games;
+    public AddGameDialog(Games games)
     {
         InitializeComponent();
 
-
-
+        Games = games;
     }
 
     private void label1_Click(object sender, EventArgs e)
