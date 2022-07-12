@@ -4,16 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-public class CarNode : TreeNode
+internal class MeshNode : TreeNode
 {
-    public CarNode(string name, Car car)
-    {
-        Text = name;
-
-        SelectedImageIndex = ImageIndex = IconList.Car;
-    }
 }

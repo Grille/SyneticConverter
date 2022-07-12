@@ -17,7 +17,7 @@ public class GeoFile : SyneticBinFile, IIndexData, IVertexData
     public Vertex[] Vertices { get; set; }
     public ushort[] Indices { get; set; }
 
-    public unsafe override void Read(BinaryViewReader br)
+    public unsafe override void ReadFromView(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
 
@@ -56,7 +56,7 @@ public class GeoFile : SyneticBinFile, IIndexData, IVertexData
         Indices = br.ReadArray<ushort>(Head.IndicesCount);
     }
 
-    public override void Write(BinaryViewWriter bw)
+    public override void WriteToView(BinaryViewWriter bw)
     {
         throw new NotImplementedException();
     }

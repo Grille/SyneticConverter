@@ -69,7 +69,6 @@ public class GLSyn
 
     public static void DrawMesh(Mesh mesh)
     {
-        b += 20;
         MaterialShader.Default.Bind();
 
         Matrix4 projectionMatrix;
@@ -83,7 +82,7 @@ public class GLSyn
         int modelLoc = GL.GetUniformLocation(MaterialShader.Default.ProgramId, "model");
         GL.UniformMatrix4(modelLoc, false, ref modelMatrix);
 
-        viewMatrix = Matrix4.LookAt(new Vector3(0, 10000, -20000-b), new Vector3(0, 0, -10000), new Vector3(0, 1, 0));
+        viewMatrix = Matrix4.LookAt(new Vector3(0, 10000, -20000), new Vector3(0, 0, -10000), new Vector3(0, 1, 0));
         int viewLoc = GL.GetUniformLocation(MaterialShader.Default.ProgramId, "view");
         GL.UniformMatrix4(viewLoc, false, ref viewMatrix);
 
@@ -97,8 +96,6 @@ public class GLSyn
         //return;
         GL.Enable(EnableCap.DepthTest);
         //GL.FrontFace(FrontFaceDirection.Ccw);
-
-
 
         var buffer = mesh.GLBuffer;
         buffer.Bind();

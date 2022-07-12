@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-public class CarNode : TreeNode
+internal class TextureNode : TreeNode
 {
-    public CarNode(string name, Car car)
+    public TextureNode(Texture texture)
     {
-        Text = name;
+        Text = texture.Name;
 
-        SelectedImageIndex = ImageIndex = IconList.Car;
+        SelectedImageIndex = ImageIndex = IconList.Texture;
     }
 }

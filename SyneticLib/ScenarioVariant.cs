@@ -19,16 +19,18 @@ public partial class ScenarioVariant
 
     public GroundModel GroundModel;
     public List<Sound> Sounds;
-    public TextureList WorldTextures;
+    public TextureFolder WorldTextures;
     public MaterialList WorldMaterials;
-    public TextureList PropTextures;
+    public MeshFolder PropMeshes;
     public List<PropClass> PropClasses;
     public List<PropInstance> PropInstances;
     public Terrain Terrain;
 
+    public List<Light> Lights;
+
     public List<string> Errors;
 
-    public ScenarioState State { get; internal set; }
+    public InitState State { get; internal set; }
 
     public ScenarioVariant(Scenario owner, int number)
     {
@@ -39,18 +41,19 @@ public partial class ScenarioVariant
         Sounds = new();
         WorldTextures = new();
         WorldMaterials = new(WorldTextures);
-        PropTextures = new();
+        PropMeshes = new();
         PropClasses = new();
         PropInstances = new();
         Terrain = new(WorldMaterials);
+        Lights = new();
 
         Errors = new();
-        State = ScenarioState.Empty;
+        State = InitState.Empty;
     }
 
     public void PeakHead()
     {
-
+        WorldTextures.SeekPtxFiles(Path.Combine(RootDir, "Textures"));
     }
 
     public void LoadData()
@@ -60,13 +63,13 @@ public partial class ScenarioVariant
             case >= GameVersion.C11:
             {
                 var io = new ScenarioImporterCT(this);
-                io.LoadAndInit();
+                io.Init();
             }
             break;
             case >= GameVersion.MBWR:
             {
                 var io = new ScenarioImporterWR(this);
-                io.LoadAndInit();
+                io.Init();
             }
             break;
         }

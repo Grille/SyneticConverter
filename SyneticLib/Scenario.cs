@@ -16,13 +16,13 @@ public class Scenario
 
     public ScenarioVariant[] Variants;
 
-    public ScenarioState State { 
+    public InitState State { 
         get 
         {
             if (Variants.Length == 0)
-                return ScenarioState.Empty;
+                return InitState.Empty;
 
-            ScenarioState state = Variants[0].State;
+            InitState state = Variants[0].State;
             for (int i = 1; i < Variants.Length; i++)
             {
                 if (Variants[i].State < state)
@@ -43,9 +43,12 @@ public class Scenario
         Game = game;
         Name = Path.GetFileName(path);
         RootDir = path;
-        //if (!Directory.Exists(RootDir))
-        //    return;
 
+        InitStructure();
+    }
+
+    public void InitStructure()
+    {
         var dirs = Directory.GetDirectories(RootDir);
 
         var list = new List<ScenarioVariant>();
@@ -59,6 +62,11 @@ public class Scenario
             }
         }
         Variants = list.ToArray();
+
+        foreach (var v in Variants)
+        {
+            v.PeakHead();
+        }
     }
 
     public void LoadAllData()

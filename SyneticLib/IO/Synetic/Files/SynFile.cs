@@ -8,27 +8,41 @@ using GGL.IO;
 namespace SyneticLib.IO.Synetic.Files;
 public class SynFile : SyneticBinFile
 {
-    MHead Head;
-    public override void Read(BinaryViewReader br)
+    public MHead Head;
+    public MFileEntry[] Entries;
+    public byte[][] Data;
+
+    public override void ReadFromView(BinaryViewReader br)
     {
-        throw new NotImplementedException();
+        Head = br.Read<MHead>();
+        br.Position += 52;
+
+        Entries = br.ReadArray<MFileEntry>(Head.FileCount);
+
+        Data = new byte[Head.FileCount][];
+
+        for (int i = 0; i < Head.FileCount; i++)
+            Data[i] = br.ReadArray<byte>(Entries[i].CompressedSize);
     }
 
-    public override void Write(BinaryViewWriter bw)
+    public override void WriteToView(BinaryViewWriter bw)
     {
-        throw new NotImplementedException();
+        bw.Write(Head);
+        bw.WriteArray(Entries, LengthPrefix.None);
+
+        for (int i = 0; i< Data.Length; i++)
+            bw.WriteArray(Data[i], LengthPrefix.None);
     }
 
     public struct MHead
     {
-        String8 Magic;
-        uint FileCount;
-        uint Empty;
+        public String8 Magic;
+        public uint FileCount;
     }
 
     public struct MFileEntry
     {
         public String48 FileName;
-        public uint Position, SynSize, FileSize, Empty;
+        public uint Position, CompressedSize, TotalSize, Empty;
     }
 }

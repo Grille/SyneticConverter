@@ -18,29 +18,27 @@ public abstract class ScenarioImporter
         path = target.RootDir;
     }
 
+    protected abstract void OnSeek(string path);
     protected abstract void OnLoad();
     protected abstract void OnInit();
 
-    public void Load()
+    public void Seek(string path)
     {
-        target.State = ScenarioState.Loading;
         try
         {
-            OnLoad();
-            target.State = ScenarioState.Loaded;
+            OnSeek(path);
+            target.State = InitState.Loaded;
         }
         catch (FileNotFoundException ex)
         {
             target.Errors.Add(ex.Message);
-            target.State = ScenarioState.Failed;
+            target.State = InitState.Failed;
         }
     }
 
-    public void Init()
+    public void Seek()
     {
-        target.State = ScenarioState.Loading;
-        OnInit();
-        target.State = ScenarioState.Initialized;
+        Seek(target.RootDir);
     }
 
     public void Load(string path)
@@ -49,11 +47,38 @@ public abstract class ScenarioImporter
         Load();
     }
 
-    public void LoadAndInit()
+    public void Load()
     {
-        Load();
-        if (target.State == ScenarioState.Loaded)
-            Init();
+        if (target.State < InitState.Seeked)
+            Seek();
+
+        try
+        {
+            OnLoad();
+            target.State = InitState.Loaded;
+        }
+        catch (FileNotFoundException ex)
+        {
+            target.Errors.Add(ex.Message);
+            target.State = InitState.Failed;
+        }
+    }
+
+    public void Init()
+    {
+        if (target.State < InitState.Loaded)
+            Load();
+
+        try
+        {
+            OnInit();
+            target.State = InitState.Initialized;
+        }
+        catch (FileNotFoundException ex)
+        {
+            target.Errors.Add(ex.Message);
+            target.State = InitState.Failed;
+        }
     }
 
     public void LoadWorldTexture(string name)
@@ -70,7 +95,7 @@ public abstract class ScenarioImporter
         string path = Path.Combine(target.RootDir, "Objects/Textures", name);
         var texture = new Texture(name);
         texture.ImportPtx(path);
-        target.PropTextures.Add(texture);
+        target.PropMeshes.TextureFolder.Add(texture);
     }
 
     protected void AssignTerrain(IIndexData idx, IVertexData vtx, QadFile qad)

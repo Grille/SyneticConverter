@@ -16,7 +16,7 @@ public class SniFile : SyneticBinFile
     public MObj[] Objects;
     public MNode[] Nodes;
 
-    public override void Read(BinaryViewReader br)
+    public override void ReadFromView(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
 
@@ -24,7 +24,7 @@ public class SniFile : SyneticBinFile
         Nodes = br.ReadArray<MNode>(Head.NodeCount);
     }
 
-    public override void Write(BinaryViewWriter bw)
+    public override void WriteToView(BinaryViewWriter bw)
     {
         bw.Write(Head);
 

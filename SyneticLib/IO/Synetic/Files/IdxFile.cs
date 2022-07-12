@@ -10,12 +10,12 @@ internal class IdxFile : SyneticBinFile, IIndexData
 {
     public ushort[] Indices { get; set; }
 
-    public override void Read(BinaryViewReader br)
+    public override void ReadFromView(BinaryViewReader br)
     {
         Indices = br.ReadArray<ushort>(LengthPrefix.Int32);
     }
 
-    public override void Write(BinaryViewWriter bw)
+    public override void WriteToView(BinaryViewWriter bw)
     {
         bw.WriteArray(Indices, LengthPrefix.Int32);
     }

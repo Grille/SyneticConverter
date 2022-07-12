@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 using SyneticLib;
 
-namespace SyneticTool;
+namespace SyneticTool.Nodes;
 
 internal class ScenarioNode : TreeNode
 {
@@ -21,21 +21,23 @@ internal class ScenarioNode : TreeNode
         var variants = scenario.Variants;
         for (int i = 0; i < variants.Length; i++)
         {
-            Nodes.Add(new ScenarioNodeVariant($"V{i + 1}", variants[i]));
+            Nodes.Add(new ScenarioVariantNode($"V{i + 1}", variants[i]));
         }
+
+        SelectedImageIndex = ImageIndex = IconList.World;
     }
 
-    public ScenarioNodeVariant V1
+    public ScenarioVariantNode V1
     {
-        get => Nodes.Count > 0 ? (ScenarioNodeVariant)Nodes[0] : null;
+        get => Nodes.Count > 0 ? (ScenarioVariantNode)Nodes[0] : null;
     }
 
     public void UpdateColor()
     {
         ForeColor = Value.State switch
         {
-            ScenarioState.Initialized => Color.Green,
-            ScenarioState.Failed => Color.Red,
+            InitState.Initialized => Color.Green,
+            InitState.Failed => Color.Red,
             _ => Color.Black,
         };
     }

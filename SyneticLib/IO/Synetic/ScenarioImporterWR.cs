@@ -11,6 +11,7 @@ namespace SyneticLib.IO.Synetic;
 public class ScenarioImporterWR : ScenarioImporter
 {
     private GameVersion format;
+    private SynFile syn;
     private IdxFile idx;
     private LvlFile lvl;
     private SniFile sni;
@@ -24,6 +25,8 @@ public class ScenarioImporterWR : ScenarioImporter
         if (!(format == GameVersion.MBWR || format == GameVersion.WR2))
             throw new NotImplementedException();
 
+        syn = new();
+
         idx = new();
         lvl = new();
         sni = new();
@@ -33,24 +36,54 @@ public class ScenarioImporterWR : ScenarioImporter
             GameVersion.MBWR => new QadFileWR1(),
             GameVersion.WR2 => new QadFileWR2(),
         };
-        sky = format switch
-        {
-            GameVersion.MBWR => null,
-            GameVersion.WR2 => new(),
-        };
+        sky = new();
+    }
+
+    protected override void OnSeek(string path)
+    {
+        var synPath = Path.Combine(path, $"V{target.Number}");
+        syn.Path = synPath + ".syn";
+
+        var filePath = Path.Combine(path, target.Owner.Name);
+        idx.Path = filePath + ".idx";
+        lvl.Path = filePath + ".lvl";
+        sni.Path = filePath + ".sni";
+        vtx.Path = filePath + ".vtx";
+        qad.Path = filePath + ".qad";
+        sky.Path = filePath + ".sky";
     }
 
     protected override void OnLoad()
     {
-        var filePath = Path.Combine(target.RootDir, target.Owner.Name);
+        if (idx.Exists())
+        {
+            idx.Load();
+            lvl.Load();
+            sni.Load();
+            vtx.Load();
+            qad.Load();
+            if (sky.Exists())
+                sky.Load();
 
-        idx.Load(filePath + ".idx");
-        lvl.Load(filePath + ".lvl");
-        sni.Load(filePath + ".sni");
-        vtx.Load(filePath + ".vtx");
-        qad.Load(filePath + ".qad");
-        if (sky != null)
-            sky.Load(filePath + ".sky");
+            return;
+        }
+        else if (syn.Exists())
+        {
+            var archive = new SynArchive(syn);
+            archive.Load();
+
+            idx.ReadFromArchive(archive);
+            lvl.ReadFromArchive(archive);
+            sni.ReadFromArchive(archive);
+            vtx.ReadFromArchive(archive);
+            qad.ReadFromArchive(archive);
+            if (archive.FileExists(sky.FileName))
+                sky.ReadFromArchive(archive);
+
+            return;
+        }
+
+        throw new NotImplementedException();
     }
 
     protected override void OnInit()
@@ -58,6 +91,7 @@ public class ScenarioImporterWR : ScenarioImporter
         AssignTextures();
         AssignObjects();
         AssignTerrain(idx, vtx, qad);
+        AssignLights();
     }
 
     public void AssignTextures()
@@ -109,7 +143,7 @@ public class ScenarioImporterWR : ScenarioImporter
                 var name = qad.PropObjNames[i];
                 var data = sqad.PropClasses[i];
 
-                target.PropClasses.Add(new PropClass(name, target.PropTextures)
+                target.PropClasses.Add(new PropClass(name, target.PropMeshes.TextureFolder)
                 {
 
                 }); ;
@@ -123,7 +157,7 @@ public class ScenarioImporterWR : ScenarioImporter
                 var name = qad.PropObjNames[i];
                 var data = sqad.PropClasses[i];
 
-                var prop = new PropClass(name, target.PropTextures);
+                var prop = new PropClass(name, target.PropMeshes.TextureFolder);
                 var path = Path.Combine(target.RootDir, "Objects", name + ".mox");
                 if (File.Exists(path))
                     prop.Mesh.ImportFromMox(path);
@@ -144,6 +178,25 @@ public class ScenarioImporterWR : ScenarioImporter
         }
     }
 
+    private void AssignLights()
+    {
+        var mode = target.Owner.Game.Version;
+        if (mode == GameVersion.MBWR)
+        {
+        }
+        else
+        {
+            var sqad = (QadFileWR2)qad;
+            foreach (var srclight in sqad.Lights)
+            {
+                var light = new Light();
+                light.Color = srclight.Color;
+                light.Position = srclight.Matrix.Translation;
+
+                target.Lights.Add(light);
+            }
+        }
+    }
 
 
 }

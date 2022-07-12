@@ -9,6 +9,6 @@ using System.Drawing;
 namespace SyneticLib;
 public class Light
 {
-    Vector3 Position;
-    Color Color;
+    public Vector3 Position;
+    public Color Color;
 }

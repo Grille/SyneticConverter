@@ -104,7 +104,7 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
     public TMPropClass[] PropClasses;
     public TMLight[] Lights;
 
-    public unsafe override void Read(BinaryViewReader br)
+    public unsafe override void ReadFromView(BinaryViewReader br)
     {
 
         fixed (void* ptr = &Head)
@@ -145,6 +145,7 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
             ChunkData[i] = br.ReadArray<ushort>(size);
         }
 
+        
         MaterialRegions = br.ReadArray<MPolygonRegionPtr>(Head.TexturesTotal);
         Materials = br.ReadArray<MMaterialDef>(Head.MaterialCount);
         PropInstances = br.ReadArray<MObjInstance>(Head.PropInstanceCount);
@@ -154,7 +155,7 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
         Sounds = br.ReadArray<MSound>(Head.Sounds);
     }
 
-    public override void Write(BinaryViewWriter bw)
+    public override void WriteToView(BinaryViewWriter bw)
     {
         bw.DefaultLengthPrefix = LengthPrefix.None;
 

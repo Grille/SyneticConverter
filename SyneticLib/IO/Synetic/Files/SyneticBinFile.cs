@@ -8,27 +8,65 @@ using System.IO;
 using GGL.IO;
 
 namespace SyneticLib.IO.Synetic.Files;
-public abstract class SyneticBinFile
+public abstract class SyneticBinFile : IViewObject
 {
-    public abstract void Read(BinaryViewReader br);
-
-    public abstract void Write(BinaryViewWriter bw);
-
-    public void Load(string path)
+    private string _path = "";
+    public string Path
     {
-        if (!File.Exists(path))
-            throw new FileNotFoundException($"file '{path}' not found", path);
-
-        using var br = new BinaryViewReader(path);
-        Read(br);
+        get => _path; 
+        set
+        {
+            _path = value;
+            FileName = System.IO.Path.GetFileName(value);
+        }
     }
 
-    public void Save(string path)
-    {
-        if (!File.Exists(path))
-            throw new FileNotFoundException($"file '{path}' not found", path);
+    public string FileName { get; private set; }
 
-        using var bw = new BinaryViewWriter(path);
-        Write(bw);
+    public abstract void ReadFromView(BinaryViewReader br);
+
+    public abstract void WriteToView(BinaryViewWriter bw);
+
+    public void ReadFromArchive(SynArchive archive)
+    {
+        if (!archive.FileExists(FileName))
+            throw new FileNotFoundException($"file '{Path}' not found in syn", Path);
+
+        using var br = new BinaryViewReader(archive.GetFile(FileName), true);
+        br.ReadToIView(this);
     }
+
+    public bool Exists(string path = null)
+    {
+        if (path != null)
+            Path = path;
+
+        return File.Exists(Path);
+    }
+
+    public void Load(string path = null)
+    {
+        if (path != null)
+            Path = path;
+
+        if (!File.Exists(Path))
+            throw new FileNotFoundException($"file '{Path}' not found", Path);
+
+        using var br = new BinaryViewReader(Path);
+        br.ReadToIView(this);
+    }
+
+    public void Save(string path = null)
+    {
+        if (path != null)
+            Path = path;
+
+        if (!File.Exists(Path))
+            throw new FileNotFoundException($"file '{Path}' not found", Path);
+
+        using var bw = new BinaryViewWriter(Path);
+        bw.WriteIView(this);
+    }
+
+
 }

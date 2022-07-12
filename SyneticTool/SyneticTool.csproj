@@ -7,6 +7,46 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Nodes\Icons\Audio.png" />
+    <None Remove="Nodes\Icons\C11.png" />
+    <None Remove="Nodes\Icons\Car.PNG" />
+    <None Remove="Nodes\Icons\CT1.png" />
+    <None Remove="Nodes\Icons\CT2.png" />
+    <None Remove="Nodes\Icons\CT3.png" />
+    <None Remove="Nodes\Icons\CT4.png" />
+    <None Remove="Nodes\Icons\CT5.png" />
+    <None Remove="Nodes\Icons\FVR.png" />
+    <None Remove="Nodes\Icons\Line.png" />
+    <None Remove="Nodes\Icons\MBWR.png" />
+    <None Remove="Nodes\Icons\Mesh.PNG" />
+    <None Remove="Nodes\Icons\Misc.png" />
+    <None Remove="Nodes\Icons\Terrain.png" />
+    <None Remove="Nodes\Icons\Texture.png" />
+    <None Remove="Nodes\Icons\World.png" />
+    <None Remove="Nodes\Icons\WR2.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Nodes\Icons\Audio.png" />
+    <EmbeddedResource Include="Nodes\Icons\C11.png" />
+    <EmbeddedResource Include="Nodes\Icons\Car.png" />
+    <EmbeddedResource Include="Nodes\Icons\CT1.png" />
+    <EmbeddedResource Include="Nodes\Icons\CT2.png" />
+    <EmbeddedResource Include="Nodes\Icons\CT3.png" />
+    <EmbeddedResource Include="Nodes\Icons\CT4.png" />
+    <EmbeddedResource Include="Nodes\Icons\CT5.png" />
+    <EmbeddedResource Include="Nodes\Icons\FVR.png" />
+    <EmbeddedResource Include="Nodes\Icons\Line.png" />
+    <EmbeddedResource Include="Nodes\Icons\MBWR.png" />
+    <EmbeddedResource Include="Nodes\Icons\Mesh.png" />
+    <EmbeddedResource Include="Nodes\Icons\Misc.png" />
+    <EmbeddedResource Include="Nodes\Icons\Terrain.png" />
+    <EmbeddedResource Include="Nodes\Icons\Texture.png" />
+    <EmbeddedResource Include="Nodes\Icons\World.png" />
+    <EmbeddedResource Include="Nodes\Icons\WR2.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.7.4" />
     <PackageReference Include="OpenTK.WinForms" Version="4.0.0-pre.6" />
     <PackageReference Include="SkiaSharp" Version="2.88.0" />

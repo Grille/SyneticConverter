@@ -15,6 +15,8 @@ using OpenTK.WinForms;
 using SyneticLib;
 using SyneticLib.Graphics;
 
+using SyneticTool.Nodes;
+
 namespace SyneticTool;
 
 public partial class MainForm : Form
@@ -38,7 +40,7 @@ public partial class MainForm : Form
         glPanel.Controls.Add(glControl);
 
         glControl.Resize += GlControl_Resize;
-        //glControl.Paint += GlControl_Paint;
+        dataTreeView.ImageList = IconList.Images;
 
         config = new Config("config.ini");
 
@@ -53,6 +55,8 @@ public partial class MainForm : Form
 
         errorPanel.Visible = false;
         errorPanel.BringToFront();
+
+        DoubleBuffered = true;
     }
 
     private void GlControl_Paint(object sender, PaintEventArgs e)
@@ -100,7 +104,7 @@ public partial class MainForm : Form
 
     private void MainForm_Shown(object sender, EventArgs e)
     {
-        Games.AddGame("WR1", "C:/TDK/World Racing", GameVersion.MBWR);
+        Games.AddGame("WR1", "X:/Games/Synetic/World Racing", GameVersion.MBWR);
         Games.AddGame("WR2", "C:/World Racing 2", GameVersion.WR2);
         Games.AddGame("C11", "X:/Games/Synetic/Cobra 11 - Nitro", GameVersion.C11);
         Games.AddGame("CT1", "X:/Games/Synetic/Cobra 11 - Crash Time", GameVersion.CT1AP);
@@ -108,6 +112,7 @@ public partial class MainForm : Form
         Games.AddGame("CT3", "X:/Games/Synetic/Cobra 11 - Highway Nights", GameVersion.CT3HN);
         Games.AddGame("CT4", "X:/Games/Synetic/Cobra 11 - Das Syndikat", GameVersion.CT4TS);
         Games.AddGame("CT5", "X:/Games/Synetic/Cobra 11 - Undercover", GameVersion.CT5U);
+        Games.AddGame("FVR", "X:/Games/Synetic/Ferrari Virtual Race", GameVersion.FVR);
 
         UpdateTree();
 
@@ -145,17 +150,19 @@ public partial class MainForm : Form
             {
                 var snode = (ScenarioNode)e.Node;
                 var vnode = snode.V1;
-                showVariant(snode.Value.V1);
+
+                DisplayScenarioVariant(snode.Value.V1);
 
                 snode.UpdateColor();
                 vnode?.UpdateColor();
             }
             break;
-            case ScenarioNodeVariant:
+            case ScenarioVariantNode:
             {
                 var snode = (ScenarioNode)e.Node.Parent;
-                var vnode = (ScenarioNodeVariant)e.Node;
-                showVariant(vnode.Value);
+                var vnode = (ScenarioVariantNode)e.Node;
+
+                DisplayScenarioVariant(vnode.Value);
 
                 snode.UpdateColor();
                 vnode.UpdateColor();
@@ -164,7 +171,7 @@ public partial class MainForm : Form
         }
     }
 
-    private void showVariant(ScenarioVariant v)
+    private void DisplayScenarioVariant(ScenarioVariant v)
     {
         if (mesh == v.Terrain.Mesh)
             return;
@@ -174,16 +181,16 @@ public partial class MainForm : Form
             mesh.Dispose();
         */
 
-        if (v.State != ScenarioState.Initialized)
+        if (v.State != InitState.Initialized)
             v.LoadData();
 
-        if (v.State == ScenarioState.Failed)
+        if (v.State == InitState.Failed)
         {
             errorLabel.Text = string.Join("\n\n", v.Errors);
             errorPanel.Visible = true;
         }
 
-        if (v.State == ScenarioState.Initialized)
+        if (v.State == InitState.Initialized)
         {
             mesh = v.Terrain.Mesh;
             if (!mesh.GLBuffer.IsInitialized)

@@ -16,7 +16,7 @@ public class MoxFile : SyneticBinFile
     public MPoly[] Indices;
     public MTex[] Textures;
 
-    public unsafe override void Read(BinaryViewReader br)
+    public unsafe override void ReadFromView(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
 
@@ -46,7 +46,7 @@ public class MoxFile : SyneticBinFile
 
     }
 
-    public override void Write(BinaryViewWriter bw)
+    public override void WriteToView(BinaryViewWriter bw)
     {
         throw new NotImplementedException();
     }

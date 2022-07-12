@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 using SyneticLib;
 
-namespace SyneticTool;
+namespace SyneticTool.Nodes;
 
 public class GameFolderNode : TreeNode
 {
@@ -33,6 +33,20 @@ public class GameFolderNode : TreeNode
 
         Nodes.Add(scenariosNode);
         Nodes.Add(carsNode);
+
+        SelectedImageIndex = ImageIndex = game.Version switch
+        {
+            GameVersion.MBWR => IconList.MBWR,
+            GameVersion.WR2 => IconList.WR2,
+            GameVersion.C11 => IconList.C11,
+            GameVersion.CT1AP => IconList.CT1,
+            GameVersion.CT2BW => IconList.CT2,
+            GameVersion.CT3HN => IconList.CT3,
+            GameVersion.CT4TS => IconList.CT4,
+            GameVersion.CT5U => IconList.CT5,
+            GameVersion.FVR => IconList.FVR,
+            _ => IconList.Default,
+        };
     }
 
 

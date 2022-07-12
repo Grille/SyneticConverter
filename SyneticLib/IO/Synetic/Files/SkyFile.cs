@@ -8,12 +8,12 @@ using GGL.IO;
 namespace SyneticLib.IO.Synetic.Files;
 public class SkyFile : SyneticBinFile
 {
-    public override void Read(BinaryViewReader br)
+    public override void ReadFromView(BinaryViewReader br)
     {
         //throw new NotImplementedException();
     }
 
-    public override void Write(BinaryViewWriter bw)
+    public override void WriteToView(BinaryViewWriter bw)
     {
         //throw new NotImplementedException();
     }

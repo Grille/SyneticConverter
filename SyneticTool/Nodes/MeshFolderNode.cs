@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-public class CarNode : TreeNode
+internal class MeshFolderNode : TreeNode
 {
-    public CarNode(string name, Car car)
+    public MeshFolderNode(MeshFolder meshes, string name = "Objects")
     {
         Text = name;
 
-        SelectedImageIndex = ImageIndex = IconList.Car;
+        var texnode = new TextureFolderNode(meshes.TextureFolder);
+        Nodes.Add(texnode);
     }
 }

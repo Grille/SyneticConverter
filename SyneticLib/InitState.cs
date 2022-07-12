@@ -5,7 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class TextureList : List<Texture>
+public enum InitState
 {
+    Empty,
+    Seeked,
+    Loaded,
+    Initialized,
+    Failed,
 }
-

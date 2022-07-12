@@ -31,15 +31,23 @@ public class ScenarioImporterCT : ScenarioImporter
             geo.HasX16VertexBlock = true;
     }
 
+    protected override void OnSeek(string path)
+    {
+        var filePath = Path.Combine(path, target.Owner.Name);
+        geo.Path = filePath + ".geo";
+        lvl.Path = filePath + ".lvl";
+        qad.Path = filePath + ".qad";
+        sni.Path = filePath + ".sni";
+    }
+
+
     protected override void OnLoad()
     {
-        var filePath = Path.Combine(target.RootDir, target.Owner.Name);
-
-        geo.Load(filePath + ".geo");
-        lvl.Load(filePath + ".lvl");
-        qad.Load(filePath + ".qad");
-        if (File.Exists(filePath + ".sni"))
-            sni.Load(filePath + ".sni");
+        geo.Load();
+        lvl.Load();
+        qad.Load();
+        if (sni.Exists())
+            sni.Load();
     }
 
     protected override void OnInit()
@@ -100,7 +108,7 @@ public class ScenarioImporterCT : ScenarioImporter
                 var name = qad.PropObjNames[i];
                 var data = sqad.PropClasses[i];
 
-                target.PropClasses.Add(new PropClass(name, target.PropTextures)
+                target.PropClasses.Add(new PropClass(name, target.PropMeshes.TextureFolder)
                 {
 
                 }); ;
@@ -114,7 +122,7 @@ public class ScenarioImporterCT : ScenarioImporter
                 var name = qad.PropObjNames[i];
                 var data = sqad.PropClasses[i];
 
-                var prop = new PropClass(name, target.PropTextures);
+                var prop = new PropClass(name, target.PropMeshes.TextureFolder);
                 var path = Path.Combine(target.RootDir, "Objects", name + ".mox");
                 if (File.Exists(path))
                     prop.Mesh.ImportFromMox(path);

@@ -9,7 +9,7 @@ namespace SyneticLib.IO.Synetic.Files;
 internal class PtxFile : SyneticBinFile
 {
     public MHead Head;
-    public override void Read(BinaryViewReader br)
+    public override void ReadFromView(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
 
@@ -19,7 +19,7 @@ internal class PtxFile : SyneticBinFile
         }
     }
 
-    public override void Write(BinaryViewWriter bw)
+    public override void WriteToView(BinaryViewWriter bw)
     {
         throw new NotImplementedException();
     }

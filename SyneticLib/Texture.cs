@@ -13,6 +13,8 @@ public class Texture
     public bool AlphaClip = false;
     public float Specular = 0;
 
+    public string Path;
+
     public Texture(string name)
     {
         Name = name;

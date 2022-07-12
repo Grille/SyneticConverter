@@ -12,7 +12,7 @@ public class VtxFile : SyneticBinFile, IVertexData
     public int[] VtxQty { get; set; }
     public Vertex[] Vertices { get; set; }
 
-    public unsafe override void Read(BinaryViewReader br)
+    public unsafe override void ReadFromView(BinaryViewReader br)
     {
         VtxQty = br.ReadArray<int>(64);
 
@@ -41,7 +41,7 @@ public class VtxFile : SyneticBinFile, IVertexData
         }
     }
 
-    public override void Write(BinaryViewWriter bw)
+    public override void WriteToView(BinaryViewWriter bw)
     {
         bw.WriteArray(VtxQty, LengthPrefix.None);
 

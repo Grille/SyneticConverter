@@ -12,12 +12,12 @@ public class LvlFile : SyneticBinFile
 {
     public MData Data;
 
-    public override void Read(BinaryViewReader br)
+    public override void ReadFromView(BinaryViewReader br)
     {
         Data = br.Read<MData>();
     }
 
-    public override void Write(BinaryViewWriter bw)
+    public override void WriteToView(BinaryViewWriter bw)
     {
         bw.Write(Data);
     }

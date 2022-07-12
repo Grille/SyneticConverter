@@ -15,7 +15,7 @@ public class PropClass
     public Mesh Mesh;
     public MaterialList Materials;
 
-    public PropClass(string name, TextureList textures)
+    public PropClass(string name, TextureFolder textures)
     {
         Name = name;
         Materials = new MaterialList(textures);
