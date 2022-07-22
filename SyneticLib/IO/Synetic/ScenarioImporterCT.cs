@@ -77,7 +77,7 @@ public class ScenarioImporterCT : ScenarioImporter
         for (var i = 0; i < qad.Materials.Length; i++)
         {
             var qmat = qad.Materials[i];
-            var mat = new Material();
+            var mat = new TerrainMaterial();
             //var tex0 = target.WorldTextures[qmat.Tex0Id];
             //var tex1 = target.WorldTextures[qmat.Tex1Id];
             //var tex2 = target.WorldTextures[qmat.Tex2Id];

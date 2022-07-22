@@ -9,30 +9,36 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-public class GameFolderNode : TreeNode
+public class GameFolderNode : DataTreeNode
 {
     public GameFolderNode(GameFolder game)
     {
-        Name = $"{game.Version} ({game.RootDir})";
+        Name = $"{game.Version} ({game.SrcPath})";
         Text = Name;
 
-        var scenariosNode = new TreeNode("Scenarios");
-        var carsNode = new TreeNode("Cars");
+        var scenariosNode = new DataTreeNode("Scenarios");
+        var carsNode = new DataTreeNode("Cars");
+        var soundsNode = new DataTreeNode("Sounds");
 
-        game.Refresh();
+
+        ForeColor = NodeColors.RessourceColor(game);
+        scenariosNode.ForeColor = ForeColor;
+        carsNode.ForeColor = ForeColor;
+        soundsNode.ForeColor = ForeColor;
 
         foreach (var scenario in game.Scenarios)
         {
-            scenariosNode.Nodes.Add(new ScenarioNode(scenario.Key, scenario.Value));
+            scenariosNode.Nodes.Add(new ScenarioNode(scenario));
         }
 
         foreach (var car in game.Cars)
         {
-            carsNode.Nodes.Add(new CarNode(car.Key, car.Value));
+            carsNode.Nodes.Add(new CarNode(car));
         }
 
         Nodes.Add(scenariosNode);
         Nodes.Add(carsNode);
+        Nodes.Add(soundsNode);
 
         SelectedImageIndex = ImageIndex = game.Version switch
         {

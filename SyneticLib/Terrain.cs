@@ -8,18 +8,23 @@ namespace SyneticLib;
 
 public class Terrain
 {
-    public Mesh Mesh;
+    public string Name;
+    public int[] Indecies;
+    public MeshVertex[] Vertices;
+    public Vector3Int[] Poligons;
+    public MaterialRegion[] MaterialRegion;
+    public MaterialList Materials;
 
-    public Chunk[,] Chunks;
+    public TerrainChunk[,] Chunks;
 
     public Terrain(MaterialList materials)
     {
-        Mesh = new Mesh(materials);
+        Materials = materials;
     }
 
-    public void Chunkify()
+    public void CalculateChunks()
     {
-        var list = new List<Chunk>();
+        var list = new List<TerrainChunk>();
 
         //return list;
     }

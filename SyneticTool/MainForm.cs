@@ -25,6 +25,7 @@ public partial class MainForm : Form
     GLControl glControl;
     Config config;
     Mesh mesh;
+    Scene scene;
 
     public MainForm()
     {
@@ -57,6 +58,8 @@ public partial class MainForm : Form
         errorPanel.BringToFront();
 
         DoubleBuffered = true;
+
+        scene = new();
     }
 
     private void GlControl_Paint(object sender, PaintEventArgs e)
@@ -173,30 +176,11 @@ public partial class MainForm : Form
 
     private void DisplayScenarioVariant(ScenarioVariant v)
     {
-        if (mesh == v.Terrain.Mesh)
-            return;
 
-        /*
-        if (mesh != null)
-            mesh.Dispose();
-        */
+    }
 
-        if (v.State != InitState.Initialized)
-            v.LoadData();
+    private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
+    {
 
-        if (v.State == InitState.Failed)
-        {
-            errorLabel.Text = string.Join("\n\n", v.Errors);
-            errorPanel.Visible = true;
-        }
-
-        if (v.State == InitState.Initialized)
-        {
-            mesh = v.Terrain.Mesh;
-            if (!mesh.GLBuffer.IsInitialized)
-                mesh.GLBuffer.Initialize();
-
-            errorPanel.Visible = false;
-        }
     }
 }

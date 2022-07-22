@@ -9,7 +9,7 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-internal class TextureFolderNode : TreeNode
+internal class TextureFolderNode : DataTreeNode
 {
     TextureFolder textures;
 

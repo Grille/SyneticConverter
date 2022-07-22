@@ -23,7 +23,7 @@ public class GLSyn
     {
     }
 
-    public static MaterialShader CreateMaterialShader(Material material)
+    public static MaterialShader CreateMaterialShader(TerrainMaterial material)
     {
         if (material == null)
             return MaterialShader.Default;
@@ -32,9 +32,9 @@ public class GLSyn
         return ret;
     }
 
-    public static MeshBuffer CreateMeshBuffer(Mesh mesh)
+    public static GpuMeshBuffer CreateMeshBuffer(Mesh mesh)
     {
-        var ret = new MeshBuffer(mesh);
+        var ret = new GpuMeshBuffer(mesh);
         ret.Initialize();
         return ret;
     }
@@ -53,7 +53,7 @@ public class GLSyn
         material.Dispose();
     }
 
-    public static void DeleteMeshBuffer(MeshBuffer mesh)
+    public static void DeleteMeshBuffer(GpuMeshBuffer mesh)
     {
         mesh.Dispose();
     }

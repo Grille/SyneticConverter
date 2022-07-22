@@ -6,13 +6,24 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
 
 namespace SyneticLib.Graphics;
-internal class Scene
+public class Scene
 {
+    public void Clear()
+    {
+
+    }
+
     public void BindMesh(Mesh mesh)
     {
 
     }
-    public void BindMaterial(Material material)
+
+    public void BindTerrain(Terrain terrain)
+    {
+
+    }
+
+    public void BindMaterial(TerrainMaterial material)
     {
 
     }

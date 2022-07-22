@@ -7,7 +7,7 @@ using System.IO;
 
 namespace SyneticLib;
 
-public class Scenario
+public class Scenario : Ressource
 {
     public readonly GameFolder Game;
 
@@ -37,6 +37,8 @@ public class Scenario
     public ScenarioVariant V2 { get => Variants.Length > 1 ? Variants[1] : null; }
     public ScenarioVariant V3 { get => Variants.Length > 2 ? Variants[2] : null; }
     public ScenarioVariant V4 { get => Variants.Length > 3 ? Variants[3] : null; }
+
+    public override DataState DataState => throw new NotImplementedException();
 
     public Scenario(GameFolder game, string path)
     {
@@ -69,7 +71,7 @@ public class Scenario
         }
     }
 
-    public void LoadAllData()
+    public override void LoadAll()
     {
         foreach (var variant in Variants)
         {
@@ -102,4 +104,13 @@ public class Scenario
 
     }
 
+    public override void CopyTo(string path)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void SeekAll()
+    {
+        throw new NotImplementedException();
+    }
 }

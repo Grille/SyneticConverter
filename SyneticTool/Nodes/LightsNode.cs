@@ -10,7 +10,7 @@ using SyneticLib.IO.Extern;
 
 namespace SyneticTool.Nodes;
 
-public class LightsNode : TreeNode
+public class LightsNode : DataTreeNode
 {
     IList<Light> lights;
     public LightsNode(IList<Light> lights)

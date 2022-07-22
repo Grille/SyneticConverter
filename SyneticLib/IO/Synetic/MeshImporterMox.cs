@@ -23,11 +23,11 @@ public class MeshImporterMox : MeshImporter
     }
     public override void Assign()
     {
-        target.Vertices = new Vertex[mox.Vertecis.Length];
+        target.Vertices = new MeshVertex[mox.Vertecis.Length];
         for (var i = 0; i < mox.Vertecis.Length; i++)
         {
             ref var srcvtx = ref mox.Vertecis[i];
-            var vertex = target.Vertices[i] = new Vertex();
+            var vertex = target.Vertices[i] = new MeshVertex();
 
             vertex.Position = srcvtx.Position;
         }

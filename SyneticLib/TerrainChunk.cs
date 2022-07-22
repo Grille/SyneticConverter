@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class RessourcePtr
+
+public class TerrainChunk
 {
-    public string Name;
-    public string Path;
 }

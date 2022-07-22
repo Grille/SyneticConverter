@@ -5,10 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib.Graphics;
-public enum GLObjectState
+public interface IHasGLState : IDisposable
+{
+    public GLState GLState { get; }
+
+
+}
+
+public enum GLState
 {
     None,
-    Failed,
-    Outdated,
     Ready,
+    Failed,
 }

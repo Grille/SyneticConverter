@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using SyneticLib.Graphics;
 
 namespace SyneticLib;
-public class Material
+public class TerrainMaterial
 {
     public string Name;
-    public MaterialType Mode;
+    public TerrainMaterialType Mode;
     public bool Grass = false;
     public bool Enlite = false;
     public bool CastShadown = true;
@@ -18,7 +18,7 @@ public class Material
 
     public MaterialShader GLShader;
 
-    public Material()
+    public TerrainMaterial()
     {
         Tex0 = new();
         Tex1 = new();
@@ -35,7 +35,7 @@ public class TextureInfo
     public int Misc;
 }
 
-public enum MaterialType
+public enum TerrainMaterialType
 {
     Tex3Terrain = 0,
     Tex3UTT = 16,

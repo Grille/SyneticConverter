@@ -7,37 +7,37 @@ using System.IO;
 
 namespace SyneticLib;
 
-public  class GameFolder
+public class GameFolder : Ressource
 {
-    public string RootDir;
     public GameVersion Version;
 
-    public Dictionary<string, Scenario> Scenarios = new();
-    public Dictionary<string, Car> Cars = new();
-    public Dictionary<string, RessourcePtr> Ressources = new();
+    public RessourceFolder<Scenario> Scenarios = new();
+    public RessourceFolder<Car> Cars = new();
+    public RessourceFolder<Sound> Sounds = new();
 
+    public override DataState DataState { get
+        {
+            return DataState.None;
+        }
+    }
+
+    public GameFolder(GameVersion target)
+    {
+        Version = target;
+    }
 
     public GameFolder(string path, GameVersion target = GameVersion.Auto)
     {
-        if (!Directory.Exists(path))
-            throw new ArgumentException("invalid path");
-
-        if (target == GameVersion.Invalid)
-            throw new ArgumentException(target.ToString());
-
-        RootDir = path;
+        SrcPath = path;
 
         if (target == GameVersion.Auto)
             Version = GetGameVersion(path);
         else
             Version = target;
-    }
 
-    public Dictionary<string, Scenario> GetAllScenarios()
-    {
-        RefreshScenarios();
+        if (Version == GameVersion.Invalid)
+            throw new ArgumentException(Version.ToString());
 
-        return Scenarios;
     }
 
     public void Refresh()
@@ -49,7 +49,7 @@ public  class GameFolder
 
     public void RefreshScenarios()
     {
-        string scnRootDirPath = Path.Combine(RootDir, "Scenarios");
+        string scnRootDirPath = Path.Combine(SrcPath, "Scenarios");
         if (!Directory.Exists(scnRootDirPath))
             return;
 
@@ -59,19 +59,19 @@ public  class GameFolder
         foreach (var path in scnRootDir)
         {
             var name = Path.GetFileName(path);
-            Scenarios.Add(name, GetScenario(name));
+            Scenarios.Add(GetScenario(name));
         }
     }
 
     public void RefreshCars()
     {
-        var carRootDir = Directory.GetDirectories(Path.Combine(RootDir, "Autos"));
+        var carRootDir = Directory.GetDirectories(Path.Combine(SrcPath, "Autos"));
 
         Cars.Clear();
         foreach (var path in carRootDir)
         {
             var name = Path.GetFileName(path);
-            Cars.Add(name, new Car());
+            Cars.Add(new Car());
         }
     }
 
@@ -82,7 +82,7 @@ public  class GameFolder
 
     public Scenario GetScenario(string name)
     {
-        var path = Path.Combine(RootDir, "Scenarios", name);
+        var path = Path.Combine(SrcPath, "Scenarios", name);
         return new Scenario(this, path);
     }
 
@@ -131,4 +131,18 @@ public  class GameFolder
         return GameVersion.Invalid;
     }
 
+    public override void LoadAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void CopyTo(string path)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void SeekAll()
+    {
+        throw new NotImplementedException();
+    }
 }

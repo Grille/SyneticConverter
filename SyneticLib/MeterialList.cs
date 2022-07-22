@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class MaterialList : List<Material>
+public class MaterialList : List<TerrainMaterial>
 {
     TextureFolder textures;
     public MaterialList(TextureFolder textures)

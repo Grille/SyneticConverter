@@ -8,5 +8,5 @@ namespace SyneticLib.IO.Synetic.Files;
 public interface IVertexData
 {
     public int[] VtxQty { get; set; }
-    public Vertex[] Vertices { get; set; }
+    public MeshVertex[] Vertices { get; set; }
 }

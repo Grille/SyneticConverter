@@ -7,6 +7,6 @@ using System.Windows.Forms;
 
 namespace SyneticTool.Nodes;
 
-internal class MeshNode : TreeNode
+internal class MeshNode : DataTreeNode
 {
 }

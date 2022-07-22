@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace SyneticLib;
-public class TextureFolder : List<Texture>
+public class TextureFolder : RessourceFolder<Texture>
 {
     public void SeekPtxFiles(string path)
     {
@@ -18,7 +18,7 @@ public class TextureFolder : List<Texture>
 
             if (ext == ".ptx")
             {
-                Add(new Texture(name));
+                Add(Texture.FromFile(path));
             }
         };
     }

@@ -10,7 +10,7 @@ namespace SyneticLib.IO.Synetic.Files;
 public class VtxFile : SyneticBinFile, IVertexData
 {
     public int[] VtxQty { get; set; }
-    public Vertex[] Vertices { get; set; }
+    public MeshVertex[] Vertices { get; set; }
 
     public unsafe override void ReadFromView(BinaryViewReader br)
     {
@@ -24,11 +24,11 @@ public class VtxFile : SyneticBinFile, IVertexData
         if (br.Length != finalpos)
             throw new InvalidOperationException($"{br.Length} != {finalpos}");
 
-        Vertices = new Vertex[vertexCount];
+        Vertices = new MeshVertex[vertexCount];
         for (var i = 0; i < vertexCount; i++)
         {
             var src = br.Read<MVertex>();
-            Vertices[i] = new Vertex()
+            Vertices[i] = new MeshVertex()
             {
                 Position = src.Position,
                 Normal = new Vector4(src.Normal.B / 255f, src.Normal.G / 255f, src.Normal.R / 255f, src.Normal.A / 255f),

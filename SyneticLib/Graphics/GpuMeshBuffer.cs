@@ -8,7 +8,7 @@ using System.Numerics;
 using OpenTK.Graphics.OpenGL4;
 
 namespace SyneticLib.Graphics;
-public unsafe class MeshBuffer : IDisposable
+public unsafe class GpuMeshBuffer : IDisposable
 {
     internal Mesh Mesh;
     internal int VerticesID;
@@ -18,7 +18,7 @@ public unsafe class MeshBuffer : IDisposable
 
     public bool IsInitialized;
 
-    internal MeshBuffer(Mesh mesh)
+    internal GpuMeshBuffer(Mesh mesh)
     {
         Mesh = mesh;
     }
@@ -28,7 +28,7 @@ public unsafe class MeshBuffer : IDisposable
         ElementCount = Mesh.Indecies.Length;
 
         var indices = Mesh.Indecies;
-        var vertices = new GpuVertex[Mesh.Vertices.Length];
+        var vertices = new GpuTerrainVertex[Mesh.Vertices.Length];
 
         for (int i = 0; i < Mesh.Vertices.Length; i++)
         {
@@ -45,12 +45,12 @@ public unsafe class MeshBuffer : IDisposable
         GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indices.Length, indices, BufferUsageHint.StaticDraw);
 
         GL.BindBuffer(BufferTarget.ArrayBuffer, VerticesID);
-        GL.BufferData(BufferTarget.ArrayBuffer, sizeof(GpuVertex) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, sizeof(GpuTerrainVertex) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
 
         AttribID = GL.GenVertexArray();
         GL.BindVertexArray(AttribID);
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(GpuVertex), GpuVertex.LocationPosition);
-        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(GpuVertex), GpuVertex.LocationDebugColor);
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(GpuTerrainVertex), GpuTerrainVertex.LocationPosition);
+        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(GpuTerrainVertex), GpuTerrainVertex.LocationDebugColor);
         GL.EnableVertexAttribArray(0);
         GL.EnableVertexAttribArray(1);
 
@@ -76,7 +76,7 @@ public unsafe class MeshBuffer : IDisposable
         }
     }
 
-    ~MeshBuffer()
+    ~GpuMeshBuffer()
     {
         Dispose(disposing: false);
     }

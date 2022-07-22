@@ -84,26 +84,26 @@ public abstract class ScenarioImporter
     public void LoadWorldTexture(string name)
     {
         string path = Path.Combine(target.RootDir, "Textures", name);
-        var texture = new Texture(name);
+        var texture = new Texture();
         texture.Id = target.WorldTextures.Count;
-        texture.ImportPtx(path);
+        //texture.ImportFile(path);
         target.WorldTextures.Add(texture);
     }
 
     public void LoadPropTexture(string name)
     {
         string path = Path.Combine(target.RootDir, "Objects/Textures", name);
-        var texture = new Texture(name);
-        texture.ImportPtx(path);
+        var texture = new Texture();
+        //texture.ImportFile(path);
         target.PropMeshes.TextureFolder.Add(texture);
     }
 
     protected void AssignTerrain(IIndexData idx, IVertexData vtx, QadFile qad)
     {
         var terrain = target.Terrain;
-        var mesh = terrain.Mesh;
+        var mesh = terrain;
 
-        var vertices = mesh.Vertices = new Vertex[vtx.Vertices.Length];
+        var vertices = mesh.Vertices = new MeshVertex[vtx.Vertices.Length];
         for (int i = 0; i < vtx.Vertices.Length; i++)
         {
             vertices[i] = vtx.Vertices[i];
@@ -149,7 +149,7 @@ public abstract class ScenarioImporter
     protected void DeflateIndecies(IIndexData idx, IVertexData vtx, QadFile qad)
     {
         var terrain = target.Terrain;
-        var mesh = terrain.Mesh;
+        var mesh = terrain;
 
         var srcidx = idx.Indices;
         var indecies = new int[srcidx.Length];

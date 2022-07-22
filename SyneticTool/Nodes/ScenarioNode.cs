@@ -10,12 +10,12 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-internal class ScenarioNode : TreeNode
+internal class ScenarioNode : DataTreeNode
 {
     public Scenario Value;
-    public ScenarioNode(string folder, Scenario scenario)
+    public ScenarioNode(Scenario scenario)
     {
-        Text = folder;
+        Text = scenario.Name;
         Value = scenario;
 
         var variants = scenario.Variants;
@@ -36,9 +36,9 @@ internal class ScenarioNode : TreeNode
     {
         ForeColor = Value.State switch
         {
-            InitState.Initialized => Color.Green,
-            InitState.Failed => Color.Red,
-            _ => Color.Black,
+            InitState.Initialized => NodeColors.Changed,
+            InitState.Failed => NodeColors.Failed,
+            _ => NodeColors.Default,
         };
     }
 }

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-
-public class Chunk
+internal class MeshMaterial
 {
 }

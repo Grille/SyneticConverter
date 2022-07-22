@@ -8,11 +8,11 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-public class CarNode : TreeNode
+public class CarNode : DataTreeNode
 {
-    public CarNode(string name, Car car)
+    public CarNode(Car car)
     {
-        Text = name;
+        Text = car.Name;
 
         SelectedImageIndex = ImageIndex = IconList.Car;
     }

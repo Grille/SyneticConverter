@@ -8,7 +8,7 @@ using OpenTK.Graphics.OpenGL4;
 namespace SyneticLib.Graphics;
 public class MaterialShader : IDisposable
 {
-    internal Material Material;
+    internal TerrainMaterial Material;
     internal int VertexId;
     internal int FragmentId;
     internal int ProgramId;
@@ -16,7 +16,7 @@ public class MaterialShader : IDisposable
     public bool IsInitialized;
 
 
-    public MaterialShader(Material target)
+    public MaterialShader(TerrainMaterial target)
     {
         Material = target;
     }

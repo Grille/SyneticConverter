@@ -9,7 +9,7 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-internal class MeshFolderNode : TreeNode
+internal class MeshFolderNode : DataTreeNode
 {
     public MeshFolderNode(MeshFolder meshes, string name = "Objects")
     {

@@ -10,5 +10,5 @@ public class MaterialRegion
 {
     public int Offset;
     public int Count;
-    public Material Material;
+    public TerrainMaterial Material;
 }

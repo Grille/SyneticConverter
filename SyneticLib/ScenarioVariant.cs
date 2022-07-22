@@ -18,7 +18,7 @@ public partial class ScenarioVariant
 
 
     public GroundModel GroundModel;
-    public List<Sound> Sounds;
+    public RessourceFolder<Sound> Sounds;
     public TextureFolder WorldTextures;
     public MaterialList WorldMaterials;
     public MeshFolder PropMeshes;

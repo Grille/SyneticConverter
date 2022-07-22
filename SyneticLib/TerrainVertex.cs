@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 
 namespace SyneticLib;
-public class Vertex
+public class TerrainVertex
 {
     public Vector3 Position;
     public Vector4 Normal;

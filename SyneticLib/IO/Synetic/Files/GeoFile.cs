@@ -14,7 +14,7 @@ public class GeoFile : SyneticBinFile, IIndexData, IVertexData
     public MHead Head;
 
     public int[] VtxQty { get; set; }
-    public Vertex[] Vertices { get; set; }
+    public MeshVertex[] Vertices { get; set; }
     public ushort[] Indices { get; set; }
 
     public unsafe override void ReadFromView(BinaryViewReader br)
@@ -34,11 +34,11 @@ public class GeoFile : SyneticBinFile, IIndexData, IVertexData
         if (calculatedEndPos != br.Length)
             throw new Exception($"{calculatedEndPos} != {br.Length} diff:{calculatedEndPos - br.Length}");
 
-        Vertices = new Vertex[vertexCount];
+        Vertices = new MeshVertex[vertexCount];
         for (var i = 0; i < vertexCount; i++)
         {
             var src = br.Read<MVertex>();
-            Vertices[i] = new Vertex()
+            Vertices[i] = new MeshVertex()
             {
                 Position = src.Position,
                 Normal = new Vector4(src.Normal.B / 255f, src.Normal.G / 255f, src.Normal.R / 255f, src.Normal.A / 255f),

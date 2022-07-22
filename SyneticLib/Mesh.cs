@@ -16,19 +16,19 @@ public class Mesh
 {
     public string Name;
     public int[] Indecies;
-    public Vertex[] Vertices;
+    public MeshVertex[] Vertices;
     public Vector3Int[] Poligons;
     public MaterialRegion[] MaterialRegion;
     public MaterialList Materials;
 
-    public GLObjectState GLState;
-    public MeshBuffer GLBuffer;
+    public GLState GLState;
+    public GpuMeshBuffer GLBuffer;
 
     public Mesh(MaterialList materials)
     {
         Materials = materials;
-        GLState = GLObjectState.None;
-        GLBuffer = new MeshBuffer(this);
+        GLState = GLState.None;
+        GLBuffer = new GpuMeshBuffer(this);
     }
 
     public void ImportFromMox(string path)
