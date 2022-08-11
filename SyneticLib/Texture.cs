@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class Texture : RessourceFile
+public class Texture : Ressource
 {
     public byte[] PixelData;
     public int Id;
 
-    public Texture()
+    public Texture() : base(null, PointerType.File)
     {
 
     }
@@ -18,14 +18,13 @@ public class Texture : RessourceFile
     public static Texture FromFile(string path)
     {
         var texture = new Texture();
-        texture.Load(path);
+        texture.SourcePath = path;
+        texture.Load();
         return texture;
     }
 
-    protected override void OnLoad(string path)
+    protected override void OnLoad()
     {
-        SrcPath = path;
-
         if (PointerState == PointerState.Exists)
         {
             /* do things */
@@ -34,7 +33,7 @@ public class Texture : RessourceFile
         }
     }
 
-    protected override void OnSave(string path)
+    protected override void OnSave()
     {
 
     }
@@ -44,4 +43,8 @@ public class Texture : RessourceFile
 
     }
 
+    protected override void OnSeek()
+    {
+        throw new NotImplementedException();
+    }
 }

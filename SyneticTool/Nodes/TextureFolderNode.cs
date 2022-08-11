@@ -11,11 +11,11 @@ namespace SyneticTool.Nodes;
 
 internal class TextureFolderNode : DataTreeNode
 {
-    TextureFolder textures;
+    TextureDirectory textures;
 
 
 
-    public TextureFolderNode(TextureFolder textures, string name = "Textures")
+    public TextureFolderNode(TextureDirectory textures, string name = "Textures")
     {
         this.textures = textures;
         Text = name;

@@ -10,10 +10,14 @@ using System.Numerics;
 namespace SyneticLib.IO.Extern;
 public class LightExportBeamNgJSON
 {
-    IList<Light> lights;
-    public LightExportBeamNgJSON(IList<Light> lights)
+    public IList<Light> Lights;
+    public Vector3 Scale = Vector3.One;
+    public Vector3 Offset = Vector3.Zero;
+    public string Parent = "Lights";
+
+    public LightExportBeamNgJSON(IList<Light> lights = null)
     {
-        this.lights = lights;
+        Lights = lights;
     }
 
     public void Save(string path)
@@ -21,13 +25,13 @@ public class LightExportBeamNgJSON
         var sb = new StringBuilder();
 
         int i = 0;
-        foreach (var light in lights)
+        foreach (var light in Lights)
         {
             var pos = new Vector3(-light.Position.X * 0.1f + 1228.5f, -light.Position.Z * 0.1f + 1228.5f, light.Position.Y * 0.1f + 180f);
 
 
             sb.Append("{");
-            sb.Append($"\"__parent\":\"Lights\",");
+            sb.Append($"\"__parent\":\"{Parent}\",");
             sb.Append($"\"name\":\"elight_{i++}\",");
             sb.Append($"\"class\":\"SpotLight\",");
             sb.Append($"\"position\":[{pos.X},{pos.Y},{pos.Z}],");

@@ -15,11 +15,11 @@ internal class ScenarioNode : DataTreeNode
     public Scenario Value;
     public ScenarioNode(Scenario scenario)
     {
-        Text = scenario.Name;
+        Text = scenario.FileName;
         Value = scenario;
 
         var variants = scenario.Variants;
-        for (int i = 0; i < variants.Length; i++)
+        for (int i = 0; i < variants.Count; i++)
         {
             Nodes.Add(new ScenarioVariantNode($"V{i + 1}", variants[i]));
         }
@@ -34,10 +34,10 @@ internal class ScenarioNode : DataTreeNode
 
     public void UpdateColor()
     {
-        ForeColor = Value.State switch
+        ForeColor = Value.DataState switch
         {
-            InitState.Initialized => NodeColors.Changed,
-            InitState.Failed => NodeColors.Failed,
+            DataState.Loaded => NodeColors.Changed,
+            DataState.Error => NodeColors.Failed,
             _ => NodeColors.Default,
         };
     }

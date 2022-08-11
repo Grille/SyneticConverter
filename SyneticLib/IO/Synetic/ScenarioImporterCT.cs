@@ -18,22 +18,22 @@ public class ScenarioImporterCT : ScenarioImporter
 
     public ScenarioImporterCT(ScenarioVariant target) : base(target)
     {
-        format = target.Owner.Game.Version;
+        format = target.Version;
         if (format < GameVersion.C11)
             throw new NotImplementedException();
 
         geo = new();
         lvl = new();
         sni = new();
-        qad = format >= GameVersion.CT2BW ? new QadFileCT2() : new QadFileWR2();
+        qad = format >= GameVersion.CT2 ? new QadFileCT2() : new QadFileWR2();
 
-        if (format >= GameVersion.CT5U)
+        if (format >= GameVersion.CT5)
             geo.HasX16VertexBlock = true;
     }
 
     protected override void OnSeek(string path)
     {
-        var filePath = Path.Combine(path, target.Owner.Name);
+        var filePath = Path.Combine(path, target.Parent.FileName);
         geo.Path = filePath + ".geo";
         lvl.Path = filePath + ".lvl";
         qad.Path = filePath + ".qad";
@@ -77,7 +77,7 @@ public class ScenarioImporterCT : ScenarioImporter
         for (var i = 0; i < qad.Materials.Length; i++)
         {
             var qmat = qad.Materials[i];
-            var mat = new TerrainMaterial();
+            var mat = new TerrainMaterial(target);
             //var tex0 = target.WorldTextures[qmat.Tex0Id];
             //var tex1 = target.WorldTextures[qmat.Tex1Id];
             //var tex2 = target.WorldTextures[qmat.Tex2Id];
@@ -99,7 +99,7 @@ public class ScenarioImporterCT : ScenarioImporter
 
     private void AssignObjects()
     {
-        var mode = target.Owner.Game.Version;
+        var mode = target.Version;
         if (mode == GameVersion.MBWR)
         {
             var sqad = (QadFileWR1)qad;
@@ -108,7 +108,7 @@ public class ScenarioImporterCT : ScenarioImporter
                 var name = qad.PropObjNames[i];
                 var data = sqad.PropClasses[i];
 
-                target.PropClasses.Add(new PropClass(name, target.PropMeshes.TextureFolder)
+                target.PropClasses.Add(new PropClass(target, target.ObjectTextures,name)
                 {
 
                 }); ;
@@ -122,8 +122,8 @@ public class ScenarioImporterCT : ScenarioImporter
                 var name = qad.PropObjNames[i];
                 var data = sqad.PropClasses[i];
 
-                var prop = new PropClass(name, target.PropMeshes.TextureFolder);
-                var path = Path.Combine(target.RootDir, "Objects", name + ".mox");
+                var prop = new PropClass(target, target.ObjectTextures,name);
+                var path = Path.Combine(target.SourcePath, "Objects", name + ".mox");
                 if (File.Exists(path))
                     prop.Mesh.ImportFromMox(path);
 
@@ -135,7 +135,7 @@ public class ScenarioImporterCT : ScenarioImporter
         {
             var propIntanceInfo = qad.PropInstances[i];
             var propClass = target.PropClasses[propIntanceInfo.ClassId];
-            target.PropInstances.Add(new PropInstance()
+            target.PropInstances.Add(new PropInstance(target,propClass)
             {
                 Class = propClass,
                 Position = propIntanceInfo.Position,

@@ -110,11 +110,11 @@ public partial class MainForm : Form
         Games.AddGame("WR1", "X:/Games/Synetic/World Racing", GameVersion.MBWR);
         Games.AddGame("WR2", "C:/World Racing 2", GameVersion.WR2);
         Games.AddGame("C11", "X:/Games/Synetic/Cobra 11 - Nitro", GameVersion.C11);
-        Games.AddGame("CT1", "X:/Games/Synetic/Cobra 11 - Crash Time", GameVersion.CT1AP);
-        Games.AddGame("CT2", "X:/Games/Synetic/Cobra 11 - Burning Wheels", GameVersion.CT2BW);
-        Games.AddGame("CT3", "X:/Games/Synetic/Cobra 11 - Highway Nights", GameVersion.CT3HN);
-        Games.AddGame("CT4", "X:/Games/Synetic/Cobra 11 - Das Syndikat", GameVersion.CT4TS);
-        Games.AddGame("CT5", "X:/Games/Synetic/Cobra 11 - Undercover", GameVersion.CT5U);
+        Games.AddGame("CT1", "X:/Games/Synetic/Cobra 11 - Crash Time", GameVersion.CTP);
+        Games.AddGame("CT2", "X:/Games/Synetic/Cobra 11 - Burning Wheels", GameVersion.CT2);
+        Games.AddGame("CT3", "X:/Games/Synetic/Cobra 11 - Highway Nights", GameVersion.CT3);
+        Games.AddGame("CT4", "X:/Games/Synetic/Cobra 11 - Das Syndikat", GameVersion.CT4);
+        Games.AddGame("CT5", "X:/Games/Synetic/Cobra 11 - Undercover", GameVersion.CT5);
         Games.AddGame("FVR", "X:/Games/Synetic/Ferrari Virtual Race", GameVersion.FVR);
 
         UpdateTree();

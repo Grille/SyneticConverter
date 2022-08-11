@@ -13,7 +13,7 @@ public class GameFolderNode : DataTreeNode
 {
     public GameFolderNode(GameFolder game)
     {
-        Name = $"{game.Version} ({game.SrcPath})";
+        Name = $"{game.Version} ({game.SourcePath})";
         Text = Name;
 
         var scenariosNode = new DataTreeNode("Scenarios");
@@ -42,14 +42,16 @@ public class GameFolderNode : DataTreeNode
 
         SelectedImageIndex = ImageIndex = game.Version switch
         {
+            GameVersion.NICE => IconList.NICE,
+            GameVersion.NICE2 => IconList.NICE2,
             GameVersion.MBWR => IconList.MBWR,
             GameVersion.WR2 => IconList.WR2,
             GameVersion.C11 => IconList.C11,
-            GameVersion.CT1AP => IconList.CT1,
-            GameVersion.CT2BW => IconList.CT2,
-            GameVersion.CT3HN => IconList.CT3,
-            GameVersion.CT4TS => IconList.CT4,
-            GameVersion.CT5U => IconList.CT5,
+            GameVersion.CTP => IconList.CT1,
+            GameVersion.CT2 => IconList.CT2,
+            GameVersion.CT3 => IconList.CT3,
+            GameVersion.CT4 => IconList.CT4,
+            GameVersion.CT5 => IconList.CT5,
             GameVersion.FVR => IconList.FVR,
             _ => IconList.Default,
         };

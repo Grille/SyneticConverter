@@ -7,19 +7,23 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class Car : Ressource
 {
-    public override DataState DataState => throw new NotImplementedException();
 
-    public override void CopyTo(string path)
+    public Car(GameFolder parent) : base(parent)
+    {
+
+    }
+
+    protected override void OnLoad()
     {
         throw new NotImplementedException();
     }
 
-    public override void LoadAll()
+    protected override void OnSave()
     {
         throw new NotImplementedException();
     }
 
-    public override void SeekAll()
+    protected override void OnSeek()
     {
         throw new NotImplementedException();
     }

@@ -5,22 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class MeshFolder : List<Mesh>
+public class MeshDirectory : RessourceDirectory<Mesh>
 {
-    public TextureFolder TextureFolder;
+    public TextureDirectory TextureFolder;
 
-    public MeshFolder()
+    public MeshDirectory(Ressource parent, TextureDirectory textures, string path): base(parent, path)
     {
-        TextureFolder = new();
-    }
-
-    public void InitByPath(string path)
-    {
-
-    }
-
-    public void LoadAllTextures()
-    {
-
+        //TextureFolder = new();
     }
 }

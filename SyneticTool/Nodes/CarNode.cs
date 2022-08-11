@@ -12,7 +12,7 @@ public class CarNode : DataTreeNode
 {
     public CarNode(Car car)
     {
-        Text = car.Name;
+        Text = car.FileName;
 
         SelectedImageIndex = ImageIndex = IconList.Car;
     }

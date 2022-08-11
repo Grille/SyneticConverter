@@ -1,53 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace SyneticLib;
-public abstract class RessourceFile : Ressource
+public class RessourceFile : Ressource
 {
-    public override DataState DataState { get; } = DataState.None;
-
-    public bool FileExists => File.Exists(SrcPath);
-
-
-
-
-    public string Ext => Path.GetExtension(SrcPath);
-
-
-    public void Load() => Load(SrcPath);
-    public void Load(string srcPath) => OnLoad(srcPath);
-    protected abstract void OnLoad(string srcPath);
-
-    public void Save() => Save(SrcPath);
-    public void Save(string dstPath)
+    public RessourceFile(Ressource parent, PointerType type) : base(parent, PointerType.File)
     {
-        if (DataState == DataState.Changed)
-            OnSave(dstPath);
-
-        else if (PointerState == PointerState.Exists)
-            File.Copy(SrcPath, dstPath, true);
-
-        else if (DataState == DataState.Loaded)
-            OnSave(dstPath);
-
-        throw new Exception();
     }
 
-    protected abstract void OnSave(string dstPath);
-
-
-    public override void CopyTo(string path) => Save(path);
-
-    public override void LoadAll()
+    protected override void OnLoad()
     {
         throw new NotImplementedException();
     }
 
-    public override void SeekAll()
+    protected override void OnSave()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSeek()
     {
         throw new NotImplementedException();
     }

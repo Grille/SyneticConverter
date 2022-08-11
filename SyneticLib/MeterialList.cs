@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class MaterialList : List<TerrainMaterial>
 {
-    TextureFolder textures;
-    public MaterialList(TextureFolder textures)
+    TextureDirectory textures;
+    public MaterialList(TextureDirectory textures)
     {
         this.textures = textures;
     }

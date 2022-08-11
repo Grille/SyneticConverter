@@ -8,57 +8,59 @@ using SyneticLib.IO.Synetic;
 
 namespace SyneticLib;
 
-public partial class ScenarioVariant
+public partial class ScenarioVariant : Ressource
 {
-    public readonly Scenario Owner;
-    public int Number;
-    public string RootDir;
-
+    public int IdNumber;
     public int Width, Height;
+
+    public new Scenario Parent { get => (Scenario)base.Parent; set => base.Parent = value; }
 
 
     public GroundModel GroundModel;
-    public RessourceFolder<Sound> Sounds;
-    public TextureFolder WorldTextures;
-    public MaterialList WorldMaterials;
-    public MeshFolder PropMeshes;
-    public List<PropClass> PropClasses;
-    public List<PropInstance> PropInstances;
     public Terrain Terrain;
+    public RessourceDirectory<Sound> Sounds;
+    public TextureDirectory WorldTextures;
+    public RessourceList<TerrainMaterial> WorldMaterials;
+    public MeshDirectory Objects;
+    public TextureDirectory ObjectTextures;
+    public RessourceList<PropClass> PropClasses;
+    public RessourceList<PropInstance> PropInstances;
 
     public List<Light> Lights;
 
     public List<string> Errors;
 
-    public InitState State { get; internal set; }
+    //public InitState State { get; internal set; }
 
-    public ScenarioVariant(Scenario owner, int number)
+    public ScenarioVariant(Scenario parent, int number): base(parent, PointerType.Directory)
     {
-        Owner = owner;
-        Number = number;
-        RootDir = Path.Combine(Owner.RootDir, "V" + Number);
+        PointerType = PointerType.Directory;
 
-        Sounds = new();
-        WorldTextures = new();
+        IdNumber = number;
+        SourcePath =  Parent.ChildPath($"V{IdNumber}");
+
+        Sounds = Parent.Parent.Sounds;
+        WorldTextures = new(this, ChildPath("Textures"));
         WorldMaterials = new(WorldTextures);
-        PropMeshes = new();
-        PropClasses = new();
-        PropInstances = new();
-        Terrain = new(WorldMaterials);
+        ObjectTextures = new(this, ChildPath("Objects/Textures"));
+        Objects = new(this, ObjectTextures, ChildPath("Objects"));
+        PropClasses = new(this);
+        PropInstances = new(this);
+        //Terrain = new(WorldMaterials);
         Lights = new();
 
         Errors = new();
-        State = InitState.Empty;
+        //State = InitState.Empty;
     }
 
     public void PeakHead()
     {
-        WorldTextures.SeekPtxFiles(Path.Combine(RootDir, "Textures"));
+
     }
 
-    public void LoadData()
+    protected override void OnLoad()
     {
-        switch (Owner.Game.Version)
+        switch (Parent.Parent.Parent.Version)
         {
             case >= GameVersion.C11:
             {
@@ -75,8 +77,13 @@ public partial class ScenarioVariant
         }
     }
 
-    public void SaveData()
+    protected override void OnSave()
     {
 
+    }
+
+    protected override void OnSeek()
+    {
+        throw new NotImplementedException();
     }
 }

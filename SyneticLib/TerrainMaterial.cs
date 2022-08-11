@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SyneticLib.Graphics;
 
 namespace SyneticLib;
-public class TerrainMaterial
+public class TerrainMaterial: Ressource
 {
     public string Name;
     public TerrainMaterialType Mode;
@@ -18,13 +18,28 @@ public class TerrainMaterial
 
     public MaterialShader GLShader;
 
-    public TerrainMaterial()
+    public TerrainMaterial(Ressource parent) : base(parent)
     {
         Tex0 = new();
         Tex1 = new();
         Tex2 = new();
 
         GLShader = new MaterialShader(this);
+    }
+
+    protected override void OnLoad()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSave()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSeek()
+    {
+        throw new NotImplementedException();
     }
 }
 

@@ -7,17 +7,27 @@ using System.IO;
 
 namespace SyneticLib;
 
-public class Sound : RessourceFile
+public class Sound : Ressource
 {
     private byte[] buffer;
 
-    protected override void OnLoad(string srcPath)
+    public Sound(GameFolder parent, string name): base(parent, PointerType.File)
     {
-        buffer = File.ReadAllBytes(srcPath);
+
     }
 
-    protected override void OnSave(string dstPath)
+    protected override void OnLoad()
     {
-        File.WriteAllBytes(dstPath, buffer);
+        buffer = File.ReadAllBytes(SourcePath);
+    }
+
+    protected override void OnSave()
+    {
+        File.WriteAllBytes(SourcePath, buffer);
+    }
+
+    protected override void OnSeek()
+    {
+        throw new NotImplementedException();
     }
 }

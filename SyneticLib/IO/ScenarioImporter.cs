@@ -15,7 +15,7 @@ public abstract class ScenarioImporter
     public ScenarioImporter(ScenarioVariant target)
     {
         this.target = target;
-        path = target.RootDir;
+        path = target.SourcePath;
     }
 
     protected abstract void OnSeek(string path);
@@ -27,18 +27,18 @@ public abstract class ScenarioImporter
         try
         {
             OnSeek(path);
-            target.State = InitState.Loaded;
+            target.DataState = DataState.Loaded;
         }
         catch (FileNotFoundException ex)
         {
             target.Errors.Add(ex.Message);
-            target.State = InitState.Failed;
+            target.DataState = DataState.Error;
         }
     }
 
     public void Seek()
     {
-        Seek(target.RootDir);
+        Seek(target.SourcePath);
     }
 
     public void Load(string path)
@@ -49,23 +49,24 @@ public abstract class ScenarioImporter
 
     public void Load()
     {
-        if (target.State < InitState.Seeked)
+        if (target.PointerState < PointerState.Exists)
             Seek();
 
         try
         {
             OnLoad();
-            target.State = InitState.Loaded;
+            target.DataState = DataState.Loaded;
         }
         catch (FileNotFoundException ex)
         {
             target.Errors.Add(ex.Message);
-            target.State = InitState.Failed;
+            target.DataState = DataState.Error;
         }
     }
 
     public void Init()
     {
+        /*
         if (target.State < InitState.Loaded)
             Load();
 
@@ -79,11 +80,12 @@ public abstract class ScenarioImporter
             target.Errors.Add(ex.Message);
             target.State = InitState.Failed;
         }
+        */
     }
 
     public void LoadWorldTexture(string name)
     {
-        string path = Path.Combine(target.RootDir, "Textures", name);
+        string path = Path.Combine(target.SourcePath, "Textures", name);
         var texture = new Texture();
         texture.Id = target.WorldTextures.Count;
         //texture.ImportFile(path);
@@ -92,10 +94,10 @@ public abstract class ScenarioImporter
 
     public void LoadPropTexture(string name)
     {
-        string path = Path.Combine(target.RootDir, "Objects/Textures", name);
+        string path = Path.Combine(target.SourcePath, "Objects/Textures", name);
         var texture = new Texture();
         //texture.ImportFile(path);
-        target.PropMeshes.TextureFolder.Add(texture);
+        target.ObjectTextures.Add(texture);
     }
 
     protected void AssignTerrain(IIndexData idx, IVertexData vtx, QadFile qad)

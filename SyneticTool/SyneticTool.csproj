@@ -20,6 +20,7 @@
     <None Remove="Nodes\Icons\MBWR.png" />
     <None Remove="Nodes\Icons\Mesh.PNG" />
     <None Remove="Nodes\Icons\Misc.png" />
+    <None Remove="Nodes\Icons\NICE.png" />
     <None Remove="Nodes\Icons\Terrain.png" />
     <None Remove="Nodes\Icons\Texture.png" />
     <None Remove="Nodes\Icons\World.png" />
@@ -40,6 +41,7 @@
     <EmbeddedResource Include="Nodes\Icons\MBWR.png" />
     <EmbeddedResource Include="Nodes\Icons\Mesh.png" />
     <EmbeddedResource Include="Nodes\Icons\Misc.png" />
+    <EmbeddedResource Include="Nodes\Icons\NICE.png" />
     <EmbeddedResource Include="Nodes\Icons\Terrain.png" />
     <EmbeddedResource Include="Nodes\Icons\Texture.png" />
     <EmbeddedResource Include="Nodes\Icons\World.png" />

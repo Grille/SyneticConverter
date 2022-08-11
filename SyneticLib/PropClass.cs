@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class PropClass
+public class PropClass : Ressource
 {
     public string Name;
 
@@ -15,11 +15,25 @@ public class PropClass
     public Mesh Mesh;
     public MaterialList Materials;
 
-    public PropClass(string name, TextureFolder textures)
+    public PropClass(Ressource parent, TextureDirectory textures, string name) : base(parent, PointerType.Virtual)
     {
         Name = name;
         Materials = new MaterialList(textures);
         Mesh = new(Materials);
     }
 
+    protected override void OnLoad()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSave()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSeek()
+    {
+        throw new NotImplementedException();
+    }
 }

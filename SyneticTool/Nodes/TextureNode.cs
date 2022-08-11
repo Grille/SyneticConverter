@@ -13,7 +13,7 @@ internal class TextureNode : DataTreeNode
 {
     public TextureNode(Texture texture)
     {
-        Text = texture.Name;
+        Text = texture.FileName;
 
         SelectedImageIndex = ImageIndex = IconList.Texture;
     }

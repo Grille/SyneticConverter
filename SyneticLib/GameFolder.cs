@@ -9,26 +9,13 @@ namespace SyneticLib;
 
 public class GameFolder : Ressource
 {
-    public GameVersion Version;
+    public RessourceDirectory<Scenario> Scenarios;
+    public RessourceDirectory<Car> Cars;
+    public RessourceDirectory<Sound> Sounds;
 
-    public RessourceFolder<Scenario> Scenarios = new();
-    public RessourceFolder<Car> Cars = new();
-    public RessourceFolder<Sound> Sounds = new();
-
-    public override DataState DataState { get
-        {
-            return DataState.None;
-        }
-    }
-
-    public GameFolder(GameVersion target)
+    public GameFolder(string path, GameVersion target = GameVersion.Auto) : base(null, PointerType.Directory)
     {
-        Version = target;
-    }
-
-    public GameFolder(string path, GameVersion target = GameVersion.Auto)
-    {
-        SrcPath = path;
+        SourcePath = path;
 
         if (target == GameVersion.Auto)
             Version = GetGameVersion(path);
@@ -38,51 +25,15 @@ public class GameFolder : Ressource
         if (Version == GameVersion.Invalid)
             throw new ArgumentException(Version.ToString());
 
-    }
-
-    public void Refresh()
-    {
-        RefreshScenarios();
-        RefreshCars();
-        RefreshRessources();
-    }
-
-    public void RefreshScenarios()
-    {
-        string scnRootDirPath = Path.Combine(SrcPath, "Scenarios");
-        if (!Directory.Exists(scnRootDirPath))
-            return;
-
-        var scnRootDir = Directory.GetDirectories(scnRootDirPath);
-
-        Scenarios.Clear();
-        foreach (var path in scnRootDir)
-        {
-            var name = Path.GetFileName(path);
-            Scenarios.Add(GetScenario(name));
-        }
-    }
-
-    public void RefreshCars()
-    {
-        var carRootDir = Directory.GetDirectories(Path.Combine(SrcPath, "Autos"));
-
-        Cars.Clear();
-        foreach (var path in carRootDir)
-        {
-            var name = Path.GetFileName(path);
-            Cars.Add(new Car());
-        }
-    }
-
-    public void RefreshRessources()
-    {
+        Scenarios = new(this, ChildPath("Scenarios"));
+        Cars = new(this, ChildPath("Autos"));
+        Sounds = new(this, ChildPath("Sounds"));
 
     }
 
     public Scenario GetScenario(string name)
     {
-        var path = Path.Combine(SrcPath, "Scenarios", name);
+        var path = Path.Combine(SourcePath, "Scenarios", name);
         return new Scenario(this, path);
     }
 
@@ -103,23 +54,23 @@ public class GameFolder : Ressource
                 "mbwr_pc.exe" => GameVersion.MBWR,
                 "wr2_pc.exe" => GameVersion.WR2,
                 "c11_pc.exe" => GameVersion.C11,
-                "crashtime.exe" => GameVersion.CT1AP,
-                "burningwheels.exe" => GameVersion.CT2BW,
+                "crashtime.exe" => GameVersion.CTP,
+                "burningwheels.exe" => GameVersion.CT2,
                 "ferrarivr.exe" => GameVersion.FVR,
-                "highwaynights.exe" => GameVersion.CT3HN,
-                "crashtime4.exe" => GameVersion.CT4TS,
-                "crashtime5.exe" => GameVersion.CT5U,
+                "highwaynights.exe" => GameVersion.CT3,
+                "crashtime4.exe" => GameVersion.CT4,
+                "crashtime5.exe" => GameVersion.CT5,
 
                 "bn_setup.exe" => GameVersion.NICE2,
                 "wr_setup.exe" => GameVersion.MBWR,
                 "wr2_setup.exe" => GameVersion.WR2,
                 "c11_setup.exe" => GameVersion.C11,
-                "ct_setup.exe" => GameVersion.CT1AP,
-                "bw_setup.exe" => GameVersion.CT2BW,
+                "ct_setup.exe" => GameVersion.CTP,
+                "bw_setup.exe" => GameVersion.CT2,
                 "fvr_setup.exe" => GameVersion.FVR,
-                "hn_setup.exe" => GameVersion.CT3HN,
-                "ct4_setup.exe" => GameVersion.CT4TS,
-                "ct5_config.exe" => GameVersion.CT5U,
+                "hn_setup.exe" => GameVersion.CT3,
+                "ct4_setup.exe" => GameVersion.CT4,
+                "ct5_config.exe" => GameVersion.CT5,
 
                 _ => GameVersion.Invalid,
             };
@@ -131,18 +82,20 @@ public class GameFolder : Ressource
         return GameVersion.Invalid;
     }
 
-    public override void LoadAll()
+    protected override void OnLoad()
     {
         throw new NotImplementedException();
     }
 
-    public override void CopyTo(string path)
+    protected override void OnSave()
     {
         throw new NotImplementedException();
     }
 
-    public override void SeekAll()
+    protected override void OnSeek()
     {
-        throw new NotImplementedException();
+        Scenarios.Seek();
+        Cars.Seek();
+        Sounds.Seek();
     }
 }

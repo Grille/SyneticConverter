@@ -19,7 +19,7 @@ internal class ScenarioVariantNode : DataTreeNode
         Value = variant;
 
         var texnode = new TextureFolderNode(variant.WorldTextures, "Textures");
-        var objnode = new MeshFolderNode(variant.PropMeshes);
+        var objnode = new MeshFolderNode(variant.Objects);
         var lightnode = new LightsNode(variant.Lights);
 
         Nodes.Add(texnode);
@@ -31,10 +31,10 @@ internal class ScenarioVariantNode : DataTreeNode
 
     public void UpdateColor()
     {
-        ForeColor = Value.State switch
+        ForeColor = Value.DataState switch
         {
-            InitState.Initialized => NodeColors.Changed,
-            InitState.Failed => NodeColors.Failed,
+            DataState.Loaded => NodeColors.Changed,
+            DataState.Error => NodeColors.Failed,
             _ => NodeColors.Default,
         };
     }

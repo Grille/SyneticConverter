@@ -20,6 +20,9 @@ internal static class IconList
     public static int Mesh;
     public static int Misc;
 
+    public static int NICE;
+    public static int NICE2;
+
     public static int MBWR;
     public static int WR2;
     public static int C11;
@@ -44,6 +47,9 @@ internal static class IconList
         Texture = LoadIcon("Texture");
         Mesh = LoadIcon("Mesh");
         Misc = LoadIcon("Misc");
+
+        NICE = LoadIcon("NICE");
+        NICE2 = LoadIcon("NICE");
 
         MBWR = LoadIcon("MBWR");
         WR2 = LoadIcon("WR2");

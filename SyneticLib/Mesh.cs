@@ -12,7 +12,7 @@ using SyneticLib.Graphics;
 
 namespace SyneticLib;
 
-public class Mesh
+public class Mesh: Ressource
 {
     public string Name;
     public int[] Indecies;
@@ -24,7 +24,7 @@ public class Mesh
     public GLState GLState;
     public GpuMeshBuffer GLBuffer;
 
-    public Mesh(MaterialList materials)
+    public Mesh(MaterialList materials): base(null, PointerType.File)
     {
         Materials = materials;
         GLState = GLState.None;
@@ -53,4 +53,18 @@ public class Mesh
         exp.Save(path);
     }
 
+    protected override void OnLoad()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSave()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSeek()
+    {
+        throw new NotImplementedException();
+    }
 }

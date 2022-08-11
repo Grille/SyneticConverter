@@ -11,7 +11,7 @@ namespace SyneticTool.Nodes;
 
 internal class MeshFolderNode : DataTreeNode
 {
-    public MeshFolderNode(MeshFolder meshes, string name = "Objects")
+    public MeshFolderNode(MeshDirectory meshes, string name = "Objects")
     {
         Text = name;
 
