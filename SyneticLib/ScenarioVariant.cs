@@ -19,14 +19,14 @@ public partial class ScenarioVariant : Ressource
     public GroundModel GroundModel;
     public Terrain Terrain;
     public RessourceDirectory<Sound> Sounds;
-    public TextureDirectory WorldTextures;
-    public RessourceList<TerrainMaterial> WorldMaterials;
+    public TextureDirectory TerrainTextures;
+    public RessourceList<TerrainMaterial> TerrainMaterials;
     public MeshDirectory Objects;
     public TextureDirectory ObjectTextures;
     public RessourceList<PropClass> PropClasses;
     public RessourceList<PropInstance> PropInstances;
 
-    public List<Light> Lights;
+    public RessourceList<Light> Lights;
 
     public List<string> Errors;
 
@@ -34,23 +34,24 @@ public partial class ScenarioVariant : Ressource
 
     public ScenarioVariant(Scenario parent, int number): base(parent, PointerType.Directory)
     {
-        PointerType = PointerType.Directory;
-
         IdNumber = number;
         SourcePath =  Parent.ChildPath($"V{IdNumber}");
 
+
         Sounds = Parent.Parent.Sounds;
-        WorldTextures = new(this, ChildPath("Textures"));
-        WorldMaterials = new(WorldTextures);
+
+        TerrainTextures = new(this, ChildPath("Textures"));
+        TerrainMaterials = new(this);
+        Terrain = new(this);
+
         ObjectTextures = new(this, ChildPath("Objects/Textures"));
         Objects = new(this, ObjectTextures, ChildPath("Objects"));
+
         PropClasses = new(this);
         PropInstances = new(this);
-        //Terrain = new(WorldMaterials);
-        Lights = new();
+        Lights = new(this);
 
         Errors = new();
-        //State = InitState.Empty;
     }
 
     public void PeakHead()
@@ -60,7 +61,12 @@ public partial class ScenarioVariant : Ressource
 
     protected override void OnLoad()
     {
-        switch (Parent.Parent.Parent.Version)
+        Sounds.Load();
+        TerrainTextures.Load();
+        ObjectTextures.Load();
+        Objects.Load();
+
+        switch (Version)
         {
             case >= GameVersion.C11:
             {
@@ -84,6 +90,6 @@ public partial class ScenarioVariant : Ressource
 
     protected override void OnSeek()
     {
-        throw new NotImplementedException();
+
     }
 }

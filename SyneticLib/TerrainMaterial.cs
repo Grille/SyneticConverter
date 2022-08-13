@@ -16,7 +16,7 @@ public class TerrainMaterial: Ressource
     public bool CastShadown = true;
     public TextureInfo Tex0, Tex1, Tex2;
 
-    public MaterialShader GLShader;
+    public TerrainMaterialProgram GLProgram;
 
     public TerrainMaterial(Ressource parent) : base(parent)
     {
@@ -24,7 +24,7 @@ public class TerrainMaterial: Ressource
         Tex1 = new();
         Tex2 = new();
 
-        GLShader = new MaterialShader(this);
+        GLProgram = new TerrainMaterialProgram(this);
     }
 
     protected override void OnLoad()

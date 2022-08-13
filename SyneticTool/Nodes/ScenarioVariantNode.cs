@@ -12,30 +12,30 @@ namespace SyneticTool.Nodes;
 
 internal class ScenarioVariantNode : DataTreeNode
 {
-    public ScenarioVariant Value;
-    public ScenarioVariantNode(string folder, ScenarioVariant variant)
+    public new ScenarioVariant DataValue { get => (ScenarioVariant)base.DataValue; set => base.DataValue = value; }
+
+    public DataTreeNode TerrainNode;
+    public TextureDirectoryNode TerrainTexturesNode;
+    public MeshDirectoryNode ObjectsNode;
+    public TextureDirectoryNode ObjectTexturesNode;
+    public LightsNode LightsNode;
+
+    public ScenarioVariantNode(ScenarioVariant variant) : base(variant)
     {
-        Text = folder;
-        Value = variant;
-
-        var texnode = new TextureFolderNode(variant.WorldTextures, "Textures");
-        var objnode = new MeshFolderNode(variant.Objects);
-        var lightnode = new LightsNode(variant.Lights);
-
-        Nodes.Add(texnode);
-        Nodes.Add(objnode);
-        Nodes.Add(lightnode);
-
         SelectedImageIndex = ImageIndex = IconList.Terrain;
-    }
+        Text = variant.FileName;
 
-    public void UpdateColor()
-    {
-        ForeColor = Value.DataState switch
-        {
-            DataState.Loaded => NodeColors.Changed,
-            DataState.Error => NodeColors.Failed,
-            _ => NodeColors.Default,
-        };
+        TerrainNode = new(variant.Terrain);
+        TerrainTexturesNode = new(variant.TerrainTextures, "Terrain-Textures");
+        ObjectsNode = new(variant.Objects);
+        ObjectTexturesNode = new(variant.ObjectTextures, "Object-Textures");
+        LightsNode = new(variant.Lights);
+
+        Nodes.Add(TerrainTexturesNode);
+        Nodes.Add(ObjectTexturesNode);
+        Nodes.Add(ObjectsNode);
+        Nodes.Add(LightsNode);
+        Nodes.Add(TerrainNode);
+
     }
 }

@@ -12,9 +12,16 @@ public class Games
 {
     public Dictionary<string, GameFolder> GameFolders = new();
 
-    public void AddGame(string name, string path, GameVersion version = GameVersion.Auto)
+    public bool Exists(string name)
     {
+        return GameFolders.ContainsKey(name);
+    }
+
+    public GameFolder CreateGame(string name, string path, GameVersion version = GameVersion.Auto)
+    {
+        GameFolder folder = new GameFolder(path, version);
         GameFolders.Add(name, new GameFolder(path, version));
+        return folder;
     }
 
     public void RemoveGame(string name)

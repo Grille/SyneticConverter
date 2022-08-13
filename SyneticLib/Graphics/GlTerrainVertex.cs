@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace SyneticLib.Graphics;
 
 [StructLayout(LayoutKind.Explicit, Size = 32)]
-internal unsafe struct GpuTerrainVertex
+internal unsafe struct GlTerrainVertex
 {
     public const int LocationPosition = 0;
     public const int LocationDebugColor = LocationPosition + 12;

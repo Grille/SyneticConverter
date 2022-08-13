@@ -3,8 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SyneticLib.Graphics;
 
 namespace SyneticLib;
-internal class MeshMaterial
+public class MeshMaterial : Ressource
 {
+    public MeshMaterialProgram GLProgram;
+    public MeshMaterial(Ressource parent) : base(parent)
+    {
+        GLProgram = new MeshMaterialProgram(this);
+    }
+
+    protected override void OnLoad()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSave()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSeek()
+    {
+        throw new NotImplementedException();
+    }
 }

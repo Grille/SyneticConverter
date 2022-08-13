@@ -19,7 +19,7 @@ public class PropClass : Ressource
     {
         Name = name;
         Materials = new MaterialList(textures);
-        Mesh = new(Materials);
+        //Mesh = new(Materials);
     }
 
     protected override void OnLoad()

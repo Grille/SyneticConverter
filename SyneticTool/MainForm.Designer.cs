@@ -66,6 +66,7 @@
             this.dataTreeView.Name = "dataTreeView";
             this.dataTreeView.Size = new System.Drawing.Size(252, 487);
             this.dataTreeView.TabIndex = 0;
+            this.dataTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.dataTreeView_BeforeExpand);
             this.dataTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.dataTreeView_AfterSelect);
             // 
             // menuStrip1
@@ -155,7 +156,6 @@
             this.splitContainer1.Size = new System.Drawing.Size(784, 515);
             this.splitContainer1.SplitterDistance = 260;
             this.splitContainer1.TabIndex = 3;
-            this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
             // tabControl1
             // 
@@ -265,7 +265,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem convertToToolStripMenuItem;
-        private OpenTK.WinForms.GLControl glControl1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;

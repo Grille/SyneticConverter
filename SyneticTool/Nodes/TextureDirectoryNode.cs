@@ -9,25 +9,19 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-internal class TextureFolderNode : DataTreeNode
+internal class TextureDirectoryNode : DataListTreeNode<Texture>
 {
-    TextureDirectory textures;
 
-
-
-    public TextureFolderNode(TextureDirectory textures, string name = "Textures")
+    public TextureDirectoryNode(TextureDirectory textures, string name = "Textures") : base(textures, (a) => new TextureNode(a))
     {
-        this.textures = textures;
         Text = name;
-
-        Update();
     }
 
     public void Update()
     {
         Nodes.Clear();
 
-        foreach (var texture in textures)
+        foreach (var texture in DataValue)
         {
             Nodes.Add(new TextureNode(texture));
         }

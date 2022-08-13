@@ -17,6 +17,8 @@ internal class Config
     public Config(string path)
     {
         this.path = path;
+
+        ConfigSections = new List<ConfigSection>();
     }
 
     public void UseSection(string name)

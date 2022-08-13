@@ -7,8 +7,27 @@ using System.Numerics;
 using System.Drawing;
 
 namespace SyneticLib;
-public class Light
+public class Light : Ressource
 {
     public Vector3 Position;
     public Color Color;
+
+    public Light(Ressource parent) : base(parent, PointerType.Virtual)
+    {
+    }
+
+    protected override void OnLoad()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSave()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSeek()
+    {
+        throw new NotImplementedException();
+    }
 }

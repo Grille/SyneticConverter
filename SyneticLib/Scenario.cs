@@ -28,12 +28,24 @@ public class Scenario : Ressource
 
     public Scenario(GameFolder game, string path) :base(game, PointerType.Directory)
     {
+        Variants = new List<ScenarioVariant>();
         SourcePath = path;
-
-        InitStructure();
     }
 
-    public void InitStructure()
+    protected override void OnLoad()
+    {
+        foreach (var variant in Variants)
+        {
+            variant.Load();
+        }
+    }
+
+    protected override void OnSave()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSeek()
     {
         var dirs = Directory.GetDirectories(SourcePath);
 
@@ -48,25 +60,5 @@ public class Scenario : Ressource
                 list.Add(new ScenarioVariant(this, result));
             }
         }
-
-        foreach (var v in Variants)
-        {
-            v.PeakHead();
-        }
-    }
-
-    protected override void OnLoad()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSave()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSeek()
-    {
-        throw new NotImplementedException();
     }
 }

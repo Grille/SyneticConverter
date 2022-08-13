@@ -13,20 +13,11 @@ public class MaterialList : List<TerrainMaterial>
         this.textures = textures;
     }
 
-    public void InitAllGlMaterials()
-    {
-        foreach (var material in this)
-        {
-            if (!material.GLShader.IsInitialized)
-                material.GLShader.Initialize();
-        }
-    }
-
     public void DisposeAll()
     {
         foreach (var material in this)
         {
-            material.GLShader.Dispose();
+            material.GLProgram.Dispose();
         }
     }
 

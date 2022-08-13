@@ -61,7 +61,7 @@ public abstract class Ressource {
 
     private void UpdatePointer()
     {
-        if (PointerType == PointerType.Virtual || _path == null)
+        if (PointerType == PointerType.Virtual || SourcePath == null)
         {
             PointerState = PointerState.None;
         }
@@ -81,8 +81,13 @@ public abstract class Ressource {
 
     protected abstract void OnSeek();
 
+    public bool NeedSeek => !(DataState == DataState.Seeked || DataState == DataState.Loaded);
+
     public void Load()
     {
+        if (NeedSeek)
+            Seek();
+
         OnLoad();
 
         DataState = DataState.Loaded;
@@ -90,6 +95,12 @@ public abstract class Ressource {
 
     public void Save()
     {
+        OnSave();
+    }
+
+    public void Save(string path)
+    {
+        TargetPath = path;
         OnSave();
     }
 

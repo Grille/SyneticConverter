@@ -11,36 +11,29 @@ namespace SyneticTool.Nodes;
 
 public class GameFolderNode : DataTreeNode
 {
-    public GameFolderNode(GameFolder game)
+    public new GameFolder DataValue { get => (GameFolder)base.DataValue; set => DataValue = value; }
+
+    DataListTreeNode<Scenario> ScenariosNode;
+    DataListTreeNode<Car> CarsNode;
+    DataListTreeNode<Sound> SoundsNode;
+
+    public GameFolderNode(GameFolder game) : base(game)
     {
-        Name = $"{game.Version} ({game.SourcePath})";
+        ScenariosNode = new(game.Scenarios, (a) => new ScenarioNode(a));
+        CarsNode = new(game.Cars, (a) => new CarNode(a));
+        SoundsNode = new(game.Sounds, (a) => new SoundNode(a));
+
+        Nodes.Add(ScenariosNode);
+        Nodes.Add(CarsNode);
+        Nodes.Add(SoundsNode);
+    }
+
+    protected override void OnUpdateAppearance()
+    {
+        Name = $"{DataValue.Version} ({DataValue.SourcePath})";
         Text = Name;
 
-        var scenariosNode = new DataTreeNode("Scenarios");
-        var carsNode = new DataTreeNode("Cars");
-        var soundsNode = new DataTreeNode("Sounds");
-
-
-        ForeColor = NodeColors.RessourceColor(game);
-        scenariosNode.ForeColor = ForeColor;
-        carsNode.ForeColor = ForeColor;
-        soundsNode.ForeColor = ForeColor;
-
-        foreach (var scenario in game.Scenarios)
-        {
-            scenariosNode.Nodes.Add(new ScenarioNode(scenario));
-        }
-
-        foreach (var car in game.Cars)
-        {
-            carsNode.Nodes.Add(new CarNode(car));
-        }
-
-        Nodes.Add(scenariosNode);
-        Nodes.Add(carsNode);
-        Nodes.Add(soundsNode);
-
-        SelectedImageIndex = ImageIndex = game.Version switch
+        SelectedImageIndex = ImageIndex = DataValue.Version switch
         {
             GameVersion.NICE => IconList.NICE,
             GameVersion.NICE2 => IconList.NICE2,

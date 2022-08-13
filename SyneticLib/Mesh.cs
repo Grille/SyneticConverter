@@ -21,14 +21,12 @@ public class Mesh: Ressource
     public MaterialRegion[] MaterialRegion;
     public MaterialList Materials;
 
-    public GLState GLState;
-    public GpuMeshBuffer GLBuffer;
+    public MeshBuffer GLBuffer;
 
-    public Mesh(MaterialList materials): base(null, PointerType.File)
+    public Mesh(Ressource parent, string path): base(parent, PointerType.File)
     {
-        Materials = materials;
-        GLState = GLState.None;
-        GLBuffer = new GpuMeshBuffer(this);
+        SourcePath = path;
+        GLBuffer = new MeshBuffer(this);
     }
 
     public void ImportFromMox(string path)
@@ -55,7 +53,7 @@ public class Mesh: Ressource
 
     protected override void OnLoad()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     protected override void OnSave()
@@ -65,6 +63,6 @@ public class Mesh: Ressource
 
     protected override void OnSeek()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }

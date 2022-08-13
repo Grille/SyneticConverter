@@ -4,33 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using SyneticLib.Graphics;
+
 namespace SyneticLib;
 public class Texture : Ressource
 {
     public byte[] PixelData;
     public int Id;
 
-    public Texture() : base(null, PointerType.File)
-    {
+    public readonly TextureBuffer GLBuffer;
 
-    }
-
-    public static Texture FromFile(string path)
+    public Texture(Ressource parent, string path) : base(parent, PointerType.File)
     {
-        var texture = new Texture();
-        texture.SourcePath = path;
-        texture.Load();
-        return texture;
+        GLBuffer = new TextureBuffer(this);
+        SourcePath = path;
     }
 
     protected override void OnLoad()
     {
-        if (PointerState == PointerState.Exists)
-        {
-            /* do things */
 
-            //DataState = DataState.Loaded;
-        }
     }
 
     protected override void OnSave()
@@ -45,6 +37,6 @@ public class Texture : Ressource
 
     protected override void OnSeek()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }

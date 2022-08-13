@@ -21,9 +21,11 @@ public class ScenarioImporterWR : ScenarioImporter
 
     public ScenarioImporterWR(ScenarioVariant target) : base(target)
     {
+        const string errmsg = $"Version needs to be between MBWR - WR2.";
+
         format = target.Version;
         if (!(format == GameVersion.MBWR || format == GameVersion.WR2))
-            throw new NotImplementedException();
+            throw new NotImplementedException(errmsg);
 
         syn = new();
 
@@ -35,6 +37,7 @@ public class ScenarioImporterWR : ScenarioImporter
         {
             GameVersion.MBWR => new QadFileWR1(),
             GameVersion.WR2 => new QadFileWR2(),
+            _ => throw new NotImplementedException(errmsg)
         };
         sky = new();
     }
@@ -115,9 +118,9 @@ public class ScenarioImporterWR : ScenarioImporter
         {
             var qmat = qad.Materials[i];
             var mat = new TerrainMaterial(target);
-            var tex0 = target.WorldTextures[qmat.Tex0Id];
-            var tex1 = target.WorldTextures[qmat.Tex1Id];
-            var tex2 = target.WorldTextures[qmat.Tex2Id];
+            var tex0 = target.TerrainTextures[qmat.Tex0Id];
+            var tex1 = target.TerrainTextures[qmat.Tex1Id];
+            var tex2 = target.TerrainTextures[qmat.Tex2Id];
             var id = i.ToString("X").PadLeft(3, '0');
             mat.Name = $"{id}_{tex0.FileName}";
             mat.Mode = (TerrainMaterialType)qmat.Mode;
@@ -128,7 +131,7 @@ public class ScenarioImporterWR : ScenarioImporter
             mat.Tex1.Transform = qmat.Mat2;
             mat.Tex2.Transform = qmat.Mat3;
 
-            target.WorldMaterials.Add(mat);
+            target.TerrainMaterials.Add(mat);
         }
     }
 
@@ -189,7 +192,7 @@ public class ScenarioImporterWR : ScenarioImporter
             var sqad = (QadFileWR2)qad;
             foreach (var srclight in sqad.Lights)
             {
-                var light = new Light();
+                var light = new Light(target);
                 light.Color = srclight.Color;
                 light.Position = srclight.Matrix.Translation;
 

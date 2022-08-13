@@ -8,9 +8,9 @@ namespace SyneticLib;
 public class Car : Ressource
 {
 
-    public Car(GameFolder parent) : base(parent)
+    public Car(GameFolder parent, string path) : base(parent, PointerType.Directory)
     {
-
+        SourcePath = path;
     }
 
     protected override void OnLoad()
@@ -25,6 +25,6 @@ public class Car : Ressource
 
     protected override void OnSeek()
     {
-        throw new NotImplementedException();
+
     }
 }

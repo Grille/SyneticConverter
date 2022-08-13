@@ -93,7 +93,7 @@ public class ScenarioImporterCT : ScenarioImporter
             mat.Tex2.Transform = qmat.Mat3;
             */
 
-            target.WorldMaterials.Add(mat);
+            target.TerrainMaterials.Add(mat);
         }
     }
 

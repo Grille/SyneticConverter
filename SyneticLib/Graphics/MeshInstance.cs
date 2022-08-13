@@ -9,6 +9,6 @@ using OpenTK.Mathematics;
 namespace SyneticLib.Graphics;
 public class MeshInstance
 {
-    public GpuMeshBuffer MeshBinding;
+    public Mesh Mesh;
     public Matrix4 ModelMatrix;
 }

@@ -11,7 +11,7 @@ namespace SyneticTool.Nodes;
 
 internal class TextureNode : DataTreeNode
 {
-    public TextureNode(Texture texture)
+    public TextureNode(Texture texture) : base(texture)
     {
         Text = texture.FileName;
 

@@ -86,16 +86,16 @@ public abstract class ScenarioImporter
     public void LoadWorldTexture(string name)
     {
         string path = Path.Combine(target.SourcePath, "Textures", name);
-        var texture = new Texture();
-        texture.Id = target.WorldTextures.Count;
+        var texture = new Texture(target, path);
+        texture.Id = target.TerrainTextures.Count;
         //texture.ImportFile(path);
-        target.WorldTextures.Add(texture);
+        target.TerrainTextures.Add(texture);
     }
 
     public void LoadPropTexture(string name)
     {
         string path = Path.Combine(target.SourcePath, "Objects/Textures", name);
-        var texture = new Texture();
+        var texture = new Texture(target, path);
         //texture.ImportFile(path);
         target.ObjectTextures.Add(texture);
     }
@@ -118,7 +118,7 @@ public abstract class ScenarioImporter
             {
                 Offset = qad.MaterialRegions[i].FirstPoly,
                 Count = qad.MaterialRegions[i].NumPoly,
-                Material = target.WorldMaterials[qad.MaterialRegions[i].SurfaceID],
+                Material = target.TerrainMaterials[qad.MaterialRegions[i].SurfaceID],
             };
         }
 

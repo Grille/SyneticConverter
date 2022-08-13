@@ -25,9 +25,22 @@ public class GameFolder : Ressource
         if (Version == GameVersion.Invalid)
             throw new ArgumentException(Version.ToString());
 
-        Scenarios = new(this, ChildPath("Scenarios"));
-        Cars = new(this, ChildPath("Autos"));
-        Sounds = new(this, ChildPath("Sounds"));
+        Scenarios = new(this, ChildPath("Scenarios"),
+            (path) => Directory.Exists(path),
+            (path) => new Scenario(this, path)
+        );
+
+        Cars = new(this, ChildPath("Autos"),
+            (path) => Directory.Exists(path),
+            (path) => new Car(this, path)
+        );
+
+        Sounds = new(this, ChildPath("Sounds"),
+             (path) => File.Exists(path),
+             (path) => new Sound(this, path)
+        );
+
+
 
     }
 

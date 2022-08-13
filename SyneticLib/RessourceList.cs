@@ -55,7 +55,10 @@ public class RessourceList<T> : Ressource, IList<T> where T : Ressource
 
     protected override void OnLoad()
     {
-        throw new NotImplementedException();
+        foreach (var item in Items)
+        {
+            item.Load();
+        }
     }
 
     protected override void OnSave()
@@ -72,6 +75,6 @@ public class RessourceList<T> : Ressource, IList<T> where T : Ressource
 
     protected override void OnSeek()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }

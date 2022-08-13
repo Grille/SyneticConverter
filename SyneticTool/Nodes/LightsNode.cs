@@ -10,12 +10,10 @@ using SyneticLib.IO.Extern;
 
 namespace SyneticTool.Nodes;
 
-public class LightsNode : DataTreeNode
+public class LightsNode : DataListTreeNode<Light>
 {
-    IList<Light> lights;
-    public LightsNode(IList<Light> lights)
+    public LightsNode(RessourceList<Light> lights) : base(lights, (a) => new DataTreeNode(a))
     {
-        this.lights = lights;
         Text = "Lights";
 
         SelectedImageIndex = ImageIndex = IconList.Misc;

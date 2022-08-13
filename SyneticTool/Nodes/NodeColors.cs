@@ -19,6 +19,7 @@ internal static class NodeColors
     public static Color RessourceColor(Ressource file) => (file.PointerState, file.DataState) switch
     {
         (PointerState.Exists, DataState.None) => Pointer,
+        (PointerState.Exists, DataState.Seeked) => Pointer,
         (PointerState.Exists, DataState.Loaded) => Default,
         (PointerState.Exists, DataState.Changed) => Changed,
         (_, DataState.Loaded) => Changed,

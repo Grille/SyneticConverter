@@ -10,10 +10,8 @@ namespace SyneticTool.Nodes;
 
 public class CarNode : DataTreeNode
 {
-    public CarNode(Car car)
+    public CarNode(Car car): base(car)
     {
-        Text = car.FileName;
-
         SelectedImageIndex = ImageIndex = IconList.Car;
     }
 }
