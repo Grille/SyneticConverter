@@ -9,6 +9,14 @@ public abstract class GLStateObject : IDisposable
 {
     public GLState State { private set; get; } = GLState.None;
 
+    public bool TryCreate()
+    {
+        if (State != GLState.Ready)
+            Create();
+
+        return State == GLState.Ready;
+    }
+
     public void Create()
     {
         OnCreate();
@@ -45,6 +53,7 @@ public abstract class GLStateObject : IDisposable
         GC.SuppressFinalize(this);
     }
 }
+
 
 public enum GLState
 {

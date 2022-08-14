@@ -10,12 +10,12 @@ using System.Numerics;
 namespace SyneticLib.IO.Extern;
 public class LightExportBeamNgJSON
 {
-    public IList<Light> Lights;
+    public RessourceList<Light> Lights;
     public Vector3 Scale = Vector3.One;
     public Vector3 Offset = Vector3.Zero;
     public string Parent = "Lights";
 
-    public LightExportBeamNgJSON(IList<Light> lights = null)
+    public LightExportBeamNgJSON(RessourceList<Light> lights = null)
     {
         Lights = lights;
     }

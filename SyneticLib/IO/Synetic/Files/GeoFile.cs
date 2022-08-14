@@ -7,7 +7,7 @@ using System.Numerics;
 using GGL.IO;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class GeoFile : SyneticBinFile, IIndexData, IVertexData
+public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
 {
     public bool HasX16VertexBlock = false;
 

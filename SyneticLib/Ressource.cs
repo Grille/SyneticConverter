@@ -83,6 +83,8 @@ public abstract class Ressource {
 
     public bool NeedSeek => !(DataState == DataState.Seeked || DataState == DataState.Loaded);
 
+    public bool NeedLoad => DataState != DataState.Loaded;
+
     public void Load()
     {
         if (NeedSeek)

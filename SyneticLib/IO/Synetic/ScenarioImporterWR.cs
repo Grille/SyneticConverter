@@ -8,7 +8,7 @@ using System.Numerics;
 using SyneticLib.IO.Synetic.Files;
 
 namespace SyneticLib.IO.Synetic;
-public class ScenarioImporterWR : ScenarioImporter
+public class ScenarioImporterWR : ScenarioDataImporter
 {
     private GameVersion format;
     private SynFile syn;

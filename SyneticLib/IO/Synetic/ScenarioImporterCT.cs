@@ -8,7 +8,7 @@ using System.Numerics;
 using SyneticLib.IO.Synetic.Files;
 
 namespace SyneticLib.IO.Synetic;
-public class ScenarioImporterCT : ScenarioImporter
+public class ScenarioImporterCT : ScenarioDataImporter
 {
     private GameVersion format;
     GeoFile geo;

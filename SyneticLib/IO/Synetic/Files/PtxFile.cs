@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GGL.IO;
 
 namespace SyneticLib.IO.Synetic.Files;
-internal class PtxFile : SyneticBinFile
+internal class PtxFile : SyneticBinaryFile
 {
     public MHead Head;
     public override void ReadFromView(BinaryViewReader br)

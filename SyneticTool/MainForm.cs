@@ -149,7 +149,8 @@ public partial class MainForm : Form
             {
                 var mnode = (MeshNode)e.Node;
 
-                mnode.DataValue.Load();
+                if (mnode.DataValue.NeedLoad)
+                    mnode.DataValue.Load();
                 mnode.UpdateAppearance();
 
                 DisplayMesh((Mesh)mnode.DataValue);
@@ -159,7 +160,8 @@ public partial class MainForm : Form
             {
                 var tnode = (TextureNode)e.Node;
 
-                tnode.DataValue.Load();
+                if (tnode.DataValue.NeedLoad)
+                    tnode.DataValue.Load();
                 tnode.UpdateAppearance();
 
                 DisplayTexture((Texture)tnode.DataValue);
@@ -170,7 +172,8 @@ public partial class MainForm : Form
                 var snode = (ScenarioNode)e.Node;
                 var vnode = snode.V1;
 
-                vnode.DataValue.Load();
+                if (vnode.DataValue.NeedLoad)
+                    vnode.DataValue.Load();
                 vnode.UpdateAppearance();
                 DisplayScenarioVariant(vnode.DataValue);
             }
@@ -180,7 +183,8 @@ public partial class MainForm : Form
                 var snode = (ScenarioNode)e.Node.Parent;
                 var vnode = (ScenarioVariantNode)e.Node;
 
-                vnode.DataValue.Load();
+                if (vnode.DataValue.NeedLoad)
+                    vnode.DataValue.Load();
                 vnode.UpdateAppearance();
                 DisplayScenarioVariant(vnode.DataValue);
             }
@@ -191,6 +195,8 @@ public partial class MainForm : Form
     private void DisplayScenarioVariant(ScenarioVariant scenario)
     {
         scene.ClearScene();
+
+        scene.Terrain = scenario.Terrain;
 
         RenderFrame();
     }

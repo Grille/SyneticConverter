@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace SyneticLib.IO.Synetic.Files;
 
-public abstract class QadFile : SyneticBinFile
+public abstract class QadFile : SyneticBinaryFile
 {
     public bool Has8ByteMagic = false;
     public bool Has56ByteBlock = false;

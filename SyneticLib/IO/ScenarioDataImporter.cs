@@ -7,12 +7,12 @@ using System.IO;
 using SyneticLib.IO.Synetic.Files;
 
 namespace SyneticLib.IO;
-public abstract class ScenarioImporter
+public abstract class ScenarioDataImporter
 {
     protected ScenarioVariant target;
     protected string path;
 
-    public ScenarioImporter(ScenarioVariant target)
+    public ScenarioDataImporter(ScenarioVariant target)
     {
         this.target = target;
         path = target.SourcePath;

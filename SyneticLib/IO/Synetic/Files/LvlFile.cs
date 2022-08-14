@@ -8,7 +8,7 @@ using GGL.IO;
 
 namespace SyneticLib.IO.Synetic.Files;
 
-public class LvlFile : SyneticBinFile
+public class LvlFile : SyneticBinaryFile
 {
     public MData Data;
 

@@ -38,30 +38,33 @@ public class Scene
         Sprites.Clear();
     }
 
+    private void AssertRessource(Ressource ressource)
+    {
+        if (ressource.DataState != DataState.Loaded)
+            throw new ArgumentException("ressource", "Ressource is not loaded.");
+    }
+
     private void DrawTerrain(Terrain terrain)
     {
-        if (terrain.GLBuffer.State != GLState.Ready)
-            terrain.GLBuffer.Create();
+        AssertRessource(terrain);
 
-        if (terrain.GLBuffer.State != GLState.Ready)
+        if (!terrain.GLBuffer.TryCreate())
             return;
     }
 
     private void DrawMesh(MeshInstance instance)
     {
-        if (instance.Mesh.GLBuffer.State != GLState.Ready)
-            instance.Mesh.GLBuffer.Create();
+        AssertRessource(instance.Mesh);
 
-        if (instance.Mesh.GLBuffer.State != GLState.Ready)
+        if (!instance.Mesh.GLBuffer.TryCreate())
             return;
     }
 
     private void DrawSprite(Sprite sprite)
     {
-        if (sprite.Texture.GLBuffer.State != GLState.Ready)
-            sprite.Texture.GLBuffer.Create();
+        AssertRessource(sprite.Texture);
 
-        if (sprite.Texture.GLBuffer.State != GLState.Ready)
+        if (!sprite.Texture.GLBuffer.TryCreate())
             return;
     }
 

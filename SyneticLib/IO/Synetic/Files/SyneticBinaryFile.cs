@@ -8,7 +8,7 @@ using System.IO;
 using GGL.IO;
 
 namespace SyneticLib.IO.Synetic.Files;
-public abstract class SyneticBinFile : IViewObject
+public abstract class SyneticBinaryFile : IViewObject
 {
     private string _path = "";
     public string Path
