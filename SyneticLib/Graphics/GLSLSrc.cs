@@ -9,13 +9,15 @@ using System.Reflection;
 namespace SyneticLib.Graphics;
 internal static class GLSLSrc
 {
-    public static string BasicVertexSrc;
-    public static string BasicFragmentSrc;
+    public static string TerrainVertexSrc;
+    public static string MeshVertexSrc;
+    public static string FragmentSrc;
 
     static GLSLSrc()
     {
-        BasicVertexSrc = LoadInternalShader("Vertex");
-        BasicFragmentSrc = LoadInternalShader("Fragment");
+        TerrainVertexSrc = LoadInternalShader("TerrainVertex");
+        MeshVertexSrc = LoadInternalShader("MeshVertex");
+        FragmentSrc = LoadInternalShader("Fragment");
     }
 
     public static string LoadInternalShader(string name)

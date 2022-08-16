@@ -18,9 +18,9 @@ public unsafe class MeshBuffer : GLStateObject
 
     protected override void OnCreate()
     {
-        ElementCount = owner.Indecies.Length;
+        ElementCount = owner.Poligons.Length * 3;
 
-        var indices = owner.Indecies;
+        var indices = owner.Poligons;
         var vertices = new GlTerrainVertex[owner.Vertices.Length];
 
         for (int i = 0; i < owner.Vertices.Length; i++)

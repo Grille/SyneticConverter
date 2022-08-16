@@ -205,6 +205,7 @@ public partial class MainForm : Form
     {
         scene.ClearScene();
 
+
         scene.Sprites.Add(new Sprite(texture));
 
         RenderFrame();
@@ -213,6 +214,8 @@ public partial class MainForm : Form
     private void DisplayMesh(Mesh mesh)
     {
         scene.ClearScene();
+
+        scene.Instances.Add(new MeshInstance(mesh));
 
         RenderFrame();
     }

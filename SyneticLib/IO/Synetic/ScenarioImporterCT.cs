@@ -8,7 +8,7 @@ using System.Numerics;
 using SyneticLib.IO.Synetic.Files;
 
 namespace SyneticLib.IO.Synetic;
-public class ScenarioImporterCT : ScenarioDataImporter
+public class ScenarioImporterCT : ScenarioImporter
 {
     private GameVersion format;
     GeoFile geo;
@@ -29,11 +29,8 @@ public class ScenarioImporterCT : ScenarioDataImporter
 
         if (format >= GameVersion.CT5)
             geo.HasX16VertexBlock = true;
-    }
 
-    protected override void OnSeek(string path)
-    {
-        var filePath = Path.Combine(path, target.Parent.FileName);
+        var filePath = Path.Combine(target.SourcePath, target.Parent.FileName);
         geo.Path = filePath + ".geo";
         lvl.Path = filePath + ".lvl";
         qad.Path = filePath + ".qad";
@@ -124,9 +121,6 @@ public class ScenarioImporterCT : ScenarioDataImporter
 
                 var prop = new PropClass(target, target.ObjectTextures,name);
                 var path = Path.Combine(target.SourcePath, "Objects", name + ".mox");
-                if (File.Exists(path))
-                    prop.Mesh.ImportFromMox(path);
-
                 target.PropClasses.Add(prop);
             }
         }

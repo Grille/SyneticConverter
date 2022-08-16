@@ -12,7 +12,17 @@ internal unsafe static class FixedStringUtils
     public static string MemToString<T>(T* ptr) where T : unmanaged
     {
         int size = sizeof(T);
-        return new string((sbyte*)&ptr, 0, size, Encoding.ASCII).Trim((char)0);
+
+        int trimsize = size;
+        byte* byteptr = (byte*)ptr;
+        for (trimsize = 0; trimsize < size; trimsize++)
+            if (byteptr[trimsize] == 0) break;
+
+        char[] chars = new char[trimsize];
+        for (int i = 0; i < trimsize; i++)
+            chars[i] = (char)byteptr[i];
+
+        return new string(chars);
     }
 
     public static T StringToMem<T>(string d) where T : unmanaged

@@ -11,4 +11,15 @@ public class MeshInstance
 {
     public Mesh Mesh;
     public Matrix4 ModelMatrix;
+
+    public MeshInstance(Mesh mesh): this(mesh, Matrix4.Identity)
+    {
+
+    }
+
+    public MeshInstance(Mesh mesh, Matrix4 modelMatrix)
+    {
+        Mesh = mesh;
+        ModelMatrix = modelMatrix;
+    }
 }

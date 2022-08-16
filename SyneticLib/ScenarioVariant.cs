@@ -70,14 +70,12 @@ public partial class ScenarioVariant : Ressource
         {
             case >= GameVersion.C11:
             {
-                var io = new ScenarioImporterCT(this);
-                io.Init();
+                new ScenarioImporterCT(this).Load();
             }
             break;
             case >= GameVersion.MBWR:
             {
-                var io = new ScenarioImporterWR(this);
-                io.Init();
+                new ScenarioImporterWR(this).Load();
             }
             break;
         }

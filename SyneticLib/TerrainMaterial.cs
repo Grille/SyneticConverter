@@ -27,6 +27,9 @@ public class TerrainMaterial: Ressource
         GLProgram = new TerrainMaterialProgram(this);
     }
 
+
+    public static readonly TerrainMaterial Default = new TerrainMaterial(null);
+
     protected override void OnLoad()
     {
         throw new NotImplementedException();

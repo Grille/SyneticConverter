@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Drawing;
+using static OpenTK.Graphics.OpenGL.GL;
 
 namespace SyneticLib.Graphics;
 public class Scene
@@ -21,19 +22,20 @@ public class Scene
         Instances = new List<MeshInstance>();
         Camera = new Camera();
 
-        Camera.Position = new Vector3(0, 10000, -20000);
-        Camera.LookAt(new Vector3(0, 0, -10000));
+        Camera.Position = new Vector3(0, 1000, -2000);
+        Camera.LookAt(new Vector3(0, 0, 0));
     }
 
 
     public void ClearScreen()
     {
-        GL.ClearColor(Color.Blue);
+        GL.ClearColor(Color.DarkGray);
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     }
 
     public void ClearScene()
     {
+        Terrain = null;
         Instances.Clear();
         Sprites.Clear();
     }
@@ -49,7 +51,30 @@ public class Scene
         AssertRessource(terrain);
 
         if (!terrain.GLBuffer.TryCreate())
-            return;
+            throw new InvalidOperationException("Could not create GL buffer.");
+
+        var material = TerrainMaterial.Default;
+        var program = material.GLProgram;
+        program.TryCreate();
+
+        program.Bind();
+        program.SubCameraMatrix(Camera);
+
+        int colorLoc = GL.GetUniformLocation(program.ProgramID, "uColor");
+        GL.Uniform3(colorLoc, new Vector3(1, 1, 1));
+
+
+        var buffer = terrain.GLBuffer;
+        buffer.Bind();
+        var rnd = new Random(1);
+
+        for (int i = 0; i < terrain.MaterialRegion.Length; i++)
+        {
+            var region = terrain.MaterialRegion[i];
+            GL.Uniform3(colorLoc, new Vector3((float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble()));
+            //region.Material.GLShader.Bind();
+            GL.DrawElements(PrimitiveType.Triangles, region.Count * 3, DrawElementsType.UnsignedInt, region.Offset * 3 * 4);
+        }
     }
 
     private void DrawMesh(MeshInstance instance)
@@ -57,7 +82,32 @@ public class Scene
         AssertRessource(instance.Mesh);
 
         if (!instance.Mesh.GLBuffer.TryCreate())
-            return;
+            throw new InvalidOperationException("Could not create GL buffer.");
+
+        var mesh = instance.Mesh;
+        var material = MeshMaterial.Default;
+        var program = material.GLProgram;
+        program.TryCreate();
+
+        program.Bind();
+        program.SubCameraMatrix(Camera);
+        program.SubModelMatrix(instance.ModelMatrix);
+
+        int colorLoc = GL.GetUniformLocation(program.ProgramID, "uColor");
+        GL.Uniform3(colorLoc, new Vector3(1, 1, 1));
+
+
+        var buffer = mesh.GLBuffer;
+        buffer.Bind();
+        var rnd = new Random(1);
+
+        //for (int i = 0; i < mesh.MaterialRegion.Length; i++)
+        //{
+            //var region = mesh.MaterialRegion[i];
+            GL.Uniform3(colorLoc, new Vector3((float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble()));
+            //region.Material.GLShader.Bind();
+            GL.DrawElements(PrimitiveType.Triangles, buffer.ElementCount, DrawElementsType.UnsignedInt, 0 * 3 * 4);
+        //}
     }
 
     private void DrawSprite(Sprite sprite)

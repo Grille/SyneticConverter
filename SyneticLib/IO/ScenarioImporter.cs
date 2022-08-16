@@ -7,54 +7,24 @@ using System.IO;
 using SyneticLib.IO.Synetic.Files;
 
 namespace SyneticLib.IO;
-public abstract class ScenarioDataImporter
+public abstract class ScenarioImporter
 {
     protected ScenarioVariant target;
-    protected string path;
 
-    public ScenarioDataImporter(ScenarioVariant target)
+    public ScenarioImporter(ScenarioVariant target)
     {
         this.target = target;
-        path = target.SourcePath;
     }
 
-    protected abstract void OnSeek(string path);
     protected abstract void OnLoad();
     protected abstract void OnInit();
 
-    public void Seek(string path)
-    {
-        try
-        {
-            OnSeek(path);
-            target.DataState = DataState.Loaded;
-        }
-        catch (FileNotFoundException ex)
-        {
-            target.Errors.Add(ex.Message);
-            target.DataState = DataState.Error;
-        }
-    }
-
-    public void Seek()
-    {
-        Seek(target.SourcePath);
-    }
-
-    public void Load(string path)
-    {
-        this.path = path;
-        Load();
-    }
-
     public void Load()
     {
-        if (target.PointerState < PointerState.Exists)
-            Seek();
-
         try
         {
             OnLoad();
+            OnInit();
             target.DataState = DataState.Loaded;
         }
         catch (FileNotFoundException ex)
@@ -62,25 +32,6 @@ public abstract class ScenarioDataImporter
             target.Errors.Add(ex.Message);
             target.DataState = DataState.Error;
         }
-    }
-
-    public void Init()
-    {
-        /*
-        if (target.State < InitState.Loaded)
-            Load();
-
-        try
-        {
-            OnInit();
-            target.State = InitState.Initialized;
-        }
-        catch (FileNotFoundException ex)
-        {
-            target.Errors.Add(ex.Message);
-            target.State = InitState.Failed;
-        }
-        */
     }
 
     public void LoadWorldTexture(string name)
@@ -123,7 +74,7 @@ public abstract class ScenarioDataImporter
         }
 
         DeflateIndecies(idx, vtx, qad);
-
+        /*
         int maxc = 0;
         int max = mesh.Vertices.Length;
 
@@ -146,6 +97,9 @@ public abstract class ScenarioDataImporter
             }
 
         }
+        */
+
+        terrain.DataState = DataState.Loaded;
     }
 
     protected void DeflateIndecies(IIndexData idx, IVertexData vtx, QadFile qad)
@@ -155,7 +109,6 @@ public abstract class ScenarioDataImporter
 
         var srcidx = idx.Indices;
         var indecies = new int[srcidx.Length];
-        var poligons = new Vector3Int[srcidx.Length / 3];
 
         int pos = 0;
         int offset = 0;
@@ -175,9 +128,9 @@ public abstract class ScenarioDataImporter
                 int end = begin + block.NumPoly;
                 for (int i = begin; i < end; i++)
                 {
-                    poligons[i].X = indecies[pos + 0] = srcidx[pos + 0] + offset;
-                    poligons[i].Y = indecies[pos + 1] = srcidx[pos + 1] + offset;
-                    poligons[i].Z = indecies[pos + 2] = srcidx[pos + 2] + offset;
+                    indecies[pos + 0] = srcidx[pos + 0] + offset;
+                    indecies[pos + 1] = srcidx[pos + 1] + offset;
+                    indecies[pos + 2] = srcidx[pos + 2] + offset;
 
                     pos += 3;
                 }
@@ -185,6 +138,5 @@ public abstract class ScenarioDataImporter
         }
 
         mesh.Indecies = indecies;
-        mesh.Poligons = poligons;
     }
 }

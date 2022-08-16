@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class Car : Ressource
 {
+    public Mesh Mesh;
+    public MaterialList Materials;
 
     public Car(GameFolder parent, string path) : base(parent, PointerType.Directory)
     {

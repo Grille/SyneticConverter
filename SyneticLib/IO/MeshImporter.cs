@@ -8,25 +8,18 @@ namespace SyneticLib.IO;
 public abstract class MeshImporter
 {
     protected Mesh target;
-    protected string path;
 
     public MeshImporter(Mesh target)
     {
         this.target = target;
     }
 
-    public abstract void Load();
-    public abstract void Assign();
+    protected abstract void OnLoad();
+    protected abstract void OnAssign();
 
-    public void Load(string path)
+    public void Load()
     {
-        this.path = path;
-        Load();
-    }
-
-    public void LoadAndAssign()
-    {
-        Load();
-        Assign();
+        OnLoad();
+        OnAssign();
     }
 }

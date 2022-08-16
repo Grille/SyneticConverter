@@ -87,6 +87,9 @@ public abstract class Ressource {
 
     public void Load()
     {
+        if (PointerType == PointerType.Virtual)
+            throw new InvalidOperationException("Ressource is Virtual, Load/Save is handled by parent.");
+
         if (NeedSeek)
             Seek();
 

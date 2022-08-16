@@ -8,20 +8,19 @@ using SyneticLib.IO.Synetic.Files;
 namespace SyneticLib.IO.Synetic;
 public class MeshImporterMox : MeshImporter
 {
-    private GameVersion format;
     private MoxFile mox;
 
     public MeshImporterMox(Mesh target) : base(target)
     {
-        this.target = target;
         mox = new();
+        mox.Path = target.SourcePath;
     }
 
-    public override void Load()
+    protected override void OnLoad()
     {
-        mox.Load(path);
+        mox.Load();
     }
-    public override void Assign()
+    protected override void OnAssign()
     {
         target.Vertices = new MeshVertex[mox.Vertecis.Length];
         for (var i = 0; i < mox.Vertecis.Length; i++)

@@ -8,7 +8,7 @@ using System.Numerics;
 using SyneticLib.IO.Synetic.Files;
 
 namespace SyneticLib.IO.Synetic;
-public class ScenarioImporterWR : ScenarioDataImporter
+public class ScenarioImporterWR : ScenarioImporter
 {
     private GameVersion format;
     private SynFile syn;
@@ -40,14 +40,11 @@ public class ScenarioImporterWR : ScenarioDataImporter
             _ => throw new NotImplementedException(errmsg)
         };
         sky = new();
-    }
 
-    protected override void OnSeek(string path)
-    {
-        var synPath = Path.Combine(path, $"V{target.IdNumber}");
+        var synPath = Path.Combine(target.SourcePath, $"V{target.IdNumber}");
         syn.Path = synPath + ".syn";
 
-        var filePath = Path.Combine(path, target.Parent.FileName);
+        var filePath = Path.Combine(target.SourcePath, target.Parent.FileName);
         idx.Path = filePath + ".idx";
         lvl.Path = filePath + ".lvl";
         sni.Path = filePath + ".sni";
@@ -92,18 +89,21 @@ public class ScenarioImporterWR : ScenarioDataImporter
     protected override void OnInit()
     {
         AssignTextures();
-        AssignObjects();
+        //AssignObjects();
         AssignTerrain(idx, vtx, qad);
-        AssignLights();
+        //AssignLights();
     }
 
     public void AssignTextures()
     {
+        /*
         for (var i = 0; i < qad.TextureName.Length; i++)
         {
             string name = qad.TextureName[i];
             LoadWorldTexture(name);
         }
+        */
+        
 
 
         /*
@@ -162,8 +162,6 @@ public class ScenarioImporterWR : ScenarioDataImporter
 
                 var prop = new PropClass(target, target.ObjectTextures,name);
                 var path = Path.Combine(target.SourcePath, "Objects", name + ".mox");
-                if (File.Exists(path))
-                    prop.Mesh.ImportFromMox(path);
 
                 target.PropClasses.Add(prop);
             }

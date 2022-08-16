@@ -21,7 +21,7 @@ public class MoxFile : SyneticBinaryFile
         Head = br.Read<MHead>();
 
         if (Head.Magic != "!XOM")
-            throw new InvalidOperationException();
+            throw new InvalidOperationException($"Invalid Head '{Head.Magic}'.");
 
         var ver = (MoxVerion)Head.Version;
 
@@ -51,6 +51,7 @@ public class MoxFile : SyneticBinaryFile
         throw new NotImplementedException();
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     public struct MHead
     {
         public String4 Magic;

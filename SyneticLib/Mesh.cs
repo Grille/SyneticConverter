@@ -15,7 +15,7 @@ namespace SyneticLib;
 public class Mesh: Ressource
 {
     public string Name;
-    public int[] Indecies;
+    //public int[] Indecies;
     public MeshVertex[] Vertices;
     public Vector3Int[] Poligons;
     public MaterialRegion[] MaterialRegion;
@@ -29,11 +29,9 @@ public class Mesh: Ressource
         GLBuffer = new MeshBuffer(this);
     }
 
-    public void ImportFromMox(string path)
+    public void ImportFromMox()
     {
-        var imp = new MeshImporterMox(this);
-        imp.Load(path);
-        imp.Assign();
+        new MeshImporterMox(this).Load();
     }
 
     public void ExportAsObj(string path, bool fix = true)
@@ -53,7 +51,13 @@ public class Mesh: Ressource
 
     protected override void OnLoad()
     {
-        //throw new NotImplementedException();
+        switch (Extension.ToLower()) {
+            case ".mox":
+                ImportFromMox();
+                return;
+            default:
+                throw new InvalidOperationException($"'{SourcePath}' is not a valid model file.");
+    }
     }
 
     protected override void OnSave()

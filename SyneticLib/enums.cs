@@ -33,7 +33,6 @@ public enum PointerState
 
 public enum PointerType
 {
-    None,
     Virtual,
     Directory,
     File,

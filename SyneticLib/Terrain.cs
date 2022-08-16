@@ -12,7 +12,7 @@ public class Terrain : Ressource
     public string Name;
     public int[] Indecies;
     public MeshVertex[] Vertices;
-    public Vector3Int[] Poligons;
+    //public Vector3Int[] Poligons;
     public MaterialRegion[] MaterialRegion;
     public RessourceList<TerrainMaterial> Materials;
 

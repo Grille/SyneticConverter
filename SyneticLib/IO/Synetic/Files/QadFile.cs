@@ -24,7 +24,7 @@ public abstract class QadFile : SyneticBinaryFile
     public MMaterialDef[] Materials;
     public MPolygonRegionPtr[] MaterialRegions;
     public MObjInstance[] PropInstances;
-    public MGround[] Grounds;
+    public MGroundPhysics[] Grounds;
     public ushort[] Tex2Ground;
     public MSound[] Sounds;
 
@@ -76,7 +76,7 @@ public abstract class QadFile : SyneticBinaryFile
         public float x5;
     }
 
-    public struct MGround
+    public struct MGroundPhysics
     {
         public String64 Name;
         public ushort Dirt, GripF, GripR, Stick, NoiseID, SkidID;
@@ -150,7 +150,7 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
         Materials = br.ReadArray<MMaterialDef>(Head.MaterialCount);
         PropInstances = br.ReadArray<MObjInstance>(Head.PropInstanceCount);
         Lights = br.ReadArray<TMLight>(Head.Lights);
-        Grounds = br.ReadArray<MGround>(Head.GroundTypes);
+        Grounds = br.ReadArray<MGroundPhysics>(Head.GroundTypes);
         Tex2Ground = br.ReadArray<ushort>(256);
         Sounds = br.ReadArray<MSound>(Head.Sounds);
     }

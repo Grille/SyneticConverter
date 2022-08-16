@@ -22,10 +22,13 @@ internal class Renderer
 
         var v1 = scenario.Variants[0];
         var mesh = v1.Terrain;
+
+        /*
         foreach (var poly in mesh.Poligons)
         {
             DrawPoly(Pens.Black, mesh.Vertices[poly.X].Position, mesh.Vertices[poly.Y].Position, mesh.Vertices[poly.Z].Position);
         }
+        */
         foreach (var prop in v1.PropInstances)
         {
             DrawCompass(prop.Position);

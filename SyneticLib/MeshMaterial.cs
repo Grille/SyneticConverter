@@ -14,6 +14,9 @@ public class MeshMaterial : Ressource
         GLProgram = new MeshMaterialProgram(this);
     }
 
+
+    public static readonly MeshMaterial Default = new MeshMaterial(null);
+
     protected override void OnLoad()
     {
         throw new NotImplementedException();
