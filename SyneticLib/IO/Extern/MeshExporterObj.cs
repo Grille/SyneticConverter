@@ -35,6 +35,12 @@ public class MeshExporterObj : MeshExporter
 
             for (var i = 0; i < target.Vertices.Length; i++)
             {
+                var norm = target.Vertices[i].Normal;
+                sw.WriteLine($"vn {norm.X} {norm.Y} {norm.Z}");
+            }
+
+            for (var i = 0; i < target.Vertices.Length; i++)
+            {
                 var uv = target.Vertices[i].UV0;
                 sw.WriteLine($"vt {uv.X} {uv.Y}");
             }
@@ -49,12 +55,16 @@ public class MeshExporterObj : MeshExporter
                 for (var i = begin; i < end; i++)
                 {
                     ref var poly = ref target.Poligons[i];
-                    sw.WriteLine($"f {poly.X + 1} {poly.Y + 1} {poly.Z + 1}");
+                    int idx0 = poly.X + 1;
+                    int idx1 = poly.Y + 1;
+                    int idx2 = poly.Z + 1;
+                    sw.WriteLine($"f {idx0}/{idx0}/{idx0} {idx1}/{idx1}/{idx1} {idx2}/{idx2}/{idx2}");
                 }
             }
 
         }
 
+        /*
         {
             var rnd = new Random(1);
 
@@ -70,6 +80,7 @@ public class MeshExporterObj : MeshExporter
                 sw.WriteLine();
             }
         }
+        */
 
         /*
         

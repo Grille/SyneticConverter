@@ -26,6 +26,8 @@ public partial class MainForm : Form
     Config config;
     Scene scene;
 
+    private Point lastMouse = Point.Empty;
+
     public MainForm()
     {
         InitializeComponent();
@@ -38,6 +40,8 @@ public partial class MainForm : Form
         glControl.Dock = DockStyle.Fill;
         //glControl.Visible = false;
         glPanel.Controls.Add(glControl);
+        glPanel.MouseWheel += GlPanel_MouseWheel;
+        glPanel.MouseMove += GlPanel_MouseMove;
 
         glControl.Resize += GlControl_Resize;
         dataTreeView.ImageList = IconList.Images;
@@ -61,6 +65,22 @@ public partial class MainForm : Form
         scene = new();
     }
 
+    private void GlPanel_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Left)
+        {
+            scene.Camera.RotateAroundCenterHorizontal(e.Location.X - lastMouse.X);
+            scene.Camera.RotateAroundCenterVertical(e.Location.Y - lastMouse.Y);
+        }
+
+        lastMouse = e.Location;
+    }
+
+    private void GlPanel_MouseWheel(object sender, MouseEventArgs e)
+    {
+        scene.Camera.Scroll(e.Delta,1.2f);
+    }
+
     private void GlControl_Paint(object sender, PaintEventArgs e)
     {
         RenderFrame();
@@ -82,10 +102,14 @@ public partial class MainForm : Form
         {
             if (!Games.Exists(dialog.GameName))
             {
+                dataTreeView.BeginUpdate();
+
                 var game = Games.CreateGame(dialog.GameName, dialog.GamePath);
                 var node = new GameFolderNode(game);
                 node.UpdateAppearance();
                 dataTreeView.Nodes.Add(node);
+
+                dataTreeView.EndUpdate();
             }
         }
     }
@@ -110,12 +134,14 @@ public partial class MainForm : Form
         Games.CreateGame("FVR", "X:/Games/Synetic/Ferrari Virtual Race", GameVersion.FVR);
 
         dataTreeView.BeginUpdate();
+
         foreach (var game in Games.GameFolders)
         {
             var node = new GameFolderNode(game.Value);
             dataTreeView.Nodes.Add(node);
             node.UpdateAppearance();
         }
+
         dataTreeView.EndUpdate();
 
         renderTimer.Start();
@@ -143,8 +169,21 @@ public partial class MainForm : Form
 
     private void dataTreeView_AfterSelect(object sender, TreeViewEventArgs e)
     {
+        dataTreeView.BeginUpdate();
+
         switch (e.Node)
         {
+            case CarNode:
+            {
+                var mnode = (CarNode)e.Node;
+
+                if (mnode.DataValue.NeedLoad)
+                    mnode.DataValue.Load();
+                mnode.UpdateAppearance();
+
+                DisplayMesh(mnode.MeshNode.DataValue);
+            }
+            break;
             case MeshNode:
             {
                 var mnode = (MeshNode)e.Node;
@@ -153,7 +192,7 @@ public partial class MainForm : Form
                     mnode.DataValue.Load();
                 mnode.UpdateAppearance();
 
-                DisplayMesh((Mesh)mnode.DataValue);
+                DisplayMesh(mnode.DataValue);
             }
             break;
             case TextureNode:
@@ -190,6 +229,8 @@ public partial class MainForm : Form
             }
             break;
         }
+
+        dataTreeView.EndUpdate();
     }
 
     private void DisplayScenarioVariant(ScenarioVariant scenario)
@@ -222,10 +263,10 @@ public partial class MainForm : Form
 
     private void dataTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
     {
-        dataTreeView.BeginUpdate();
-
         if (e.Node is DataTreeNode)
         {
+            dataTreeView.BeginUpdate();
+
             var node = (DataTreeNode)e.Node;
             foreach (var n in node.Nodes)
             {
@@ -235,9 +276,8 @@ public partial class MainForm : Form
                 var cnode = (DataTreeNode)n;
                 cnode.SeekAndUpdateContent();
             }
-            node.UpdateAppearance();
-        }
 
-        dataTreeView.EndUpdate();
+            dataTreeView.EndUpdate();
+        }
     }
 }

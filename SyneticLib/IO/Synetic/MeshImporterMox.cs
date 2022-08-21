@@ -38,6 +38,8 @@ public class MeshImporterMox : MeshImporter
             target.Poligons[i].Y = mox.Indices[i].Y;
             target.Poligons[i].Z = mox.Indices[i].Z;
         }
+
+        target.MaterialRegion = new MaterialRegion[] { new(0, target.Poligons.Length) { } };
     }
 
 }

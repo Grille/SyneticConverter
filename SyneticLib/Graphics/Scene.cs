@@ -22,7 +22,7 @@ public class Scene
         Instances = new List<MeshInstance>();
         Camera = new Camera();
 
-        Camera.Position = new Vector3(0, 1000, -2000);
+        Camera.Position = new Vector3(0, 200, -300);
         Camera.LookAt(new Vector3(0, 0, 0));
     }
 
@@ -122,6 +122,10 @@ public class Scene
     {
         GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
         GL.Enable(EnableCap.DepthTest);
+        GL.Enable(EnableCap.CullFace);
+
+        Camera.CreatePerspective();
+        Camera.CreateView();
 
         if (Terrain != null)
             DrawTerrain(Terrain);

@@ -1,17 +1,24 @@
-WIP SyneticConverter
+# WIP SyneticConverter
+## SyneticLib
+A library that allows reading and writing to most of Synetic file formats.
+### Supported formats
+```
+- Scenarios
+  - Import: MBWR, WR2, C11, CT1, CT2, CT3, CT4, CT5, FVR
+  - Export: #
+  - EUtils: BeamNG
+ ```
+ ```
+- Cars
+  - Import: #
+  - Export: #
+ ```
+### Planed
+- Importer & exporter for all scenario files from MBWR to CT5, maybe also NICE to MBTR depending on file formats.
+- Later maybe also support for car models.
+- Calculating chunks for terrain meshes.
+- An simple ray-racer for backed lights.
+- OpenGL(OpenTK) renderer for meshes & scenarios.
+## SyneticConverter
+An GUI layer on top of SyneticLib that allow viewing & converting Scenarios, and later maybe also cars.
 
-This project consists of 2 parts
-
-SyneticLib
-A library that allows reading and writing to “all” Synetic file formats.
-And also, some special functions like subdivide terrain meshes into chunks, or later also an ray-tracer to calculate backed lights.
-
-SyneticConverter
-An GUI on top of SyneticLib that allow viewing & converting Scenarios, and later maybe also cars
-
-Features
-- Viewing brocken meshes? :)
-
-Planed
--	Importer & exporter for all scenario files from MBWR to CT5, maybe also NICE to MBTR depending on file formats.
--   

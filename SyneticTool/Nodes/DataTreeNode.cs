@@ -11,6 +11,8 @@ namespace SyneticTool.Nodes;
 
 public class DataTreeNode : TreeNode
 {
+    public virtual bool Loaded { get; private set; }
+
     public Ressource DataValue { get; set; }
 
     public DataTreeNode(Ressource data)
@@ -34,15 +36,34 @@ public class DataTreeNode : TreeNode
     {
         if (DataValue.NeedSeek)
         {
-            Console.WriteLine("seek");
             DataValue.Seek();
-            OnUpdateContent();
         }
-        OnUpdateAppearance();
+
+        if (!Loaded)
+        {
+            OnUpdateContent();
+            Loaded = true;
+        }
+
+        UpdateAppearance();
     }
 
     public void UpdateAppearance() {
+        //if (!IsVisible)
+        //    return;
+
         OnUpdateAppearance();
+
+        if (IsExpanded)
+        {
+            foreach (var node in Nodes)
+            {
+                if (node is DataTreeNode)
+                {
+                    ((DataTreeNode)node).UpdateAppearance();
+                }
+            }
+        }
     }
 
     protected virtual void OnUpdateContent()

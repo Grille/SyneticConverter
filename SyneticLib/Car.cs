@@ -13,11 +13,13 @@ public class Car : Ressource
     public Car(GameFolder parent, string path) : base(parent, PointerType.Directory)
     {
         SourcePath = path;
+
+        Mesh = new Mesh(parent, ChildPath(FileName + ".mox"));
     }
 
     protected override void OnLoad()
     {
-        throw new NotImplementedException();
+        Mesh.Load();
     }
 
     protected override void OnSave()
@@ -27,6 +29,6 @@ public class Car : Ressource
 
     protected override void OnSeek()
     {
-
+        Mesh.Seek();
     }
 }

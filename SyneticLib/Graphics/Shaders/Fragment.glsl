@@ -4,8 +4,13 @@ out vec4 FragColor;
 uniform vec3 uColor;
 
 in vec3 fDebug;
+in vec3 fPos;
 
 void main()
 {
-    FragColor = vec4(fDebug * uColor, 1.0f);
+    vec3 xTangent = dFdx( fPos );
+    vec3 yTangent = dFdy( fPos );
+    vec3 faceNormal = normalize( cross( xTangent, yTangent ) );
+
+    FragColor = vec4(faceNormal, 1.0f);
 } 

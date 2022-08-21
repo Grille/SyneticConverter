@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using OpenTK.Mathematics;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace SyneticLib.Graphics;
 public class Camera
@@ -13,7 +14,7 @@ public class Camera
     public Matrix4 ViewMatrix = Matrix4.Identity;
 
     public Vector3 Position = Vector3.Zero;
-    public Vector3 Target = Vector3.Zero;
+    public Vector3 Center = Vector3.Zero;
     public Vector3 Up = new Vector3(0,1,0);
 
     Vector2 _screenSize = Vector2.One;
@@ -34,19 +35,52 @@ public class Camera
 
     }
 
+    public void Scroll(int delta, float factor)
+    {
+        float distance = MathF.Abs((Center - Position).Length);
+
+        float newDist = distance;
+
+        if (delta > 0)
+            newDist *= factor;
+        else
+            newDist /= factor;
+
+        float diff = newDist - distance;
+
+        Move(diff);
+    }
+
+    public void RotateAroundCenterHorizontal(float amount)
+    {
+
+    }
+
+    public void RotateAroundCenterVertical(float amount)
+    {
+
+    }
+
+
+    public void Move(float amount)
+    {
+        var vector = (Center - Position).Normalized() * amount;
+        Position += vector;
+    }
+
     public void CreatePerspective()
     {
-        ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(1.3f, AspectRatio, 1.0f, 80000.0f);
+        ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(1.3f, AspectRatio, 1.0f, 16_000_0.0f);
     }
 
     public void LookAt(Vector3 target)
     {
-        Target = target;
-        LookAt();
+        Center = target;
+        CreateView();
     }
 
-    public void LookAt()
+    public void CreateView()
     {
-        ViewMatrix = Matrix4.LookAt(Position, Target, Up);
+        ViewMatrix = Matrix4.LookAt(Position, Center, Up);
     }
 }

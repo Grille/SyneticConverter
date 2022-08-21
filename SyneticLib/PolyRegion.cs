@@ -11,4 +11,16 @@ public class MaterialRegion
     public int Offset;
     public int Count;
     public TerrainMaterial Material;
+
+    public MaterialRegion()
+    {
+
+    }
+
+    public MaterialRegion(int offset, int count)
+    {
+        Offset = offset;
+        Count = count;
+        Material = TerrainMaterial.Default;
+    }   
 }

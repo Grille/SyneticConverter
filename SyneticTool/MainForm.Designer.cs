@@ -222,6 +222,7 @@
             // 
             // renderTimer
             // 
+            this.renderTimer.Interval = 10;
             this.renderTimer.Tick += new System.EventHandler(this.renderTimer_Tick);
             // 
             // MainForm

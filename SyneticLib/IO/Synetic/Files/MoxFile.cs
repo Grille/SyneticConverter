@@ -25,19 +25,19 @@ public class MoxFile : SyneticBinaryFile
 
         var ver = (MoxVerion)Head.Version;
 
-        Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
+        //Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
 
         Vertecis = br.ReadArray<MVertex>(Head.VertCount);
 
-        Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
+        //Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
 
         Indices = br.ReadArray<MPoly>(Head.PolyCount);
 
-        Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
+        //Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
 
         Textures = br.ReadArray<MTex>(Head.TextureCount);
 
-        Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
+        //Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
 
         var size = sizeof(MVertex);
 

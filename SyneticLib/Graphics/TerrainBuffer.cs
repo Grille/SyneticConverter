@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
+using System.Numerics;
 
 namespace SyneticLib.Graphics;
 public unsafe class TerrainBuffer : GLStateObject
@@ -24,7 +27,7 @@ public unsafe class TerrainBuffer : GLStateObject
         ElementCount = owner.Indecies.Length;
 
         var indices = owner.Indecies;
-        var vertices = new GlTerrainVertex[owner.Vertices.Length];
+        var vertices = new Vertex[owner.Vertices.Length];
 
         for (int i = 0; i < owner.Vertices.Length; i++)
         {
@@ -41,12 +44,12 @@ public unsafe class TerrainBuffer : GLStateObject
         GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indices.Length, indices, BufferUsageHint.StaticDraw);
 
         GL.BindBuffer(BufferTarget.ArrayBuffer, VerticesID);
-        GL.BufferData(BufferTarget.ArrayBuffer, sizeof(GlTerrainVertex) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, sizeof(Vertex) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
 
         AttribID = GL.GenVertexArray();
         GL.BindVertexArray(AttribID);
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(GlTerrainVertex), GlTerrainVertex.LocationPosition);
-        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(GlTerrainVertex), GlTerrainVertex.LocationDebugColor);
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LocationPosition);
+        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LocationDebugColor);
         GL.EnableVertexAttribArray(0);
         GL.EnableVertexAttribArray(1);
     }
@@ -63,5 +66,18 @@ public unsafe class TerrainBuffer : GLStateObject
         GL.DeleteBuffer(IndicesID);
         GL.DeleteBuffer(VerticesID);
         GL.DeleteVertexArray(AttribID);
+    }
+
+    [StructLayout(LayoutKind.Explicit, Size = 32)]
+    internal unsafe struct Vertex
+    {
+        public const int LocationPosition = 0;
+        public const int LocationDebugColor = LocationPosition + 4 * 3;
+
+        [FieldOffset(LocationPosition)]
+        public Vector3 Position;
+
+        [FieldOffset(LocationDebugColor)]
+        public Vector3 DebugColor;
     }
 }

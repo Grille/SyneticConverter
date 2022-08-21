@@ -1,4 +1,6 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using System.Runtime.InteropServices;
+using OpenTK.Graphics.OpenGL4;
+using System.Numerics;
 
 namespace SyneticLib.Graphics;
 public unsafe class MeshBuffer : GLStateObject
@@ -18,10 +20,10 @@ public unsafe class MeshBuffer : GLStateObject
 
     protected override void OnCreate()
     {
-        ElementCount = owner.Poligons.Length * 3;
+        ElementCount = owner.Poligons.Length *3;
 
         var indices = owner.Poligons;
-        var vertices = new GlTerrainVertex[owner.Vertices.Length];
+        var vertices = new Vertex[owner.Vertices.Length];
 
         for (int i = 0; i < owner.Vertices.Length; i++)
         {
@@ -35,15 +37,15 @@ public unsafe class MeshBuffer : GLStateObject
         IndicesID = GL.GenBuffer();
 
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndicesID);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indices.Length, indices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * 3*indices.Length, indices, BufferUsageHint.StaticDraw);
 
         GL.BindBuffer(BufferTarget.ArrayBuffer, VerticesID);
-        GL.BufferData(BufferTarget.ArrayBuffer, sizeof(GlTerrainVertex) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, sizeof(Vertex) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
 
         AttribID = GL.GenVertexArray();
         GL.BindVertexArray(AttribID);
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(GlTerrainVertex), GlTerrainVertex.LocationPosition);
-        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(GlTerrainVertex), GlTerrainVertex.LocationDebugColor);
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LocationPosition);
+        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LocationDebugColor);
         GL.EnableVertexAttribArray(0);
         GL.EnableVertexAttribArray(1);
 
@@ -62,6 +64,20 @@ public unsafe class MeshBuffer : GLStateObject
         GL.DeleteBuffer(IndicesID);
         GL.DeleteBuffer(VerticesID);
         GL.DeleteVertexArray(AttribID);
+    }
+
+    [StructLayout(LayoutKind.Explicit, Size = Size)]
+    public struct Vertex
+    {
+        public const int LocationPosition = 0;
+        public const int LocationDebugColor = LocationPosition + 4 * 3;
+        public const int Size = LocationDebugColor + 4 * 3;
+
+        [FieldOffset(LocationPosition)]
+        public Vector3 Position;
+
+        [FieldOffset(LocationDebugColor)]
+        public Vector3 DebugColor;
     }
 
 }
