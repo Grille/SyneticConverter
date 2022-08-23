@@ -32,11 +32,11 @@ public class TerrainMaterialProgram : GLStateObject
         VertexID = GL.CreateShader(ShaderType.VertexShader);
         FragmentID = GL.CreateShader(ShaderType.FragmentShader);
 
-        GL.ShaderSource(VertexID, GLSLSrc.TerrainVertexSrc);
+        GL.ShaderSource(VertexID, GLSLSrc.TerrainVertex);
         GL.CompileShader(VertexID);
         GL.GetShaderInfoLog(VertexID, out string vertlog);
 
-        GL.ShaderSource(FragmentID, GLSLSrc.FragmentSrc);
+        GL.ShaderSource(FragmentID, GLSLSrc.TerrainFragment);
         GL.CompileShader(FragmentID);
         GL.GetShaderInfoLog(FragmentID, out string idxlog);
 

@@ -31,10 +31,13 @@ public unsafe class TerrainBuffer : GLStateObject
 
         for (int i = 0; i < owner.Vertices.Length; i++)
         {
-            var v = owner.Vertices[i];
+            var srcv = owner.Vertices[i];
+            ref var dstv = ref vertices[i];
 
-            vertices[i].Position = (v.Position);
-            vertices[i].DebugColor = v.LightColor.ToNormalizedRGB();
+            dstv.Position = srcv.Position;
+            dstv.Normal = srcv.Normal;
+            dstv.UV = srcv.UV0;
+            dstv.DebugColor = srcv.LightColor.ToNormalizedRGB();
         }
 
         VerticesID = GL.GenBuffer();
@@ -48,10 +51,14 @@ public unsafe class TerrainBuffer : GLStateObject
 
         AttribID = GL.GenVertexArray();
         GL.BindVertexArray(AttribID);
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LocationPosition);
-        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LocationDebugColor);
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LPosition);
+        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LNormal);
+        GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LUV);
+        GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LDebugColor);
         GL.EnableVertexAttribArray(0);
         GL.EnableVertexAttribArray(1);
+        GL.EnableVertexAttribArray(2);
+        GL.EnableVertexAttribArray(3);
     }
 
     protected override void OnBind()
@@ -68,16 +75,28 @@ public unsafe class TerrainBuffer : GLStateObject
         GL.DeleteVertexArray(AttribID);
     }
 
-    [StructLayout(LayoutKind.Explicit, Size = 32)]
+    [StructLayout(LayoutKind.Explicit, Size = Size)]
     internal unsafe struct Vertex
     {
-        public const int LocationPosition = 0;
-        public const int LocationDebugColor = LocationPosition + 4 * 3;
+        private const int s_vec2 = 4 * 2;
+        private const int s_vec3 = 4 * 3;
 
-        [FieldOffset(LocationPosition)]
+        public const int LPosition = 0;
+        public const int LNormal = LPosition + s_vec3;
+        public const int LUV = LNormal + s_vec3;
+        public const int LDebugColor = LUV + s_vec2;
+        public const int Size = LDebugColor + s_vec3;
+
+        [FieldOffset(LPosition)]
         public Vector3 Position;
 
-        [FieldOffset(LocationDebugColor)]
+        [FieldOffset(LNormal)]
+        public Vector3 Normal;
+
+        [FieldOffset(LUV)]
+        public Vector2 UV;
+
+        [FieldOffset(LDebugColor)]
         public Vector3 DebugColor;
     }
 }

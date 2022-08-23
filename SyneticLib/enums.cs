@@ -46,3 +46,13 @@ public enum DataState
     Changed,
     Error,
 }
+
+public enum PixelFormat
+{
+    R = 1,
+    RG = 2,
+    RGB = 3,
+    RGBA = 4,
+
+    BGRA = 5,
+}

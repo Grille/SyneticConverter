@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using SyneticLib.IO.Synetic;
+using System.Diagnostics;
 
 namespace SyneticLib;
 
@@ -29,6 +30,8 @@ public partial class ScenarioVariant : Ressource
     public RessourceList<Light> Lights;
 
     public List<string> Errors;
+
+    public ProgressInfo Progress;
 
     //public InitState State { get; internal set; }
 

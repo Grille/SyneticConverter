@@ -18,10 +18,12 @@
 
   <ItemGroup>
     <None Remove="Graphics\Shaders\Fragment.glsl" />
+    <None Remove="Graphics\Shaders\TerrainFragment.glsl" />
     <None Remove="Graphics\Shaders\TerrainVertex.glsl" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Graphics\Shaders\TerrainFragment.glsl" />
     <EmbeddedResource Include="Graphics\Shaders\Fragment.glsl" />
     <EmbeddedResource Include="Graphics\Shaders\TerrainVertex.glsl" />
     <EmbeddedResource Include="Graphics\Shaders\MeshVertex.glsl" />

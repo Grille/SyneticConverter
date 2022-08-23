@@ -9,7 +9,7 @@ namespace SyneticLib;
 public class MeshVertex
 {
     public Vector3 Position;
-    public Vector4 Normal;
+    public Vector3 Normal;
     public Vector2 UV0;
     public Vector2 UV1;
     public Vector3 Blending;

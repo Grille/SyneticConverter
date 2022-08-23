@@ -212,7 +212,13 @@ public partial class MainForm : Form
                 var vnode = snode.V1;
 
                 if (vnode.DataValue.NeedLoad)
+                {
+                    var dialog = new ProgressForm();
+                    dialog.Show(this);
+                    dialog.Update();
                     vnode.DataValue.Load();
+                    dialog.Close();
+                }
                 vnode.UpdateAppearance();
                 DisplayScenarioVariant(vnode.DataValue);
             }

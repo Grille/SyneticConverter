@@ -21,6 +21,12 @@ public class TextureBuffer : GLStateObject
     protected override void OnCreate()
     {
         textureID = GL.GenTexture();
+
+        GL.BindTexture(TextureTarget.Texture2D, textureID);
+
+        //GL.texs
+        //GL.texsub
+
     }
 
     protected override void OnBind()

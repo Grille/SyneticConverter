@@ -31,7 +31,7 @@ public class VtxFile : SyneticBinaryFile, IVertexData
             Vertices[i] = new MeshVertex()
             {
                 Position = src.Position,
-                Normal = new Vector4(src.Normal.B / 255f, src.Normal.G / 255f, src.Normal.R / 255f, src.Normal.A / 255f),
+                Normal = new Vector3(src.Normal.B / 255f, src.Normal.G / 255f, src.Normal.R / 255f/*, src.Normal.A / 255f*/),
                 UV0 = src.UV,
                 UV1 = Vector2.Zero,
                 Blending = new Vector3(src.Blend.B0, src.Blend.B1, src.Blend.B2),

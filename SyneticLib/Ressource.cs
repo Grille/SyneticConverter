@@ -122,4 +122,9 @@ public abstract class Ressource {
         TargetVersion = format;
         Save();
     }
+
+    public virtual (int value, string msg) PullProgress()
+    {
+        throw new NotImplementedException();
+    }
 }

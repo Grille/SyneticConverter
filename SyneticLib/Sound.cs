@@ -26,6 +26,11 @@ public class Sound : Ressource
         File.WriteAllBytes(SourcePath, Buffer);
     }
 
+    public void Play()
+    {
+
+    }
+
     protected override void OnSeek()
     {
 

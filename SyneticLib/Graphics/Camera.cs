@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using OpenTK.Mathematics;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace SyneticLib.Graphics;
 public class Camera

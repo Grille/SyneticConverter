@@ -25,11 +25,11 @@ public class MeshMaterialProgram : GLStateObject
         VertexID = GL.CreateShader(ShaderType.VertexShader);
         FragmentID = GL.CreateShader(ShaderType.FragmentShader);
 
-        GL.ShaderSource(VertexID, GLSLSrc.MeshVertexSrc);
+        GL.ShaderSource(VertexID, GLSLSrc.MeshVertex);
         GL.CompileShader(VertexID);
         GL.GetShaderInfoLog(VertexID, out string vertlog);
 
-        GL.ShaderSource(FragmentID, GLSLSrc.FragmentSrc);
+        GL.ShaderSource(FragmentID, GLSLSrc.Fragment);
         GL.CompileShader(FragmentID);
         GL.GetShaderInfoLog(FragmentID, out string idxlog);
 
