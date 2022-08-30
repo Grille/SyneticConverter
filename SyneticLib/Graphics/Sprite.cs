@@ -13,6 +13,8 @@ public class Sprite
     public Vector2 Size;
     public Texture Texture;
 
+    public static GLProgram GLProgram = new SpriteProgram();
+
     public Sprite(Texture texture)
     {
         Texture = texture;
@@ -26,4 +28,12 @@ public class Sprite
     }
 
     public Sprite(Texture texture, RectangleF rectangle) : this(texture, (Vector2)rectangle.Location, (Vector2)rectangle.Size) { }
+
+    class SpriteProgram : GLProgram
+    {
+        protected override void OnCreate()
+        {
+            Compile(GLSLSource.SpriteVertex, GLSLSource.SpriteFragment);
+        }
+    }
 }

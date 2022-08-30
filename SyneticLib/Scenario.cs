@@ -20,16 +20,9 @@ public class Scenario : Ressource
     public ScenarioVariant V3 { get => Variants.Count > 2 ? Variants[2] : null; }
     public ScenarioVariant V4 { get => Variants.Count > 3 ? Variants[3] : null; }
 
-    public Scenario() : base(null, PointerType.Directory)
+    public Scenario(GameFolder game, string path) :base(game, path, PointerType.Directory)
     {
         Variants = new List<ScenarioVariant>();
-    }
-
-
-    public Scenario(GameFolder game, string path) :base(game, PointerType.Directory)
-    {
-        Variants = new List<ScenarioVariant>();
-        SourcePath = path;
     }
 
     protected override void OnLoad()

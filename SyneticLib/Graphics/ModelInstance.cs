@@ -7,19 +7,19 @@ using System.Numerics;
 using OpenTK.Mathematics;
 
 namespace SyneticLib.Graphics;
-public class MeshInstance
+public class ModelInstance
 {
-    public Mesh Mesh;
+    public Model Model; 
     public Matrix4 ModelMatrix;
 
-    public MeshInstance(Mesh mesh): this(mesh, Matrix4.Identity)
+    public ModelInstance(Model mesh): this(mesh, Matrix4.Identity)
     {
 
     }
 
-    public MeshInstance(Mesh mesh, Matrix4 modelMatrix)
+    public ModelInstance(Model mesh, Matrix4 modelMatrix)
     {
-        Mesh = mesh;
+        Model = mesh;
         ModelMatrix = modelMatrix;
     }
 }

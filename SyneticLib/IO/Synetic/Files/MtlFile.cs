@@ -4,22 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Globalization;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class MtlFile
+public class MtlFile : Dictionary<int, MtlSection>
 {
-    public Dictionary<string, Dictionary<string, string>> Data { get; set; } = new();
-    public Dictionary<string, string> UsedSection { get; set; }
+    private MtlSection UsedSection { get; set; }
+
+    public string Path;
 
     public MtlFile()
     {
-        Data.Add("_", new Dictionary<string, string>());
-        UsedSection = Data["_"];
+        Add(-1, new MtlSection());
+        UsedSection = this[-1];
     }
 
-    public void Load(string path)
+    public void Load(string path = null)
     {
-        UsedSection = Data["_"];
+        if (path == null)
+            path = Path;
+         
+        UsedSection = this[-1];
+
         var lines = File.ReadAllLines(path);
         for (var i = 0; i < lines.Length; i++)
         {
@@ -29,16 +35,19 @@ public class MtlFile
 
             if (line[0] == '#')
             {
-                var split = line.Split(' ', 2);
-                var section = split[1];
-                Data.Add(section, new Dictionary<string, string>());
-                UsedSection = Data[section];
+                var split = line.Split(' ');
+                var element = split[split.Length == 2 ? 1 : 3].Split('x', 2)[1];
+                int id = int.Parse(element, NumberStyles.HexNumber);
+                if (!ContainsKey(id))
+                    Add(id, new());
+                UsedSection = this[id];
             }
             else
             {
                 var split = line.Split(' ', 2);
                 var key = split[0];
                 var value = split[1];
+                Console.WriteLine($"{key}={value}");
                 UsedSection.Add(key, value);
             }
         }
@@ -48,6 +57,13 @@ public class MtlFile
     {
 
     }
+}
 
-
+public class MtlSection : Dictionary<string, string>
+{
+    public int GetIntFromHexArray(string key, int index)
+    {
+        var values = this[key].Split(' ');
+        return int.Parse(values[index], NumberStyles.HexNumber);
+    }
 }

@@ -3,31 +3,24 @@ using OpenTK.Graphics.OpenGL4;
 using System.Numerics;
 
 namespace SyneticLib.Graphics;
-public unsafe class MeshBuffer : GLStateObject
+public unsafe class ModelBuffer : GLMeshBuffer
 {
-    internal Mesh owner;
-    internal int VerticesID;
-    internal int IndicesID;
-    internal int AttribID;
-    internal int ElementCount;
-
-    public bool IsInitialized;
-
-    internal MeshBuffer(Mesh mesh)
+    Model Owner;
+    internal ModelBuffer(Model mesh)
     {
-        owner = mesh;
+        Owner = mesh;
     }
 
     protected override void OnCreate()
     {
-        ElementCount = owner.Poligons.Length *3;
+        ElementCount = Owner.Poligons.Length * 3;
 
-        var indices = owner.Poligons;
-        var vertices = new Vertex[owner.Vertices.Length];
+        var indices = Owner.Poligons;
+        var vertices = new Vertex[Owner.Vertices.Length];
 
-        for (int i = 0; i < owner.Vertices.Length; i++)
+        for (int i = 0; i < Owner.Vertices.Length; i++)
         {
-            var v = owner.Vertices[i];
+            var v = Owner.Vertices[i];
 
             vertices[i].Position = (v.Position);
             vertices[i].DebugColor = v.LightColor.ToNormalizedRGB();
@@ -37,7 +30,7 @@ public unsafe class MeshBuffer : GLStateObject
         IndicesID = GL.GenBuffer();
 
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndicesID);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * 3*indices.Length, indices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * 3 * indices.Length, indices, BufferUsageHint.StaticDraw);
 
         GL.BindBuffer(BufferTarget.ArrayBuffer, VerticesID);
         GL.BufferData(BufferTarget.ArrayBuffer, sizeof(Vertex) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
@@ -50,20 +43,6 @@ public unsafe class MeshBuffer : GLStateObject
         GL.EnableVertexAttribArray(1);
 
         IsInitialized = true;
-    }
-
-    protected override void OnBind()
-    {
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndicesID);
-        GL.BindBuffer(BufferTarget.ArrayBuffer, VerticesID);
-        GL.BindVertexArray(AttribID);
-    }
-
-    protected override void OnDestroy()
-    {
-        GL.DeleteBuffer(IndicesID);
-        GL.DeleteBuffer(VerticesID);
-        GL.DeleteVertexArray(AttribID);
     }
 
     [StructLayout(LayoutKind.Explicit, Size = Size)]
@@ -79,5 +58,4 @@ public unsafe class MeshBuffer : GLStateObject
         [FieldOffset(LocationDebugColor)]
         public Vector3 DebugColor;
     }
-
 }

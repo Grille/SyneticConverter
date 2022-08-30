@@ -16,26 +16,31 @@ internal class ScenarioVariantNode : DataTreeNode
 
     public DataTreeNode TerrainNode;
     public TextureDirectoryNode TerrainTexturesNode;
-    public MeshDirectoryNode ObjectsNode;
+    public ModelDirectoryNode ObjectsNode;
     public TextureDirectoryNode ObjectTexturesNode;
     public LightsNode LightsNode;
+    public PropListNode PropsNode;
 
     public ScenarioVariantNode(ScenarioVariant variant) : base(variant)
     {
-        SelectedImageIndex = ImageIndex = IconList.Terrain;
+        Image = IconList.Terrain;
         Text = variant.FileName;
 
         TerrainNode = new(variant.Terrain);
+        TerrainNode.Image = IconList.Terrain;
+
         TerrainTexturesNode = new(variant.TerrainTextures, "Terrain-Textures");
         ObjectsNode = new(variant.Objects);
         ObjectTexturesNode = new(variant.ObjectTextures, "Object-Textures");
         LightsNode = new(variant.Lights);
+        PropsNode = new(variant.PropClasses);
 
         Nodes.Add(TerrainTexturesNode);
         Nodes.Add(ObjectTexturesNode);
         Nodes.Add(ObjectsNode);
-        Nodes.Add(LightsNode);
         Nodes.Add(TerrainNode);
+        Nodes.Add(LightsNode);
+        Nodes.Add(PropsNode);
 
     }
 }

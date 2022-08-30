@@ -41,7 +41,7 @@ public partial class MainForm : Form
         //glControl.Visible = false;
         glPanel.Controls.Add(glControl);
         glPanel.MouseWheel += GlPanel_MouseWheel;
-        glPanel.MouseMove += GlPanel_MouseMove;
+        glControl.MouseMove += GlPanel_MouseMove;
 
         glControl.Resize += GlControl_Resize;
         dataTreeView.ImageList = IconList.Images;
@@ -67,18 +67,12 @@ public partial class MainForm : Form
 
     private void GlPanel_MouseMove(object sender, MouseEventArgs e)
     {
-        if (e.Button == MouseButtons.Left)
-        {
-            scene.Camera.RotateAroundCenterHorizontal(e.Location.X - lastMouse.X);
-            scene.Camera.RotateAroundCenterVertical(e.Location.Y - lastMouse.Y);
-        }
-
-        lastMouse = e.Location;
+        scene.Camera.MouseMove(e.X, e.Y, e.Button == MouseButtons.Left);
     }
 
     private void GlPanel_MouseWheel(object sender, MouseEventArgs e)
     {
-        scene.Camera.Scroll(e.Delta,1.2f);
+        scene.Camera.Scroll(e.Delta);
     }
 
     private void GlControl_Paint(object sender, PaintEventArgs e)
@@ -169,7 +163,7 @@ public partial class MainForm : Form
 
     private void dataTreeView_AfterSelect(object sender, TreeViewEventArgs e)
     {
-        dataTreeView.BeginUpdate();
+        //dataTreeView.BeginUpdate();
 
         switch (e.Node)
         {
@@ -181,18 +175,18 @@ public partial class MainForm : Form
                     mnode.DataValue.Load();
                 mnode.UpdateAppearance();
 
-                DisplayMesh(mnode.MeshNode.DataValue);
+                DisplayModel((Model)mnode.MeshNode.DataValue);
             }
             break;
-            case MeshNode:
+            case ModelNode:
             {
-                var mnode = (MeshNode)e.Node;
+                var mnode = (ModelNode)e.Node;
 
                 if (mnode.DataValue.NeedLoad)
                     mnode.DataValue.Load();
                 mnode.UpdateAppearance();
 
-                DisplayMesh(mnode.DataValue);
+                DisplayModel((Model)mnode.DataValue);
             }
             break;
             case TextureNode:
@@ -236,7 +230,7 @@ public partial class MainForm : Form
             break;
         }
 
-        dataTreeView.EndUpdate();
+        //dataTreeView.EndUpdate();
     }
 
     private void DisplayScenarioVariant(ScenarioVariant scenario)
@@ -258,11 +252,11 @@ public partial class MainForm : Form
         RenderFrame();
     }
 
-    private void DisplayMesh(Mesh mesh)
+    private void DisplayModel(Model mesh)
     {
         scene.ClearScene();
 
-        scene.Instances.Add(new MeshInstance(mesh));
+        scene.Instances.Add(new ModelInstance(mesh));
 
         RenderFrame();
     }

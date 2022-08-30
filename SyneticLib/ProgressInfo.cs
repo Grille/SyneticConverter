@@ -9,6 +9,7 @@ public class ProgressInfo
 {
     public string Name;
     public string Description;
+    public bool Active;
     private float _value;
 
     public float Value

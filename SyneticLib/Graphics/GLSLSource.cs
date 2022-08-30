@@ -7,19 +7,23 @@ using System.IO;
 using System.Reflection;
 
 namespace SyneticLib.Graphics;
-internal static class GLSLSrc
+internal static class GLSLSource
 {
     public static string TerrainVertex;
     public static string TerrainFragment;
     public static string MeshVertex;
-    public static string Fragment;
+    public static string MeshFragment;
+    public static string SpriteVertex;
+    public static string SpriteFragment;
 
-    static GLSLSrc()
+    static GLSLSource()
     {
         TerrainVertex = LoadInternalShader("TerrainVertex");
         TerrainFragment = LoadInternalShader("TerrainFragment");
         MeshVertex = LoadInternalShader("MeshVertex");
-        Fragment = LoadInternalShader("Fragment");
+        MeshFragment = LoadInternalShader("MeshFragment");
+        SpriteVertex = LoadInternalShader("SpriteVertex");
+        SpriteFragment = LoadInternalShader("SpriteFragment");
     }
 
     public static string LoadInternalShader(string name)

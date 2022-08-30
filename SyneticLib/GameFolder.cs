@@ -13,10 +13,8 @@ public class GameFolder : Ressource
     public RessourceDirectory<Car> Cars;
     public RessourceDirectory<Sound> Sounds;
 
-    public GameFolder(string path, GameVersion target = GameVersion.Auto) : base(null, PointerType.Directory)
+    public GameFolder(string path, GameVersion target = GameVersion.Auto) : base(null, path, PointerType.Directory)
     {
-        SourcePath = path;
-
         if (target == GameVersion.Auto)
             Version = GetGameVersion(path);
         else
@@ -39,10 +37,9 @@ public class GameFolder : Ressource
              (path) => File.Exists(path),
              (path) => new Sound(this, path)
         );
-
-
-
     }
+
+    internal static GameFolder Global = new("Global", GameVersion.WR2);
 
     public Scenario GetScenario(string name)
     {

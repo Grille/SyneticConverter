@@ -12,22 +12,22 @@ public class Light : Ressource
     public Vector3 Position;
     public Color Color;
 
-    public Light(Ressource parent) : base(parent, PointerType.Virtual)
+    public Light(Ressource parent) : base(parent, parent.ChildPath("Light"), PointerType.Virtual)
     {
     }
 
     protected override void OnLoad()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     protected override void OnSave()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     protected override void OnSeek()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }

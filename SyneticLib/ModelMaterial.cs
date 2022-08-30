@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+
 using SyneticLib.Graphics;
 
 namespace SyneticLib;
-public class MeshMaterial : Ressource
-{
-    public MeshMaterialProgram GLProgram;
-    public MeshMaterial(Ressource parent) : base(parent)
+public class ModelMaterial : Material {
+
+    public Color Diffuse;
+
+    public ModelMaterial(Ressource parent) : base(parent, parent.ChildPath("MeshMaterial"))
     {
         GLProgram = new MeshMaterialProgram(this);
     }
 
 
-    public static readonly MeshMaterial Default = new MeshMaterial(null);
+    public static readonly ModelMaterial Default = new ModelMaterial(GameFolder.Global);
 
     protected override void OnLoad()
     {

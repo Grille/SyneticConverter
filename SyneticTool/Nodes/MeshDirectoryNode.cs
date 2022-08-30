@@ -9,9 +9,9 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-internal class MeshDirectoryNode : DataListTreeNode<Mesh>
+internal class ModelDirectoryNode : DataListTreeNode<Model>
 {
-    public MeshDirectoryNode(MeshDirectory meshes, string name = "Objects") : base(meshes, (a) => new MeshNode(a))
+    public ModelDirectoryNode(ModelDirectory meshes, string name = "Objects") : base(meshes, (a) => new ModelNode(a))
     {
         Text = name;
 

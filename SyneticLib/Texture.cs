@@ -20,10 +20,9 @@ public class Texture : Ressource
 
     public readonly TextureBuffer GLBuffer;
 
-    public Texture(Ressource parent, string path) : base(parent, PointerType.File)
+    public Texture(Ressource parent, string path) : base(parent, path, PointerType.File)
     {
         GLBuffer = new TextureBuffer(this);
-        SourcePath = path;
     }
 
     public void CopyPixelData(byte[] pixels, int width, int height, PixelAttrPtr format, int offset = 0)

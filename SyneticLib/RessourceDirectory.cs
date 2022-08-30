@@ -17,9 +17,8 @@ public class RessourceDirectory<T> : RessourceList<T> where T : Ressource
 
     public ProgressInfo Progress;
 
-    public RessourceDirectory(Ressource parent, string path, Predicate<string> filter, Func<string, T> constructor) : base(parent, PointerType.Directory)
+    public RessourceDirectory(Ressource parent, string path, Predicate<string> filter, Func<string, T> constructor) : base(parent, path, PointerType.Directory)
     {
-        SourcePath = path;
         Items = new();
         Filter = filter;
         Constructor = constructor;

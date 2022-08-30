@@ -105,7 +105,7 @@ public class ScenarioImporterCT : ScenarioImporter
                 var name = qad.PropObjNames[i];
                 var data = sqad.PropClasses[i];
 
-                target.PropClasses.Add(new PropClass(target, target.ObjectTextures,name)
+                target.PropClasses.Add(new PropClass(target, name)
                 {
 
                 }); ;
@@ -119,7 +119,7 @@ public class ScenarioImporterCT : ScenarioImporter
                 var name = qad.PropObjNames[i];
                 var data = sqad.PropClasses[i];
 
-                var prop = new PropClass(target, target.ObjectTextures,name);
+                var prop = new PropClass(target,name);
                 var path = Path.Combine(target.SourcePath, "Objects", name + ".mox");
                 target.PropClasses.Add(prop);
             }

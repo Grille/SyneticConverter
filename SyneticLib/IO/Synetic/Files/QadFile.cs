@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using System.IO;
 using GGL.IO;
 using System.Runtime.InteropServices;
 
@@ -18,7 +19,7 @@ public abstract class QadFile : SyneticBinaryFile
     public String32[] TextureName;
     public String32[] BumpTexName;
     public String32[] PropObjNames;
-    public BMlock[,] Blocks;
+    public BMlock[] Blocks;
     public int[] ChunkDataPtr;
     public ushort[][] ChunkData;
     public MMaterialDef[] Materials;
@@ -113,6 +114,9 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
             br.ReadToPtr((byte*)ptr + ptroffset, sizeof(MHead) - ptroffset);
         }
 
+        if (Head.BlocksX * Head.BlocksZ != Head.BlocksTotal)
+            throw new InvalidDataException();
+
         if (Has56ByteBlock)
             br.ReadArray<byte>(56);
 
@@ -122,15 +126,10 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
 
         PropClasses = br.ReadArray<TMPropClass>(Head.PropClassCount);
 
-        Blocks = new BMlock[Head.BlocksZ, Head.BlocksX];
+        Blocks = new BMlock[Head.BlocksTotal];
 
-        for (var iz = 0; iz < Head.BlocksZ; iz++)
-        {
-            for (var ix = 0; ix < Head.BlocksX; ix++)
-            {
-                Blocks[iz, ix] = br.Read<BMlock>();
-            }
-        }
+        for (var i = 0; i < Head.BlocksTotal; i++)
+             Blocks[i] = br.Read<BMlock>();
 
         var blockX16 = Head.BlocksTotal * 16;
 
@@ -166,12 +165,9 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
         bw.WriteArray(PropObjNames);
         bw.WriteArray(PropClasses);
 
-        for (var ix = 0; ix < Head.BlocksX; ix++)
+        for (var ix = 0; ix < Head.BlocksTotal; ix++)
         {
-            for (var iz = 0; iz < Head.BlocksZ; iz++)
-            {
-                bw.Write(Blocks[ix, iz]);
-            }
+            bw.Write(Blocks[ix]);
         }
 
         var blockx16 = Head.BlocksTotal * 16;

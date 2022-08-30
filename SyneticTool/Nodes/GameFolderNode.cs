@@ -30,6 +30,8 @@ public class GameFolderNode : DataTreeNode
 
     protected override void OnUpdateAppearance()
     {
+        base.OnUpdateAppearance();
+
         Name = $"{DataValue.Version} ({DataValue.SourcePath})";
         Text = Name;
 

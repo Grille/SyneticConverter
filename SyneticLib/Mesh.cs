@@ -12,61 +12,26 @@ using SyneticLib.Graphics;
 
 namespace SyneticLib;
 
-public class Mesh: Ressource
+public abstract class Mesh: Ressource
 {
     public string Name;
     //public int[] Indecies;
     public MeshVertex[] Vertices;
     public Vector3Int[] Poligons;
     public MaterialRegion[] MaterialRegion;
-    public MaterialList Materials;
 
-    public MeshBuffer GLBuffer;
+    public GLMeshBuffer GLBuffer;
 
-    public Mesh(Ressource parent, string path): base(parent, PointerType.File)
+    public Mesh(Ressource parent, string path, PointerType type) : base(parent, path, type)
     {
-        SourcePath = path;
-        GLBuffer = new MeshBuffer(this);
+
     }
 
-    public void ImportFromMox()
-    {
-        new MeshImporterMox(this).Load();
-    }
-
-    public void ExportAsObj(string path, bool fix = true)
-    {
-        var exp = new MeshExporterObj(this);
-        if (fix)
-            exp.PositionMultiplier = new Vector3(-0.1f, 0.1f, 0.1f);
-
-        exp.Save(path);
-    }
+    public abstract void ExportAsObj(string path);
 
     public void ExportAsSbx(string path)
     {
         var exp = new MeshExporterSbx(this);
         exp.Save(path);
-    }
-
-    protected override void OnLoad()
-    {
-        switch (Extension.ToLower()) {
-            case ".mox":
-                ImportFromMox();
-                return;
-            default:
-                throw new InvalidOperationException($"'{SourcePath}' is not a valid model file.");
-    }
-    }
-
-    protected override void OnSave()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSeek()
-    {
-        //throw new NotImplementedException();
     }
 }

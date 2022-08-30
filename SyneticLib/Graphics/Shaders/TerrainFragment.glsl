@@ -1,6 +1,10 @@
 ﻿#version 450 core
 out vec4 FragColor;
 
+uniform sampler2D texture0; 
+uniform sampler2D texture1; 
+uniform sampler2D texture2; 
+
 uniform vec3 uColor;
 
 in vec3 fPos;
@@ -14,5 +18,5 @@ void main()
     vec3 yTangent = dFdy( fPos );
     vec3 faceNormal = normalize( cross( xTangent, yTangent ) );
 
-    FragColor = vec4(fUV,1, 1.0f);
+    FragColor = vec4(faceNormal, 1.0f);
 } 

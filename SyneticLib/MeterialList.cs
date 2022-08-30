@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class MaterialList : List<TerrainMaterial>
+public class TerrainMaterialList : RessourceList<TerrainMaterial>
 {
     TextureDirectory textures;
-    public MaterialList(TextureDirectory textures)
+    public TerrainMaterialList(ScenarioVariant parent, TextureDirectory textures) : base(parent, parent.ChildPath("TerrainMaterialList"))
     {
         this.textures = textures;
     }

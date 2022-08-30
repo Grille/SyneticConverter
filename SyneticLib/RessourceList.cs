@@ -11,7 +11,7 @@ public class RessourceList<T> : Ressource, IList<T> where T : Ressource
 {
     public List<T> Items;
 
-    public RessourceList(Ressource parent, PointerType type = PointerType.Virtual) : base(parent, type)
+    public RessourceList(Ressource parent, string path, PointerType type = PointerType.Virtual) : base(parent, path, type)
     {
         Items = new();
     }

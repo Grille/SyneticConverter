@@ -34,15 +34,17 @@ public class DataTreeNode : TreeNode
 
     public void SeekAndUpdateContent()
     {
-        if (DataValue.NeedSeek)
-        {
-            DataValue.Seek();
-        }
+        DataValue.UpdatePointer();
 
-        if (!Loaded)
+        if (DataValue.PointerState == PointerState.Exists)
         {
+
+            //if (DataValue.NeedSeek)
+            //{
+                DataValue.Seek();
+            //}
+
             OnUpdateContent();
-            Loaded = true;
         }
 
         UpdateAppearance();

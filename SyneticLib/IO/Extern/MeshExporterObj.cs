@@ -49,7 +49,7 @@ public class MeshExporterObj : MeshExporter
             sw.WriteLine("s on");
             foreach (var reg in target.MaterialRegion)
             {
-                sw.WriteLine($"usemtl {reg.Material.Name}");
+                sw.WriteLine($"usemtl {((TerrainMaterial)reg.Material).Name}");
                 var begin = reg.Offset;
                 var end = begin + reg.Count;
                 for (var i = begin; i < end; i++)

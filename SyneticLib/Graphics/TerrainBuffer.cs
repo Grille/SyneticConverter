@@ -9,29 +9,25 @@ using OpenTK.Graphics.OpenGL4;
 using System.Numerics;
 
 namespace SyneticLib.Graphics;
-public unsafe class TerrainBuffer : GLStateObject
+public unsafe class TerrainBuffer : GLMeshBuffer
 {
-    Terrain owner;
-    internal int VerticesID;
-    internal int IndicesID;
-    internal int AttribID;
-    internal int ElementCount;
+    public readonly Terrain Owner;
 
     public TerrainBuffer(Terrain terrain)
     {
-        owner = terrain;
+        Owner = terrain;
     }
 
     protected override void OnCreate()
     {
-        ElementCount = owner.Indecies.Length;
+        ElementCount = Owner.Poligons.Length * 3;
 
-        var indices = owner.Indecies;
-        var vertices = new Vertex[owner.Vertices.Length];
+        var indices = Owner.Poligons;
+        var vertices = new Vertex[Owner.Vertices.Length];
 
-        for (int i = 0; i < owner.Vertices.Length; i++)
+        for (int i = 0; i < Owner.Vertices.Length; i++)
         {
-            var srcv = owner.Vertices[i];
+            var srcv = Owner.Vertices[i];
             ref var dstv = ref vertices[i];
 
             dstv.Position = srcv.Position;
@@ -59,20 +55,6 @@ public unsafe class TerrainBuffer : GLStateObject
         GL.EnableVertexAttribArray(1);
         GL.EnableVertexAttribArray(2);
         GL.EnableVertexAttribArray(3);
-    }
-
-    protected override void OnBind()
-    {
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndicesID);
-        GL.BindBuffer(BufferTarget.ArrayBuffer, VerticesID);
-        GL.BindVertexArray(AttribID);
-    }
-
-    protected override void OnDestroy()
-    {
-        GL.DeleteBuffer(IndicesID);
-        GL.DeleteBuffer(VerticesID);
-        GL.DeleteVertexArray(AttribID);
     }
 
     [StructLayout(LayoutKind.Explicit, Size = Size)]

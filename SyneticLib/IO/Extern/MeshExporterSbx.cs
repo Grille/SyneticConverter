@@ -46,13 +46,13 @@ public class MeshExporterSbx : MeshExporter
             var poly = target.Poligons[i];
             bw.Write(poly);
         }
-
+        /*
         for (var i = 0; i < target.MaterialRegion.Length; i++)
         {
             var region = target.MaterialRegion[i];
             bw.Write(region.Offset);
             bw.Write(region.Count);
-            bw.Write(target.Materials.IndexOf(region.Material));
+            bw.Write(target.Materials.IndexOf((TerrainMaterial)region.Material));
         }
 
         for (var i = 0; i < target.Materials.Count; i++)
@@ -61,16 +61,19 @@ public class MeshExporterSbx : MeshExporter
 
             bw.WriteString(mat.Name, LengthPrefix.Byte);
             bw.Write((byte)mat.Mode);
-            bw.Write(mat.Tex0.Texture.Id);
-            bw.Write(mat.Tex1.Texture.Id);
-            bw.Write(mat.Tex2.Texture.Id);
+            bw.Write(mat.Texture0.Id);
+            bw.Write(mat.Texture1.Id);
+            bw.Write(mat.Texture2.Id);
+            /*
             bw.Write(mat.Tex0.Transform);
             bw.Write(mat.Tex1.Transform);
             bw.Write(mat.Tex2.Transform);
+            
             bw.Write(mat.CastShadown);
             bw.Write(mat.Grass);
             bw.Write(mat.Enlite);
         }
+    
 
 
         /*

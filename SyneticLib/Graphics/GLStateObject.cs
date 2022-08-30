@@ -39,6 +39,12 @@ public abstract class GLStateObject : IDisposable
         State = GLState.None;
     }
 
+    public void Update()
+    {
+        Destroy();
+        Create();
+    }
+
     protected abstract void OnCreate();
 
     protected abstract void OnBind();

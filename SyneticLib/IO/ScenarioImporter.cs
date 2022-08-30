@@ -65,12 +65,12 @@ public abstract class ScenarioImporter
         mesh.MaterialRegion = new MaterialRegion[qad.MaterialRegions.Length];
         for (int i = 0; i < qad.MaterialRegions.Length; i++)
         {
-            mesh.MaterialRegion[i] = new MaterialRegion()
-            {
-                Offset = qad.MaterialRegions[i].FirstPoly,
-                Count = qad.MaterialRegions[i].NumPoly,
-                Material = target.TerrainMaterials[qad.MaterialRegions[i].SurfaceID],
-            };
+            mesh.MaterialRegion[i] = new MaterialRegion
+            (
+                qad.MaterialRegions[i].FirstPoly,
+                qad.MaterialRegions[i].NumPoly,
+                target.TerrainMaterials[qad.MaterialRegions[i].SurfaceID]
+            );
         }
 
         DeflateIndecies(idx, vtx, qad);
@@ -108,16 +108,29 @@ public abstract class ScenarioImporter
         var mesh = terrain;
 
         var srcidx = idx.Indices;
-        var indecies = new int[srcidx.Length];
+        var indecies = new Vector3Int[srcidx.Length];
 
         int pos = 0;
         int offset = 0;
         int preXT = 0;
+
+        terrain.Chunks = new TerrainChunk[qad.Head.BlocksTotal];
+
         for (int iz = 0; iz < qad.Head.BlocksZ; iz++)
         {
             for (int ix = 0; ix < qad.Head.BlocksX; ix++)
             {
-                var block = qad.Blocks[iz, ix];
+                int index = ix + iz * qad.Head.BlocksX;
+
+                ref var srcchunk = ref qad.Blocks[index];
+
+                terrain.Chunks[index] = new TerrainChunk()
+                {
+                    ElementOffset = srcchunk.FirstPoly,
+                    ElementCount = srcchunk.NumPoly,
+                };
+
+                var block = qad.Blocks[index];
                 if (block.Chunk65k != preXT)
                 {
                     preXT = block.Chunk65k;
@@ -128,15 +141,15 @@ public abstract class ScenarioImporter
                 int end = begin + block.NumPoly;
                 for (int i = begin; i < end; i++)
                 {
-                    indecies[pos + 0] = srcidx[pos + 0] + offset;
-                    indecies[pos + 1] = srcidx[pos + 1] + offset;
-                    indecies[pos + 2] = srcidx[pos + 2] + offset;
+                    indecies[pos].X = srcidx[pos * 3 + 0] + offset;
+                    indecies[pos].Y = srcidx[pos * 3 + 1] + offset;
+                    indecies[pos].Z = srcidx[pos * 3 + 2] + offset;
 
-                    pos += 3;
+                    pos += 1;
                 }
             }
         }
 
-        mesh.Indecies = indecies;
+        mesh.Poligons = indecies;
     }
 }

@@ -13,27 +13,25 @@ public class PropClass : Ressource
     public int ColliShape;
 
     public Mesh Mesh;
-    public MaterialList Materials;
 
-    public PropClass(Ressource parent, TextureDirectory textures, string name) : base(parent, PointerType.Virtual)
+    public PropClass(ScenarioVariant parent, string name) : base(parent, parent.ChildPath(name), PointerType.Virtual)
     {
-        Name = name;
-        Materials = new MaterialList(textures);
+        Name = FileName;
         //Mesh = new(Materials);
     }
 
     protected override void OnLoad()
     {
-        throw new NotImplementedException();
+
     }
 
     protected override void OnSave()
     {
-        throw new NotImplementedException();
+
     }
 
     protected override void OnSeek()
     {
-        throw new NotImplementedException();
+
     }
 }

@@ -89,9 +89,9 @@ public class ScenarioImporterWR : ScenarioImporter
     protected override void OnInit()
     {
         AssignTextures();
-        //AssignObjects();
+        AssignObjects();
         AssignTerrain(idx, vtx, qad);
-        //AssignLights();
+        AssignLights();
     }
 
     public void AssignTextures()
@@ -124,12 +124,14 @@ public class ScenarioImporterWR : ScenarioImporter
             var id = i.ToString("X").PadLeft(3, '0');
             mat.Name = $"{id}_{tex0.FileName}";
             mat.Mode = (TerrainMaterialType)qmat.Mode;
-            mat.Tex0.Texture = tex0;
-            mat.Tex1.Texture = tex1;
-            mat.Tex2.Texture = tex2;
+            mat.Texture0 = tex0;
+            mat.Texture1 = tex1;
+            mat.Texture2 = tex2;
+            /*
             mat.Tex0.Transform = qmat.Mat1;
             mat.Tex1.Transform = qmat.Mat2;
             mat.Tex2.Transform = qmat.Mat3;
+            */
 
             target.TerrainMaterials.Add(mat);
         }
@@ -146,7 +148,7 @@ public class ScenarioImporterWR : ScenarioImporter
                 var name = qad.PropObjNames[i];
                 var data = sqad.PropClasses[i];
 
-                target.PropClasses.Add(new PropClass(target, target.ObjectTextures,name)
+                target.PropClasses.Add(new PropClass(target,name)
                 {
 
                 }); ;
@@ -160,8 +162,10 @@ public class ScenarioImporterWR : ScenarioImporter
                 var name = qad.PropObjNames[i];
                 var data = sqad.PropClasses[i];
 
-                var prop = new PropClass(target, target.ObjectTextures,name);
+                var prop = new PropClass(target,name);
                 var path = Path.Combine(target.SourcePath, "Objects", name + ".mox");
+
+                prop.DataState = DataState.Loaded;
 
                 target.PropClasses.Add(prop);
             }
@@ -177,6 +181,9 @@ public class ScenarioImporterWR : ScenarioImporter
                 Position = propIntanceInfo.Position,
             });
         }
+
+        target.PropClasses.DataState = DataState.Loaded;
+
     }
 
     private void AssignLights()
@@ -197,6 +204,7 @@ public class ScenarioImporterWR : ScenarioImporter
                 target.Lights.Add(light);
             }
         }
+        target.Lights.DataState = DataState.Loaded;
     }
 
 

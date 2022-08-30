@@ -7,28 +7,21 @@ using System.Threading.Tasks;
 using SyneticLib.Graphics;
 
 namespace SyneticLib;
-public class TerrainMaterial: Ressource
+public class TerrainMaterial : Material
 {
     public string Name;
     public TerrainMaterialType Mode;
     public bool Grass = false;
     public bool Enlite = false;
     public bool CastShadown = true;
-    public TextureInfo Tex0, Tex1, Tex2;
 
-    public TerrainMaterialProgram GLProgram;
-
-    public TerrainMaterial(Ressource parent) : base(parent)
+    public TerrainMaterial(Ressource parent) : base(parent, parent.ChildPath("TerrainMaterial"))
     {
-        Tex0 = new();
-        Tex1 = new();
-        Tex2 = new();
-
         GLProgram = new TerrainMaterialProgram(this);
     }
 
 
-    public static readonly TerrainMaterial Default = new TerrainMaterial(null);
+    public static readonly TerrainMaterial Default = new TerrainMaterial(GameFolder.Global);
 
     protected override void OnLoad()
     {

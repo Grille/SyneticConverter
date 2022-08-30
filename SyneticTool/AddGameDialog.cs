@@ -25,6 +25,11 @@ public partial class AddGameDialog : Form
         Games = games;
     }
 
+    public AddGameDialog(Games games, Games selected)
+    {
+        Games = games;
+    }
+
     private void label1_Click(object sender, EventArgs e)
     {
 

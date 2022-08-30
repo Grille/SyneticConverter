@@ -11,9 +11,9 @@ public class Sound : Ressource
 {
     public byte[] Buffer;
 
-    public Sound(GameFolder parent, string path): base(parent, PointerType.File)
+    public Sound(GameFolder parent, string path): base(parent, path, PointerType.File)
     {
-        SourcePath = path;
+
     }
 
     protected override void OnLoad()

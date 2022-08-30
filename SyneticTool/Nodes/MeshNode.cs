@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace SyneticTool.Nodes;
 
-public class MeshNode : DataTreeNode
+public class ModelNode : DataTreeNode
 {
-    public new Mesh DataValue { get => (Mesh)base.DataValue; set => base.DataValue = value; }
+    public new Model DataValue { get => (Model)base.DataValue; set => base.DataValue = value; }
 
-    public MeshNode(Mesh data) : base(data)
+    public ModelNode(Model data) : base(data)
     {
         SelectedImageIndex = ImageIndex = IconList.Mesh;
 

@@ -1,10 +1,10 @@
 ﻿#version 450 core
-out vec4 FragColor;
-
-uniform vec3 uColor;
+uniform vec3 uColorDiffuse;
 
 in vec3 fDebug;
 in vec3 fPos;
+
+out vec4 FragColor;
 
 void main()
 {

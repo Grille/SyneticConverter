@@ -6,24 +6,23 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Drawing;
-using static OpenTK.Graphics.OpenGL.GL;
 
 namespace SyneticLib.Graphics;
 public class Scene
 {
     public readonly List<Sprite> Sprites;
-    public readonly List<MeshInstance> Instances;
+    public readonly List<ModelInstance> Instances;
     public Terrain Terrain;
     public Camera Camera;
+
+    public Mesh Grid;
+    public Mesh Skybox;
 
     public Scene()
     {
         Sprites = new List<Sprite>();
-        Instances = new List<MeshInstance>();
-        Camera = new Camera();
-
-        Camera.Position = new Vector3(0, 200, -300);
-        Camera.LookAt(new Vector3(0, 0, 0));
+        Instances = new List<ModelInstance>();
+        Camera = new OrbitCamera();
     }
 
 
@@ -68,6 +67,7 @@ public class Scene
         buffer.Bind();
         var rnd = new Random(1);
 
+        /*
         for (int i = 0; i < terrain.MaterialRegion.Length; i++)
         {
             var region = terrain.MaterialRegion[i];
@@ -75,17 +75,26 @@ public class Scene
             //region.Material.GLShader.Bind();
             GL.DrawElements(PrimitiveType.Triangles, region.Count * 3, DrawElementsType.UnsignedInt, region.Offset * 3 * 4);
         }
+        */
+
+        for (int i = 0; i < terrain.Chunks.Length; i++)
+        {
+            var region = terrain.Chunks[i];
+            GL.Uniform3(colorLoc, new Vector3((float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble()));
+            //region.Material.GLShader.Bind();
+            GL.DrawElements(PrimitiveType.Triangles, region.ElementCount * 3, DrawElementsType.UnsignedInt, region.ElementOffset * 3 * 4);
+        }
     }
 
-    private void DrawMesh(MeshInstance instance)
+    private void DrawMesh(ModelInstance instance)
     {
-        AssertRessource(instance.Mesh);
+        AssertRessource(instance.Model);
 
-        if (!instance.Mesh.GLBuffer.TryCreate())
+        if (!instance.Model.GLBuffer.TryCreate())
             throw new InvalidOperationException("Could not create GL buffer.");
 
-        var mesh = instance.Mesh;
-        var material = MeshMaterial.Default;
+        var mesh = instance.Model;
+        var material = ModelMaterial.Default;
         var program = material.GLProgram;
         program.TryCreate();
 

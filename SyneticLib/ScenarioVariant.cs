@@ -22,7 +22,7 @@ public partial class ScenarioVariant : Ressource
     public RessourceDirectory<Sound> Sounds;
     public TextureDirectory TerrainTextures;
     public RessourceList<TerrainMaterial> TerrainMaterials;
-    public MeshDirectory Objects;
+    public ModelDirectory Objects;
     public TextureDirectory ObjectTextures;
     public RessourceList<PropClass> PropClasses;
     public RessourceList<PropInstance> PropInstances;
@@ -35,24 +35,22 @@ public partial class ScenarioVariant : Ressource
 
     //public InitState State { get; internal set; }
 
-    public ScenarioVariant(Scenario parent, int number): base(parent, PointerType.Directory)
+    public ScenarioVariant(Scenario parent, int number): base(parent, parent.ChildPath($"V{number}"), PointerType.Directory)
     {
         IdNumber = number;
-        SourcePath =  Parent.ChildPath($"V{IdNumber}");
-
 
         Sounds = Parent.Parent.Sounds;
 
         TerrainTextures = new(this, ChildPath("Textures"));
-        TerrainMaterials = new(this);
+        TerrainMaterials = new(this, ChildPath("TerrainMaterials"));
         Terrain = new(this);
 
         ObjectTextures = new(this, ChildPath("Objects/Textures"));
         Objects = new(this, ObjectTextures, ChildPath("Objects"));
 
-        PropClasses = new(this);
-        PropInstances = new(this);
-        Lights = new(this);
+        PropClasses = new(this, ChildPath("PropClasses"));
+        PropInstances = new(this, ChildPath("PropInstances"));
+        Lights = new(this, ChildPath("Lights"));
 
         Errors = new();
     }

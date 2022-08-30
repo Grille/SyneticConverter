@@ -3,68 +3,33 @@ using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 
 namespace SyneticLib.Graphics;
-public class MeshMaterialProgram : GLStateObject
+public class MeshMaterialProgram : GLProgram
 {
-    internal MeshMaterial owner;
-    internal int VertexID;
-    internal int FragmentID;
-    internal int ProgramID;
-
-    internal int UModelMatrix4;
-    internal int UViewMatrix4;
-    internal int UProjectionMatrix4;
+    public int UColorAmbient {get; protected set;}
+    public int UColorDiffuse { get; protected set; }
+    public int UColorSpec1 { get; protected set; }
+    public int UColorSpec2 { get; protected set; }
+    public int UColorReflect { get; protected set; }
 
 
-    public MeshMaterialProgram(MeshMaterial material)
+    public readonly ModelMaterial Owner;
+    public MeshMaterialProgram(ModelMaterial material)
     {
-        owner = material;
+        Owner = material;
     }
 
     protected override void OnCreate()
     {
-        VertexID = GL.CreateShader(ShaderType.VertexShader);
-        FragmentID = GL.CreateShader(ShaderType.FragmentShader);
+        Compile(GLSLSource.MeshVertex, GLSLSource.MeshFragment);
 
-        GL.ShaderSource(VertexID, GLSLSrc.MeshVertex);
-        GL.CompileShader(VertexID);
-        GL.GetShaderInfoLog(VertexID, out string vertlog);
+        UModelMatrix4 = GetUniformLocation("uModel");
+        UViewMatrix4 = GetUniformLocation("uView");
+        UProjectionMatrix4 = GetUniformLocation("uProjection");
 
-        GL.ShaderSource(FragmentID, GLSLSrc.Fragment);
-        GL.CompileShader(FragmentID);
-        GL.GetShaderInfoLog(FragmentID, out string idxlog);
+        UColorAmbient = GetUniformLocation("uColorAmbient");
+        UColorDiffuse = GetUniformLocation("uColorDiffuse");
 
-        ProgramID = GL.CreateProgram();
-        GL.AttachShader(ProgramID, VertexID);
-        GL.AttachShader(ProgramID, FragmentID);
-        GL.LinkProgram(ProgramID);
-
-        GL.DeleteShader(VertexID);
-        GL.DeleteShader(FragmentID);
-
-        UModelMatrix4 = GL.GetUniformLocation(ProgramID, "uModel");
-        UViewMatrix4 = GL.GetUniformLocation(ProgramID, "uView");
-        UProjectionMatrix4 = GL.GetUniformLocation(ProgramID, "uProjection");
-    }
-
-    public void SubCameraMatrix(Camera camera)
-    {
-        GL.UniformMatrix4(UViewMatrix4, false, ref camera.ViewMatrix);
-        GL.UniformMatrix4(UProjectionMatrix4, false, ref camera.ProjectionMatrix);
-    }
-
-    public void SubModelMatrix(Matrix4 matrix)
-    {
-        GL.UniformMatrix4(UModelMatrix4, false, ref matrix);
-    }
-
-    protected override void OnBind()
-    {
         GL.UseProgram(ProgramID);
+        GL.Uniform3(UColorDiffuse, Owner.Diffuse.R / 255f, Owner.Diffuse.G / 255f, Owner.Diffuse.B / 255f);
     }
-
-    protected override void OnDestroy()
-    {
-        GL.DeleteProgram(ProgramID);
-    }
-
 }

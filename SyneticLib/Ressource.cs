@@ -6,15 +6,18 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace SyneticLib;
-public abstract class Ressource { 
+public abstract class Ressource {
 
+    private static int ContentIDCounter;
+    public int ContentID { get; private set; }
     public GameVersion Version { get; set; }
     public Ressource Parent { get; set; }
     public Ressource[] Children;
 
-    public Ressource(Ressource parent, PointerType type = PointerType.Virtual)
+    public Ressource(Ressource parent, string path, PointerType type = PointerType.Virtual)
     {
         PointerType = type;
+        SourcePath = path;
         Parent = parent;
 
         if (parent != null)
@@ -22,6 +25,8 @@ public abstract class Ressource {
             Version = parent.Version;
             TargetVersion = parent.TargetVersion;
         }
+
+        GetContentID();
     }
 
     string _path;
@@ -37,6 +42,12 @@ public abstract class Ressource {
         }
     }
 
+    public void GetContentID()
+    {
+        ContentIDCounter++;
+        ContentID = ContentIDCounter;
+    }
+
     public string TargetPath { get; set; }
     public GameVersion TargetVersion { get; set; }
 
@@ -49,7 +60,7 @@ public abstract class Ressource {
 
     public bool FileExists => File.Exists(SourcePath);
 
-    public string Extension => Path.GetExtension(SourcePath);
+    public string FileExtension => Path.GetExtension(SourcePath);
 
     public string FileName => Path.GetFileNameWithoutExtension(SourcePath);
 
@@ -59,7 +70,7 @@ public abstract class Ressource {
     }
 
 
-    private void UpdatePointer()
+    public void UpdatePointer()
     {
         if (PointerType == PointerType.Virtual || SourcePath == null)
         {
@@ -87,8 +98,7 @@ public abstract class Ressource {
 
     public void Load()
     {
-        if (PointerType == PointerType.Virtual)
-            throw new InvalidOperationException("Ressource is Virtual, Load/Save is handled by parent.");
+        AssertPointerIsValid();
 
         if (NeedSeek)
             Seek();
@@ -100,6 +110,8 @@ public abstract class Ressource {
 
     public void Save()
     {
+        AssertPointerIsValid();
+
         OnSave();
     }
 
@@ -111,9 +123,22 @@ public abstract class Ressource {
 
     public void Seek()
     {
+        AssertPointerIsValid();
+
         OnSeek();
 
         DataState = DataState.Seeked;
+    }
+
+    private void AssertPointerIsValid()
+    {
+        UpdatePointer();
+
+        if (PointerType == PointerType.Virtual)
+            throw new InvalidOperationException("Ressource is Virtual, Load/Save & Seek is handled by parent.");
+
+        if (PointerState != PointerState.Exists)
+            throw new IOException($"Pointed Ressource '{SourcePath}' dont Exists.");
     }
 
     public void SaveAs(string path, GameVersion format)

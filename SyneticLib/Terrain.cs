@@ -7,23 +7,25 @@ using SyneticLib.Graphics;
 
 namespace SyneticLib;
 
-public class Terrain : Ressource
+public class Terrain : Mesh
 {
-    public string Name;
-    public int[] Indecies;
-    public MeshVertex[] Vertices;
-    //public Vector3Int[] Poligons;
-    public MaterialRegion[] MaterialRegion;
+    public int Width, Height;
+
     public RessourceList<TerrainMaterial> Materials;
 
-    public TerrainChunk[,] Chunks;
+    public TerrainChunk[] Chunks;
 
-    public TerrainBuffer GLBuffer;
-
-    public Terrain(ScenarioVariant parrent) : base(parrent)
+    public Terrain(ScenarioVariant parrent) : base(parrent, parrent.ChildPath("Terrain"), PointerType.Virtual)
     {
         GLBuffer = new TerrainBuffer(this);
     }
+
+    public TerrainChunk GetChunk(int x, int y)
+    {
+        return Chunks[x + y * Width];
+    }
+
+    public TerrainChunk GetChunk(int i) => Chunks[i];
 
     public void CalculateChunks()
     {
@@ -45,5 +47,10 @@ public class Terrain : Ressource
     protected override void OnSeek()
     {
         //throw new NotImplementedException();
+    }
+
+    public override void ExportAsObj(string path)
+    {
+        throw new NotImplementedException();
     }
 }

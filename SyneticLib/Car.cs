@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class Car : Ressource
 {
-    public Mesh Mesh;
-    public MaterialList Materials;
+    public Model Model;
+    public TerrainMaterialList Materials;
 
-    public Car(GameFolder parent, string path) : base(parent, PointerType.Directory)
+    public Car(GameFolder parent, string path) : base(parent, path, PointerType.Directory)
     {
-        SourcePath = path;
-
-        Mesh = new Mesh(parent, ChildPath(FileName + ".mox"));
+        Model = new Model(parent, ChildPath(FileName + ".mox"));
     }
 
     protected override void OnLoad()
     {
-        Mesh.Load();
+        Model.Load();
     }
 
     protected override void OnSave()
@@ -29,6 +27,6 @@ public class Car : Ressource
 
     protected override void OnSeek()
     {
-        Mesh.Seek();
+        Model.Seek();
     }
 }
