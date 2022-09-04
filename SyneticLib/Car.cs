@@ -8,11 +8,13 @@ namespace SyneticLib;
 public class Car : Ressource
 {
     public Model Model;
-    public TerrainMaterialList Materials;
+    public MaterialList Materials;
+    public TextureDirectory Textures;
 
     public Car(GameFolder parent, string path) : base(parent, path, PointerType.Directory)
     {
-        Model = new Model(parent, ChildPath(FileName + ".mox"));
+        Textures = new(this, ChildPath(Version == GameVersion.WR2 ? "textures_pc" : "textures"));
+        Model = new Model(parent, Textures, ChildPath(FileName + ".mox"));
     }
 
     protected override void OnLoad()

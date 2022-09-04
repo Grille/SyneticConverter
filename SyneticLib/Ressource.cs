@@ -14,8 +14,12 @@ public abstract class Ressource {
     public Ressource Parent { get; set; }
     public Ressource[] Children;
 
+    public ProgressInfo ProgressInfo { get; set; }
+
     public Ressource(Ressource parent, string path, PointerType type = PointerType.Virtual)
     {
+        ProgressInfo = new();
+
         PointerType = type;
         SourcePath = path;
         Parent = parent;
@@ -64,6 +68,8 @@ public abstract class Ressource {
 
     public string FileName => Path.GetFileNameWithoutExtension(SourcePath);
 
+    public string FileNameWithExtension => Path.GetFileName(SourcePath);
+
     public string ChildPath(string path)
     {
         return Path.Combine(SourcePath, path);
@@ -103,7 +109,12 @@ public abstract class Ressource {
         if (NeedSeek)
             Seek();
 
+        if (Parent != null)
+            Parent.ProgressInfo.Use(ProgressInfo);
+
         OnLoad();
+
+        Parent.ProgressInfo.Free();
 
         DataState = DataState.Loaded;
     }

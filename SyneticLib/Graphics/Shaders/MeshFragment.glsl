@@ -1,16 +1,14 @@
 ﻿#version 450 core
+uniform sampler2D texture0; 
 uniform vec3 uColorDiffuse;
 
-in vec3 fDebug;
 in vec3 fPos;
+in vec3 fNorm;
+in vec2 fUV;
 
 out vec4 FragColor;
 
 void main()
 {
-    vec3 xTangent = dFdx( fPos );
-    vec3 yTangent = dFdy( fPos );
-    vec3 faceNormal = normalize( cross( xTangent, yTangent ) );
-
-    FragColor = vec4(faceNormal, 1.0f);
+    FragColor = texture(texture0, fUV);
 } 

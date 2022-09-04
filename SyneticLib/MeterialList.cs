@@ -5,12 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class TerrainMaterialList : RessourceList<TerrainMaterial>
+public class MaterialList : RessourceList<Material>
 {
-    TextureDirectory textures;
-    public TerrainMaterialList(ScenarioVariant parent, TextureDirectory textures) : base(parent, parent.ChildPath("TerrainMaterialList"))
+    public MaterialList(Ressource parent) : base(parent, parent.ChildPath("Materials"))
     {
-        this.textures = textures;
+
     }
 
     public void DisposeAll()
@@ -19,6 +18,16 @@ public class TerrainMaterialList : RessourceList<TerrainMaterial>
         {
             material.GLProgram.Dispose();
         }
+    }
+
+    public Material GetByID(int id)
+    {
+        foreach (var material in this)
+        {
+            if (material.ID == id)
+                return material;
+        }
+        throw new KeyNotFoundException();
     }
 
 

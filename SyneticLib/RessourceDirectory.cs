@@ -29,7 +29,7 @@ public class RessourceDirectory<T> : RessourceList<T> where T : Ressource
     {
         var files = Directory.GetFileSystemEntries(SourcePath);
 
-        Progress.Value = 0;
+        //Progress.Update(0,$"");
 
         Items.Clear();
         foreach (var file in files)
@@ -41,4 +41,6 @@ public class RessourceDirectory<T> : RessourceList<T> where T : Ressource
             }
         }
     }
+
+    public T FindFileName(string name) => Items.Find((a) => a.FileNameWithExtension == name);
 }

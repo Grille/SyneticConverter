@@ -16,15 +16,17 @@ public abstract class Mesh: Ressource
 {
     public string Name;
     //public int[] Indecies;
-    public MeshVertex[] Vertices;
+    public Vertex[] Vertices;
     public Vector3Int[] Poligons;
     public MaterialRegion[] MaterialRegion;
+
+    public MaterialList Materials { get; set; }
 
     public GLMeshBuffer GLBuffer;
 
     public Mesh(Ressource parent, string path, PointerType type) : base(parent, path, type)
     {
-
+        Materials = new(this);
     }
 
     public abstract void ExportAsObj(string path);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 
 namespace SyneticLib;
-public class MeshVertex
+public class Vertex
 {
     public Vector3 Position;
     public Vector3 Normal;
@@ -15,4 +15,15 @@ public class MeshVertex
     public Vector3 Blending;
     public BgraColor LightColor;
     public float Shadow;
+
+    public Vertex()
+    {
+
+    }
+
+    public Vertex(Vector3 position, Vector2 uV0)
+    {
+        Position = position;
+        UV0 = uV0;
+    }
 }

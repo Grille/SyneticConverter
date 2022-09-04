@@ -14,8 +14,10 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
     public MHead Head;
 
     public int[] VtxQty { get; set; }
-    public MeshVertex[] Vertices { get; set; }
+    public Vertex[] Vertecis { get; set; }
     public ushort[] Indices { get; set; }
+
+    public Vector3Int[] Polygons { get; set; }
 
     public unsafe override void ReadFromView(BinaryViewReader br)
     {
@@ -34,13 +36,13 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
         if (calculatedEndPos != br.Length)
             throw new Exception($"{calculatedEndPos} != {br.Length} diff:{calculatedEndPos - br.Length}");
 
-        Vertices = new MeshVertex[vertexCount];
+        Vertecis = new Vertex[vertexCount];
         for (var i = 0; i < vertexCount; i++)
         {
             var src = br.Read<MVertex>();
-            Vertices[i] = new MeshVertex()
+            Vertecis[i] = new Vertex()
             {
-                Position = src.Position,
+                Position = new Vector3(src.Position.X, src.Position.Z, src.Position.Y),
                 Normal = new Vector3(src.Normal.B / 255f, src.Normal.G / 255f, src.Normal.R / 255f/*, src.Normal.A / 255f*/),
                 UV0 = src.UV0,
                 UV1 = src.UV1,
@@ -54,6 +56,13 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
             br.ReadArray<byte>(vertexCount * 16);
 
         Indices = br.ReadArray<ushort>(Head.IndicesCount);
+
+        Polygons = new Vector3Int[Indices.Length / 3];
+
+        for (int i = 0; i < Polygons.Length; i++)
+        {
+            Polygons[i] = new Vector3Int(Indices[i * 3 + 0], Indices[i * 3 + 2], Indices[i * 3 + 1]);
+        }
     }
 
     public override void WriteToView(BinaryViewWriter bw)

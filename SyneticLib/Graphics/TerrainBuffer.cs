@@ -38,19 +38,20 @@ public unsafe class TerrainBuffer : GLMeshBuffer
 
         VerticesID = GL.GenBuffer();
         IndicesID = GL.GenBuffer();
+        AttribID = GL.GenVertexArray();
+
+        GL.BindVertexArray(AttribID);
 
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndicesID);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indices.Length, indices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(Vector3Int) * indices.Length, indices, BufferUsageHint.StaticDraw);
 
         GL.BindBuffer(BufferTarget.ArrayBuffer, VerticesID);
         GL.BufferData(BufferTarget.ArrayBuffer, sizeof(Vertex) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
 
-        AttribID = GL.GenVertexArray();
-        GL.BindVertexArray(AttribID);
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LPosition);
         GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LNormal);
         GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LUV);
-        GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LDebugColor);
+        GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LLightColor);
         GL.EnableVertexAttribArray(0);
         GL.EnableVertexAttribArray(1);
         GL.EnableVertexAttribArray(2);
@@ -66,8 +67,8 @@ public unsafe class TerrainBuffer : GLMeshBuffer
         public const int LPosition = 0;
         public const int LNormal = LPosition + s_vec3;
         public const int LUV = LNormal + s_vec3;
-        public const int LDebugColor = LUV + s_vec2;
-        public const int Size = LDebugColor + s_vec3;
+        public const int LLightColor = LUV + s_vec2;
+        public const int Size = LLightColor + s_vec3;
 
         [FieldOffset(LPosition)]
         public Vector3 Position;
@@ -78,7 +79,7 @@ public unsafe class TerrainBuffer : GLMeshBuffer
         [FieldOffset(LUV)]
         public Vector2 UV;
 
-        [FieldOffset(LDebugColor)]
+        [FieldOffset(LLightColor)]
         public Vector3 DebugColor;
     }
 }

@@ -8,7 +8,7 @@ using System.IO;
 namespace SyneticLib;
 public class TextureDirectory : RessourceDirectory<Texture>
 {
-    static bool filter(string path) => File.Exists(path);
+    static bool filter(string path) => File.Exists(path) && Path.GetExtension(path).ToLower() == ".ptx";
 
     public TextureDirectory(Ressource parent, string path) : base(parent, path, filter, (a) => new Texture(parent, a))
     {

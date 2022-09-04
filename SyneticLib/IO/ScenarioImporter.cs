@@ -34,32 +34,15 @@ public abstract class ScenarioImporter
         }
     }
 
-    public void LoadWorldTexture(string name)
-    {
-        string path = Path.Combine(target.SourcePath, "Textures", name);
-        var texture = new Texture(target, path);
-        texture.Id = target.TerrainTextures.Count;
-        //texture.ImportFile(path);
-        target.TerrainTextures.Add(texture);
-    }
-
-    public void LoadPropTexture(string name)
-    {
-        string path = Path.Combine(target.SourcePath, "Objects/Textures", name);
-        var texture = new Texture(target, path);
-        //texture.ImportFile(path);
-        target.ObjectTextures.Add(texture);
-    }
-
     protected void AssignTerrain(IIndexData idx, IVertexData vtx, QadFile qad)
     {
         var terrain = target.Terrain;
         var mesh = terrain;
 
-        var vertices = mesh.Vertices = new MeshVertex[vtx.Vertices.Length];
-        for (int i = 0; i < vtx.Vertices.Length; i++)
+        var vertices = mesh.Vertices = new Vertex[vtx.Vertecis.Length];
+        for (int i = 0; i < vtx.Vertecis.Length; i++)
         {
-            vertices[i] = vtx.Vertices[i];
+            vertices[i] = vtx.Vertecis[i];
         }
 
         mesh.MaterialRegion = new MaterialRegion[qad.MaterialRegions.Length];
@@ -107,8 +90,8 @@ public abstract class ScenarioImporter
         var terrain = target.Terrain;
         var mesh = terrain;
 
-        var srcidx = idx.Indices;
-        var indecies = new Vector3Int[srcidx.Length];
+        var srcidx = idx.Polygons;
+        var dstidx = new Vector3Int[srcidx.Length];
 
         int pos = 0;
         int offset = 0;
@@ -141,15 +124,15 @@ public abstract class ScenarioImporter
                 int end = begin + block.NumPoly;
                 for (int i = begin; i < end; i++)
                 {
-                    indecies[pos].X = srcidx[pos * 3 + 0] + offset;
-                    indecies[pos].Y = srcidx[pos * 3 + 1] + offset;
-                    indecies[pos].Z = srcidx[pos * 3 + 2] + offset;
+                    dstidx[pos].X = srcidx[pos].X + offset;
+                    dstidx[pos].Y = srcidx[pos].Y + offset;
+                    dstidx[pos].Z = srcidx[pos].Z + offset;
 
                     pos += 1;
                 }
             }
         }
 
-        mesh.Poligons = indecies;
+        mesh.Poligons = dstidx;
     }
 }

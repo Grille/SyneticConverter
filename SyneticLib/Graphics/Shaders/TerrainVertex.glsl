@@ -2,7 +2,7 @@
 layout (location = 0) in vec3 vPos;
 layout (location = 1) in vec3 vNorm;
 layout (location = 2) in vec2 vUV;
-layout (location = 3) in vec3 vDebug;
+layout (location = 3) in vec3 vLight;
 
 uniform mat4 uView;
 uniform mat4 uProjection;
@@ -11,14 +11,14 @@ uniform vec3 uColor;
 out vec3 fPos;
 out vec3 fNorm;
 out vec2 fUV;
-out vec3 fDebug;
+out vec3 fLight;
 
 void main()
 {
     fPos = vPos;
     fNorm = vNorm;
     fUV = vUV;
-    fDebug = vDebug;
+    fLight = vLight;
 
     gl_Position = uProjection * uView * vec4(vPos, 1.0);
 }

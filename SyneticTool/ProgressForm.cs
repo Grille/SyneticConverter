@@ -8,19 +8,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using SyneticLib;
+
 namespace SyneticTool;
 
 public partial class ProgressForm : Form
 {
-    public ProgressForm()
+    Ressource target;
+    public ProgressForm(Ressource target)
     {
         InitializeComponent();
-        Update(0, "Loading");
+        this.target = target;
+
+        target.ProgressInfo.HasUpdated += ProgressInfo_HasUpdated;
+        Update(0, "Loading...");
     }
 
-    public void Update(int value, string text)
+    private void ProgressInfo_HasUpdated(object sender, EventArgs e)
     {
-        ProgressBar.Value = value;
+        var info = (ProgressInfo)sender;
+        Update(info.Value, info.Description);
+    }
+
+    public void Update(float value, string text)
+    {
+        ProgressBar.Value = (int)value * 100;
         MSGLabel.Text = text;
         Refresh();
     }

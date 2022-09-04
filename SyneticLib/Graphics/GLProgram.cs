@@ -21,10 +21,14 @@ public abstract class GLProgram : GLStateObject
         GL.ShaderSource(VertexID, vertex);
         GL.CompileShader(VertexID);
         GL.GetShaderInfoLog(VertexID, out string vertlog);
+        if (vertlog != "")
+            throw new ArgumentException(vertlog);
 
         GL.ShaderSource(FragmentID, fragment);
         GL.CompileShader(FragmentID);
         GL.GetShaderInfoLog(FragmentID, out string idxlog);
+        if (idxlog != "")
+            throw new ArgumentException(idxlog);
 
         ProgramID = GL.CreateProgram();
         GL.AttachShader(ProgramID, VertexID);

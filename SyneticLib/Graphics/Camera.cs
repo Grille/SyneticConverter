@@ -26,7 +26,7 @@ public abstract class Camera
 
     Vector2 LastMouseLocation;
 
-    public float AspectRatio { get; private set; }
+    public float AspectRatio { get; private set; } = 1;
 
     public void Scroll(int delta)
     {

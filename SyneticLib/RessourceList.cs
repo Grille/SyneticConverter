@@ -57,6 +57,7 @@ public class RessourceList<T> : Ressource, IList<T> where T : Ressource
     {
         foreach (var item in Items)
         {
+            Console.WriteLine($"Load {item.FileName}");
             item.Load();
         }
     }

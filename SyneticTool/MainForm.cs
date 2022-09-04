@@ -42,8 +42,6 @@ public partial class MainForm : Form
         glPanel.Controls.Add(glControl);
         glPanel.MouseWheel += GlPanel_MouseWheel;
         glControl.MouseMove += GlPanel_MouseMove;
-
-        glControl.Resize += GlControl_Resize;
         dataTreeView.ImageList = IconList.Images;
 
         config = new Config("config.ini");
@@ -80,12 +78,6 @@ public partial class MainForm : Form
         RenderFrame();
     }
 
-    private void GlControl_Resize(object sender, EventArgs e)
-    {
-        errorPanel.Location = new Point(glControl.ClientSize.Width / 2 - errorPanel.Width / 2, glControl.ClientSize.Height / 2 - errorPanel.Height / 2);
-        scene.Camera.ScreenSize = new OpenTK.Mathematics.Vector2(glControl.ClientSize.Width, glControl.ClientSize.Height);
-        scene.Camera.CreatePerspective();
-    }
 
     private void addGameToolStripMenuItem_Click(object sender, EventArgs e)
     {
@@ -153,6 +145,10 @@ public partial class MainForm : Form
 
     public void RenderFrame()
     {
+        errorPanel.Location = new Point(glControl.ClientSize.Width / 2 - errorPanel.Width / 2, glControl.ClientSize.Height / 2 - errorPanel.Height / 2);
+        scene.Camera.ScreenSize = new OpenTK.Mathematics.Vector2(glControl.ClientSize.Width, glControl.ClientSize.Height);
+        scene.Camera.CreatePerspective();
+
         glControl.MakeCurrent();
 
         scene.ClearScreen();
@@ -207,9 +203,8 @@ public partial class MainForm : Form
 
                 if (vnode.DataValue.NeedLoad)
                 {
-                    var dialog = new ProgressForm();
-                    dialog.Show(this);
-                    dialog.Update();
+                    var dialog = new ProgressForm(vnode.DataValue);
+                    dialog.Show();
                     vnode.DataValue.Load();
                     dialog.Close();
                 }

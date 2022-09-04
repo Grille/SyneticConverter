@@ -10,7 +10,7 @@ public class ModelDirectory : RessourceDirectory<Model>
 {
     static bool filter(string path) => File.Exists(path) && Path.GetExtension(path).ToLower() == ".mox";
 
-    public ModelDirectory(Ressource parent, TextureDirectory textures, string path) : base(parent, path, filter, (a) => new Model(parent, a))
+    public ModelDirectory(Ressource parent, TextureDirectory textures, string path) : base(parent, path, filter, (a) => new Model(parent, textures, a))
     {
         //TextureFolder = new();
     }

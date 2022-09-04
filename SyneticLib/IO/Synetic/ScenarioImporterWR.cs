@@ -119,14 +119,19 @@ public class ScenarioImporterWR : ScenarioImporter
             var qmat = qad.Materials[i];
             var mat = new TerrainMaterial(target);
             var tex0 = target.TerrainTextures[qmat.Tex0Id];
-            var tex1 = target.TerrainTextures[qmat.Tex1Id];
-            var tex2 = target.TerrainTextures[qmat.Tex2Id];
+            //var tex1 = target.TerrainTextures[qmat.Tex1Id];
+            //var tex2 = target.TerrainTextures[qmat.Tex2Id];
             var id = i.ToString("X").PadLeft(3, '0');
             mat.Name = $"{id}_{tex0.FileName}";
             mat.Mode = (TerrainMaterialType)qmat.Mode;
-            mat.Texture0 = tex0;
-            mat.Texture1 = tex1;
-            mat.Texture2 = tex2;
+
+            mat.TexSlot0.Enabled = true;
+            mat.TexSlot0.Texture = tex0;
+
+            mat.DataState = DataState.Loaded;
+
+            //mat.Texture1 = tex1;
+            //mat.Texture2 = tex2;
             /*
             mat.Tex0.Transform = qmat.Mat1;
             mat.Tex1.Transform = qmat.Mat2;

@@ -15,22 +15,69 @@ public class Scene
     public Terrain Terrain;
     public Camera Camera;
 
-    public Mesh Grid;
-    public Mesh Skybox;
+    public Texture GridTexture;
+    public ModelMaterial GridMaterial;
+    public Model Grid;
+    public Model Skybox;
 
-    public Scene()
+    public unsafe Scene()
     {
         Sprites = new List<Sprite>();
         Instances = new List<ModelInstance>();
         Camera = new OrbitCamera();
+
+        int gridSize = 4_000_0;
+
+        GridTexture = new Texture(2, 2);
+        fixed (byte* bytes = GridTexture.PixelData)
+        {
+            uint* pixels = (uint*)bytes;
+
+            for (int iy = 0; iy < GridTexture.Height; iy++)
+            {
+                for (int ix = 0; ix < GridTexture.Width; ix++)
+                {
+                    int i = (ix + iy * GridTexture.Width);
+
+                    bool xodd = ix % 2 == 0;
+                    bool yodd = iy % 2 == 0;
+
+                    bool check = yodd ? xodd : !xodd;
+
+                    pixels[i] = check ? (uint)0x969696 : (uint)0xA9A9A9;
+                }
+            }
+        }
+        GridTexture.DataState = DataState.Loaded;
+
+        GridMaterial = new ModelMaterial();
+        GridMaterial.TexSlot0.Enable(GridTexture);
+        GridMaterial.DataState = DataState.Loaded;
+
+        Grid = new Model()
+        {
+            Poligons = new Vector3Int[2]
+            {
+                new(2,1,0),
+                new(0,3,2),
+            },
+            Vertices = new Vertex[4]
+            {
+                new(new(-gridSize,+gridSize,0),new(0,0)),
+                new(new(+gridSize,+gridSize,0),new(10,0)),
+                new(new(+gridSize,-gridSize,0),new(10,10)),
+                new(new(-gridSize,-gridSize,0),new(0,10)),
+            },
+            MaterialRegion = new MaterialRegion[1]
+            {
+                new(0,2,GridMaterial),
+            },
+            DataState = DataState.Loaded
+        };
     }
 
 
-    public void ClearScreen()
-    {
-        GL.ClearColor(Color.DarkGray);
-        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-    }
+    public void ClearScreen() => Graphics.ClearScreen();
 
     public void ClearScene()
     {
@@ -39,110 +86,68 @@ public class Scene
         Sprites.Clear();
     }
 
-    private void AssertRessource(Ressource ressource)
-    {
-        if (ressource.DataState != DataState.Loaded)
-            throw new ArgumentException("ressource", "Ressource is not loaded.");
-    }
-
-    private void DrawTerrain(Terrain terrain)
-    {
-        AssertRessource(terrain);
-
-        if (!terrain.GLBuffer.TryCreate())
-            throw new InvalidOperationException("Could not create GL buffer.");
-
-        var material = TerrainMaterial.Default;
-        var program = material.GLProgram;
-        program.TryCreate();
-
-        program.Bind();
-        program.SubCameraMatrix(Camera);
-
-        int colorLoc = GL.GetUniformLocation(program.ProgramID, "uColor");
-        GL.Uniform3(colorLoc, new Vector3(1, 1, 1));
-
-
-        var buffer = terrain.GLBuffer;
-        buffer.Bind();
-        var rnd = new Random(1);
-
-        /*
-        for (int i = 0; i < terrain.MaterialRegion.Length; i++)
-        {
-            var region = terrain.MaterialRegion[i];
-            GL.Uniform3(colorLoc, new Vector3((float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble()));
-            //region.Material.GLShader.Bind();
-            GL.DrawElements(PrimitiveType.Triangles, region.Count * 3, DrawElementsType.UnsignedInt, region.Offset * 3 * 4);
-        }
-        */
-
-        for (int i = 0; i < terrain.Chunks.Length; i++)
-        {
-            var region = terrain.Chunks[i];
-            GL.Uniform3(colorLoc, new Vector3((float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble()));
-            //region.Material.GLShader.Bind();
-            GL.DrawElements(PrimitiveType.Triangles, region.ElementCount * 3, DrawElementsType.UnsignedInt, region.ElementOffset * 3 * 4);
-        }
-    }
-
-    private void DrawMesh(ModelInstance instance)
-    {
-        AssertRessource(instance.Model);
-
-        if (!instance.Model.GLBuffer.TryCreate())
-            throw new InvalidOperationException("Could not create GL buffer.");
-
-        var mesh = instance.Model;
-        var material = ModelMaterial.Default;
-        var program = material.GLProgram;
-        program.TryCreate();
-
-        program.Bind();
-        program.SubCameraMatrix(Camera);
-        program.SubModelMatrix(instance.ModelMatrix);
-
-        int colorLoc = GL.GetUniformLocation(program.ProgramID, "uColor");
-        GL.Uniform3(colorLoc, new Vector3(1, 1, 1));
-
-
-        var buffer = mesh.GLBuffer;
-        buffer.Bind();
-        var rnd = new Random(1);
-
-        //for (int i = 0; i < mesh.MaterialRegion.Length; i++)
-        //{
-            //var region = mesh.MaterialRegion[i];
-            GL.Uniform3(colorLoc, new Vector3((float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble()));
-            //region.Material.GLShader.Bind();
-            GL.DrawElements(PrimitiveType.Triangles, buffer.ElementCount, DrawElementsType.UnsignedInt, 0 * 3 * 4);
-        //}
-    }
-
     private void DrawSprite(Sprite sprite)
     {
-        AssertRessource(sprite.Texture);
+        float aspectTex = ((float)sprite.Texture.Width / (float)sprite.Texture.Height);
+        float aspect = Camera.AspectRatio / aspectTex;
+        float scale = 0.98f;
+
+        if (aspect > 1.0f)
+            scale *= 1.0f / aspect;
+
+
+
+        Console.WriteLine(aspect);
+        GL.Uniform2(Sprite.GLProgram.UScale, new Vector2(1 * scale, 1 * aspect * scale));
+
+
+        Graphics.AssertRessource(sprite.Texture);
 
         if (!sprite.Texture.GLBuffer.TryCreate())
-            return;
+            throw new InvalidOperationException("Could not create GL buffer.");
+
+        sprite.Texture.GLBuffer.Bind();
+
+        GL.DrawElements(PrimitiveType.Triangles, Sprite.GLBuffer.ElementCount, DrawElementsType.UnsignedShort, 0 * 3 * 2);
+
     }
 
     public void Render()
     {
-        GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
-        GL.Enable(EnableCap.DepthTest);
-        GL.Enable(EnableCap.CullFace);
-
         Camera.CreatePerspective();
         Camera.CreateView();
 
+        Graphics.BindCamera(Camera);
+
+        GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
+        GL.Disable(EnableCap.DepthTest);
+        GL.Disable(EnableCap.CullFace);
+
+        GridTexture.GLBuffer.TryCreate();
+        GridTexture.GLBuffer.Bind();
+
+        Graphics.DrawModel(Grid, Matrix4.Identity);
+
+        GL.Enable(EnableCap.DepthTest);
+        GL.Enable(EnableCap.CullFace);
+
         if (Terrain != null)
-            DrawTerrain(Terrain);
+            Graphics.DrawTerrain(Terrain);
 
         foreach (var instance in Instances)
-            DrawMesh(instance);
+            Graphics.DrawModel(instance);
+
 
         GL.Disable(EnableCap.DepthTest);
+
+        if (!Sprite.GLBuffer.TryCreate())
+            throw new InvalidOperationException("Could not create GL buffer.");
+
+        if (!Sprite.GLProgram.TryCreate())
+            throw new InvalidOperationException("Could not create GL buffer.");
+
+        Sprite.GLBuffer.Bind();
+        Sprite.GLProgram.Bind();
 
         foreach (Sprite sprite in Sprites)
             DrawSprite(sprite);

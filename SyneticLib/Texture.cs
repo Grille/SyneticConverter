@@ -4,45 +4,82 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using SyneticLib.IO.Synetic;
 using SyneticLib.Graphics;
 
 namespace SyneticLib;
 public class Texture : Ressource
 {
-    public int Width { get; private set; }
-    public int Height { get; private set; }
-    public int Stride { get; private set; }
-    public byte[] PixelData { get; private set; }
+    public bool Compressed;
+    public int Bits;
+    public int Width;
+    public int Height;
 
-    public PixelAttrPtr PixelFormat { get; private set; }
+    public TextureLevel[] Levels;
+    public byte[] PixelData { get => Levels[0].PixelData; }
 
     public int Id;
 
     public readonly TextureBuffer GLBuffer;
+
+    public Texture(int width, int height) : base(null, "Texture", PointerType.Virtual)
+    {
+        GLBuffer = new TextureBuffer(this);
+        Bits = 32;
+
+        Width = width;
+        Height = height;
+
+        Levels = new TextureLevel[1] { new() };
+        Levels[0].PixelData = new byte[width * height * 4];
+    }
+
+    public Texture() : base(null, "Texture", PointerType.Virtual)
+    {
+        GLBuffer = new TextureBuffer(this);
+        Bits = 32;
+
+        Width = 2;
+        Height = 2;
+
+        Levels = new TextureLevel[1] { new() };
+        Levels[0].PixelData = new byte[16] {
+            255, 0, 0, 255,
+            0, 255, 0, 255,
+            0, 0, 255, 255,
+            0, 0, 0, 255
+        };
+    }
 
     public Texture(Ressource parent, string path) : base(parent, path, PointerType.File)
     {
         GLBuffer = new TextureBuffer(this);
     }
 
-    public void CopyPixelData(byte[] pixels, int width, int height, PixelAttrPtr format, int offset = 0)
+    /*
+    public void CopyPixelData(byte[] pixels, int width, int height, int offset = 0)
     {
         byte[] data = new byte[width * height * format.Stride];
         Array.Copy(pixels, offset, data, 0, data.Length);
         PixelDataPtr(data, width, height, format);
     }
+    */
 
-    public void PixelDataPtr(byte[] pixels, int width, int height, PixelAttrPtr format)
+    public void PixelDataPtr(int width, int height, byte[] pixels)
     {
-        PixelData = pixels;
+        //PixelData = pixels;
         Width = width;
         Height = height;
-        PixelFormat = format;
+    }
+
+    public void LoadFromPtx()
+    {
+        new TextureImporterPtx(this).Load();
     }
 
     protected override void OnLoad()
     {
-
+        LoadFromPtx();
     }
 
     protected override void OnSave()
@@ -59,8 +96,12 @@ public class Texture : Ressource
 
     static Texture()
     {
-        Checker = new(null, "checker");
-        Checker.PointerType = PointerType.Virtual;
+        Checker = new();
         //Checker.CopyPixelData(new int[] { 0xFFF})
     }
+}
+
+public class TextureLevel
+{
+    public byte[] PixelData;
 }

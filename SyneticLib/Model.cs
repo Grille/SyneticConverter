@@ -9,9 +9,18 @@ using SyneticLib.Graphics;
 namespace SyneticLib;
 public class Model : Mesh
 {
-    public Model(Ressource parent, string path) : base(parent, path, PointerType.File)
+    public TextureDirectory Textures;
+
+    public Model() : base(null, "Model", PointerType.Virtual)
     {
         GLBuffer = new ModelBuffer(this);
+    }
+
+    public Model(Ressource parent, TextureDirectory textures, string path) : base(parent, path, PointerType.File)
+    {
+        GLBuffer = new ModelBuffer(this);
+        Textures = textures;
+        Textures = new(this, "UsedTextures");
     }
 
     public override void ExportAsObj(string path)
@@ -21,7 +30,7 @@ public class Model : Mesh
 
     public void ImportFromMox()
     {
-        new MeshImporterMox(this).Load();
+        new ModelmporterMox(this).Load();
     }
 
     protected override void OnLoad()
@@ -30,9 +39,14 @@ public class Model : Mesh
         {
             case ".mox":
                 ImportFromMox();
-                return;
+                break;
             default:
                 throw new InvalidOperationException($"'{SourcePath}' is not a valid model file.");
+        }
+
+        foreach (var texture in Textures)
+        {
+            texture.Load();
         }
     }
 

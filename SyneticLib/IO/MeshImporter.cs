@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace SyneticLib.IO;
 public abstract class MeshImporter
 {
-    protected Mesh target;
+    protected Mesh Target { get; set; }
 
     public MeshImporter(Mesh target)
     {
-        this.target = target;
+        this.Target = target;
     }
 
     protected abstract void OnLoad();

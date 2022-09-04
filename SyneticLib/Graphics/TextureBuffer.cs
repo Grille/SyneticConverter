@@ -28,10 +28,39 @@ public class TextureBuffer : GLStateObject
 
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.NearestMipmapLinear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, owner.Levels.Length - 1);
 
-        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, owner.Width, owner.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, owner.PixelData);
+        int width = owner.Width;
+        int height = owner.Height;
+        for (int i = 0; i < owner.Levels.Length; i++)
+        {
+            var pixelData = owner.Levels[i].PixelData;
+
+            if (owner.Compressed)
+            {
+                if (owner.Bits == 16 || owner.Bits == 24)
+                {
+                    GL.CompressedTexImage2D(TextureTarget.Texture2D, i, InternalFormat.CompressedRgbaS3tcDxt1Ext, width, height, 0, pixelData.Length, pixelData);
+                }
+                else if (owner.Bits == 32)
+                {
+                    GL.CompressedTexImage2D(TextureTarget.Texture2D, i, InternalFormat.CompressedRgbaS3tcDxt5Ext, width, height, 0, pixelData.Length, pixelData);
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
+            else
+            {
+                GL.TexImage2D(TextureTarget.Texture2D, i, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelData);
+            }
+
+            width /= 2;
+            height /= 2;
+        }
     }
 
     protected override void OnBind()

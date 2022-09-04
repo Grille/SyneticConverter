@@ -18,7 +18,7 @@ public class OrbitCamera : Camera
     public float MaxDistance = 100000;
     public float MinDistance = 10;
 
-    public float AngleX = 0, AngleY = 0, Distance = 100;
+    public float AngleX = MathF.PI / 8, AngleY = MathF.PI / 8, Distance = 100;
 
     protected override void OnScroll(int delta)
     {
@@ -58,8 +58,6 @@ public class OrbitCamera : Camera
 
     public override void CreateView()
     {
-        Console.WriteLine(AngleY);
-
         Position = Focus + new Vector3(0, Distance, 0);
 
         var cosa = MathF.Cos(AngleX);

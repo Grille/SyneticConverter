@@ -50,8 +50,8 @@ public class MeshExporterObj : MeshExporter
             foreach (var reg in target.MaterialRegion)
             {
                 sw.WriteLine($"usemtl {((TerrainMaterial)reg.Material).Name}");
-                var begin = reg.Offset;
-                var end = begin + reg.Count;
+                var begin = reg.ElementOffset;
+                var end = begin + reg.ElementCount;
                 for (var i = begin; i < end; i++)
                 {
                     ref var poly = ref target.Poligons[i];

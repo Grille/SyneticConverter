@@ -7,24 +7,25 @@ using System.IO;
 using System.Globalization;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class MtlFile : Dictionary<int, MtlSection>
+public class MtlFile : SyneticTextFile
 {
-    private MtlSection UsedSection { get; set; }
+    public SHead Head;
+    public List<SMaterial> Sections;
 
     public string Path;
 
     public MtlFile()
     {
-        Add(-1, new MtlSection());
-        UsedSection = this[-1];
+        Head = new();
+        Sections = new();
     }
 
     public void Load(string path = null)
     {
         if (path == null)
             path = Path;
-         
-        UsedSection = this[-1];
+
+        MtlSection usedSection = Head;
 
         var lines = File.ReadAllLines(path);
         for (var i = 0; i < lines.Length; i++)
@@ -35,21 +36,16 @@ public class MtlFile : Dictionary<int, MtlSection>
 
             if (line[0] == '#')
             {
-                var split = line.Split(' ');
-                var element = split[split.Length == 2 ? 1 : 3].Split('x', 2)[1];
-                int id = int.Parse(element, NumberStyles.HexNumber);
-                if (!ContainsKey(id))
-                    Add(id, new());
-                UsedSection = this[id];
+                var section = new SMaterial();
+                usedSection = section;
+                Sections.Add(section);
             }
-            else
-            {
-                var split = line.Split(' ', 2);
-                var key = split[0];
-                var value = split[1];
-                Console.WriteLine($"{key}={value}");
-                UsedSection.Add(key, value);
-            }
+
+            var split = line.Split(' ', 2);
+            var key = split[0];
+            var value = split[1];
+            Console.WriteLine($"{key}={value}");
+            usedSection.Add(key, value);
         }
     }
 
@@ -57,13 +53,86 @@ public class MtlFile : Dictionary<int, MtlSection>
     {
 
     }
-}
 
-public class MtlSection : Dictionary<string, string>
-{
-    public int GetIntFromHexArray(string key, int index)
+    public class MtlSection : Dictionary<string, string>
     {
-        var values = this[key].Split(' ');
-        return int.Parse(values[index], NumberStyles.HexNumber);
+        public uint[] GetHexArray(string key)
+        {
+            var values = this[key].Split(' ');
+            var res = new uint[values.Length];
+            for (var i = 0; i < values.Length; i++)
+            {
+                res[i] = uint.Parse(values[i].Split('x')[1], NumberStyles.HexNumber);
+            }
+            return res;
+        }
+        public int[] GetIntArray(string key)
+        {
+            var values = this[key].Split(' ');
+            var res = new int[values.Length];
+            for (var i = 0; i < values.Length; i++)
+            {
+                res[i] = int.Parse(values[i]);
+            }
+            return res;
+        }
+
+        public float[] GetFloatArray(string key)
+        {
+            var values = this[key].Split(' ');
+            var res = new float[values.Length];
+            for (var i = 0; i < values.Length; i++)
+            {
+                res[i] = float.Parse(values[i]);
+            }
+            return res;
+        }
+
+        public string[] GetStringArray(string key)
+        {
+            var values = this[key].Split("\" ", StringSplitOptions.RemoveEmptyEntries);
+            var res = new string[values.Length];
+            for (var i = 0; i < values.Length; i++)
+            {
+                res[i] = values[i].Trim('"');
+            }
+            return res;
+        }
+
+        public string GetString(string key)
+        {
+            return this[key].ToString().Trim('"');
+        }
+
+
+
+
+    }
+
+    public class SHead : MtlSection
+    {
+        public string[] ColSetInf ;
+    }
+
+    public class SMaterial : MtlSection
+    {
+        public int ID => (int)GetHexArray("#")[0];
+        public int[] MatClass => GetIntArray("MatClass");
+        public uint[] Diffuse => GetHexArray("Diffuse");
+        public uint[] Ambient => GetHexArray("Ambient");
+        public uint[] Specular => GetHexArray("Specular");
+        public uint[] Reflect => GetHexArray("Reflect");
+        public uint[] Specular2 => GetHexArray("Specular2");
+        public uint[] XDiffuse => GetHexArray("XDiffuse");
+        public uint[] XSpecular => GetHexArray("XSpecular");
+
+        public string[] Transparency => this["MatClass"].Split(' ');
+        public string Tex1Name => GetString("Tex1Name");
+        public string Tex2Name => GetString("Tex2Name");
+        public string Tex3Name => GetString("Tex3Name");
+        public uint[] TexFlags => GetHexArray("TexFlags");
+        public float[] TexOffset => GetFloatArray("TexOffset");
+        public float[] TexScale => GetFloatArray("TexScale");
+        public float TexAngle => GetFloatArray("TexAngle")[0];
     }
 }

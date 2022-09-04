@@ -10,7 +10,7 @@ namespace SyneticLib.IO.Synetic.Files;
 public class VtxFile : SyneticBinaryFile, IVertexData
 {
     public int[] VtxQty { get; set; }
-    public MeshVertex[] Vertices { get; set; }
+    public Vertex[] Vertecis { get; set; }
 
     public unsafe override void ReadFromView(BinaryViewReader br)
     {
@@ -24,13 +24,13 @@ public class VtxFile : SyneticBinaryFile, IVertexData
         if (br.Length != finalpos)
             throw new InvalidOperationException($"{br.Length} != {finalpos}");
 
-        Vertices = new MeshVertex[vertexCount];
+        Vertecis = new Vertex[vertexCount];
         for (var i = 0; i < vertexCount; i++)
         {
             var src = br.Read<MVertex>();
-            Vertices[i] = new MeshVertex()
+            Vertecis[i] = new Vertex()
             {
-                Position = src.Position,
+                Position = new Vector3(src.Position.X, src.Position.Z, src.Position.Y),
                 Normal = new Vector3(src.Normal.B / 255f, src.Normal.G / 255f, src.Normal.R / 255f/*, src.Normal.A / 255f*/),
                 UV0 = src.UV,
                 UV1 = Vector2.Zero,
@@ -45,9 +45,9 @@ public class VtxFile : SyneticBinaryFile, IVertexData
     {
         bw.WriteArray(VtxQty, LengthPrefix.None);
 
-        for (var i = 0; i < Vertices.Length; i++)
+        for (var i = 0; i < Vertecis.Length; i++)
         {
-            var src = Vertices[i];
+            var src = Vertecis[i];
             bw.Write<MVertex>(new()
             {
                 Position = src.Position,

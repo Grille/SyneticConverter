@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 using System.Numerics;
 using GGL.IO;
 using System.Runtime.InteropServices;
+using static SyneticLib.IO.Synetic.Files.MoxFile;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class MoxFile : SyneticBinaryFile
+public class MoxFile : SyneticBinaryFile, IVertexData, IIndexData
 {
-    public MHead Head;
+    public const int MBWR = 65536;
+    public const int SimpleWR2 = 33554432;
+    public const int ComplexWR2 = 33685504;
 
-    public MVertex[] Vertecis;
-    public MPoly[] Indices;
-    public MTex[] Textures;
+    public MHead Head;
+    public MTex32[] Textures;
+
+    public int[] VtxQty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public Vertex[] Vertecis { get; set; }
+    public Vector3Int[] Polygons { get; set; }
 
     public unsafe override void ReadFromView(BinaryViewReader br)
     {
@@ -23,27 +29,44 @@ public class MoxFile : SyneticBinaryFile
         if (Head.Magic != "!XOM")
             throw new InvalidOperationException($"Invalid Head '{Head.Magic}'.");
 
-        var ver = (MoxVerion)Head.Version;
+        Vertecis = new Vertex[Head.VertCount];
+        for (int i = 0; i < Vertecis.Length; i++)
+        {
+            var src = br.Read<MVertex>();
+            Vertecis[i] = new Vertex()
+            {
+                Position = new Vector3(src.Position.X, src.Position.Z, src.Position.Y),
+                Normal = new Vector3(src.Normal.X, src.Normal.Y, src.Normal.Z/*, src.Normal.A / 255f*/),
+                UV0 = src.UV,
+                UV1 = Vector2.Zero,
+            };
+        }
 
-        //Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
+        var indices = br.ReadArray<ushort>(Head.PolyCount * 3);
+        Polygons = new Vector3Int[indices.Length / 3];
+        for (int i = 0; i < Polygons.Length; i++)
+        {
+            Polygons[i] = new Vector3Int(indices[i * 3 + 0], indices[i * 3 + 2], indices[i * 3 + 1]);
+        }
 
-        Vertecis = br.ReadArray<MVertex>(Head.VertCount);
+        if (Head.Version == MBWR)
+        {
+            Textures = new MTex32[Head.TextureCount];
+            for (int i = 0; i < Head.TextureCount; i++)
+            {
+                Textures[i] = (MTex32)br.Read<MTex16>();
+            }
+        }
+        else
+        {
+            Textures = br.ReadArray<MTex32>(Head.TextureCount);
+        }
 
-        //Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
-
-        Indices = br.ReadArray<MPoly>(Head.PolyCount);
-
-        //Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
-
-        Textures = br.ReadArray<MTex>(Head.TextureCount);
-
-        //Console.WriteLine($"{br.Position} / {br.Length} -> {br.Position:X}");
-
-        var size = sizeof(MVertex);
-
-
-
-
+        /*
+        br.Seek(0x150 * Head.MatCount);
+        br.Seek(0x0C4 * Head.PartCount);
+        br.Seek(0x058 * Head.LightCount);
+        */
     }
 
     public override void WriteToView(BinaryViewWriter bw)
@@ -63,9 +86,8 @@ public class MoxFile : SyneticBinaryFile
     public struct MVertex
     {
         public Vector3 Position;
-        public byte a0, a1, a2, a3;
-        public float b;
-        public Vector3 UV;
+        public Vector3 Normal;
+        public Vector2 UV;
         public float c, d;
     }
 
@@ -74,17 +96,31 @@ public class MoxFile : SyneticBinaryFile
         public ushort X, Y, Z;
     }
 
-    public struct MTex
+    public struct MTex32
     {
-        int a, b, c, d, r, f;
+        public int MatId;
+        public byte Flag0, Flag1;
+        public ushort Clear0;
+        public int PolyOffset, PolyCount, VertBegin, VertEnd;
+
+        public static explicit operator MTex32(MTex16 a)
+        {
+            var b = new MTex32();
+            b.MatId = a.MatId;
+            b.Flag0 = a.Flag0;
+            b.Flag1 = a.Flag1;
+            b.PolyOffset = a.PolyOffset;
+            b.PolyCount = a.PolyCount;
+            b.VertBegin = a.VertBegin;
+            b.VertEnd = a.VertEnd;
+            return b;
+        }
+    }
+
+    public struct MTex16
+    {
+        public ushort MatId;
+        public byte Flag0, Flag1;
+        public ushort PolyOffset, PolyCount, VertBegin, VertEnd;
     }
 }
-
-public enum MoxVerion
-{
-    MBWR = 65536,
-    SimpleWR2 = 33554432,
-    ComplexWR2 = 33685504,
-}
-
-

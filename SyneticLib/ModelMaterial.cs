@@ -12,6 +12,11 @@ public class ModelMaterial : Material {
 
     public Color Diffuse;
 
+    public ModelMaterial() : base(null, "MeshMaterial")
+    {
+        GLProgram = new MeshMaterialProgram(this);
+    }
+
     public ModelMaterial(Ressource parent) : base(parent, parent.ChildPath("MeshMaterial"))
     {
         GLProgram = new MeshMaterialProgram(this);

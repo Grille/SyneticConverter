@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace SyneticLib.IO.Synetic.Files;
 public interface IIndexData
 {
-    public ushort[] Indices { get; set; }
+    public Vector3Int[] Polygons { get; set; }
 }
