@@ -68,7 +68,7 @@ public abstract class Ressource {
 
     public string FileName => Path.GetFileNameWithoutExtension(SourcePath);
 
-    public string FileNameWithExtension => Path.GetFileName(SourcePath);
+    public string FileNameExt => Path.GetFileName(SourcePath);
 
     public string ChildPath(string path)
     {

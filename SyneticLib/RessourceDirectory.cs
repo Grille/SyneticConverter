@@ -42,5 +42,11 @@ public class RessourceDirectory<T> : RessourceList<T> where T : Ressource
         }
     }
 
-    public T FindFileName(string name) => Items.Find((a) => a.FileNameWithExtension == name);
+    public T FindFileName(string name)
+    {
+        var obj = Items.Find((a) => a.FileNameExt.ToLower() == name.ToLower());
+        if (obj == null)
+            throw new KeyNotFoundException(name);
+        return obj;
+    }
 }

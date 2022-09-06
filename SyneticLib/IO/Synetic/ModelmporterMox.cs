@@ -40,6 +40,7 @@ public class ModelmporterMox : MeshImporter
 
             var tex0 = Target.Textures.FindFileName(src.Tex1Name);
             dst.TexSlot0.Texture = tex0;
+            dst.DataState = DataState.Loaded;
             Target.Materials.Add(dst);
         }
 
