@@ -4,24 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace SyneticLib;
 
-public class GameFolder : Ressource
+public class GameDirectory : Ressource
 {
     public RessourceDirectory<Scenario> Scenarios;
     public RessourceDirectory<Car> Cars;
     public RessourceDirectory<Sound> Sounds;
 
-    public GameFolder(string path, GameVersion target = GameVersion.Auto) : base(null, path, PointerType.Directory)
+    public GameDirectory(string path, GameVersion target = GameVersion.Auto) : base(null, path, PointerType.Directory)
     {
         if (target == GameVersion.Auto)
-            Version = GetGameVersion(path);
+            Version = FindDirectoryGameVersion(path);
         else
             Version = target;
-
-        if (Version == GameVersion.Invalid)
-            throw new ArgumentException(Version.ToString());
 
         Scenarios = new(this, ChildPath("Scenarios"),
             (path) => Directory.Exists(path),
@@ -34,12 +32,12 @@ public class GameFolder : Ressource
         );
 
         Sounds = new(this, ChildPath("Sounds"),
-             (path) => File.Exists(path),
-             (path) => new Sound(this, path)
+            (path) => File.Exists(path),
+            (path) => new Sound(this, path)
         );
     }
 
-    internal static GameFolder Global = new("Global", GameVersion.WR2);
+    internal static GameDirectory Global = new("Global", GameVersion.WR2);
 
     public Scenario GetScenario(string name)
     {
@@ -47,7 +45,7 @@ public class GameFolder : Ressource
         return new Scenario(this, path);
     }
 
-    public static GameVersion GetGameVersion(string path)
+    public static GameVersion FindDirectoryGameVersion(string path)
     {
         var files = Directory.GetFiles(path);
         var names = new List<string>();
@@ -64,7 +62,7 @@ public class GameFolder : Ressource
                 "mbwr_pc.exe" => GameVersion.MBWR,
                 "wr2_pc.exe" => GameVersion.WR2,
                 "c11_pc.exe" => GameVersion.C11,
-                "crashtime.exe" => GameVersion.CTP,
+                "crashtime.exe" => GameVersion.CT1,
                 "burningwheels.exe" => GameVersion.CT2,
                 "ferrarivr.exe" => GameVersion.FVR,
                 "highwaynights.exe" => GameVersion.CT3,
@@ -75,7 +73,7 @@ public class GameFolder : Ressource
                 "wr_setup.exe" => GameVersion.MBWR,
                 "wr2_setup.exe" => GameVersion.WR2,
                 "c11_setup.exe" => GameVersion.C11,
-                "ct_setup.exe" => GameVersion.CTP,
+                "ct_setup.exe" => GameVersion.CT1,
                 "bw_setup.exe" => GameVersion.CT2,
                 "fvr_setup.exe" => GameVersion.FVR,
                 "hn_setup.exe" => GameVersion.CT3,
@@ -91,6 +89,23 @@ public class GameFolder : Ressource
 
         return GameVersion.Invalid;
     }
+
+    public static GameVersion ParseGameVersion(string version) => version switch
+    {
+        "NICE" => GameVersion.NICE,
+        "NICE2" => GameVersion.NICE2,
+        "MBWR" => GameVersion.MBWR,
+        "WR2" => GameVersion.WR2,
+        "C11" => GameVersion.C11,
+        "CT1" => GameVersion.CT1,
+        "CT2" => GameVersion.CT2,
+        "FVR" => GameVersion.FVR,
+        "CT3" => GameVersion.CT3,
+        "CT4" => GameVersion.CT4,
+        "CT5" => GameVersion.CT5,
+
+        _ => GameVersion.Invalid,
+    };
 
     protected override void OnLoad()
     {

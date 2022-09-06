@@ -5,88 +5,69 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json;
+using System.Reflection;
+using System.Xml.Linq;
+using GGL.IO;
+using SyneticLib;
 
 namespace SyneticTool;
 
-internal class Config
+internal class Config : IViewObject
 {
+    public GameDirectoryList Games;
     string path;
-    ConfigSection UsedSection;
-    List<ConfigSection> ConfigSections;
-
     public Config(string path)
     {
         this.path = path;
-
-        ConfigSections = new List<ConfigSection>();
+        Games = new();
     }
 
-    public void UseSection(string name)
+    public void ReadFromView(BinaryViewReader br)
     {
+        br.DefaultCharSize = CharSize.Byte;
 
+        int Count = br.ReadInt32();
+        for (int i = 0; i < Count; i++)
+            Games.Add(new(br.ReadString(), GameDirectory.ParseGameVersion(br.ReadString())));
     }
 
-    public void UseSection()
+    public void WriteToView(BinaryViewWriter bw)
     {
+        bw.DefaultCharSize = CharSize.Byte;
 
+        bw.WriteInt32(Games.Count);
+        for (int i = 0; i < Games.Count; i++)
+        {
+            var game = Games[i];
+            bw.WriteString(game.SourcePath);
+            bw.WriteString(game.Version.ToString());
+        }
     }
 
-    public void SetValue(string key, string value)
+    public bool TryLoad()
     {
-
-    }
-
-    public string GetValue(string key)
-    {
-        return "";
-    }
-
-    public bool Exists()
-    {
-        return File.Exists(path);
+        if (File.Exists(path))
+        {
+            Load();
+            return true;
+        }
+        return false;
     }
 
     public void Load()
     {
-        var lines = File.ReadAllLines(path);
-
-        for (int i = 0; i < lines.Length; i++)
-        {
-            var line = lines[0].Trim();
-
-            if (line.Length == 0)
-                continue;
-
-            if (line[0] == '[')
-            {
-
-            }
-
-        }
+        using var br = new BinaryViewReader(path);
+        ReadFromView(br);
     }
 
     public void Save()
     {
-        var sb = new StringBuilder();
-
-        File.WriteAllText(path, sb.ToString());
+        using var br = new BinaryViewWriter(path);
+        WriteToView(br);
     }
+
+    public record class Game(string Path, string Format);
 }
 
-class ConfigSection
-{
-    public string Name = "_";
-    public bool AllowDuplicateKeys = false;
-    public List<ConfigEntry> Entries;
-}
-
-class ConfigEntry
-{
-    public string Key;
-    public string Value;
-    public string Default;
-    public int Position;
-    public bool Exists;
-}
 
 

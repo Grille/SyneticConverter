@@ -11,13 +11,13 @@ namespace SyneticTool.Nodes;
 
 public class GameFolderNode : DataTreeNode
 {
-    public new GameFolder DataValue { get => (GameFolder)base.DataValue; set => DataValue = value; }
+    public new GameDirectory DataValue { get => (GameDirectory)base.DataValue; set => DataValue = value; }
 
     DataListTreeNode<Scenario> ScenariosNode;
     DataListTreeNode<Car> CarsNode;
     DataListTreeNode<Sound> SoundsNode;
 
-    public GameFolderNode(GameFolder game) : base(game)
+    public GameFolderNode(GameDirectory game) : base(game)
     {
         ScenariosNode = new(game.Scenarios, (a) => new ScenarioNode(a));
         CarsNode = new(game.Cars, (a) => new CarNode(a));
@@ -42,7 +42,7 @@ public class GameFolderNode : DataTreeNode
             GameVersion.MBWR => IconList.MBWR,
             GameVersion.WR2 => IconList.WR2,
             GameVersion.C11 => IconList.C11,
-            GameVersion.CTP => IconList.CT1,
+            GameVersion.CT1 => IconList.CT1,
             GameVersion.CT2 => IconList.CT2,
             GameVersion.CT3 => IconList.CT3,
             GameVersion.CT4 => IconList.CT4,

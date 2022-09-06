@@ -11,25 +11,23 @@ public class Terrain : Mesh
 {
     public int Width, Height;
 
-    public RessourceList<TerrainMaterial> Materials;
-
-    public TerrainChunk[] Chunks;
+    public TerrainChunkInfo[] Chunks;
 
     public Terrain(ScenarioVariant parrent) : base(parrent, parrent.ChildPath("Terrain"), PointerType.Virtual)
     {
         GLBuffer = new TerrainBuffer(this);
     }
 
-    public TerrainChunk GetChunk(int x, int y)
+    public TerrainChunkInfo GetChunk(int x, int y)
     {
         return Chunks[x + y * Width];
     }
 
-    public TerrainChunk GetChunk(int i) => Chunks[i];
+    public TerrainChunkInfo GetChunk(int i) => Chunks[i];
 
     public void CalculateChunks()
     {
-        var list = new List<TerrainChunk>();
+        var list = new List<TerrainChunkInfo>();
 
         //return list;
     }

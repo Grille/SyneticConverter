@@ -86,50 +86,22 @@ public class Scene
         Sprites.Clear();
     }
 
-    private void DrawSprite(Sprite sprite)
-    {
-        float aspectTex = ((float)sprite.Texture.Width / (float)sprite.Texture.Height);
-        float aspect = Camera.AspectRatio / aspectTex;
-        float scale = 0.98f;
-
-        if (aspect > 1.0f)
-            scale *= 1.0f / aspect;
-
-
-
-        Console.WriteLine(aspect);
-        GL.Uniform2(Sprite.GLProgram.UScale, new Vector2(1 * scale, 1 * aspect * scale));
-
-
-        Graphics.AssertRessource(sprite.Texture);
-
-        if (!sprite.Texture.GLBuffer.TryCreate())
-            throw new InvalidOperationException("Could not create GL buffer.");
-
-        sprite.Texture.GLBuffer.Bind();
-
-        GL.DrawElements(PrimitiveType.Triangles, Sprite.GLBuffer.ElementCount, DrawElementsType.UnsignedShort, 0 * 3 * 2);
-
-    }
-
     public void Render()
     {
+        Graphics.Setup();
+
         Camera.CreatePerspective();
         Camera.CreateView();
-
         Graphics.BindCamera(Camera);
 
         GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
-        GL.Disable(EnableCap.DepthTest);
-        GL.Disable(EnableCap.CullFace);
+        Graphics.DepthTest = false;
+        Graphics.CullFace = false;
 
-        GridTexture.GLBuffer.TryCreate();
-        GridTexture.GLBuffer.Bind();
+        Graphics.DrawModel(Grid);
 
-        Graphics.DrawModel(Grid, Matrix4.Identity);
-
-        GL.Enable(EnableCap.DepthTest);
-        GL.Enable(EnableCap.CullFace);
+        Graphics.DepthTest = true;
+        Graphics.CullFace = true;
 
         if (Terrain != null)
             Graphics.DrawTerrain(Terrain);
@@ -137,19 +109,9 @@ public class Scene
         foreach (var instance in Instances)
             Graphics.DrawModel(instance);
 
-
-        GL.Disable(EnableCap.DepthTest);
-
-        if (!Sprite.GLBuffer.TryCreate())
-            throw new InvalidOperationException("Could not create GL buffer.");
-
-        if (!Sprite.GLProgram.TryCreate())
-            throw new InvalidOperationException("Could not create GL buffer.");
-
-        Sprite.GLBuffer.Bind();
-        Sprite.GLProgram.Bind();
+        Graphics.DepthTest = false;
 
         foreach (Sprite sprite in Sprites)
-            DrawSprite(sprite);
+            Graphics.DrawSprite(sprite);
     }
 }

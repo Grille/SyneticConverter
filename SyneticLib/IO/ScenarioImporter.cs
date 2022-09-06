@@ -97,7 +97,7 @@ public abstract class ScenarioImporter
         int offset = 0;
         int preXT = 0;
 
-        terrain.Chunks = new TerrainChunk[qad.Head.BlocksTotal];
+        terrain.Chunks = new TerrainChunkInfo[qad.Head.BlocksTotal];
 
         for (int iz = 0; iz < qad.Head.BlocksZ; iz++)
         {
@@ -107,7 +107,7 @@ public abstract class ScenarioImporter
 
                 ref var srcchunk = ref qad.Blocks[index];
 
-                terrain.Chunks[index] = new TerrainChunk()
+                terrain.Chunks[index] = new TerrainChunkInfo()
                 {
                     ElementOffset = srcchunk.FirstPoly,
                     ElementCount = srcchunk.NumPoly,

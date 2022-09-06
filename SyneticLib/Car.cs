@@ -11,7 +11,7 @@ public class Car : Ressource
     public MaterialList Materials;
     public TextureDirectory Textures;
 
-    public Car(GameFolder parent, string path) : base(parent, path, PointerType.Directory)
+    public Car(GameDirectory parent, string path) : base(parent, path, PointerType.Directory)
     {
         Textures = new(this, ChildPath(Version == GameVersion.WR2 ? "textures_pc" : "textures"));
         Model = new Model(parent, Textures, ChildPath(FileName + ".mox"));

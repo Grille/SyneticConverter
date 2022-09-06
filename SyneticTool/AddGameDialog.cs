@@ -15,17 +15,38 @@ namespace SyneticTool;
 
 public partial class AddGameDialog : Form
 {
-    public string GameName;
-    public string GamePath;
-    public Games Games;
-    public AddGameDialog(Games games)
+    public string NewGamePath;
+    public GameVersion NewGameVersion;
+    public GameDirectoryList Games;
+
+    public GameDirectory SelectedGame;
+
+    public AddGameDialog(GameDirectoryList games)
     {
         InitializeComponent();
 
         Games = games;
+
+        var citems = comboBoxVersion.Items;
+        citems.Add(GameVersion.Invalid);
+        citems.Add(GameVersion.Auto);
+        citems.Add(GameVersion.NICE);
+        citems.Add(GameVersion.NICE2);
+        citems.Add(GameVersion.MBTR);
+        citems.Add(GameVersion.MBWR);
+        citems.Add(GameVersion.WR2);
+        citems.Add(GameVersion.C11);
+        citems.Add(GameVersion.CT1);
+        citems.Add(GameVersion.CT2);
+        citems.Add(GameVersion.CT3);
+        citems.Add(GameVersion.CT4);
+        citems.Add(GameVersion.CT5);
+
+        comboBoxVersion.SelectedItem = GameVersion.Auto;
+
     }
 
-    public AddGameDialog(Games games, Games selected)
+    public AddGameDialog(GameDirectoryList games, GameDirectory selected) : this(games)
     {
         Games = games;
     }
@@ -47,24 +68,23 @@ public partial class AddGameDialog : Form
 
     private void textBoxPath_TextChanged(object sender, EventArgs e)
     {
-        string path = textBoxPath.Text.Trim();
-        if (Directory.Exists(path))
+        NewGamePath = textBoxPath.Text.Trim();
+        SelectedGame = Games.GetOrCreateEntry(NewGamePath);
+        comboBoxVersion.SelectedItem = GameDirectory.FindDirectoryGameVersion(NewGamePath);
+
+        if (Directory.Exists(NewGamePath))
         {
-            textBoxName.Text = GameFolder.GetGameVersion(path).ToString();
-            GamePath = path;
             textBoxPath.ForeColor = SystemColors.WindowText;
-            buttonOk.Enabled = true;
         }
         else
         {
             textBoxPath.ForeColor = Color.Red;
-            buttonOk.Enabled = false;
         }
     }
 
-    private void textBoxName_TextChanged(object sender, EventArgs e)
+    private void update()
     {
-        GameName = textBoxName.Text;
+
     }
 
     private void buttonOk_Click(object sender, EventArgs e)
@@ -77,5 +97,21 @@ public partial class AddGameDialog : Form
     {
         DialogResult = DialogResult.Cancel;
         Close();
+    }
+
+    private void comboBoxVersion_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        NewGameVersion = (GameVersion)comboBoxVersion.SelectedItem;
+    }
+
+    public void ApplyToGame()
+    {
+        SelectedGame.SourcePath = NewGamePath;
+        SelectedGame.Version = NewGameVersion;
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+        comboBoxVersion.SelectedItem = GameDirectory.FindDirectoryGameVersion(NewGamePath);
     }
 }

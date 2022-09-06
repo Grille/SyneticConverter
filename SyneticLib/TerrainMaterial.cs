@@ -21,7 +21,7 @@ public class TerrainMaterial : Material
     }
 
 
-    public static readonly TerrainMaterial Default = new TerrainMaterial(GameFolder.Global);
+    public static readonly TerrainMaterial Default = new TerrainMaterial(GameDirectory.Global);
 
     protected override void OnLoad()
     {

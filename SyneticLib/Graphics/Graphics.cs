@@ -6,36 +6,64 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Drawing;
+using static OpenTK.Graphics.OpenGL.GL;
 
 namespace SyneticLib.Graphics;
 public static class Graphics
 {
     static Camera Camera;
 
+    public static bool DepthTest
+    {
+        set
+        {
+            if (value) GL.Enable(EnableCap.DepthTest);
+            else GL.Disable(EnableCap.DepthTest);
+        }
+    }
+
+    public static bool CullFace
+    {
+        set
+        {
+            if (value) GL.Enable(EnableCap.CullFace);
+            else GL.Disable(EnableCap.CullFace);
+        }
+    }
+
+    public static void Setup()
+    {
+        GL.Disable(EnableCap.CullFace);
+    }
+
     public static void BindCamera(Camera camera)
     {
         Camera = camera;
+        GL.Enable(EnableCap.DepthTest);
+    }
+
+    public static void BindGLStateObject(GLStateObject glObj)
+    {
+        AssertGLState(glObj);
+        glObj.Bind();
     }
 
     public static void BindMaterial(Material material)
     {
         AssertRessource(material);
-        AssertGLState(material.GLProgram);
-        material.GLProgram.Bind();
+        BindGLStateObject(material.GLProgram);
     }
 
     public static void BindMesh(Mesh mesh)
     {
         AssertRessource(mesh);
-        AssertGLState(mesh.GLBuffer);
-        mesh.GLBuffer.Bind();
+        BindGLStateObject(mesh.GLBuffer);
     }
 
     public static void BindTexture(Texture texture)
     {
         AssertRessource(texture);
-        AssertGLState(texture.GLBuffer);
-        texture.GLBuffer.Bind();
+        BindGLStateObject(texture.GLBuffer);
     }
 
     public static void ClearScreen()
@@ -44,10 +72,9 @@ public static class Graphics
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     }
 
-    public static void DrawModel(ModelInstance instance)
-    {
-        DrawModel(instance.Model, instance.ModelMatrix);
-    }
+    public static void DrawModel(ModelInstance instance) => DrawModel(instance.Model, instance.ModelMatrix);
+
+    public static void DrawModel(Model model) => DrawModel(model, Matrix4.Identity);
 
     public static void DrawModel(Model model, in Matrix4 matrix)
     {
@@ -111,18 +138,41 @@ public static class Graphics
         }
     }
 
+    public static void DrawSprite(Sprite sprite)
+    {
+        AssertRessource(sprite.Texture);
+        BindGLStateObject(Sprite.GLBuffer);
+        BindGLStateObject(Sprite.GLProgram);
+
+        float aspectTex = ((float)sprite.Texture.Width / (float)sprite.Texture.Height);
+        float aspect = Camera.AspectRatio / aspectTex;
+        float scale = 0.98f;
+
+        if (aspect > 1.0f)
+            scale *= 1.0f / aspect;
+
+        GL.Uniform2(Sprite.GLProgram.UScale, new Vector2(1 * scale, 1 * aspect * scale));
+
+        if (!sprite.Texture.GLBuffer.TryCreate())
+            throw new InvalidOperationException("Could not create GL buffer.");
+
+        sprite.Texture.GLBuffer.Bind();
+
+        GL.DrawElements(PrimitiveType.Triangles, Sprite.GLBuffer.ElementCount, DrawElementsType.UnsignedShort, 0 * 3 * 2);
+    }
+
 
 
     public static void AssertRessource(Ressource ressource)
     {
         if (ressource.DataState != DataState.Loaded)
-            throw new ArgumentException(nameof(ressource), "Ressource is not loaded.");
+            throw new ArgumentException(nameof(ressource), $"{ressource.GetType().Name} is not loaded.");
     }
 
     public static void AssertGLState(GLStateObject obj)
     {
         if (!obj.TryCreate())
-            throw new ArgumentException(nameof(obj), "GLStateObject is not ready.");
+            throw new ArgumentException(nameof(obj), $"{obj.GetType().Name} is not ready.");
     }
 
 }

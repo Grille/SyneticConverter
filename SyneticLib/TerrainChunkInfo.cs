@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace SyneticLib;
 
-public class TerrainChunk
+public class TerrainChunkInfo
 {
     public int ElementOffset;
     public int ElementCount;

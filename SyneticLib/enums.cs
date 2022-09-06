@@ -16,7 +16,7 @@ public enum GameVersion
     MBWR,
     WR2,
     C11,
-    CTP,
+    CT1,
     CT2,
     FVR,
     CT3,

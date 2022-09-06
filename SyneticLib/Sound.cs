@@ -11,7 +11,7 @@ public class Sound : Ressource
 {
     public byte[] Buffer;
 
-    public Sound(GameFolder parent, string path): base(parent, path, PointerType.File)
+    public Sound(GameDirectory parent, string path): base(parent, path, PointerType.File)
     {
 
     }

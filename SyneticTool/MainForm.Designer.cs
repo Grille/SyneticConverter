@@ -47,6 +47,7 @@
             this.errorLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.renderTimer = new System.Windows.Forms.Timer(this.components);
+            this.detectGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -82,6 +83,7 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.detectGamesToolStripMenuItem,
             this.addGameToolStripMenuItem,
             this.toolStripSeparator2,
             this.convertToToolStripMenuItem,
@@ -96,43 +98,43 @@
             // addGameToolStripMenuItem
             // 
             this.addGameToolStripMenuItem.Name = "addGameToolStripMenuItem";
-            this.addGameToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.addGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addGameToolStripMenuItem.Text = "Add Game";
             this.addGameToolStripMenuItem.Click += new System.EventHandler(this.addGameToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(128, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // convertToToolStripMenuItem
             // 
             this.convertToToolStripMenuItem.Name = "convertToToolStripMenuItem";
-            this.convertToToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.convertToToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.convertToToolStripMenuItem.Text = "Convert To";
             this.convertToToolStripMenuItem.Click += new System.EventHandler(this.convertToToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToolStripMenuItem.Text = "Export";
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importToolStripMenuItem.Text = "Import";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(128, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // splitContainer1
@@ -225,6 +227,13 @@
             this.renderTimer.Interval = 10;
             this.renderTimer.Tick += new System.EventHandler(this.renderTimer_Tick);
             // 
+            // detectGamesToolStripMenuItem
+            // 
+            this.detectGamesToolStripMenuItem.Name = "detectGamesToolStripMenuItem";
+            this.detectGamesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.detectGamesToolStripMenuItem.Text = "Find Games";
+            this.detectGamesToolStripMenuItem.Click += new System.EventHandler(this.detectGamesToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -274,5 +283,6 @@
         private System.Windows.Forms.Timer renderTimer;
         private System.Windows.Forms.Panel errorPanel;
         private System.Windows.Forms.Label errorLabel;
+        private System.Windows.Forms.ToolStripMenuItem detectGamesToolStripMenuItem;
     }
 }

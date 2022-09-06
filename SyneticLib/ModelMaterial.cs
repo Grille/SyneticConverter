@@ -23,7 +23,7 @@ public class ModelMaterial : Material {
     }
 
 
-    public static readonly ModelMaterial Default = new ModelMaterial(GameFolder.Global);
+    public static readonly ModelMaterial Default = new ModelMaterial(GameDirectory.Global);
 
     protected override void OnLoad()
     {

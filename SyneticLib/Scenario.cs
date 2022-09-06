@@ -9,7 +9,7 @@ namespace SyneticLib;
 
 public class Scenario : Ressource
 {
-    public new GameFolder Parent { get => (GameFolder)base.Parent; set => base.Parent = value; }
+    public new GameDirectory Parent { get => (GameDirectory)base.Parent; set => base.Parent = value; }
 
 
     public List<ScenarioVariant> Variants;
@@ -20,7 +20,7 @@ public class Scenario : Ressource
     public ScenarioVariant V3 { get => Variants.Count > 2 ? Variants[2] : null; }
     public ScenarioVariant V4 { get => Variants.Count > 3 ? Variants[3] : null; }
 
-    public Scenario(GameFolder game, string path) :base(game, path, PointerType.Directory)
+    public Scenario(GameDirectory game, string path) :base(game, path, PointerType.Directory)
     {
         Variants = new List<ScenarioVariant>();
     }

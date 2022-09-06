@@ -21,12 +21,12 @@ namespace SyneticTool;
 
 public partial class MainForm : Form
 {
-    public Games Games;
+    public GameDirectoryList Games;
     GLControl glControl;
     Config config;
     Scene scene;
-
-    private Point lastMouse = Point.Empty;
+    Task LoadingTask;
+    Task QueuedLoadingTask;
 
     public MainForm()
     {
@@ -44,16 +44,10 @@ public partial class MainForm : Form
         glControl.MouseMove += GlPanel_MouseMove;
         dataTreeView.ImageList = IconList.Images;
 
-        config = new Config("config.ini");
+        config = new("config.dat");
+        config.TryLoad();
 
-        if (!config.Exists())
-        {
-            config.Save();
-        }
-
-        config.Load();
-
-        Games = new Games();
+        Games = config.Games;
 
         errorPanel.Visible = false;
         errorPanel.BringToFront();
@@ -86,17 +80,33 @@ public partial class MainForm : Form
 
         if (dialog.DialogResult == DialogResult.OK)
         {
-            if (!Games.Exists(dialog.GameName))
+            dialog.ApplyToGame();
+            var game = dialog.SelectedGame;
+            if (Games.Contains(game))
             {
+                foreach (var node in dataTreeView.Nodes)
+                {
+                    var gfnode = (GameFolderNode)node;
+                    if (gfnode.DataValue == game)
+                    {
+                        gfnode.SeekAndUpdateContent();
+                    }
+                }
+            }
+            else
+            {
+                Games.Add(game);
+
                 dataTreeView.BeginUpdate();
 
-                var game = Games.CreateGame(dialog.GameName, dialog.GamePath);
                 var node = new GameFolderNode(game);
-                node.UpdateAppearance();
                 dataTreeView.Nodes.Add(node);
+                node.UpdateAppearance();
 
                 dataTreeView.EndUpdate();
             }
+
+            config.Save();
         }
     }
 
@@ -106,30 +116,74 @@ public partial class MainForm : Form
     }
 
 
+    public GameDirectoryList FindNewGames()
+    {
+        var res = new GameDirectoryList();
+
+        var locations = new string[]
+        {
+            "",
+            "Games",
+            "Programs",
+            "Programme",
+            "Program Files",
+            "Program Files (x86)",
+        };
+
+        var names = new string[]
+        {
+            "", "TDK", "Synetic"
+        };
+
+        var drives = DriveInfo.GetDrives();
+
+        foreach (var drive in drives)
+        {
+            foreach (var location in locations)
+            {
+                foreach (var name in names)
+                {
+                    var path = Path.Join(drive.Name, location, name);
+                    if (!Directory.Exists(path))
+                        continue;
+
+                    string[] directory;
+                    try
+                    {
+                        directory = Directory.GetDirectories(path);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        continue;
+                    }
+                    foreach (var fpath in directory)
+                    {
+                        GameVersion version;
+                        try
+                        {
+                            version = GameDirectory.FindDirectoryGameVersion(fpath);
+                        }
+                        catch (UnauthorizedAccessException){
+                            continue;
+                        }
+                        if (version != GameVersion.Invalid)
+                        {
+                            if (!Games.PathExists(fpath))
+                            {
+                                res.Add(new(fpath, version));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return res;
+    }
+
 
     private void MainForm_Shown(object sender, EventArgs e)
     {
-        Games.CreateGame("WR1", "X:/Games/Synetic/World Racing", GameVersion.MBWR);
-        Games.CreateGame("WR2", "C:/World Racing 2", GameVersion.WR2);
-        Games.CreateGame("C11", "X:/Games/Synetic/Cobra 11 - Nitro", GameVersion.C11);
-        Games.CreateGame("CT1", "X:/Games/Synetic/Cobra 11 - Crash Time", GameVersion.CTP);
-        Games.CreateGame("CT2", "X:/Games/Synetic/Cobra 11 - Burning Wheels", GameVersion.CT2);
-        Games.CreateGame("CT3", "X:/Games/Synetic/Cobra 11 - Highway Nights", GameVersion.CT3);
-        Games.CreateGame("CT4", "X:/Games/Synetic/Cobra 11 - Das Syndikat", GameVersion.CT4);
-        Games.CreateGame("CT5", "X:/Games/Synetic/Cobra 11 - Undercover", GameVersion.CT5);
-        Games.CreateGame("FVR", "X:/Games/Synetic/Ferrari Virtual Race", GameVersion.FVR);
-
-        dataTreeView.BeginUpdate();
-
-        foreach (var game in Games.GameFolders)
-        {
-            var node = new GameFolderNode(game.Value);
-            dataTreeView.Nodes.Add(node);
-            node.UpdateAppearance();
-        }
-
-        dataTreeView.EndUpdate();
-
         renderTimer.Start();
     }
 
@@ -272,6 +326,38 @@ public partial class MainForm : Form
                 cnode.SeekAndUpdateContent();
             }
 
+            dataTreeView.EndUpdate();
+        }
+    }
+
+    private void detectGamesToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        var games = FindNewGames();
+        var sb = new StringBuilder();
+        sb.AppendLine($"Found {games.Count} new game locations.");
+        if (games.Count > 0)
+        {
+            sb.AppendLine();
+            foreach (var game in games)
+            {
+                sb.AppendLine($"{game.Version} {game.SourcePath}");
+            }
+        }
+        var result = MessageBox.Show(this, sb.ToString(), "Find Games", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+        if (result == DialogResult.OK)
+        {
+            foreach (var game in games)
+            {
+                Games.Add(game);
+            }
+
+            dataTreeView.BeginUpdate();
+            foreach (var game in Games)
+            {
+                var node = new GameFolderNode(game);
+                dataTreeView.Nodes.Add(node);
+                node.UpdateAppearance();
+            }
             dataTreeView.EndUpdate();
         }
     }
