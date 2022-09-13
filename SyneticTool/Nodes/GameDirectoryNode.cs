@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using SyneticLib;
+using SyneticLib.IO.Extern;
 
 namespace SyneticTool.Nodes;
 
-public class GameFolderNode : DataTreeNode
+public class GameDirectoryNode : DataTreeNode
 {
     public new GameDirectory DataValue { get => (GameDirectory)base.DataValue; set => DataValue = value; }
 
@@ -17,7 +18,7 @@ public class GameFolderNode : DataTreeNode
     DataListTreeNode<Car> CarsNode;
     DataListTreeNode<Sound> SoundsNode;
 
-    public GameFolderNode(GameDirectory game) : base(game)
+    public GameDirectoryNode(GameDirectory game) : base(game)
     {
         ScenariosNode = new(game.Scenarios, (a) => new ScenarioNode(a));
         CarsNode = new(game.Cars, (a) => new CarNode(a));
@@ -26,6 +27,26 @@ public class GameFolderNode : DataTreeNode
         Nodes.Add(ScenariosNode);
         Nodes.Add(CarsNode);
         Nodes.Add(SoundsNode);
+
+        var menu = new ContextMenuStrip();
+
+        var entry0 = new ToolStripMenuItem("Edit");
+        var entry1 = new ToolStripMenuItem("Remove");
+
+        entry0.Click += (object sender, EventArgs e) =>
+        {
+            MainForm.ShowAddOrEditGameDialog(DataValue);
+        };
+        entry1.Click += (object sender, EventArgs e) =>
+        {
+            MainForm.Games.Remove(DataValue);
+            MainForm.Config.Save();
+            MainForm.RefreshGamesTree();
+        };
+
+        menu.Items.Add(entry0);
+        menu.Items.Add(entry1);
+        ContextMenuStrip = menu;
     }
 
     protected override void OnUpdateAppearance()
@@ -39,6 +60,7 @@ public class GameFolderNode : DataTreeNode
         {
             GameVersion.NICE => IconList.NICE,
             GameVersion.NICE2 => IconList.NICE2,
+            GameVersion.MBTR => IconList.MBTR,
             GameVersion.MBWR => IconList.MBWR,
             GameVersion.WR2 => IconList.WR2,
             GameVersion.C11 => IconList.C11,

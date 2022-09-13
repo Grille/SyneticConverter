@@ -9,7 +9,7 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-internal class TextureDirectoryNode : DataListTreeNode<Texture>
+public class TextureDirectoryNode : DataListTreeNode<Texture>
 {
 
     public TextureDirectoryNode(TextureDirectory textures, string name = "Textures") : base(textures, (a) => new TextureNode(a))

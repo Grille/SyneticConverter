@@ -20,15 +20,15 @@ public abstract class TextureImporter
 
     public void Load()
     {
-        try
-        {
+        //try
+        //{
             OnLoad();
             OnInit();
             Target.DataState = DataState.Loaded;
-        }
-        catch
-        {
-            Target.DataState = DataState.Error;
-        }
+        //}
+        //catch
+        //{
+        //    Target.DataState = DataState.Error;
+        //}
     }
 }

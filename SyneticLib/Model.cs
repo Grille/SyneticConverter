@@ -20,7 +20,6 @@ public class Model : Mesh
     {
         GLBuffer = new ModelBuffer(this);
         Textures = textures;
-        Textures = new(this, "UsedTextures");
     }
 
     public override void ExportAsObj(string path)

@@ -10,13 +10,17 @@ namespace SyneticTool.Nodes;
 
 public class CarNode : DataTreeNode
 {
+    public TextureDirectoryNode ObjectTexturesNode;
     public ModelNode MeshNode;
+
     public CarNode(Car car): base(car)
     {
         SelectedImageIndex = ImageIndex = IconList.Car;
 
+        ObjectTexturesNode = new(car.Textures);
         MeshNode = new ModelNode(car.Model);
 
+        Nodes.Add(ObjectTexturesNode);
         Nodes.Add(MeshNode);
     }
 }

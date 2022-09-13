@@ -8,7 +8,6 @@ namespace SyneticLib;
 public class Car : Ressource
 {
     public Model Model;
-    public MaterialList Materials;
     public TextureDirectory Textures;
 
     public Car(GameDirectory parent, string path) : base(parent, path, PointerType.Directory)
@@ -19,6 +18,7 @@ public class Car : Ressource
 
     protected override void OnLoad()
     {
+        Textures.Load();
         Model.Load();
     }
 
@@ -29,6 +29,7 @@ public class Car : Ressource
 
     protected override void OnSeek()
     {
+        Textures.Seek();
         Model.Seek();
     }
 }

@@ -47,6 +47,9 @@ public class GameDirectory : Ressource
 
     public static GameVersion FindDirectoryGameVersion(string path)
     {
+        if (!Directory.Exists(path))
+            return GameVersion.Invalid;
+
         var files = Directory.GetFiles(path);
         var names = new List<string>();
 
@@ -59,6 +62,7 @@ public class GameDirectory : Ressource
             {
                 "nice1.exe" => GameVersion.NICE,
                 "breakneck.exe" => GameVersion.NICE2,
+                "mbtr_pc.exe" => GameVersion.MBTR,
                 "mbwr_pc.exe" => GameVersion.MBWR,
                 "wr2_pc.exe" => GameVersion.WR2,
                 "c11_pc.exe" => GameVersion.C11,
@@ -70,6 +74,7 @@ public class GameDirectory : Ressource
                 "crashtime5.exe" => GameVersion.CT5,
 
                 "bn_setup.exe" => GameVersion.NICE2,
+                "tr_setup.exe" => GameVersion.MBTR,
                 "wr_setup.exe" => GameVersion.MBWR,
                 "wr2_setup.exe" => GameVersion.WR2,
                 "c11_setup.exe" => GameVersion.C11,

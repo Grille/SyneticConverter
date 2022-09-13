@@ -49,6 +49,8 @@ public partial class AddGameDialog : Form
     public AddGameDialog(GameDirectoryList games, GameDirectory selected) : this(games)
     {
         Games = games;
+        textBoxPath.Text = selected.SourcePath;
+        comboBoxVersion.SelectedItem = selected.Version;
     }
 
     private void label1_Click(object sender, EventArgs e)
@@ -80,11 +82,6 @@ public partial class AddGameDialog : Form
         {
             textBoxPath.ForeColor = Color.Red;
         }
-    }
-
-    private void update()
-    {
-
     }
 
     private void buttonOk_Click(object sender, EventArgs e)

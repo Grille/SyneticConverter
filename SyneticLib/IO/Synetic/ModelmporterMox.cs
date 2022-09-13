@@ -37,9 +37,12 @@ public class ModelmporterMox : MeshImporter
             var dst = new ModelMaterial(Target);
             dst.Diffuse = BgraColor.FromInt(src.Diffuse[0]);
 
-
-            var tex0 = Target.Textures.FindFileName(src.Tex1Name);
-            dst.TexSlot0.Texture = tex0;
+            if (src.Tex1Name != "")
+            {
+                var tex0 = Target.Textures.FindFileName(src.Tex1Name);
+                if (tex0 != null)
+                    dst.TexSlot0.Enable(tex0);
+            }
             dst.DataState = DataState.Loaded;
             Target.Materials.Add(dst);
         }
@@ -54,6 +57,8 @@ public class ModelmporterMox : MeshImporter
             ref var src = ref mox.Textures[i];
             Target.MaterialRegion[i] = new MaterialRegion(src.PolyOffset, src.PolyCount, Target.Materials[src.MatId]);
         }
+
+        Target.DataState = DataState.Loaded;
     }
 
 }

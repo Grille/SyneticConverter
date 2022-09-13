@@ -31,13 +31,19 @@ public class ProgressInfo
 
     public void Use(ProgressInfo progress)
     {
+        Free();
+
         _subProgress = progress;
         _subProgress.HasUpdated += _subProgress_HasUpdated;
     }
 
     public void Free()
     {
-        _subProgress = null;
+        if (_subProgress != null)
+        {
+            _subProgress.HasUpdated -= _subProgress_HasUpdated;
+            _subProgress = null;
+        }
     }
 
     public void Update(float value, string text)

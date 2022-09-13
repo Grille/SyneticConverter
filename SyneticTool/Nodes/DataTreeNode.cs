@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SyneticLib;
-using static SyneticLib.IO.Synetic.Files.LvlFile;
 
 namespace SyneticTool.Nodes;
 
@@ -14,6 +13,8 @@ public class DataTreeNode : TreeNode
     public virtual bool Loaded { get; private set; }
 
     public Ressource DataValue { get; set; }
+
+    public MainForm MainForm => (MainForm)TreeView.FindForm();
 
     public DataTreeNode(Ressource data)
     {

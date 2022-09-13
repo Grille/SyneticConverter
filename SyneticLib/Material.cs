@@ -37,6 +37,9 @@ public abstract class Material : Ressource
 
         public void Enable(Texture texture)
         {
+            if (texture == null)
+                throw new ArgumentNullException(nameof(texture));
+
             Enabled = true;
             Texture = texture;
         }

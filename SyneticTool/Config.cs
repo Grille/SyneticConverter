@@ -12,7 +12,7 @@ using SyneticLib;
 
 namespace SyneticTool;
 
-internal class Config : IViewObject
+public class Config : IViewObject
 {
     public GameDirectoryList Games;
     string path;
@@ -48,7 +48,14 @@ internal class Config : IViewObject
     {
         if (File.Exists(path))
         {
-            Load();
+            try
+            {
+                Load();
+            }
+            catch
+            {
+                return false;
+            }
             return true;
         }
         return false;

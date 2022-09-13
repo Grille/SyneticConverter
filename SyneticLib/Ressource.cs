@@ -112,11 +112,15 @@ public abstract class Ressource {
         if (Parent != null)
             Parent.ProgressInfo.Use(ProgressInfo);
 
-        OnLoad();
-
-        Parent.ProgressInfo.Free();
-
-        DataState = DataState.Loaded;
+        try
+        {
+            OnLoad();
+        }
+        finally
+        {
+            if (Parent != null)
+                Parent.ProgressInfo.Free();
+        }
     }
 
     public void Save()

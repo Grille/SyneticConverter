@@ -23,7 +23,7 @@ public partial class MainForm : Form
 {
     public GameDirectoryList Games;
     GLControl glControl;
-    Config config;
+    public Config Config;
     Scene scene;
     Task LoadingTask;
     Task QueuedLoadingTask;
@@ -44,10 +44,10 @@ public partial class MainForm : Form
         glControl.MouseMove += GlPanel_MouseMove;
         dataTreeView.ImageList = IconList.Images;
 
-        config = new("config.dat");
-        config.TryLoad();
+        Config = new("config.dat");
+        Config.TryLoad();
 
-        Games = config.Games;
+        Games = Config.Games;
 
         errorPanel.Visible = false;
         errorPanel.BringToFront();
@@ -75,39 +75,7 @@ public partial class MainForm : Form
 
     private void addGameToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var dialog = new AddGameDialog(Games);
-        dialog.ShowDialog(this);
-
-        if (dialog.DialogResult == DialogResult.OK)
-        {
-            dialog.ApplyToGame();
-            var game = dialog.SelectedGame;
-            if (Games.Contains(game))
-            {
-                foreach (var node in dataTreeView.Nodes)
-                {
-                    var gfnode = (GameFolderNode)node;
-                    if (gfnode.DataValue == game)
-                    {
-                        gfnode.SeekAndUpdateContent();
-                    }
-                }
-            }
-            else
-            {
-                Games.Add(game);
-
-                dataTreeView.BeginUpdate();
-
-                var node = new GameFolderNode(game);
-                dataTreeView.Nodes.Add(node);
-                node.UpdateAppearance();
-
-                dataTreeView.EndUpdate();
-            }
-
-            config.Save();
-        }
+        ShowAddOrEditGameDialog();
     }
 
     private void convertToToolStripMenuItem_Click(object sender, EventArgs e)
@@ -128,6 +96,7 @@ public partial class MainForm : Form
             "Programme",
             "Program Files",
             "Program Files (x86)",
+            "Program Files (x86)\\Steam\\steamapps\\common"
         };
 
         var names = new string[]
@@ -137,13 +106,18 @@ public partial class MainForm : Form
 
         var drives = DriveInfo.GetDrives();
 
+        
         foreach (var drive in drives)
         {
             foreach (var location in locations)
             {
+                var path0 = Path.Join(drive.Name, location);
+                if (!Directory.Exists(path0))
+                    continue;
+
                 foreach (var name in names)
                 {
-                    var path = Path.Join(drive.Name, location, name);
+                    var path = Path.Join(path0, name);
                     if (!Directory.Exists(path))
                         continue;
 
@@ -177,6 +151,7 @@ public partial class MainForm : Form
                 }
             }
         }
+        
 
         return res;
     }
@@ -185,6 +160,21 @@ public partial class MainForm : Form
     private void MainForm_Shown(object sender, EventArgs e)
     {
         renderTimer.Start();
+
+        if (Games.Count == 0)
+        {
+            var games = FindNewGames();
+            if (games.Count > 0)
+            {
+                ShowApplyGamesDialog(games);
+            }
+            else
+            {
+                ShowAddOrEditGameDialog();
+            }
+        }
+
+        RefreshGamesTree();
     }
 
     private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -203,7 +193,14 @@ public partial class MainForm : Form
         scene.Camera.ScreenSize = new OpenTK.Mathematics.Vector2(glControl.ClientSize.Width, glControl.ClientSize.Height);
         scene.Camera.CreatePerspective();
 
-        glControl.MakeCurrent();
+        try
+        {
+            glControl.MakeCurrent();
+        }
+        catch (OpenTK.Windowing.GraphicsLibraryFramework.GLFWException)
+        {
+            return; // Context failed: drop frame
+        }
 
         scene.ClearScreen();
         scene.Render();
@@ -333,6 +330,93 @@ public partial class MainForm : Form
     private void detectGamesToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var games = FindNewGames();
+        ShowApplyGamesDialog(games);
+    }
+
+    public void RefreshGamesTree()
+    {
+        List<GameDirectoryNode> listToAdd = new();
+        List<GameDirectoryNode> listToRemove = new();
+
+        foreach (var node in dataTreeView.Nodes)
+        {
+            var gnode = (GameDirectoryNode)node;
+            if (!Games.Contains(gnode.DataValue))
+            {
+                listToRemove.Add(gnode);
+            }
+        }
+
+        foreach (var game in Games)
+        {
+            bool found = false;
+            foreach (var node in dataTreeView.Nodes)
+            {
+                var gnode = (GameDirectoryNode)node;
+                if (gnode.DataValue == game)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                var node = new GameDirectoryNode(game);
+                node.UpdateAppearance();
+                listToAdd.Add(node);
+            }
+
+        }
+
+        if (listToAdd.Count == 0 && listToRemove.Count == 0)
+            return;
+
+
+        dataTreeView.BeginUpdate();
+
+        foreach (var node in listToAdd)
+            dataTreeView.Nodes.Add(node);
+
+        foreach (var node in listToRemove)
+            dataTreeView.Nodes.Remove(node);
+
+        dataTreeView.EndUpdate();
+    }
+
+    public void ShowAddOrEditGameDialog(GameDirectory target = null)
+    {
+        var dialog = target == null ? new AddGameDialog(Games) : new AddGameDialog(Games, target);
+        dialog.ShowDialog(this);
+
+        if (dialog.DialogResult == DialogResult.OK)
+        {
+            dialog.ApplyToGame();
+            var game = dialog.SelectedGame;
+            if (Games.Contains(game))
+            {
+                foreach (var node in dataTreeView.Nodes)
+                {
+                    var gfnode = (GameDirectoryNode)node;
+                    if (gfnode.DataValue == game)
+                    {
+                        gfnode.SeekAndUpdateContent();
+                    }
+                }
+            }
+            else
+            {
+                Games.Add(game);
+
+                RefreshGamesTree();
+            }
+
+            Config.Save();
+        }
+    }
+
+    public void ShowApplyGamesDialog(List<GameDirectory> games)
+    {
         var sb = new StringBuilder();
         sb.AppendLine($"Found {games.Count} new game locations.");
         if (games.Count > 0)
@@ -350,15 +434,9 @@ public partial class MainForm : Form
             {
                 Games.Add(game);
             }
+            Config.Save();
 
-            dataTreeView.BeginUpdate();
-            foreach (var game in Games)
-            {
-                var node = new GameFolderNode(game);
-                dataTreeView.Nodes.Add(node);
-                node.UpdateAppearance();
-            }
-            dataTreeView.EndUpdate();
+            RefreshGamesTree();
         }
     }
 }

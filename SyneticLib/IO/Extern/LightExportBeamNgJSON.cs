@@ -47,4 +47,14 @@ public class LightExportBeamNgJSON
 
         File.WriteAllText(path, sb.ToString());
     }
+
+
+}
+
+public static class BeamNGExportUtils
+{
+    public static void ExportAsBeamNGJSON(this RessourceList<Light> lights, string path)
+    {
+
+    }
 }

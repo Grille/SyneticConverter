@@ -32,6 +32,7 @@
             this.dataTreeView = new System.Windows.Forms.TreeView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.detectGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.convertToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,7 +48,6 @@
             this.errorLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.renderTimer = new System.Windows.Forms.Timer(this.components);
-            this.detectGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -95,46 +95,53 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // detectGamesToolStripMenuItem
+            // 
+            this.detectGamesToolStripMenuItem.Name = "detectGamesToolStripMenuItem";
+            this.detectGamesToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.detectGamesToolStripMenuItem.Text = "Find Games";
+            this.detectGamesToolStripMenuItem.Click += new System.EventHandler(this.detectGamesToolStripMenuItem_Click);
+            // 
             // addGameToolStripMenuItem
             // 
             this.addGameToolStripMenuItem.Name = "addGameToolStripMenuItem";
-            this.addGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addGameToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.addGameToolStripMenuItem.Text = "Add Game";
             this.addGameToolStripMenuItem.Click += new System.EventHandler(this.addGameToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(133, 6);
             // 
             // convertToToolStripMenuItem
             // 
             this.convertToToolStripMenuItem.Name = "convertToToolStripMenuItem";
-            this.convertToToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.convertToToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.convertToToolStripMenuItem.Text = "Convert To";
             this.convertToToolStripMenuItem.Click += new System.EventHandler(this.convertToToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.exportToolStripMenuItem.Text = "Export";
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.importToolStripMenuItem.Text = "Import";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(133, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // splitContainer1
@@ -178,7 +185,7 @@
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Size = new System.Drawing.Size(252, 487);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "File";
+            this.tabPage1.Text = "DataTree";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // glPanel
@@ -226,13 +233,6 @@
             // 
             this.renderTimer.Interval = 10;
             this.renderTimer.Tick += new System.EventHandler(this.renderTimer_Tick);
-            // 
-            // detectGamesToolStripMenuItem
-            // 
-            this.detectGamesToolStripMenuItem.Name = "detectGamesToolStripMenuItem";
-            this.detectGamesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.detectGamesToolStripMenuItem.Text = "Find Games";
-            this.detectGamesToolStripMenuItem.Click += new System.EventHandler(this.detectGamesToolStripMenuItem_Click);
             // 
             // MainForm
             // 
