@@ -125,13 +125,12 @@ public static class Graphics
 
             var material = region.Material;
             var program = material.GLProgram;
-            var texture = region.Material.TexSlot0.Texture;
-
 
             BindMaterial(material);
             program.SubCameraMatrix(Camera);
 
-            BindTexture(texture);
+            if (material.TexSlot0.Enabled)
+                BindTexture(material.TexSlot0.Texture);
 
             GL.DrawElements(PrimitiveType.Triangles, region.ElementCount * 3, DrawElementsType.UnsignedInt, region.ElementOffset * 3 * 4);
         }

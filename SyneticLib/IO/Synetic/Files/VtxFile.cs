@@ -26,19 +26,7 @@ public class VtxFile : SyneticBinaryFile, IVertexData
 
         Vertecis = new Vertex[vertexCount];
         for (var i = 0; i < vertexCount; i++)
-        {
-            var src = br.Read<MVertex>();
-            Vertecis[i] = new Vertex()
-            {
-                Position = new Vector3(src.Position.X, src.Position.Z, src.Position.Y),
-                Normal = new Vector3(src.Normal.B / 255f, src.Normal.G / 255f, src.Normal.R / 255f/*, src.Normal.A / 255f*/),
-                UV0 = src.UV,
-                UV1 = Vector2.Zero,
-                Blending = new Vector3(src.Blend.B0, src.Blend.B1, src.Blend.B2),
-                Shadow = src.Blend.Shadow,
-                LightColor = src.Color,
-            };
-        }
+            Vertecis[i] = br.Read<MVertex>();
     }
 
     public override void WriteToView(BinaryViewWriter bw)
@@ -46,13 +34,7 @@ public class VtxFile : SyneticBinaryFile, IVertexData
         bw.WriteArray(VtxQty, LengthPrefix.None);
 
         for (var i = 0; i < Vertecis.Length; i++)
-        {
-            var src = Vertecis[i];
-            bw.Write<MVertex>(new()
-            {
-                Position = src.Position,
-            });
-        }
+            bw.Write<MVertex>(Vertecis[i]);
     }
 
     public struct MVertex
@@ -62,6 +44,25 @@ public class VtxFile : SyneticBinaryFile, IVertexData
         public Vector2 UV;
         public BlendColor Blend;
         public BgraColor Color;
+
+        public static implicit operator Vertex(MVertex a) => new Vertex()
+        {
+            InvPosition = a.Position,
+            RGBAInvNormal = a.Normal,
+            UV0 = a.UV,
+            UV1 = Vector2.Zero,
+            RGBABlend = a.Blend,
+            LightColor = a.Color,
+        };
+
+        public static implicit operator MVertex(Vertex a) => new MVertex()
+        {
+            Position = new Vector3(a.Position.X, a.Position.Z, a.Position.Y),
+            Normal = a.RGBAInvNormal,
+            UV = a.UV0,
+            Blend = a.RGBABlend,
+            Color = a.LightColor,
+        };
     }
 }
 

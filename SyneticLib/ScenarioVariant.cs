@@ -67,19 +67,7 @@ public partial class ScenarioVariant : Ressource
         ObjectTextures.Load();
         //Objects.Load();
 
-        switch (Version)
-        {
-            case >= GameVersion.C11:
-            {
-                new ScenarioImporterCT(this).Load();
-            }
-            break;
-            case >= GameVersion.MBWR:
-            {
-                new ScenarioImporterWR(this).Load();
-            }
-            break;
-        }
+        new ScenarioImporterSynetic(this).Load();
     }
 
     protected override void OnSave()

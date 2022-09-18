@@ -17,7 +17,7 @@ public class TextureImporterPtx : TextureImporter
 
     protected override void OnLoad()
     {
-        if (ptx.Exists())
+        if (ptx.Exists)
         {
             ptx.Load();
             return;

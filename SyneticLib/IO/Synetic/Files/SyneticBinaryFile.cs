@@ -36,12 +36,9 @@ public abstract class SyneticBinaryFile : IViewObject
         br.ReadToIView(this);
     }
 
-    public bool Exists(string path = null)
+    public bool Exists
     {
-        if (path != null)
-            Path = path;
-
-        return File.Exists(Path);
+        get => File.Exists(Path);
     }
 
     public void Load(string path = null)
@@ -60,9 +57,6 @@ public abstract class SyneticBinaryFile : IViewObject
     {
         if (path != null)
             Path = path;
-
-        if (!File.Exists(Path))
-            throw new FileNotFoundException($"file '{Path}' not found", Path);
 
         using var bw = new BinaryViewWriter(Path);
         bw.WriteIView(this);

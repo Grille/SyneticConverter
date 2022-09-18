@@ -39,7 +39,7 @@ public class ModelmporterMox : MeshImporter
 
             if (src.Tex1Name != "")
             {
-                var tex0 = Target.Textures.FindFileName(src.Tex1Name);
+                var tex0 = Target.Textures.GetByFileName(src.Tex1Name);
                 if (tex0 != null)
                     dst.TexSlot0.Enable(tex0);
             }

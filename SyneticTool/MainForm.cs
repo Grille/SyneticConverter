@@ -96,7 +96,8 @@ public partial class MainForm : Form
             "Programme",
             "Program Files",
             "Program Files (x86)",
-            "Program Files (x86)\\Steam\\steamapps\\common"
+            "Program Files\\steamapps\\steamapps\\common",
+            "Program Files (x86)\\Steam\\steamapps\\common",
         };
 
         var names = new string[]

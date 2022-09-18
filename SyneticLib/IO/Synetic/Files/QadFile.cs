@@ -10,16 +10,17 @@ using System.Runtime.InteropServices;
 
 namespace SyneticLib.IO.Synetic.Files;
 
-public abstract class QadFile : SyneticBinaryFile
+public class QadFile : SyneticBinaryFile
 {
     public bool Has8ByteMagic = false;
     public bool Has56ByteBlock = false;
+    public bool UseSimpleData = false;
 
     public MHead Head;
-    public String32[] TextureName;
+    public String32[] TextureNames;
     public String32[] BumpTexName;
     public String32[] PropObjNames;
-    public BMlock[] Blocks;
+    public MChunk[] Blocks;
     public int[] ChunkDataPtr;
     public ushort[][] ChunkData;
     public MMaterialDef[] Materials;
@@ -28,6 +29,8 @@ public abstract class QadFile : SyneticBinaryFile
     public MGroundPhysics[] Grounds;
     public ushort[] Tex2Ground;
     public MSound[] Sounds;
+    public MObjProp[] PropClasses;
+    public MLight[] Lights;
 
     public struct MHead
     {
@@ -40,7 +43,7 @@ public abstract class QadFile : SyneticBinaryFile
         public int Sounds;
     }
 
-    public struct BMlock
+    public struct MChunk
     {
         public ushort X, Z;
         public int FirstPoly, NumPoly, FirstTex, NumTex;
@@ -98,12 +101,54 @@ public abstract class QadFile : SyneticBinaryFile
         Misc misc;
         [StructLayout(LayoutKind.Sequential, Size = 12)] struct Misc { }
     }
-}
 
-public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass : unmanaged where TMLight : unmanaged
-{
-    public TMPropClass[] PropClasses;
-    public TMLight[] Lights;
+
+    public struct MObjPropSimple
+    {
+        public ushort Mode;
+
+        public static implicit operator MObjProp(MObjPropSimple a) => new MObjProp()
+        {
+            Mode = a.Mode,
+        };
+        public static explicit operator MObjPropSimple(MObjProp a) => new MObjPropSimple()
+        {
+            Mode = a.Mode,
+        };
+    }
+
+    public struct MLightSimple
+    {
+        public Vector3 Position;
+        public BgraColor Color;
+
+        public static implicit operator MLight(MLightSimple a) => new MLight()
+        {
+            Matrix = Matrix4x4.CreateTranslation(a.Position),
+            Color = a.Color,
+        };
+        public static explicit operator MLightSimple(MLight a) => new MLightSimple()
+        {
+            Position = a.Matrix.Translation,
+            Color = a.Color,
+        };
+    }
+
+    public struct MObjProp
+    {
+        public ushort Mode, Shape, Weight, p4;
+        public int x1, x2, x3;
+        public String48 HitSound, FallSound;
+    }
+
+    public struct MLight
+    {
+        public int Mode;
+        public float Size, Offset, Freq;
+        public BgraColor Color;
+        public byte b1, b2, b3, b4;
+        public Matrix4x4 Matrix;
+    }
 
     public unsafe override void ReadFromView(BinaryViewReader br)
     {
@@ -115,24 +160,24 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
         }
 
         if (Head.BlocksX * Head.BlocksZ != Head.BlocksTotal)
-            throw new InvalidDataException();
+            throw new InvalidDataException($"Invalid block count ({Head.BlocksX} * {Head.BlocksZ}) != {Head.BlocksTotal}");
 
         if (Has56ByteBlock)
             br.ReadArray<byte>(56);
 
-        TextureName = br.ReadArray<String32>(Head.TexturesFiles);
+        TextureNames = br.ReadArray<String32>(Head.TexturesFiles);
         BumpTexName = br.ReadArray<String32>(Head.BumpTexturesFiles);
         PropObjNames = br.ReadArray<String32>(Head.PropClassCount);
 
-        PropClasses = br.ReadArray<TMPropClass>(Head.PropClassCount);
+        PropClasses = new MObjProp[Head.PropClassCount];
+        for (int i = 0; i < Head.PropClassCount; i++)
+            PropClasses[i] = UseSimpleData ? br.Read<MObjPropSimple>() : br.Read<MObjProp>();
 
-        Blocks = new BMlock[Head.BlocksTotal];
-
+        Blocks = new MChunk[Head.BlocksTotal];
         for (var i = 0; i < Head.BlocksTotal; i++)
-             Blocks[i] = br.Read<BMlock>();
+             Blocks[i] = br.Read<MChunk>();
 
         var blockX16 = Head.BlocksTotal * 16;
-
         ChunkDataPtr = new int[blockX16 + 1];
         br.ReadToIList(ChunkDataPtr, 0, blockX16);
         ChunkDataPtr[blockX16] = Head.ColliSize;
@@ -148,7 +193,11 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
         MaterialRegions = br.ReadArray<MPolygonRegionPtr>(Head.TexturesTotal);
         Materials = br.ReadArray<MMaterialDef>(Head.MaterialCount);
         PropInstances = br.ReadArray<MObjInstance>(Head.PropInstanceCount);
-        Lights = br.ReadArray<TMLight>(Head.Lights);
+
+        Lights = new MLight[Head.Lights];
+        for (int i = 0; i < Head.Lights; i++)
+            Lights[i] = UseSimpleData ? br.Read<MLightSimple>() : br.Read<MLight>();
+
         Grounds = br.ReadArray<MGroundPhysics>(Head.GroundTypes);
         Tex2Ground = br.ReadArray<ushort>(256);
         Sounds = br.ReadArray<MSound>(Head.Sounds);
@@ -160,10 +209,17 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
 
         bw.Write(Head);
 
-        bw.WriteArray(TextureName);
+        bw.WriteArray(TextureNames);
         bw.WriteArray(BumpTexName);
         bw.WriteArray(PropObjNames);
-        bw.WriteArray(PropClasses);
+
+        for (int i = 0; i < PropClasses.Length; i++)
+        {
+            if (UseSimpleData)
+                bw.Write((MObjPropSimple)PropClasses[i]);
+            else
+                bw.Write(PropClasses[i]);
+        }
 
         for (var ix = 0; ix < Head.BlocksTotal; ix++)
         {
@@ -178,11 +234,16 @@ public abstract class QadFile<TMPropClass, TMLight> : QadFile where TMPropClass 
             bw.WriteArray(ChunkData[i]);
         }
 
-
         bw.WriteArray(MaterialRegions);
         bw.WriteArray(Materials);
         bw.WriteArray(PropInstances);
-        bw.WriteArray(Lights);
+        for (int i = 0; i < Lights.Length; i++)
+        {
+            if (UseSimpleData)
+                bw.Write((MLightSimple)Lights[i]);
+            else
+                bw.Write(Lights[i]);
+        }
         bw.WriteArray(Grounds);
         bw.WriteArray(Tex2Ground);
         bw.WriteArray(Sounds);

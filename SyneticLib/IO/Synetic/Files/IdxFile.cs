@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GGL.IO;
 
 namespace SyneticLib.IO.Synetic.Files;
-internal class IdxFile : SyneticBinaryFile, IIndexData
+public class IdxFile : SyneticBinaryFile, IIndexData
 {
     public ushort[] Indices { get; set; }
 
@@ -26,6 +26,16 @@ internal class IdxFile : SyneticBinaryFile, IIndexData
 
     public override void WriteToView(BinaryViewWriter bw)
     {
+
+        Indices = new ushort[Polygons.Length * 3];
+
+        for (int i = 0; i < Polygons.Length; i++)
+        {
+            Indices[i * 3 + 0] = (ushort)Polygons[i].X;
+            Indices[i * 3 + 2] = (ushort)Polygons[i].Y;
+            Indices[i * 3 + 1] = (ushort)Polygons[i].Z;
+        }
+
         bw.WriteArray(Indices, LengthPrefix.Int32);
     }
 }

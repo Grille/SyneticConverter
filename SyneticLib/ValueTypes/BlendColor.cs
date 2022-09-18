@@ -13,14 +13,20 @@ public struct BlendColor
         return $"(R:{B2} G:{B1} B:{B0} Shadow:{Shadow})";
     }
 
-    public Vector3 GetBlendAsVec3()
+    public Vector3 Vec3Blend
     {
-        return new Vector3(B0 / 255f, B1 / 255f, B2 / 255f);
+        get => new Vector3(B0 / 255f, B1 / 255f, B2 / 255f);
+        set
+        {
+            B0 = (byte)(value.X * 255);
+            B1 = (byte)(value.Y * 255);
+            B2 = (byte)(value.Z * 255);
+        }
     }
 
-    public float GetShadowAsFloat()
+    public float FloatShadow
     {
-        return Shadow / 255f;
+        get => Shadow / 255f;
+        set => Shadow = (byte)(value * 255);
     }
-
 }
