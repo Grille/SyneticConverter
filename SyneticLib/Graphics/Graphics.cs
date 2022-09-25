@@ -13,33 +13,35 @@ public static class Graphics
 {
     static Camera Camera;
 
-    public static bool DepthTest
+    public static bool DepthTestEnabled
     {
         set
         {
             if (value) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
         }
+        get => GL.IsEnabled(EnableCap.DepthTest);
     }
 
-    public static bool CullFace
+    public static bool CullFaceEnabled
     {
         set
         {
             if (value) GL.Enable(EnableCap.CullFace);
             else GL.Disable(EnableCap.CullFace);
         }
+        get => GL.IsEnabled(EnableCap.CullFace);
     }
 
     public static void Setup()
     {
-        GL.Disable(EnableCap.CullFace);
+        CullFaceEnabled = false;
     }
 
     public static void BindCamera(Camera camera)
     {
         Camera = camera;
-        GL.Enable(EnableCap.DepthTest);
+        DepthTestEnabled = true;
     }
 
     public static void BindGLStateObject(GLStateObject glObj)

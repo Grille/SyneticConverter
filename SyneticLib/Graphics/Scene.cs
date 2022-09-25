@@ -95,13 +95,13 @@ public class Scene
         Graphics.BindCamera(Camera);
 
         GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
-        Graphics.DepthTest = false;
-        Graphics.CullFace = false;
+        Graphics.DepthTestEnabled = false;
+        Graphics.CullFaceEnabled = false;
 
         Graphics.DrawModel(Grid);
 
-        Graphics.DepthTest = true;
-        Graphics.CullFace = true;
+        Graphics.DepthTestEnabled = true;
+        Graphics.CullFaceEnabled = true;
 
         if (Terrain != null)
             Graphics.DrawTerrain(Terrain);
@@ -109,7 +109,7 @@ public class Scene
         foreach (var instance in Instances)
             Graphics.DrawModel(instance);
 
-        Graphics.DepthTest = false;
+        Graphics.DepthTestEnabled = false;
 
         foreach (Sprite sprite in Sprites)
             Graphics.DrawSprite(sprite);

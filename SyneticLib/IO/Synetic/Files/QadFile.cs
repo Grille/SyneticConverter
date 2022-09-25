@@ -7,6 +7,7 @@ using System.Numerics;
 using System.IO;
 using GGL.IO;
 using System.Runtime.InteropServices;
+using OpenTK.Graphics.ES20;
 
 namespace SyneticLib.IO.Synetic.Files;
 
@@ -60,7 +61,7 @@ public class QadFile : SyneticBinaryFile
 
     public struct MMaterialDef
     {
-        public ushort Tex0Id, Tex1Id, Tex2Id, Mode;
+        public byte Tex0Id, a, Tex1Id, b, Tex2Id, c, Mode, d;
         public Transform Mat1;
         public Transform Mat2;
         public Transform Mat3;
@@ -247,5 +248,11 @@ public class QadFile : SyneticBinaryFile
         bw.WriteArray(Grounds);
         bw.WriteArray(Tex2Ground);
         bw.WriteArray(Sounds);
+    }
+
+    private void assertBlockCount()
+    {
+        if (Head.BlocksX * Head.BlocksZ != Head.BlocksTotal)
+            throw new InvalidDataException($"Invalid block count ({Head.BlocksX} * {Head.BlocksZ}) != {Head.BlocksTotal}");
     }
 }
