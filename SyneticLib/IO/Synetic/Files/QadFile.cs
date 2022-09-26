@@ -62,7 +62,7 @@ public class QadFile : SyneticBinaryFile
 
     public struct MMaterialDef
     {
-        public byte Tex0Id, Tex1Id, Tex2Id, Mode;
+        public ushort Tex0Id, Tex1Id, Tex2Id, Mode;
         public Transform Mat1;
         public Transform Mat2;
         public Transform Mat3;

@@ -19,7 +19,6 @@ internal class ScenarioNode : DataTreeNode
         SelectedImageIndex = ImageIndex = IconList.World;
     }
 
-
     protected override void OnUpdateContent()
     {
         base.OnUpdateContent();
@@ -33,9 +32,15 @@ internal class ScenarioNode : DataTreeNode
         }
     }
 
-
     public ScenarioVariantNode V1
     {
         get => Nodes.Count > 0 ? (ScenarioVariantNode)Nodes[0] : null;
+    }
+
+    public override void OnSelect(TreeViewCancelEventArgs e)
+    {
+        if (DataValue.NeedLoad)
+            DataValue.Load();
+        MainForm.Display.ShowScenario(DataValue);
     }
 }

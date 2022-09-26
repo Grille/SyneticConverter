@@ -65,7 +65,7 @@ public partial class ScenarioVariant : Ressource
         Sounds.Load();
         TerrainTextures.Load();
         ObjectTextures.Load();
-        //Objects.Load();
+        Objects.Load();
 
         new ScenarioImporterSynetic(this).Load();
     }

@@ -35,4 +35,11 @@ public class ModelNode : DataTreeNode
         menu.Items.Add(entry);
         ContextMenuStrip = menu;
     }
+
+    public override void OnSelect(TreeViewCancelEventArgs e)
+    {
+        if (DataValue.NeedLoad)
+            DataValue.Load();
+        MainForm.Display.ShowMesh(DataValue);
+    }
 }

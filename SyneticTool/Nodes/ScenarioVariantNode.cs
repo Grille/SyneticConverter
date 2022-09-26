@@ -41,6 +41,12 @@ internal class ScenarioVariantNode : DataTreeNode
         Nodes.Add(TerrainNode);
         Nodes.Add(LightsNode);
         Nodes.Add(PropsNode);
+    }
 
+    public override void OnSelect(TreeViewCancelEventArgs e)
+    {
+        if (DataValue.NeedLoad)
+            DataValue.Load();
+        MainForm.Display.ShowScenario(DataValue);
     }
 }

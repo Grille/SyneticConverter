@@ -24,4 +24,9 @@ public class MeshInstance
     }
 
     public static implicit operator MeshInstance(Mesh mesh) => new MeshInstance(mesh);
+
+    public static explicit operator MeshInstance(PropInstance instance)
+    {
+        return new MeshInstance(instance.Class.Mesh, Matrix4.CreateTranslation(instance.Position.X, instance.Position.Y, instance.Position.Z));
+    }
 }

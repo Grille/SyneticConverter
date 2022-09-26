@@ -181,6 +181,8 @@ public partial class MainForm : Form
 
     private void dataTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
     {
+        dataTreeView.BeginUpdate();
+
         if (e.Node is DataTreeNode)
         {
             var node = (DataTreeNode)e.Node;
@@ -198,6 +200,8 @@ public partial class MainForm : Form
                 }
             }
         }
+
+        dataTreeView.EndUpdate();
     }
 
     private void detectGamesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -273,7 +277,7 @@ public partial class MainForm : Form
                     var gfnode = (GameDirectoryNode)node;
                     if (gfnode.DataValue == game)
                     {
-                        gfnode.SeekAndUpdateContent();
+                        gfnode.OnShown();
                     }
                 }
             }

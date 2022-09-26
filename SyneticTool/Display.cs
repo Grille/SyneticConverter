@@ -1,9 +1,11 @@
-﻿using OpenTK.WinForms;
+﻿using OpenTK.Mathematics;
+using OpenTK.WinForms;
 using SyneticLib;
 using SyneticLib.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -48,6 +50,11 @@ public class Display
     {
         Scene.ClearScene();
         Scene.Meshes.Add(v.Terrain);
+
+        foreach (var instance in v.PropInstances)
+        {
+            Scene.Meshes.Add((MeshInstance)instance);
+        }
     }
 
     public void ShowTexture(Texture texture)

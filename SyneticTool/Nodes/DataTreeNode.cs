@@ -10,7 +10,7 @@ namespace SyneticTool.Nodes;
 
 public class DataTreeNode : TreeNode
 {
-    public virtual bool Loaded { get; private set; }
+    public bool Loaded { get; private set; } = false;
 
     public Ressource DataValue { get; set; }
 
@@ -33,40 +33,8 @@ public class DataTreeNode : TreeNode
         }
     }
 
-    public void SeekAndUpdateContent()
-    {
-        DataValue.UpdatePointer();
-
-        if (DataValue.PointerState == PointerState.Exists)
-        {
-
-            //if (DataValue.NeedSeek)
-            //{
-                DataValue.Seek();
-            //}
-
-            OnUpdateContent();
-        }
-
-        UpdateAppearance();
-    }
-
     public void UpdateAppearance() {
-        //if (!IsVisible)
-        //    return;
-
         OnUpdateAppearance();
-
-        if (IsExpanded)
-        {
-            foreach (var node in Nodes)
-            {
-                if (node is DataTreeNode)
-                {
-                    ((DataTreeNode)node).UpdateAppearance();
-                }
-            }
-        }
     }
 
     protected virtual void OnUpdateContent()
@@ -84,19 +52,27 @@ public class DataTreeNode : TreeNode
 
     public virtual void OnShown()
     {
-        DataValue.UpdatePointer();
-        if (DataValue.NeedSeek && DataValue.PointerState == PointerState.Exists)
+        if (DataValue.PointerState == PointerState.Exists && DataValue.NeedSeek)
+        {
             DataValue.Seek();
-        UpdateAppearance();
+        }
+
+        if (!Loaded)
+        {
+            OnUpdateContent();
+            UpdateAppearance();
+
+            Loaded = true;
+        }
     }
 
     public virtual void OnSelect(TreeViewCancelEventArgs e)
     {
-
+        Console.WriteLine("select");
     }
 
     public virtual void OnExpand(TreeViewCancelEventArgs e)
     {
-
+        Console.WriteLine("exp");
     }
 }
