@@ -1,0 +1,80 @@
+﻿using OpenTK.WinForms;
+using SyneticLib;
+using SyneticLib.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static OpenTK.Graphics.OpenGL.GL;
+
+namespace SyneticTool;
+
+public class Display
+{
+    public readonly GLControl GLControl;
+    public readonly Scene Scene;
+    public Camera Camera
+    {
+        get => Scene.Camera;
+        set => Scene.Camera = value;
+    }
+
+    public Display(GLControl gLControl)
+    {
+        GLControl = gLControl;
+        Scene = new Scene();
+    }
+
+    public void ShowCar(Car car)
+    {
+        Scene.ClearScene();
+        Scene.Meshes.Add(car.Model);
+    }
+
+    public void ShowMesh(Mesh mesh)
+    {
+        Scene.ClearScene();
+        Scene.Meshes.Add(mesh);
+    }
+
+    public void ShowScenario(Scenario scenario)
+    {
+        ShowScenario(scenario.V1);
+    }
+
+    public void ShowScenario(ScenarioVariant v)
+    {
+        Scene.ClearScene();
+        Scene.Meshes.Add(v.Terrain);
+    }
+
+    public void ShowTexture(Texture texture)
+    {
+        Scene.ClearScene();
+        Scene.Sprites.Add(new Sprite(texture));
+    }
+
+    public void Render()
+    {
+        Camera.ScreenSize = new(GLControl.ClientSize.Width, GLControl.ClientSize.Height);
+        Camera.CreatePerspective();
+        Camera.CreateView();
+
+        try
+        {
+            GLControl.MakeCurrent();
+        }
+        catch (OpenTK.Windowing.GraphicsLibraryFramework.GLFWException)
+        {
+            return; // Context failed: drop frame
+        }
+
+        Scene.ClearScreen();
+        Scene.Render();
+
+        GLControl.SwapBuffers();
+    }
+}
+

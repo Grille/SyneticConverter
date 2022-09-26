@@ -29,10 +29,7 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
         VtxQty = br.ReadArray<int>(64);
 
         int vertexCount = getVertCount();
-        int calculatedEndPos = getEndPos(vertexCount, Head.IndicesCount);
-
-        if (calculatedEndPos != br.Length)
-            throw new Exception($"Invalid File Size: ({calculatedEndPos} != {br.Length}) Diff {calculatedEndPos - br.Length}");
+        assertFileSize(vertexCount, Head.IndicesCount, (int)br.Length);
 
         Vertecis = new Vertex[vertexCount];
         for (var i = 0; i < vertexCount; i++)
@@ -90,6 +87,22 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
 
         return calculatedEndPos;
     }
+
+    private void assertFileSize(int vertexCount, int IndicesCount, int length)
+    {
+        int calculatedEndPos = getEndPos(vertexCount, IndicesCount);
+
+        if (calculatedEndPos != length)
+            throw new Exception($"Invalid File Size: ({calculatedEndPos} != {length}) Diff {calculatedEndPos - length}");
+
+    }
+
+
+    public void SetFlagsAccordingToVersion(GameVersion version)
+    {
+        HasX16VertexBlock = version >= GameVersion.CT5;
+    }
+
 
     public void FillHead()
     {

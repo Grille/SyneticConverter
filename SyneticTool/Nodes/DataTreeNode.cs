@@ -81,4 +81,22 @@ public class DataTreeNode : TreeNode
 
         ForeColor = NodeColors.RessourceColor(DataValue);
     }
+
+    public virtual void OnShown()
+    {
+        DataValue.UpdatePointer();
+        if (DataValue.NeedSeek && DataValue.PointerState == PointerState.Exists)
+            DataValue.Seek();
+        UpdateAppearance();
+    }
+
+    public virtual void OnSelect(TreeViewCancelEventArgs e)
+    {
+
+    }
+
+    public virtual void OnExpand(TreeViewCancelEventArgs e)
+    {
+
+    }
 }

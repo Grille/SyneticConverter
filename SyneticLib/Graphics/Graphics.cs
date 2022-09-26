@@ -36,12 +36,12 @@ public static class Graphics
     public static void Setup()
     {
         CullFaceEnabled = false;
+        DepthTestEnabled = true;
     }
 
     public static void BindCamera(Camera camera)
     {
         Camera = camera;
-        DepthTestEnabled = true;
     }
 
     public static void BindGLStateObject(GLStateObject glObj)
@@ -68,17 +68,19 @@ public static class Graphics
         BindGLStateObject(texture.GLBuffer);
     }
 
+    public static void SubCameraScreenSize() => GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
+
     public static void ClearScreen()
     {
         GL.ClearColor(Color.DarkGray);
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     }
 
-    public static void DrawModel(ModelInstance instance) => DrawModel(instance.Model, instance.ModelMatrix);
+    public static void DrawMesh(MeshInstance instance) => DrawMesh(instance.Model, instance.ModelMatrix);
 
-    public static void DrawModel(Model model) => DrawModel(model, Matrix4.Identity);
+    public static void DrawMesh(Mesh model) => DrawMesh(model, Matrix4.Identity);
 
-    public static void DrawModel(Model model, in Matrix4 matrix)
+    public static void DrawMesh(Mesh model, in Matrix4 matrix)
     {
         AssertRessource(model);
         BindMesh(model);

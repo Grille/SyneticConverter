@@ -49,10 +49,8 @@ public class ScenarioImporterSynetic : ScenarioImporter
         qad.Path = filePath + ".qad";
         sky.Path = filePath + ".sky";
 
-        qad.UseSimpleData = version < GameVersion.WR2;
-        qad.Has8ByteMagic = version >= GameVersion.CT2;
-        qad.Has56ByteBlock = version >= GameVersion.CT2;
-        geo.HasX16VertexBlock = version >= GameVersion.CT5;
+        qad.SetFlagsAccordingToVersion(version);
+        geo.SetFlagsAccordingToVersion(version);
     }
 
     protected override void OnLoad()
@@ -82,7 +80,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
     protected override void OnInit()
     {
         AssignTextures();
-        //AssignObjects();
+        AssignObjects();
         AssignTerrain();
         AssignLights();
     }

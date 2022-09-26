@@ -24,53 +24,45 @@ public partial class MainForm : Form
     public GameDirectoryList Games;
     GLControl glControl;
     public Config Config;
-    Scene scene;
+    public Display Display;
     Task LoadingTask;
     Task QueuedLoadingTask;
 
     public MainForm()
     {
         InitializeComponent();
+        DoubleBuffered = true;
+        dataTreeView.ImageList = IconList.Images;
 
-        var settings = new GLControlSettings();
-        settings.API = OpenTK.Windowing.Common.ContextAPI.OpenGL;
-        settings.APIVersion = new Version(4, 5, 0, 0);
-        glControl = new GLControl(settings);
+        glControl = new GLControl(new()
+        {
+            API = OpenTK.Windowing.Common.ContextAPI.OpenGL,
+            APIVersion = new Version(4, 5, 0, 0)
+        });
         glControl.BackColor = Color.Black;
         glControl.Dock = DockStyle.Fill;
-        //glControl.Visible = false;
-        glPanel.Controls.Add(glControl);
         glPanel.MouseWheel += GlPanel_MouseWheel;
         glControl.MouseMove += GlPanel_MouseMove;
-        dataTreeView.ImageList = IconList.Images;
+        glPanel.Controls.Add(glControl);
+        Display = new(glControl);
 
         Config = new("config.dat");
         Config.TryLoad();
 
         Games = Config.Games;
-
-        errorPanel.Visible = false;
-        errorPanel.BringToFront();
-
-        DoubleBuffered = true;
-
-        scene = new();
     }
 
     private void GlPanel_MouseMove(object sender, MouseEventArgs e)
     {
-        scene.Camera.MouseMove(e.X, e.Y, e.Button == MouseButtons.Left);
+        Display.Camera.MouseMove(e.X, e.Y, e.Button == MouseButtons.Left);
     }
 
     private void GlPanel_MouseWheel(object sender, MouseEventArgs e)
     {
-        scene.Camera.Scroll(e.Delta);
+        Display.Camera.Scroll(e.Delta);
     }
 
-    private void GlControl_Paint(object sender, PaintEventArgs e)
-    {
-        RenderFrame();
-    }
+    private void GlControl_Paint(object sender, PaintEventArgs e) => Display.Render();
 
 
     private void addGameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -84,79 +76,6 @@ public partial class MainForm : Form
     }
 
 
-    public GameDirectoryList FindNewGames()
-    {
-        var res = new GameDirectoryList();
-
-        var locations = new string[]
-        {
-            "",
-            "Games",
-            "Programs",
-            "Programme",
-            "Program Files",
-            "Program Files (x86)",
-            "Program Files\\steamapps\\steamapps\\common",
-            "Program Files (x86)\\Steam\\steamapps\\common",
-        };
-
-        var names = new string[]
-        {
-            "", "TDK", "Synetic"
-        };
-
-        var drives = DriveInfo.GetDrives();
-
-        
-        foreach (var drive in drives)
-        {
-            foreach (var location in locations)
-            {
-                var path0 = Path.Join(drive.Name, location);
-                if (!Directory.Exists(path0))
-                    continue;
-
-                foreach (var name in names)
-                {
-                    var path = Path.Join(path0, name);
-                    if (!Directory.Exists(path))
-                        continue;
-
-                    string[] directory;
-                    try
-                    {
-                        directory = Directory.GetDirectories(path);
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        continue;
-                    }
-                    foreach (var fpath in directory)
-                    {
-                        GameVersion version;
-                        try
-                        {
-                            version = GameDirectory.FindDirectoryGameVersion(fpath);
-                        }
-                        catch (UnauthorizedAccessException){
-                            continue;
-                        }
-                        if (version != GameVersion.Invalid)
-                        {
-                            if (!Games.PathExists(fpath))
-                            {
-                                res.Add(new(fpath, version));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-
-        return res;
-    }
-
 
     private void MainForm_Shown(object sender, EventArgs e)
     {
@@ -164,7 +83,7 @@ public partial class MainForm : Form
 
         if (Games.Count == 0)
         {
-            var games = FindNewGames();
+            var games = Games.FindNewGames();
             if (games.Count > 0)
             {
                 ShowApplyGamesDialog(games);
@@ -183,34 +102,12 @@ public partial class MainForm : Form
 
     }
 
-    private void renderTimer_Tick(object sender, EventArgs e)
-    {
-        RenderFrame();
-    }
+    private void renderTimer_Tick(object sender, EventArgs e) => Display.Render();
 
-    public void RenderFrame()
-    {
-        errorPanel.Location = new Point(glControl.ClientSize.Width / 2 - errorPanel.Width / 2, glControl.ClientSize.Height / 2 - errorPanel.Height / 2);
-        scene.Camera.ScreenSize = new OpenTK.Mathematics.Vector2(glControl.ClientSize.Width, glControl.ClientSize.Height);
-        scene.Camera.CreatePerspective();
-
-        try
-        {
-            glControl.MakeCurrent();
-        }
-        catch (OpenTK.Windowing.GraphicsLibraryFramework.GLFWException)
-        {
-            return; // Context failed: drop frame
-        }
-
-        scene.ClearScreen();
-        scene.Render();
-
-        glControl.SwapBuffers();
-    }
 
     private void dataTreeView_AfterSelect(object sender, TreeViewEventArgs e)
     {
+        /*
         //dataTreeView.BeginUpdate();
 
         switch (e.Node)
@@ -223,7 +120,7 @@ public partial class MainForm : Form
                     mnode.DataValue.Load();
                 mnode.UpdateAppearance();
 
-                DisplayModel((Model)mnode.MeshNode.DataValue);
+                Display.ShowMesh((Model)mnode.MeshNode.DataValue);
             }
             break;
             case ModelNode:
@@ -234,7 +131,7 @@ public partial class MainForm : Form
                     mnode.DataValue.Load();
                 mnode.UpdateAppearance();
 
-                DisplayModel((Model)mnode.DataValue);
+                Display.ShowMesh((Model)mnode.DataValue);
             }
             break;
             case TextureNode:
@@ -245,7 +142,7 @@ public partial class MainForm : Form
                     tnode.DataValue.Load();
                 tnode.UpdateAppearance();
 
-                DisplayTexture((Texture)tnode.DataValue);
+                Display.ShowTexture((Texture)tnode.DataValue);
             }
             break;
             case ScenarioNode:
@@ -261,7 +158,7 @@ public partial class MainForm : Form
                     dialog.Close();
                 }
                 vnode.UpdateAppearance();
-                DisplayScenarioVariant(vnode.DataValue);
+                Display.ShowScenario(vnode.DataValue);
             }
             break;
             case ScenarioVariantNode:
@@ -272,65 +169,40 @@ public partial class MainForm : Form
                 if (vnode.DataValue.NeedLoad)
                     vnode.DataValue.Load();
                 vnode.UpdateAppearance();
-                DisplayScenarioVariant(vnode.DataValue);
+                Display.ShowScenario(vnode.DataValue);
             }
             break;
         }
 
         //dataTreeView.EndUpdate();
+        */
     }
 
-    private void DisplayScenarioVariant(ScenarioVariant scenario)
-    {
-        scene.ClearScene();
-
-        scene.Terrain = scenario.Terrain;
-
-        RenderFrame();
-    }
-
-    private void DisplayTexture(Texture texture)
-    {
-        scene.ClearScene();
-
-
-        scene.Sprites.Add(new Sprite(texture));
-
-        RenderFrame();
-    }
-
-    private void DisplayModel(Model mesh)
-    {
-        scene.ClearScene();
-
-        scene.Instances.Add(new ModelInstance(mesh));
-
-        RenderFrame();
-    }
 
     private void dataTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
     {
         if (e.Node is DataTreeNode)
         {
-            dataTreeView.BeginUpdate();
-
             var node = (DataTreeNode)e.Node;
-            foreach (var n in node.Nodes)
+            if (node.DataValue.PointerState == PointerState.Invalid)
             {
-                if (!(n is DataTreeNode))
-                    continue;
-
-                var cnode = (DataTreeNode)n;
-                cnode.SeekAndUpdateContent();
+                e.Cancel = true;
+                return;
             }
-
-            dataTreeView.EndUpdate();
+            node.OnExpand(e);
+            foreach (var cnode in node.Nodes)
+            {
+                if (cnode is DataTreeNode)
+                {
+                    ((DataTreeNode)cnode).OnShown();
+                }
+            }
         }
     }
 
     private void detectGamesToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var games = FindNewGames();
+        var games = Games.FindNewGames();
         ShowApplyGamesDialog(games);
     }
 
@@ -364,7 +236,7 @@ public partial class MainForm : Form
             if (!found)
             {
                 var node = new GameDirectoryNode(game);
-                node.UpdateAppearance();
+                node.OnShown();
                 listToAdd.Add(node);
             }
 
@@ -438,6 +310,32 @@ public partial class MainForm : Form
             Config.Save();
 
             RefreshGamesTree();
+        }
+    }
+
+    private void dataTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+    {
+        if (e.Node is DataTreeNode)
+        {
+            var node = (DataTreeNode)e.Node;
+            node.OnSelect(e);
+
+
+            /*
+            dataTreeView.BeginUpdate();
+
+            var node = (DataTreeNode)e.Node;
+            foreach (var n in node.Nodes)
+            {
+                if (!(n is DataTreeNode))
+                    continue;
+
+                var cnode = (DataTreeNode)n;
+                cnode.SeekAndUpdateContent();
+            }
+
+            dataTreeView.EndUpdate();
+            */
         }
     }
 }

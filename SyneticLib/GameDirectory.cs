@@ -124,8 +124,8 @@ public class GameDirectory : Ressource
 
     protected override void OnSeek()
     {
-        Scenarios.Seek();
-        Cars.Seek();
-        Sounds.Seek();
+        Scenarios.TrySeek();
+        Cars.TrySeek();
+        Sounds.TrySeek();
     }
 }

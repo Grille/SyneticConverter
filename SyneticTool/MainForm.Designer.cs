@@ -44,8 +44,6 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.glPanel = new System.Windows.Forms.Panel();
-            this.errorPanel = new System.Windows.Forms.Panel();
-            this.errorLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.renderTimer = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
@@ -55,8 +53,6 @@
             this.splitContainer1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.glPanel.SuspendLayout();
-            this.errorPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataTreeView
@@ -68,6 +64,7 @@
             this.dataTreeView.Size = new System.Drawing.Size(252, 487);
             this.dataTreeView.TabIndex = 0;
             this.dataTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.dataTreeView_BeforeExpand);
+            this.dataTreeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.dataTreeView_BeforeSelect);
             this.dataTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.dataTreeView_AfterSelect);
             // 
             // menuStrip1
@@ -191,35 +188,11 @@
             // glPanel
             // 
             this.glPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.glPanel.Controls.Add(this.errorPanel);
             this.glPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.glPanel.Location = new System.Drawing.Point(0, 0);
             this.glPanel.Name = "glPanel";
             this.glPanel.Size = new System.Drawing.Size(520, 515);
             this.glPanel.TabIndex = 0;
-            // 
-            // errorPanel
-            // 
-            this.errorPanel.AutoSize = true;
-            this.errorPanel.BackColor = System.Drawing.Color.Maroon;
-            this.errorPanel.Controls.Add(this.errorLabel);
-            this.errorPanel.Location = new System.Drawing.Point(190, 195);
-            this.errorPanel.Name = "errorPanel";
-            this.errorPanel.Size = new System.Drawing.Size(200, 104);
-            this.errorPanel.TabIndex = 0;
-            // 
-            // errorLabel
-            // 
-            this.errorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.errorLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.errorLabel.Location = new System.Drawing.Point(4, 3);
-            this.errorLabel.Name = "errorLabel";
-            this.errorLabel.Size = new System.Drawing.Size(192, 97);
-            this.errorLabel.TabIndex = 0;
-            this.errorLabel.Text = "label1\r\ngvhj\r\n";
-            this.errorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // statusStrip1
             // 
@@ -255,9 +228,6 @@
             this.splitContainer1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            this.glPanel.ResumeLayout(false);
-            this.glPanel.PerformLayout();
-            this.errorPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -281,8 +251,6 @@
         private System.Windows.Forms.Panel glPanel;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.Timer renderTimer;
-        private System.Windows.Forms.Panel errorPanel;
-        private System.Windows.Forms.Label errorLabel;
         private System.Windows.Forms.ToolStripMenuItem detectGamesToolStripMenuItem;
     }
 }

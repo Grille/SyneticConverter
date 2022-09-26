@@ -16,6 +16,7 @@ public class QadFile : SyneticBinaryFile
     public bool Has8ByteMagic = false;
     public bool Has56ByteBlock = false;
     public bool UseSimpleData = false;
+    public bool UseMaterialType2 = false;
 
     public MHead Head;
     public String32[] TextureNames;
@@ -61,7 +62,7 @@ public class QadFile : SyneticBinaryFile
 
     public struct MMaterialDef
     {
-        public byte Tex0Id, a, Tex1Id, b, Tex2Id, c, Mode, d;
+        public byte Tex0Id, Tex1Id, Tex2Id, Mode;
         public Transform Mat1;
         public Transform Mat2;
         public Transform Mat3;
@@ -248,6 +249,15 @@ public class QadFile : SyneticBinaryFile
         bw.WriteArray(Grounds);
         bw.WriteArray(Tex2Ground);
         bw.WriteArray(Sounds);
+    }
+
+
+    public void SetFlagsAccordingToVersion(GameVersion version)
+    {
+        UseSimpleData = version <= GameVersion.MBWR;
+        Has8ByteMagic = version >= GameVersion.CT2;
+        Has56ByteBlock = version >= GameVersion.CT2;
+        UseMaterialType2 = version >= GameVersion.C11;
     }
 
     private void assertBlockCount()

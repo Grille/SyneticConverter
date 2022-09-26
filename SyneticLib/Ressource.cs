@@ -136,6 +136,24 @@ public abstract class Ressource {
         OnSave();
     }
 
+    public void TrySeek()
+    {
+        UpdatePointer();
+
+        if (PointerType == PointerType.Virtual)
+            throw new InvalidOperationException("Ressource is Virtual, Load/Save & Seek is handled by parent.");
+
+        if (PointerState != PointerState.Exists)
+        {
+            DataState = DataState.None;
+            return;
+        }
+
+        OnSeek();
+
+        DataState = DataState.Seeked;
+    }
+
     public void Seek()
     {
         AssertPointerIsValid();

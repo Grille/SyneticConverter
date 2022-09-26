@@ -11,19 +11,17 @@ namespace SyneticLib.Graphics;
 public class Scene
 {
     public readonly List<Sprite> Sprites;
-    public readonly List<ModelInstance> Instances;
-    public Terrain Terrain;
+    public readonly List<MeshInstance> Meshes;
     public Camera Camera;
 
     public Texture GridTexture;
     public ModelMaterial GridMaterial;
     public Model Grid;
-    public Model Skybox;
 
     public unsafe Scene()
     {
         Sprites = new List<Sprite>();
-        Instances = new List<ModelInstance>();
+        Meshes = new List<MeshInstance>();
         Camera = new OrbitCamera();
 
         int gridSize = 4_000_0;
@@ -81,33 +79,25 @@ public class Scene
 
     public void ClearScene()
     {
-        Terrain = null;
-        Instances.Clear();
+        Meshes.Clear();
         Sprites.Clear();
     }
 
     public void Render()
     {
-        Graphics.Setup();
-
-        Camera.CreatePerspective();
-        Camera.CreateView();
         Graphics.BindCamera(Camera);
+        Graphics.SubCameraScreenSize();
 
-        GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
         Graphics.DepthTestEnabled = false;
         Graphics.CullFaceEnabled = false;
 
-        Graphics.DrawModel(Grid);
+        Graphics.DrawMesh(Grid);
 
         Graphics.DepthTestEnabled = true;
         Graphics.CullFaceEnabled = true;
 
-        if (Terrain != null)
-            Graphics.DrawTerrain(Terrain);
-
-        foreach (var instance in Instances)
-            Graphics.DrawModel(instance);
+        foreach (var instance in Meshes)
+            Graphics.DrawMesh(instance);
 
         Graphics.DepthTestEnabled = false;
 

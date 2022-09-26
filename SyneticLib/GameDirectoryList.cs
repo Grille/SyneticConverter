@@ -38,4 +38,81 @@ public class GameDirectoryList : List<GameDirectory>
         }
 
     }
+
+    public GameDirectoryList FindNewGames()
+    {
+        var locations = new string[]
+{
+            "",
+            "Games",
+            "Programs",
+            "Programme",
+            "Program Files",
+            "Program Files (x86)",
+            "Program Files\\steamapps\\steamapps\\common",
+            "Program Files (x86)\\Steam\\steamapps\\common",
+        };
+        return FindNewGames(locations);
+    }
+
+    public GameDirectoryList FindNewGames(string[] locations)
+    {
+        var res = new GameDirectoryList();
+
+        var names = new string[]
+        {
+            "", "TDK", "Synetic"
+        };
+
+        var drives = DriveInfo.GetDrives();
+
+
+        foreach (var drive in drives)
+        {
+            foreach (var location in locations)
+            {
+                var path0 = Path.Join(drive.Name, location);
+                if (!Directory.Exists(path0))
+                    continue;
+
+                foreach (var name in names)
+                {
+                    var path = Path.Join(path0, name);
+                    if (!Directory.Exists(path))
+                        continue;
+
+                    string[] directory;
+                    try
+                    {
+                        directory = Directory.GetDirectories(path);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        continue;
+                    }
+                    foreach (var fpath in directory)
+                    {
+                        GameVersion version;
+                        try
+                        {
+                            version = GameDirectory.FindDirectoryGameVersion(fpath);
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            continue;
+                        }
+                        if (version != GameVersion.Invalid)
+                        {
+                            if (!PathExists(fpath))
+                            {
+                                res.Add(new(fpath, version));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return res;
+    }
 }
