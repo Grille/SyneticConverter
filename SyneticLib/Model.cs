@@ -9,7 +9,7 @@ using SyneticLib.Graphics;
 namespace SyneticLib;
 public class Model : Mesh
 {
-    public TextureDirectory Textures;
+    public TextureDirectory AssignedTextures;
 
     public Model() : base(null, "Model", PointerType.Virtual)
     {
@@ -19,7 +19,7 @@ public class Model : Mesh
     public Model(Ressource parent, TextureDirectory textures, string path) : base(parent, path, PointerType.File)
     {
         GLBuffer = new ModelBuffer(this);
-        Textures = textures;
+        AssignedTextures = textures;
     }
 
     public override void ExportAsObj(string path)
@@ -43,7 +43,7 @@ public class Model : Mesh
                 throw new InvalidOperationException($"'{SourcePath}' is not a valid model file.");
         }
 
-        foreach (var texture in Textures)
+        foreach (var texture in AssignedTextures)
         {
             texture.Load();
         }

@@ -22,8 +22,8 @@ public partial class ScenarioVariant : Ressource
     public RessourceDirectory<Sound> Sounds;
     public TextureDirectory TerrainTextures;
     public RessourceList<TerrainMaterial> TerrainMaterials;
-    public ModelDirectory Objects;
-    public TextureDirectory ObjectTextures;
+    public ModelDirectory Models;
+    public TextureDirectory ModelTextures;
     public RessourceList<PropClass> PropClasses;
     public RessourceList<PropInstance> PropInstances;
 
@@ -45,8 +45,8 @@ public partial class ScenarioVariant : Ressource
         TerrainMaterials = new(this, ChildPath("TerrainMaterials"));
         Terrain = new(this);
 
-        ObjectTextures = new(this, ChildPath("Objects/Textures"));
-        Objects = new(this, ObjectTextures, ChildPath("Objects"));
+        ModelTextures = new(this, ChildPath("Objects/Textures"));
+        Models = new(this, ModelTextures, ChildPath("Objects"));
 
         PropClasses = new(this, ChildPath("PropClasses"));
         PropInstances = new(this, ChildPath("PropInstances"));
@@ -62,12 +62,7 @@ public partial class ScenarioVariant : Ressource
 
     protected override void OnLoad()
     {
-        Sounds.Load();
-        TerrainTextures.Load();
-        ObjectTextures.Load();
-        Objects.Load();
-
-        new ScenarioImporterSynetic(this).Load();
+        new ScenarioImporterSynetic(this.Parent).LoadV(IdNumber);
     }
 
     protected override void OnSave()

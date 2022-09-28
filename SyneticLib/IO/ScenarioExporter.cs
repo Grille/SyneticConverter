@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib.IO;
-public abstract class MeshExporter
+public abstract class ScenarioExporter
 {
-    protected Mesh target;
+    protected Scenario Target;
     protected string path;
 
-    public MeshExporter(Mesh target)
+    public ScenarioExporter(Scenario target)
     {
-        this.target = target;
+        Target = target;
         //path = target.RootDir;
     }
 

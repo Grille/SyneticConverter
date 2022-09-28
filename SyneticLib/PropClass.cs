@@ -14,10 +14,12 @@ public class PropClass : Ressource
 
     public Mesh Mesh;
 
+    public ModelDirectory AssignedModels;
+
     public PropClass(ScenarioVariant parent, string name) : base(parent, parent.ChildPath(name), PointerType.Virtual)
     {
         Name = FileName;
-        //Mesh = new(Materials);
+        AssignedModels = parent.Models;
     }
 
     protected override void OnLoad()

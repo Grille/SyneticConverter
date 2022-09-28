@@ -16,7 +16,7 @@ public class MeshExporterSbx : MeshExporter
 
     }
 
-    public override void Save()
+    protected override void OnSave()
     {
         using var fs = new FileStream(path, FileMode.Create);
         using var bw = new BinaryViewWriter(fs);

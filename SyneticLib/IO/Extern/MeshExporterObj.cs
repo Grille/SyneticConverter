@@ -15,7 +15,7 @@ public class MeshExporterObj : MeshExporter
 
     }
 
-    public override void Save()
+    protected override void OnSave()
     {
         var mtlpath = Path.ChangeExtension(path, "mtl");
 

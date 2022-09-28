@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Numerics;
 using SyneticLib.IO.Synetic.Files;
+using static SyneticLib.IO.Synetic.Files.QadFile;
+using System.Reflection;
 
 namespace SyneticLib.IO.Synetic;
 public class ScenarioImporterSynetic : ScenarioImporter
@@ -24,7 +26,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
     private IVertexData ivtx;
     private IIndexData iidx;
 
-    public ScenarioImporterSynetic(ScenarioVariant target) : base(target)
+    public ScenarioImporterSynetic(Scenario target) : base(target)
     {
         version = target.Version;
 
@@ -36,7 +38,24 @@ public class ScenarioImporterSynetic : ScenarioImporter
         vtx = new();
         qad = new();
         sky = new();
+    }
 
+    public void LoadV(int iv)
+    {
+        OnLoadV(Target.Variants[iv]);
+    }
+
+    protected override void OnLoad()
+    {
+        foreach (var v in Target.Variants)
+        {
+            OnLoadV(v);
+        }
+    }
+
+
+    protected void OnLoadV(ScenarioVariant target)
+    {
         var synPath = Path.Combine(target.SourcePath, $"V{target.IdNumber}");
         syn.Path = synPath + ".syn";
 
@@ -51,10 +70,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
 
         qad.SetFlagsAccordingToVersion(version);
         geo.SetFlagsAccordingToVersion(version);
-    }
 
-    protected override void OnLoad()
-    {
         if (version >= GameVersion.C11)
         {
             geo.Load();
@@ -75,24 +91,19 @@ public class ScenarioImporterSynetic : ScenarioImporter
 
         if (sky.Exists)
             sky.Load();
-    }
 
-    protected override void OnInit()
-    {
-        AssignTextures();
-        AssignObjects();
-        AssignTerrain();
-        AssignLights();
-    }
+        target.Sounds.Load();
+        target.TerrainTextures.Load();
+        target.ModelTextures.Load();
+        target.Models.Load();
 
-    public void AssignTextures()
-    {
-        var textureIndex = CreateTextureIndex();
+        // Apply textures
+        var textureIndex = target.TerrainTextures.CreateIndexedArray(qad.TextureNames);
 
         for (var i = 0; i < qad.Materials.Length; i++)
         {
             var matInfo = qad.Materials[i];
-            var mat = new TerrainMaterial(target);
+            var mat = new TerrainMaterial(Target);
 
             if (matInfo.Tex0Id < textureIndex.Length)
                 mat.TexSlot0.Enable(textureIndex[matInfo.Tex0Id]);
@@ -108,30 +119,22 @@ public class ScenarioImporterSynetic : ScenarioImporter
 
             target.TerrainMaterials.Add(mat);
         }
-    }
 
-    private void AssignObjects()
-    {
+        // Props
         for (var i = 0; i < qad.Head.PropClassCount; i++)
         {
-            var name = qad.PropObjNames[i];
-            var data = qad.PropClasses[i];
-
+            var name = qad.PropClassObjNames[i];
+            var info = qad.PropClassInfo[i];
             var prop = new PropClass(target, name);
-            var path = Path.Combine(target.SourcePath, "Objects", name + ".mox");
-
             prop.DataState = DataState.Loaded;
-
             target.PropClasses.Add(prop);
         }
-
 
         for (var i = 0; i < qad.Head.PropInstanceCount; i++)
         {
             var propIntanceInfo = qad.PropInstances[i];
-            Console.WriteLine(propIntanceInfo.ClassId);
             var propClass = target.PropClasses[propIntanceInfo.ClassId];
-            target.PropInstances.Add(new PropInstance(target,propClass)
+            target.PropInstances.Add(new PropInstance(Target, propClass)
             {
                 Class = propClass,
                 Position = propIntanceInfo.Position,
@@ -140,13 +143,10 @@ public class ScenarioImporterSynetic : ScenarioImporter
 
         target.PropClasses.DataState = DataState.Loaded;
 
-    }
-
-    private void AssignLights()
-    {
+        // Lights
         foreach (var lightInfo in qad.Lights)
         {
-            var light = new Light(target);
+            var light = new Light(Target);
 
             light.Color = lightInfo.Color;
             light.Position = lightInfo.Matrix.Translation;
@@ -156,10 +156,8 @@ public class ScenarioImporterSynetic : ScenarioImporter
         }
 
         target.Lights.DataState = DataState.Loaded;
-    }
 
-    protected void AssignTerrain()
-    {
+        // Terrain
         var terrain = target.Terrain;
         var mesh = terrain;
 
@@ -183,66 +181,57 @@ public class ScenarioImporterSynetic : ScenarioImporter
         DeflateTerrainIndecies(iidx, ivtx, qad);
 
         terrain.DataState = DataState.Loaded;
-    }
 
-    protected void DeflateTerrainIndecies(IIndexData idx, IVertexData vtx, QadFile qad)
-    {
-        var terrain = target.Terrain;
-        var mesh = terrain;
 
-        var srcidx = idx.Polygons;
-        var dstidx = new Vector3Int[srcidx.Length];
-
-        int pos = 0;
-        int offset = 0;
-        int preXT = 0;
-
-        terrain.Chunks = new TerrainChunkInfo[qad.Head.BlocksTotal];
-
-        for (int iz = 0; iz < qad.Head.BlocksZ; iz++)
+        void DeflateTerrainIndecies(IIndexData idx, IVertexData vtx, QadFile qad)
         {
-            for (int ix = 0; ix < qad.Head.BlocksX; ix++)
+            var terrain = target.Terrain;
+            var mesh = terrain;
+
+            var srcidx = idx.Polygons;
+            var dstidx = new Vector3Int[srcidx.Length];
+
+            int pos = 0;
+            int offset = 0;
+            int preXT = 0;
+
+            terrain.Chunks = new TerrainChunkInfo[qad.Head.BlocksTotal];
+
+            for (int iz = 0; iz < qad.Head.BlocksZ; iz++)
             {
-                int index = ix + iz * qad.Head.BlocksX;
-
-                ref var srcchunk = ref qad.Blocks[index];
-
-                terrain.Chunks[index] = new TerrainChunkInfo()
+                for (int ix = 0; ix < qad.Head.BlocksX; ix++)
                 {
-                    ElementOffset = srcchunk.FirstPoly,
-                    ElementCount = srcchunk.NumPoly,
-                };
+                    int index = ix + iz * qad.Head.BlocksX;
 
-                var block = qad.Blocks[index];
-                if (block.Chunk65k != preXT)
-                {
-                    preXT = block.Chunk65k;
-                    offset += vtx.VtxQty[block.Chunk65k - 1];
-                }
+                    ref var srcchunk = ref qad.Blocks[index];
 
-                int begin = block.FirstPoly;
-                int end = begin + block.NumPoly;
-                for (int i = begin; i < end; i++)
-                {
-                    dstidx[pos].X = srcidx[pos].X + offset;
-                    dstidx[pos].Y = srcidx[pos].Y + offset;
-                    dstidx[pos].Z = srcidx[pos].Z + offset;
+                    terrain.Chunks[index] = new TerrainChunkInfo()
+                    {
+                        ElementOffset = srcchunk.FirstPoly,
+                        ElementCount = srcchunk.NumPoly,
+                    };
 
-                    pos += 1;
+                    var block = qad.Blocks[index];
+                    if (block.Chunk65k != preXT)
+                    {
+                        preXT = block.Chunk65k;
+                        offset += vtx.VtxQty[block.Chunk65k - 1];
+                    }
+
+                    int begin = block.FirstPoly;
+                    int end = begin + block.NumPoly;
+                    for (int i = begin; i < end; i++)
+                    {
+                        dstidx[pos].X = srcidx[pos].X + offset;
+                        dstidx[pos].Y = srcidx[pos].Y + offset;
+                        dstidx[pos].Z = srcidx[pos].Z + offset;
+
+                        pos += 1;
+                    }
                 }
             }
-        }
 
-        mesh.Poligons = dstidx;
-    }
-
-    public Texture[] CreateTextureIndex()
-    {
-        var result = new Texture[qad.TextureNames.Length];
-        for (int i = 0; i < qad.TextureNames.Length; i++)
-        {
-            result[i] = target.TerrainTextures.GetByFileName(qad.TextureNames[i]);
+            mesh.Poligons = dstidx;
         }
-        return result;
     }
 }

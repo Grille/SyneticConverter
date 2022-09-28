@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -42,6 +43,14 @@ public class RessourceDirectory<T> : RessourceList<T> where T : Ressource
         }
     }
 
+    public bool TryGetByFileName(string name, out T result)
+    {
+        string searchName = Path.GetFileNameWithoutExtension(name).ToLower();
+        result = Items.Find((a) => a.FileName.ToLower() == searchName);
+
+        return result != null;
+    }
+
     public T GetByFileName(string name)
     {
         string searchName = Path.GetFileNameWithoutExtension(name).ToLower();
@@ -51,5 +60,25 @@ public class RessourceDirectory<T> : RessourceList<T> where T : Ressource
             throw new KeyNotFoundException(name);
 
         return obj;
+    }
+
+    public T[] CreateIndexedArray(IList names)
+    {
+        var result = new T[names.Count];
+        for (int i = 0; i < names.Count; i++)
+        {
+            result[i] = GetByFileName(names[i].ToString());
+        }
+        return result;
+    }
+
+    public T[] CreateIndexedArray(string[] names)
+    {
+        var result = new T[names.Length];
+        for (int i = 0; i < names.Length; i++)
+        {
+            result[i] = GetByFileName(names[i]);
+        }
+        return result;
     }
 }

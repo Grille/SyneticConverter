@@ -43,6 +43,15 @@ public abstract class Material : Ressource
             Enabled = true;
             Texture = texture;
         }
+
+        public void TryEnableByFile(TextureDirectory textures, string name)
+        {
+            if (name == "")
+                return;
+
+            Texture = textures.TryGetByFileName(name, out var tex) ? tex : Texture.CreatePlaceholder(name);
+            Enabled = true;
+        }
     }
 
 

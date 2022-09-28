@@ -27,7 +27,22 @@ internal class PtxFile : SyneticBinaryFile
 
     public override void WriteToView(BinaryViewWriter bw)
     {
-        throw new NotImplementedException();
+        bw.Write(Head);
+        for (int i = 0; i < Levels.Length; i++)
+        {
+            bw.WriteIView(Levels[i]);
+        }
+    }
+
+    public struct MHead
+    {
+        public byte Compression;
+        public byte BitPerPixel;
+        public ushort Clear0;
+        public int Width;
+        public int Height;
+        public byte MipMapLevels;
+        public byte R, G, B;
     }
 
     public class Level : IViewObject
@@ -44,7 +59,7 @@ internal class PtxFile : SyneticBinaryFile
                 Encoded = br.ReadArray<byte>(Head.SynSize);
                 Decoded = new byte[Head.Size];
 
-                SyneticCompressor.Decompress(Encoded, Decoded);
+                SynCompressor.Decompress(Encoded, Decoded);
             }
             else
             {
@@ -54,23 +69,16 @@ internal class PtxFile : SyneticBinaryFile
 
         public void WriteToView(BinaryViewWriter bw)
         {
-            throw new NotImplementedException();
+            Head.Size = (uint)Decoded.Length;
+            Head.SynSize = 0;
+
+            bw.Write(Head);
+            bw.WriteArray(Decoded, LengthPrefix.None);
         }
 
         public struct MHead
         {
             public uint Size, SynSize;
         }
-    }
-
-    public struct MHead
-    {
-        public byte Compression;
-        public byte BitPerPixel;
-        public ushort Clear0;
-        public int Width;
-        public int Height;
-        public byte MipMapLevels;
-        public byte R, G, B;
     }
 }

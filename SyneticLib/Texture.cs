@@ -56,6 +56,13 @@ public class Texture : Ressource
         GLBuffer = new TextureBuffer(this);
     }
 
+    public static Texture CreatePlaceholder(string name)
+    {
+        var texture = new Texture();
+        texture.SourcePath = name;
+        return texture;
+    }
+
     /*
     public void CopyPixelData(byte[] pixels, int width, int height, int offset = 0)
     {

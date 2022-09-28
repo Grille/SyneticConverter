@@ -13,67 +13,62 @@ public class Scene
     public readonly List<Sprite> Sprites;
     public readonly List<MeshInstance> Meshes;
     public Camera Camera;
-
-    public Texture GridTexture;
-    public ModelMaterial GridMaterial;
-    public Model Grid;
+    public Mesh GroundPlane;
 
     public unsafe Scene()
     {
         Sprites = new List<Sprite>();
         Meshes = new List<MeshInstance>();
         Camera = new OrbitCamera();
+        GroundPlane = CreateGroundPlane(16);
+    }
 
-        int gridSize = 4_000_0;
+    public unsafe static Mesh CreateGroundPlane(int size)
+    {
+        int gridSize = size * 1000_0;
+        int uvScale = size / 2;
 
-        GridTexture = new Texture(2, 2);
-        fixed (byte* bytes = GridTexture.PixelData)
+        var texture = new Texture(2, 2);
+        fixed (byte* bytes = texture.PixelData)
         {
             uint* pixels = (uint*)bytes;
-
-            for (int iy = 0; iy < GridTexture.Height; iy++)
-            {
-                for (int ix = 0; ix < GridTexture.Width; ix++)
-                {
-                    int i = (ix + iy * GridTexture.Width);
-
-                    bool xodd = ix % 2 == 0;
-                    bool yodd = iy % 2 == 0;
-
-                    bool check = yodd ? xodd : !xodd;
-
-                    pixels[i] = check ? (uint)0x969696 : (uint)0xA9A9A9;
-                }
-            }
+            pixels[0] = pixels[3] = 0x969696;
+            pixels[1] = pixels[2] = 0xA9A9A9;
         }
-        GridTexture.DataState = DataState.Loaded;
+        texture.DataState = DataState.Loaded;
 
-        GridMaterial = new ModelMaterial();
-        GridMaterial.TexSlot0.Enable(GridTexture);
-        GridMaterial.DataState = DataState.Loaded;
+        var material = new ModelMaterial();
+        material.TexSlot0.Enable(texture);
+        material.DataState = DataState.Loaded;
 
-        Grid = new Model()
+        var plane = new Model()
         {
             Poligons = new Vector3Int[2]
             {
-                new(2,1,0),
-                new(0,3,2),
+                new(2, 1, 0),
+                new(0, 3, 2),
             },
             Vertices = new Vertex[4]
             {
-                new(new(-gridSize,+gridSize,0),new(0,0)),
-                new(new(+gridSize,+gridSize,0),new(10,0)),
-                new(new(+gridSize,-gridSize,0),new(10,10)),
-                new(new(-gridSize,-gridSize,0),new(0,10)),
+                new(new(-gridSize, +gridSize, 0), new(0, 0)),
+                new(new(+gridSize, +gridSize, 0), new(uvScale, 0)),
+                new(new(+gridSize, -gridSize, 0), new(uvScale, uvScale)),
+                new(new(-gridSize, -gridSize, 0), new(0, uvScale)),
             },
             MaterialRegion = new MaterialRegion[1]
             {
-                new(0,2,GridMaterial),
+                new(0, 2, material),
             },
             DataState = DataState.Loaded
         };
+
+        return plane;
     }
 
+    public Mesh Raycast(Vector2 position)
+    {
+        return null;
+    }
 
     public void ClearScreen() => Graphics.ClearScreen();
 
@@ -91,7 +86,7 @@ public class Scene
         Graphics.DepthTestEnabled = false;
         Graphics.CullFaceEnabled = false;
 
-        Graphics.DrawMesh(Grid);
+        Graphics.DrawMesh(GroundPlane);
 
         Graphics.DepthTestEnabled = true;
         Graphics.CullFaceEnabled = true;

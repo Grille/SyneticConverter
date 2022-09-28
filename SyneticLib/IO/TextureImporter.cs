@@ -16,14 +16,12 @@ public abstract class TextureImporter
     }
 
     protected abstract void OnLoad();
-    protected abstract void OnInit();
 
     public void Load()
     {
         //try
         //{
             OnLoad();
-            OnInit();
             Target.DataState = DataState.Loaded;
         //}
         //catch

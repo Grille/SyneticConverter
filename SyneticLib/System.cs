@@ -12,6 +12,8 @@ public class Global : Ressource
 {
     public readonly static Global Instance = new Global();
 
+    public Queue<Ressource> LoadingQueue;
+
     private Global() : base(null, "System", PointerType.Virtual)
     {
     }

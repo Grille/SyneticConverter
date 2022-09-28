@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace SyneticLib.IO.Synetic;
-public static class SyneticCompressor
+public static class SynCompressor
 {
     public static void Decompress(Stream src, Stream dst, int size)
     {

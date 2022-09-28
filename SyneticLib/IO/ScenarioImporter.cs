@@ -9,28 +9,27 @@ using SyneticLib.IO.Synetic.Files;
 namespace SyneticLib.IO;
 public abstract class ScenarioImporter
 {
-    protected ScenarioVariant target;
+    protected Scenario Target;
 
-    public ScenarioImporter(ScenarioVariant target)
+    public ScenarioImporter(Scenario target)
     {
-        this.target = target;
+        Target = target;
     }
 
     protected abstract void OnLoad();
-    protected abstract void OnInit();
+
 
     public void Load()
     {
         try
         {
             OnLoad();
-            OnInit();
-            target.DataState = DataState.Loaded;
+            Target.DataState = DataState.Loaded;
         }
         catch (FileNotFoundException ex)
         {
-            target.Errors.Add(ex.Message);
-            target.DataState = DataState.Error;
+            //Target.Errors.Add(ex.Message);
+            Target.DataState = DataState.Error;
         }
     }
 }

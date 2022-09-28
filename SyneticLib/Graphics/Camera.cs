@@ -56,4 +56,6 @@ public abstract class Camera
     }
 
     public abstract void CreateView();
+
+    public abstract Vector3 ViewportPosToVector(Vector2 position);
 }

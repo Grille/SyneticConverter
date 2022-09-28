@@ -36,4 +36,6 @@ public abstract class Mesh: Ressource
         var exp = new MeshExporterSbx(this);
         exp.Save(path);
     }
+
+
 }

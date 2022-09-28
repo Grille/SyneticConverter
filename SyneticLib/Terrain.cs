@@ -18,6 +18,16 @@ public class Terrain : Mesh
         GLBuffer = new TerrainBuffer(this);
     }
 
+    public Mesh Unify()
+    {
+        return null;
+    }
+
+    public void Chunkify(Mesh mesh)
+    {
+
+    }
+
     public TerrainChunkInfo GetChunk(int x, int y)
     {
         return Chunks[x + y * Width];

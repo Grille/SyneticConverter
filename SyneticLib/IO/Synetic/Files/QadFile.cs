@@ -21,17 +21,17 @@ public class QadFile : SyneticBinaryFile
     public MHead Head;
     public String32[] TextureNames;
     public String32[] BumpTexName;
-    public String32[] PropObjNames;
+    public String32[] PropClassObjNames;
     public MChunk[] Blocks;
     public int[] ChunkDataPtr;
     public ushort[][] ChunkData;
-    public MMaterialDef[] Materials;
+    public MMaterialType0[] Materials;
     public MPolygonRegionPtr[] MaterialRegions;
     public MObjInstance[] PropInstances;
     public MGroundPhysics[] Grounds;
     public ushort[] Tex2Ground;
     public MSound[] Sounds;
-    public MObjProp[] PropClasses;
+    public MPropClassInfo[] PropClassInfo;
     public MLight[] Lights;
 
     public struct MHead
@@ -60,12 +60,22 @@ public class QadFile : SyneticBinaryFile
         public ushort SurfaceID, SurfaceID2;
     }
 
-    public struct MMaterialDef
+    public struct MMaterialType0
     {
         public ushort Tex0Id, Tex1Id, Tex2Id, Mode;
+        public Transform Matrix0;
+        public Transform Matrix1;
+        public Transform Matrix2;
+        public int X0;
+        public int X1;
+        public int X2;
+    }
+
+    public struct MMaterialType1
+    {
+        public ushort L0Tex0Id, L0Tex1Id, L0Tex2Id, L0Mode;
+        public ushort L1Tex0Id, L1Tex1Id, L1Tex2Id, L1Mode;
         public Transform Mat1;
-        public Transform Mat2;
-        public Transform Mat3;
         public int A;
         public int B;
         public int C;
@@ -109,11 +119,11 @@ public class QadFile : SyneticBinaryFile
     {
         public ushort Mode;
 
-        public static implicit operator MObjProp(MObjPropSimple a) => new MObjProp()
+        public static implicit operator MPropClassInfo(MObjPropSimple a) => new MPropClassInfo()
         {
             Mode = a.Mode,
         };
-        public static explicit operator MObjPropSimple(MObjProp a) => new MObjPropSimple()
+        public static explicit operator MObjPropSimple(MPropClassInfo a) => new MObjPropSimple()
         {
             Mode = a.Mode,
         };
@@ -136,7 +146,7 @@ public class QadFile : SyneticBinaryFile
         };
     }
 
-    public struct MObjProp
+    public struct MPropClassInfo
     {
         public ushort Mode, Shape, Weight, p4;
         public int x1, x2, x3;
@@ -169,11 +179,11 @@ public class QadFile : SyneticBinaryFile
 
         TextureNames = br.ReadArray<String32>(Head.TexturesFiles);
         BumpTexName = br.ReadArray<String32>(Head.BumpTexturesFiles);
-        PropObjNames = br.ReadArray<String32>(Head.PropClassCount);
+        PropClassObjNames = br.ReadArray<String32>(Head.PropClassCount);
 
-        PropClasses = new MObjProp[Head.PropClassCount];
+        PropClassInfo = new MPropClassInfo[Head.PropClassCount];
         for (int i = 0; i < Head.PropClassCount; i++)
-            PropClasses[i] = UseSimpleData ? br.Read<MObjPropSimple>() : br.Read<MObjProp>();
+            PropClassInfo[i] = UseSimpleData ? br.Read<MObjPropSimple>() : br.Read<MPropClassInfo>();
 
         Blocks = new MChunk[Head.BlocksTotal];
         for (var i = 0; i < Head.BlocksTotal; i++)
@@ -193,7 +203,7 @@ public class QadFile : SyneticBinaryFile
 
         
         MaterialRegions = br.ReadArray<MPolygonRegionPtr>(Head.TexturesTotal);
-        Materials = br.ReadArray<MMaterialDef>(Head.MaterialCount);
+        Materials = br.ReadArray<MMaterialType0>(Head.MaterialCount);
         PropInstances = br.ReadArray<MObjInstance>(Head.PropInstanceCount);
 
         Lights = new MLight[Head.Lights];
@@ -213,14 +223,14 @@ public class QadFile : SyneticBinaryFile
 
         bw.WriteArray(TextureNames);
         bw.WriteArray(BumpTexName);
-        bw.WriteArray(PropObjNames);
+        bw.WriteArray(PropClassObjNames);
 
-        for (int i = 0; i < PropClasses.Length; i++)
+        for (int i = 0; i < PropClassInfo.Length; i++)
         {
             if (UseSimpleData)
-                bw.Write((MObjPropSimple)PropClasses[i]);
+                bw.Write((MObjPropSimple)PropClassInfo[i]);
             else
-                bw.Write(PropClasses[i]);
+                bw.Write(PropClassInfo[i]);
         }
 
         for (var ix = 0; ix < Head.BlocksTotal; ix++)

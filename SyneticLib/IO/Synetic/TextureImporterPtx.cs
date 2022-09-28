@@ -17,15 +17,8 @@ public class TextureImporterPtx : TextureImporter
 
     protected override void OnLoad()
     {
-        if (ptx.Exists)
-        {
-            ptx.Load();
-            return;
-        }
-    }
+        ptx.Load();
 
-    protected override void OnInit()
-    {
         Target.Compressed = ptx.Head.Compression == 1;
         Target.Bits = ptx.Head.BitPerPixel;
 
@@ -33,7 +26,6 @@ public class TextureImporterPtx : TextureImporter
         Target.Height = ptx.Head.Height;
 
         Target.Levels = new TextureLevel[ptx.Head.MipMapLevels];
-
         for (int i = 0; i < Target.Levels.Length; i++)
         {
             var level = Target.Levels[i] = new();

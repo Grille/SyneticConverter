@@ -15,11 +15,6 @@ public abstract class MeshImporter
     }
 
     protected abstract void OnLoad();
-    protected abstract void OnAssign();
 
-    public void Load()
-    {
-        OnLoad();
-        OnAssign();
-    }
+    public void Load() => OnLoad();
 }

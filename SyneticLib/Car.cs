@@ -9,6 +9,7 @@ public class Car : Ressource
 {
     public Model Model;
     public TextureDirectory Textures;
+    public RessourceList<Wheel> Wheels;
 
     public Car(GameDirectory parent, string path) : base(parent, path, PointerType.Directory)
     {

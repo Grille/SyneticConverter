@@ -56,8 +56,8 @@ public unsafe class ModelBuffer : GLMeshBuffer
 
         public const int LPosition = 0;
         public const int LNormal = LPosition + s_vec3;
-        public const int LUV = LNormal + s_vec3;
-        public const int Size = LUV + s_vec2;
+        public const int LUV     = LNormal   + s_vec3;
+        public const int Size    = LUV       + s_vec2;
 
         [FieldOffset(LPosition)]
         public Vector3 Position;

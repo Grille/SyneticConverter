@@ -81,11 +81,16 @@ public class OrbitCamera : Camera
         var Azy = cosb * sinc;
         var Azz = cosb * cosc;
 
-        Position.Deconstruct(out float x, out float y, out float z);
+        (float x, float y, float z) = Position;
         Position.X = Axx * x + Axy * y + Axz * z;
         Position.Y = Ayx * x + Ayy * y + Ayz * z;
         Position.Z = Azx * x + Azy * y + Azz * z;
 
         ViewMatrix = Matrix4.LookAt(Position, Focus, Up);
+    }
+
+    public override Vector3 ViewportPosToVector(Vector2 position)
+    {
+        throw new NotImplementedException();
     }
 }

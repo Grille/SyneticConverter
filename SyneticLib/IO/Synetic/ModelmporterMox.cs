@@ -28,23 +28,26 @@ public class ModelmporterMox : MeshImporter
     {
         mox.Load();
         mtl.Load();
-     }
-    protected override void OnAssign()
-    {
+
         for (int i = 0; i< mox.Head.MatCount; i++)
         {
-            var src = mtl.Sections[i];
-            var dst = new ModelMaterial(Target);
-            dst.Diffuse = BgraColor.FromInt(src.Diffuse[0]);
-
-            if (src.Tex1Name != "")
+            if (i >= mtl.Sections.Count)
             {
-                var tex0 = Target.Textures.GetByFileName(src.Tex1Name);
-                if (tex0 != null)
-                    dst.TexSlot0.Enable(tex0);
+                //Target.Materials.Add(dstMat);
             }
-            dst.DataState = DataState.Loaded;
-            Target.Materials.Add(dst);
+            else
+            {
+                var srcMtl = mtl.Sections[i];
+                var dstMat = new ModelMaterial(Target);
+                dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]);
+
+                dstMat.TexSlot0.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex1Name);
+                //dstMat.TexSlot1.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex2Name);
+                //dstMat.TexSlot2.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex3Name);
+
+                dstMat.DataState = DataState.Loaded;
+                Target.Materials.Add(dstMat);
+            }
         }
 
 

@@ -68,6 +68,15 @@ public static class Graphics
         BindGLStateObject(texture.GLBuffer);
     }
 
+    public static void BindTexture(Texture texture, int sampler)
+    {
+        AssertRessource(texture);
+
+        var textureUnit = TextureUnit.Texture0 + sampler;
+        GL.ActiveTexture(textureUnit);
+        BindGLStateObject(texture.GLBuffer);
+    }
+
     public static void SubCameraScreenSize() => GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
 
     public static void ClearScreen()

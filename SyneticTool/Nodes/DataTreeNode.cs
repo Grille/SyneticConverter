@@ -19,7 +19,7 @@ public class DataTreeNode : TreeNode
     public DataTreeNode(Ressource data)
     {
         if (data == null)
-            throw new ArgumentNullException("data");
+            throw new ArgumentNullException(nameof(data));
 
         DataValue = data;
     }
