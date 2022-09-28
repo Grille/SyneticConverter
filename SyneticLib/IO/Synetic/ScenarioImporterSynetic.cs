@@ -42,7 +42,9 @@ public class ScenarioImporterSynetic : ScenarioImporter
 
     public void LoadV(int iv)
     {
-        OnLoadV(Target.Variants[iv]);
+        if (iv > Target.Variants.Count)
+            return;
+        OnLoadV(Target.Variants[iv-1]);
     }
 
     protected override void OnLoad()
@@ -95,7 +97,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
         target.Sounds.Load();
         target.TerrainTextures.Load();
         target.ModelTextures.Load();
-        target.Models.Load();
+        //target.Models.Load();
 
         // Apply textures
         var textureIndex = target.TerrainTextures.CreateIndexedArray(qad.TextureNames);
@@ -140,6 +142,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
                 Position = propIntanceInfo.Position,
             });
         }
+        
 
         target.PropClasses.DataState = DataState.Loaded;
 

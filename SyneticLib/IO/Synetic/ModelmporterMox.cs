@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 using SyneticLib.IO.Synetic.Files;
+using OpenTK.Graphics.ES20;
 
 namespace SyneticLib.IO.Synetic;
 public class ModelmporterMox : MeshImporter
@@ -58,7 +59,12 @@ public class ModelmporterMox : MeshImporter
         for (int i = 0; i < mox.Textures.Length; i++)
         {
             ref var src = ref mox.Textures[i];
-            Target.MaterialRegion[i] = new MaterialRegion(src.PolyOffset, src.PolyCount, Target.Materials[src.MatId]);
+            Material material;
+            if (src.MatId >= Target.Materials.Count)
+                material = Target.Materials[0];
+            else
+                material = Target.Materials[src.MatId];
+            Target.MaterialRegion[i] = new MaterialRegion(src.PolyOffset, src.PolyCount, material);
         }
 
         Target.DataState = DataState.Loaded;

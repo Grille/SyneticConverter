@@ -23,4 +23,11 @@ public class CarNode : DataTreeNode
         Nodes.Add(ObjectTexturesNode);
         Nodes.Add(MeshNode);
     }
+
+    public override void OnSelect(TreeViewCancelEventArgs e)
+    {
+        if (DataValue.NeedLoad)
+            DataValue.Load();
+        MainForm.Display.ShowCar((Car)DataValue);
+    }
 }

@@ -15,7 +15,7 @@ public class OrbitCamera : Camera
     public float ScrollFactor = 1.2f;
     public float MoveFactor = 0.01f;
 
-    public float MaxDistance = 100000;
+    public float MaxDistance = 200000;
     public float MinDistance = 10;
 
     public float AngleX = MathF.PI / 8, AngleY = MathF.PI / 8, Distance = 100;

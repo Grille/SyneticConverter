@@ -20,13 +20,13 @@ public class Scene
         Sprites = new List<Sprite>();
         Meshes = new List<MeshInstance>();
         Camera = new OrbitCamera();
-        GroundPlane = CreateGroundPlane(16);
+        GroundPlane = CreateGroundPlane(8);
     }
 
     public unsafe static Mesh CreateGroundPlane(int size)
     {
         int gridSize = size * 1000_0;
-        int uvScale = size / 2;
+        int uvScale = size;
 
         var texture = new Texture(2, 2);
         fixed (byte* bytes = texture.PixelData)

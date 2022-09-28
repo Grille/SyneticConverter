@@ -68,11 +68,11 @@ public class DataTreeNode : TreeNode
 
     public virtual void OnSelect(TreeViewCancelEventArgs e)
     {
-        Console.WriteLine("select");
+
     }
 
     public virtual void OnExpand(TreeViewCancelEventArgs e)
     {
-        Console.WriteLine("exp");
+
     }
 }

@@ -48,7 +48,6 @@ internal class PtxFile : SyneticBinaryFile
     public class Level : IViewObject
     {
         public MHead Head;
-        public byte[] Encoded;
         public byte[] Decoded;
         public void ReadFromView(BinaryViewReader br)
         {
@@ -56,10 +55,15 @@ internal class PtxFile : SyneticBinaryFile
 
             if (Head.SynSize > 0)
             {
-                Encoded = br.ReadArray<byte>(Head.SynSize);
-                Decoded = new byte[Head.Size];
+                var DecodeStream = new MemoryStream();
+                SynCompressor.Decompress(br.PeakStream, DecodeStream, (int)Head.SynSize);
+                Decoded = DecodeStream.ToArray();
+                long diff = Decoded.Length - Head.Size;
+                if (diff != 0)
+                {
+                    throw new InvalidDataException($"Invalid size (result:{Decoded.Length} != expected:{Head.Size}) diff:{diff}");
+                }
 
-                SynCompressor.Decompress(Encoded, Decoded);
             }
             else
             {

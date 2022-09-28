@@ -62,3 +62,7 @@ Also includes an basic OpenTK renderer for preview.
 - Utils for content creation: like chunk calculation, and may some other things.
 - An simple ray-racer for backed lights.
 
+### Credits
+- Krom for the original tool suite
+- Silent 
+

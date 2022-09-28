@@ -44,7 +44,6 @@ public class MtlFile : SyneticTextFile
             var split = line.Split(' ', 2);
             var key = split[0];
             var value = split[1];
-            Console.WriteLine($"{key}={value}");
             usedSection.Add(key, value);
         }
     }

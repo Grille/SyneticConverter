@@ -52,7 +52,7 @@ public abstract class Camera
 
     public virtual void CreatePerspective()
     {
-        ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(1.3f, AspectRatio, 1.0f, 16_000_0.0f);
+        ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(1.3f, AspectRatio, 1.0f, 32_000_0.0f);
     }
 
     public abstract void CreateView();

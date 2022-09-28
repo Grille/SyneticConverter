@@ -19,6 +19,9 @@ public class MeshInstance
 
     public MeshInstance(Mesh mesh, Matrix4 modelMatrix)
     {
+        if (mesh == null)
+            throw new ArgumentNullException(nameof(mesh));
+
         Model = mesh;
         ModelMatrix = modelMatrix;
     }

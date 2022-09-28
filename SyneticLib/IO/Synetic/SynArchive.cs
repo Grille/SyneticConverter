@@ -33,7 +33,7 @@ public class SynArchive
         {
             var src = syn.Data[i];
             var dst = new byte[syn.Entries[i].TotalSize];
-            SynCompressor.Decompress(src, dst);
+            //SynCompressor.Decompress(src, dst);
 
             entries.Add(new Entry(syn.Entries[i].FileName, dst));
         }

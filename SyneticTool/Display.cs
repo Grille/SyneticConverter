@@ -50,11 +50,12 @@ public class Display
     {
         Scene.ClearScene();
         Scene.Meshes.Add(v.Terrain);
-
+        /*
         foreach (var instance in v.PropInstances)
         {
             Scene.Meshes.Add((MeshInstance)instance);
         }
+        */
     }
 
     public void ShowTexture(Texture texture)
