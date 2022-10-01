@@ -12,14 +12,14 @@ namespace SyneticTool.Nodes;
 internal static class NodeColors
 {
     public static readonly Color Default = Color.Black;
-    public static readonly Color Pointer = Color.Blue;
+    public static readonly Color Virtual = Color.Blue;
     public static readonly Color Changed = Color.Green;
     public static readonly Color Failed = Color.Red;
 
     public static Color RessourceColor(Ressource file) => (file.PointerState, file.DataState) switch
     {
-        (PointerState.Exists, DataState.None) => Pointer,
-        (PointerState.Exists, DataState.Seeked) => Pointer,
+        (PointerState.Exists, DataState.None) => Default,
+        (PointerState.Exists, DataState.Seeked) => Default,
         (PointerState.Exists, DataState.Loaded) => Default,
         (PointerState.Exists, DataState.Changed) => Changed,
         (_, DataState.Loaded) => Changed,

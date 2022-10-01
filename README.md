@@ -17,7 +17,7 @@ Also includes an basic OpenTK renderer for preview.
 | MBTR | - | - |
 | WR1 | Yes | - |
 | WR2 | Yes | Partial |
-| C11 | Partial | Partial |
+| C11 | Partial | - | // no materials / terrain mesh only
 | CT1 | Partial | - |
 | CT2 | Partial | - |
 | CT3 | Partial | - |
@@ -32,14 +32,14 @@ Also includes an basic OpenTK renderer for preview.
 | NICE2 | - | - |
 | MBTR | - | - |
 | WR1 | Yes | Yes |
-| WR2 | Partial | Yes |
-| C11 | Partial | Yes |
-| CT1 | Partial | Yes |
-| CT2 | Partial | Yes |
-| CT3 | Partial | Yes |
-| CT4 | Partial | Yes |
-| CT5 | Partial | Yes |
-| FVR | Partial | Yes |
+| WR2 | Partial | Partial | // only simple models
+| C11 | Partial | Partial |
+| CT1 | Partial | Partial |
+| CT2 | Partial | Partial |
+| CT3 | Partial | Partial |
+| CT4 | Partial | Partial |
+| CT5 | Partial | Partial |
+| FVR | Partial | Partial |
 
 #### Cars
 | Game | Import | Export |
@@ -47,22 +47,41 @@ Also includes an basic OpenTK renderer for preview.
 | NICE1 | - | - |
 | NICE2 | - | - |
 | MBTR | - | - |
-| WR1 | Partial | Partial |
-| WR2 | Partial | - |
-| C11 | Partial | - |
-| CT1 | Partial | - |
-| CT2 | Partial | - |
-| CT3 | Partial | - |
-| CT4 | Partial | - |
-| CT5 | Partial | - |
-| FVR | Partial | - |
+| WR1 | - | - |
+| WR2 | - | - |
+| C11 | - | - |
+| CT1 | - | - |
+| CT2 | - | - |
+| CT3 | - | - |
+| CT4 | - | - |
+| CT5 | - | - |
+| FVR | - | - |
 
-### Planed
+#### Database
+| Game | Edit |
+| --- | --- |
+| NICE1 | - |
+| NICE2 | - |
+| MBTR | - |
+| WR1 | - |
+| WR2 | - |
+| C11 | - |
+| CT1 | - |
+| CT2 | - |
+| CT3 | - |
+| CT4 | - |
+| CT5 | - |
+| FVR | - |
+
+### Planed | Considered
 - Importer & Exporter for all scenario files from MBWR to CT5, maybe also NICE to MBTR depending on file formats.
+- Seamless interchange format with blender. 
 - Utils for content creation: like chunk calculation, and may some other things.
 - An simple ray-racer for backed lights.
+- Some basic edtiting tools, for editing cars and scenarios.
+- Included patches like traffic for MBWR to WR2 conversions.
 
 ### Credits
-- Krom for the original tool suite
-- Silent 
+- Krom: for the original tool suite
+- Silent: for some help with file formats
 

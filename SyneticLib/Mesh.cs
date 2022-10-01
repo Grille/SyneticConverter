@@ -37,5 +37,10 @@ public abstract class Mesh: Ressource
         exp.Save(path);
     }
 
+    public MeshSectionPtr CreateSectionPtr(int offset, int count)
+    {
+        return new MeshSectionPtr(this, offset, count);
+    }
+
 
 }

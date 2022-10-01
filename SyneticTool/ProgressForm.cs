@@ -26,7 +26,7 @@ public partial class ProgressForm : Form
 
     private void ProgressInfo_HasUpdated(object sender, EventArgs e)
     {
-        var info = (ProgressInfo)sender;
+        var info = (ProgressLogger)sender;
         Update(info.Value, info.Description);
     }
 

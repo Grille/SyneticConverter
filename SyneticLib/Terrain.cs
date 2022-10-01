@@ -9,35 +9,14 @@ namespace SyneticLib;
 
 public class Terrain : Mesh
 {
-    public int Width, Height;
-
-    public TerrainChunkInfo[] Chunks;
-
     public Terrain(ScenarioVariant parrent) : base(parrent, parrent.ChildPath("Terrain"), PointerType.Virtual)
     {
         GLBuffer = new TerrainBuffer(this);
     }
 
-    public Mesh Unify()
-    {
-        return null;
-    }
-
-    public void Chunkify(Mesh mesh)
-    {
-
-    }
-
-    public TerrainChunkInfo GetChunk(int x, int y)
-    {
-        return Chunks[x + y * Width];
-    }
-
-    public TerrainChunkInfo GetChunk(int i) => Chunks[i];
-
     public void CalculateChunks()
     {
-        var list = new List<TerrainChunkInfo>();
+        var list = new List<ScenarioChunk>();
 
         //return list;
     }

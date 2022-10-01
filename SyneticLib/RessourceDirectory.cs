@@ -16,14 +16,14 @@ public class RessourceDirectory<T> : RessourceList<T> where T : Ressource
     public Predicate<string> Filter;
     public Func<string, T> Constructor;
 
-    public ProgressInfo Progress;
+    public ProgressLogger Progress;
 
     public RessourceDirectory(Ressource parent, string path, Predicate<string> filter, Func<string, T> constructor) : base(parent, path, PointerType.Directory)
     {
         Items = new();
         Filter = filter;
         Constructor = constructor;
-        Progress = new ProgressInfo();
+        Progress = new ProgressLogger();
     }
 
     protected override void OnSeek()

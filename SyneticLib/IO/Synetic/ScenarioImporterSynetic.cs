@@ -94,12 +94,12 @@ public class ScenarioImporterSynetic : ScenarioImporter
         if (sky.Exists)
             sky.Load();
 
-        target.Sounds.Load();
+        //target.Sounds.Load();
         target.TerrainTextures.Load();
         target.ModelTextures.Load();
         //target.Models.Load();
 
-        // Apply textures
+        // Materials
         var textureIndex = target.TerrainTextures.CreateIndexedArray(qad.TextureNames);
 
         for (var i = 0; i < qad.Materials.Length; i++)
@@ -160,81 +160,52 @@ public class ScenarioImporterSynetic : ScenarioImporter
 
         target.Lights.DataState = DataState.Loaded;
 
-        // Terrain
+        // Terrain mesh
         var terrain = target.Terrain;
-        var mesh = terrain;
 
-        var vertices = mesh.Vertices = new Vertex[ivtx.Vertecis.Length];
+        var vertices = terrain.Vertices = new Vertex[ivtx.Vertecis.Length];
         for (int i = 0; i < ivtx.Vertecis.Length; i++)
         {
             vertices[i] = ivtx.Vertecis[i];
         }
 
-        mesh.MaterialRegion = new MaterialRegion[qad.MaterialRegions.Length];
-        for (int i = 0; i < qad.MaterialRegions.Length; i++)
+        terrain.MaterialRegion = new MaterialRegion[qad.PolyRegions.Length];
+        for (int i = 0; i < qad.PolyRegions.Length; i++)
         {
-            mesh.MaterialRegion[i] = new MaterialRegion
+            terrain.MaterialRegion[i] = new MaterialRegion
             (
-                qad.MaterialRegions[i].FirstPoly,
-                qad.MaterialRegions[i].NumPoly,
-                target.TerrainMaterials[qad.MaterialRegions[i].SurfaceID]
+                qad.PolyRegions[i].PolyOffset,
+                qad.PolyRegions[i].PolyCount,
+                target.TerrainMaterials[qad.PolyRegions[i].SurfaceId1]
             );
         }
 
-        DeflateTerrainIndecies(iidx, ivtx, qad);
+        // Inflate terrain indecies 16bit to 32bit
+        terrain.Poligons = new Vector3Int[idx.Polygons.Length];
+        int idxpos = 0;
+        int idxoffset = 0;
+        for (int i = 0; i < vtx.VtxQty.Length; i++)
+        {
+            int count = vtx.VtxQty[i];
+            idxoffset += count;
 
+            for (int i2 = 0; i2 < count; i2++)
+            {
+                terrain.Poligons[idxpos] = idx.Polygons[idxpos] + idxoffset;
+                idxpos++;
+            }
+        }
         terrain.DataState = DataState.Loaded;
 
-
-        void DeflateTerrainIndecies(IIndexData idx, IVertexData vtx, QadFile qad)
+        // Chunks
+        for (int i = 0; i< qad.Chunks.Length;i++)
         {
-            var terrain = target.Terrain;
-            var mesh = terrain;
-
-            var srcidx = idx.Polygons;
-            var dstidx = new Vector3Int[srcidx.Length];
-
-            int pos = 0;
-            int offset = 0;
-            int preXT = 0;
-
-            terrain.Chunks = new TerrainChunkInfo[qad.Head.BlocksTotal];
-
-            for (int iz = 0; iz < qad.Head.BlocksZ; iz++)
-            {
-                for (int ix = 0; ix < qad.Head.BlocksX; ix++)
-                {
-                    int index = ix + iz * qad.Head.BlocksX;
-
-                    ref var srcchunk = ref qad.Blocks[index];
-
-                    terrain.Chunks[index] = new TerrainChunkInfo()
-                    {
-                        ElementOffset = srcchunk.FirstPoly,
-                        ElementCount = srcchunk.NumPoly,
-                    };
-
-                    var block = qad.Blocks[index];
-                    if (block.Chunk65k != preXT)
-                    {
-                        preXT = block.Chunk65k;
-                        offset += vtx.VtxQty[block.Chunk65k - 1];
-                    }
-
-                    int begin = block.FirstPoly;
-                    int end = begin + block.NumPoly;
-                    for (int i = begin; i < end; i++)
-                    {
-                        dstidx[pos].X = srcidx[pos].X + offset;
-                        dstidx[pos].Y = srcidx[pos].Y + offset;
-                        dstidx[pos].Z = srcidx[pos].Z + offset;
-
-                        pos += 1;
-                    }
-                }
-            }
-
-            mesh.Poligons = dstidx;
+            ref var chunkInfo = ref qad.Chunks[i];
+            var chunk = new ScenarioChunk(target, "");
+            chunk.Terrain = terrain.CreateSectionPtr(chunkInfo.PolyRegionOffset, chunkInfo.PolyRegionCount);
+            chunk.DataState = DataState.Loaded;
+            target.Chunks.Add(chunk);
         }
+        target.Chunks.DataState = DataState.Loaded;
     }
 }

@@ -7,10 +7,12 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Drawing;
 using static OpenTK.Graphics.OpenGL.GL;
+using System.Runtime.InteropServices;
 
 namespace SyneticLib.Graphics;
 public static class Graphics
 {
+    static Mesh boundMesh = null;
     static Camera Camera;
 
     public static bool DepthTestEnabled
@@ -37,6 +39,13 @@ public static class Graphics
     {
         CullFaceEnabled = false;
         DepthTestEnabled = true;
+
+        DebugProc debug = (source, type, id, severity, length, message, userParam) =>
+        {
+            string msg = Marshal.PtrToStringAnsi(message);
+            string par = Marshal.PtrToStringAnsi(userParam);
+        };
+        GL.DebugMessageCallback(debug, IntPtr.Zero);
     }
 
     public static void BindCamera(Camera camera)
@@ -58,6 +67,9 @@ public static class Graphics
 
     public static void BindMesh(Mesh mesh)
     {
+        if (boundMesh == mesh)
+            return;
+
         AssertRessource(mesh);
         BindGLStateObject(mesh.GLBuffer);
     }
@@ -85,7 +97,7 @@ public static class Graphics
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     }
 
-    public static void DrawMesh(MeshInstance instance) => DrawMesh(instance.Model, instance.ModelMatrix);
+    public static void DrawMesh(MeshDrawCommand instance) => DrawMesh(instance.Mesh, instance.ModelMatrix);
 
     public static void DrawMesh(Mesh model) => DrawMesh(model, Matrix4.Identity);
 

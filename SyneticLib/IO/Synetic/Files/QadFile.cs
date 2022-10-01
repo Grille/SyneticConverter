@@ -20,47 +20,48 @@ public class QadFile : SyneticBinaryFile
 
     public MHead Head;
     public String32[] TextureNames;
-    public String32[] BumpTexName;
+    public String32[] BumpTexNames;
     public String32[] PropClassObjNames;
-    public MChunk[] Blocks;
+    public MChunk[] Chunks;
     public int[] ChunkDataPtr;
     public ushort[][] ChunkData;
-    public MMaterialType0[] Materials;
-    public MPolygonRegionPtr[] MaterialRegions;
-    public MObjInstance[] PropInstances;
-    public MGroundPhysics[] Grounds;
+    public MMaterialType1[] Materials;
+    public MPolyRegion[] PolyRegions;
+    public MPropInstance[] PropInstances;
+    public MGroundPhysics[] GroundPhysics;
     public ushort[] Tex2Ground;
     public MSound[] Sounds;
-    public MPropClassInfo[] PropClassInfo;
+    public MPropClass[] PropClassInfo;
     public MLight[] Lights;
 
     public struct MHead
     {
         public String4 Head;
         public int Version;
-        public int WidthX, LengthZ, BlocksX, BlocksZ, BlocksTotal, TexturesTotal;
-        public ushort TexturesFiles, BumpTexturesFiles;
-        public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundTypes, ColliSize;
-        public ushort Lights, x1, x2, x3;
-        public int Sounds;
+        public int WidthX, LengthZ, BlocksX, BlocksZ, BlocksTotal, PolyRegionCount;
+        public ushort TexturesFileCount, BumpTexturesFileCount;
+        public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicCount, ColliSize;
+        public ushort LightCount, x1, x2, x3;
+        public int SoundCount;
     }
 
     public struct MChunk
     {
-        public ushort X, Z;
-        public int FirstPoly, NumPoly, FirstTex, NumTex;
-        public float CenterX, CenterY, CenterZ, Rad;
-        public short FirstObj, NumObj, FirstLight, NumLight;
+        public ushort PosX, PosZ;
+        public int PolyOffset, PolyCount, PolyRegionOffset, PolyRegionCount;
+        public Vector3 Center;
+        public float Radius;
+        public short PropOffset, PropCount, LightOffset, LightCount;
         public short Chunk65k, x1;
     }
 
-    public struct MPolygonRegionPtr
+    public struct MPolyRegion
     {
-        public int FirstPoly, NumPoly;
-        public ushort SurfaceID, SurfaceID2;
+        public int PolyOffset, PolyCount;
+        public ushort SurfaceId1, SurfaceId2;
     }
 
-    public struct MMaterialType0
+    public struct MMaterialType1
     {
         public ushort Tex0Id, Tex1Id, Tex2Id, Mode;
         public Transform Matrix0;
@@ -71,7 +72,7 @@ public class QadFile : SyneticBinaryFile
         public int X2;
     }
 
-    public struct MMaterialType1
+    public struct MMaterialType2
     {
         public ushort L0Tex0Id, L0Tex1Id, L0Tex2Id, L0Mode;
         public ushort L1Tex0Id, L1Tex1Id, L1Tex2Id, L1Mode;
@@ -81,7 +82,7 @@ public class QadFile : SyneticBinaryFile
         public int C;
     }
 
-    public struct MObjInstance
+    public struct MPropInstance
     {
         public String32 Name;
         public int ClassId;
@@ -115,15 +116,15 @@ public class QadFile : SyneticBinaryFile
     }
 
 
-    public struct MObjPropSimple
+    public struct MPropClassSimple
     {
         public ushort Mode;
 
-        public static implicit operator MPropClassInfo(MObjPropSimple a) => new MPropClassInfo()
+        public static implicit operator MPropClass(MPropClassSimple a) => new MPropClass()
         {
             Mode = a.Mode,
         };
-        public static explicit operator MObjPropSimple(MPropClassInfo a) => new MObjPropSimple()
+        public static explicit operator MPropClassSimple(MPropClass a) => new MPropClassSimple()
         {
             Mode = a.Mode,
         };
@@ -146,7 +147,7 @@ public class QadFile : SyneticBinaryFile
         };
     }
 
-    public struct MPropClassInfo
+    public struct MPropClass
     {
         public ushort Mode, Shape, Weight, p4;
         public int x1, x2, x3;
@@ -171,23 +172,23 @@ public class QadFile : SyneticBinaryFile
             br.ReadToPtr((byte*)ptr + ptroffset, sizeof(MHead) - ptroffset);
         }
 
-        if (Head.BlocksX * Head.BlocksZ != Head.BlocksTotal)
-            throw new InvalidDataException($"Invalid block count ({Head.BlocksX} * {Head.BlocksZ}) != {Head.BlocksTotal}");
+        assertBlockCount();
+        assertFileSize(br.Length);
 
         if (Has56ByteBlock)
             br.ReadArray<byte>(56);
 
-        TextureNames = br.ReadArray<String32>(Head.TexturesFiles);
-        BumpTexName = br.ReadArray<String32>(Head.BumpTexturesFiles);
+        TextureNames = br.ReadArray<String32>(Head.TexturesFileCount);
+        BumpTexNames = br.ReadArray<String32>(Head.BumpTexturesFileCount);
         PropClassObjNames = br.ReadArray<String32>(Head.PropClassCount);
 
-        PropClassInfo = new MPropClassInfo[Head.PropClassCount];
+        PropClassInfo = new MPropClass[Head.PropClassCount];
         for (int i = 0; i < Head.PropClassCount; i++)
-            PropClassInfo[i] = UseSimpleData ? br.Read<MObjPropSimple>() : br.Read<MPropClassInfo>();
+            PropClassInfo[i] = UseSimpleData ? br.Read<MPropClassSimple>() : br.Read<MPropClass>();
 
-        Blocks = new MChunk[Head.BlocksTotal];
+        Chunks = new MChunk[Head.BlocksTotal];
         for (var i = 0; i < Head.BlocksTotal; i++)
-             Blocks[i] = br.Read<MChunk>();
+             Chunks[i] = br.Read<MChunk>();
 
         var blockX16 = Head.BlocksTotal * 16;
         ChunkDataPtr = new int[blockX16 + 1];
@@ -202,17 +203,17 @@ public class QadFile : SyneticBinaryFile
         }
 
         
-        MaterialRegions = br.ReadArray<MPolygonRegionPtr>(Head.TexturesTotal);
-        Materials = br.ReadArray<MMaterialType0>(Head.MaterialCount);
-        PropInstances = br.ReadArray<MObjInstance>(Head.PropInstanceCount);
+        PolyRegions = br.ReadArray<MPolyRegion>(Head.PolyRegionCount);
+        Materials = br.ReadArray<MMaterialType1>(Head.MaterialCount);
+        PropInstances = br.ReadArray<MPropInstance>(Head.PropInstanceCount);
 
-        Lights = new MLight[Head.Lights];
-        for (int i = 0; i < Head.Lights; i++)
+        Lights = new MLight[Head.LightCount];
+        for (int i = 0; i < Head.LightCount; i++)
             Lights[i] = UseSimpleData ? br.Read<MLightSimple>() : br.Read<MLight>();
 
-        Grounds = br.ReadArray<MGroundPhysics>(Head.GroundTypes);
+        GroundPhysics = br.ReadArray<MGroundPhysics>(Head.GroundPhysicCount);
         Tex2Ground = br.ReadArray<ushort>(256);
-        Sounds = br.ReadArray<MSound>(Head.Sounds);
+        Sounds = br.ReadArray<MSound>(Head.SoundCount);
     }
 
     public override void WriteToView(BinaryViewWriter bw)
@@ -222,20 +223,20 @@ public class QadFile : SyneticBinaryFile
         bw.Write(Head);
 
         bw.WriteArray(TextureNames);
-        bw.WriteArray(BumpTexName);
+        bw.WriteArray(BumpTexNames);
         bw.WriteArray(PropClassObjNames);
 
         for (int i = 0; i < PropClassInfo.Length; i++)
         {
             if (UseSimpleData)
-                bw.Write((MObjPropSimple)PropClassInfo[i]);
+                bw.Write((MPropClassSimple)PropClassInfo[i]);
             else
                 bw.Write(PropClassInfo[i]);
         }
 
         for (var ix = 0; ix < Head.BlocksTotal; ix++)
         {
-            bw.Write(Blocks[ix]);
+            bw.Write(Chunks[ix]);
         }
 
         var blockx16 = Head.BlocksTotal * 16;
@@ -246,7 +247,7 @@ public class QadFile : SyneticBinaryFile
             bw.WriteArray(ChunkData[i]);
         }
 
-        bw.WriteArray(MaterialRegions);
+        bw.WriteArray(PolyRegions);
         bw.WriteArray(Materials);
         bw.WriteArray(PropInstances);
         for (int i = 0; i < Lights.Length; i++)
@@ -256,9 +257,11 @@ public class QadFile : SyneticBinaryFile
             else
                 bw.Write(Lights[i]);
         }
-        bw.WriteArray(Grounds);
+        bw.WriteArray(GroundPhysics);
         bw.WriteArray(Tex2Ground);
         bw.WriteArray(Sounds);
+
+        assertFileSize(bw.Length);
     }
 
 
@@ -273,6 +276,47 @@ public class QadFile : SyneticBinaryFile
     private void assertBlockCount()
     {
         if (Head.BlocksX * Head.BlocksZ != Head.BlocksTotal)
-            throw new InvalidDataException($"Invalid block count ({Head.BlocksX} * {Head.BlocksZ}) != {Head.BlocksTotal}");
+            throw new InvalidDataException($"Invalid block count ({Head.BlocksX} * {Head.BlocksZ} != {Head.BlocksTotal}");
+    }
+
+    private void assertFileSize(long length)
+    {
+        int endPos = calcFileSize();
+        int diff = endPos - (int)length;
+        if (diff != 0)
+            throw new Exception($"Invalid File Size: ({endPos} != {length}) Diff {diff}");
+
+    }
+
+    private unsafe int calcFileSize()
+    {
+        int endPos = 0;
+
+        endPos += sizeof(MHead) - (Has8ByteMagic ? 0 : 8);
+
+        if (Has56ByteBlock)
+            endPos += 56;
+
+        endPos += sizeof(String32) * Head.TexturesFileCount;
+        endPos += sizeof(String32) * Head.BumpTexturesFileCount;
+        endPos += sizeof(String32) * Head.PropClassCount;
+
+        endPos += (UseSimpleData ? sizeof(MPropClassSimple) : sizeof(MPropClass)) * Head.PropClassCount;
+        endPos += (UseSimpleData ? sizeof(MLightSimple) : sizeof(MLight)) * Head.LightCount;
+
+        endPos += sizeof(MChunk) * Head.BlocksTotal;
+
+        endPos += Head.ColliSize;
+
+        endPos += sizeof(MPolyRegion) * Head.PolyRegionCount;
+        endPos += (UseMaterialType2 ? sizeof(MMaterialType2) : sizeof(MMaterialType1)) * Head.MaterialCount;
+        endPos += sizeof(MPropInstance) * Head.PropInstanceCount;
+
+
+        endPos += sizeof(MGroundPhysics) * Head.GroundPhysicCount;
+        endPos += 2 * 256;
+        endPos += sizeof(MSound) * Head.SoundCount;
+
+        return endPos;
     }
 }

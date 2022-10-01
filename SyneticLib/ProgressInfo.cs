@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using OpenTK.Windowing.Common.Input;
 
 namespace SyneticLib;
-public class ProgressInfo
+public class ProgressLogger
 {
     public string Name;
     private string _description;
@@ -27,9 +27,9 @@ public class ProgressInfo
         get { return _subProgress == null ? _value : _subProgress.Value; }
         private set { _value = value; }
     }
-    private ProgressInfo _subProgress;
+    private ProgressLogger _subProgress;
 
-    public void Use(ProgressInfo progress)
+    public void Use(ProgressLogger progress)
     {
         Free();
 
@@ -59,6 +59,25 @@ public class ProgressInfo
             _subProgress.Update(value, text);
         }
     }
+
+
+    public void Log(string msg)
+    {
+
+    }
+
+    public void Warn(string msg)
+    {
+
+    }
+
+    public void Error(string msg)
+    {
+
+    }
+
+
+
 
     private void _subProgress_HasUpdated(object sender, EventArgs e)
     {

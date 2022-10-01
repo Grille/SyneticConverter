@@ -32,13 +32,13 @@ public class Display
     public void ShowCar(Car car)
     {
         Scene.ClearScene();
-        Scene.Meshes.Add(car.Model);
+        Scene.MeshDrawBuffer.Add(car.Model);
     }
 
     public void ShowMesh(Mesh mesh)
     {
         Scene.ClearScene();
-        Scene.Meshes.Add(mesh);
+        Scene.MeshDrawBuffer.Add(mesh);
     }
 
     public void ShowScenario(Scenario scenario)
@@ -49,7 +49,7 @@ public class Display
     public void ShowScenario(ScenarioVariant v)
     {
         Scene.ClearScene();
-        Scene.Meshes.Add(v.Terrain);
+        Scene.MeshDrawBuffer.Add(v.Terrain);
         /*
         foreach (var instance in v.PropInstances)
         {

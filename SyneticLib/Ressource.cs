@@ -14,7 +14,7 @@ public abstract class Ressource {
     public Ressource Parent { get; set; }
     public Ressource[] Children;
 
-    public ProgressInfo ProgressInfo { get; set; }
+    public ProgressLogger ProgressInfo { get; set; }
 
     public Ressource(Ressource parent, string path, PointerType type = PointerType.Virtual)
     {

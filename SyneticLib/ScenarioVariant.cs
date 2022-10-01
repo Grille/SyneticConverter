@@ -26,12 +26,10 @@ public partial class ScenarioVariant : Ressource
     public TextureDirectory ModelTextures;
     public RessourceList<PropClass> PropClasses;
     public RessourceList<PropInstance> PropInstances;
-
     public RessourceList<Light> Lights;
+    public RessourceList<ScenarioChunk> Chunks;
 
-    public List<string> Errors;
-
-    public ProgressInfo Progress;
+    public ProgressLogger Progress;
 
     //public InitState State { get; internal set; }
 
@@ -51,8 +49,7 @@ public partial class ScenarioVariant : Ressource
         PropClasses = new(this, ChildPath("PropClasses"));
         PropInstances = new(this, ChildPath("PropInstances"));
         Lights = new(this, ChildPath("Lights"));
-
-        Errors = new();
+        Chunks = new(this, ChildPath("Chunks"));
     }
 
     public void PeakHead()

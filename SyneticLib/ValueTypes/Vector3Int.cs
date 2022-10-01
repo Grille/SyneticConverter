@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,5 +15,10 @@ public struct Vector3Int
         X = x;
         Y = y;
         Z = z;
+    }
+
+    public static Vector3Int operator +(Vector3Int a, int b)
+    {
+        return new Vector3Int(a.X + b, a.Y + b, a.Z + b);
     }
 }

@@ -11,14 +11,14 @@ namespace SyneticLib.Graphics;
 public class Scene
 {
     public readonly List<Sprite> Sprites;
-    public readonly List<MeshInstance> Meshes;
+    public readonly List<MeshDrawCommand> MeshDrawBuffer;
     public Camera Camera;
     public Mesh GroundPlane;
 
     public unsafe Scene()
     {
         Sprites = new List<Sprite>();
-        Meshes = new List<MeshInstance>();
+        MeshDrawBuffer = new List<MeshDrawCommand>();
         Camera = new OrbitCamera();
         GroundPlane = CreateGroundPlane(8);
     }
@@ -74,7 +74,7 @@ public class Scene
 
     public void ClearScene()
     {
-        Meshes.Clear();
+        MeshDrawBuffer.Clear();
         Sprites.Clear();
     }
 
@@ -91,7 +91,7 @@ public class Scene
         Graphics.DepthTestEnabled = true;
         Graphics.CullFaceEnabled = true;
 
-        foreach (var instance in Meshes)
+        foreach (var instance in MeshDrawBuffer)
             Graphics.DrawMesh(instance);
 
         Graphics.DepthTestEnabled = false;

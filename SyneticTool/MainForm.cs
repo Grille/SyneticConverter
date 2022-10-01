@@ -16,6 +16,7 @@ using System.Numerics;
 using SyneticLib;
 using SyneticLib.Graphics;
 using SyneticTool.Nodes;
+using Graphics = SyneticLib.Graphics.Graphics;
 
 namespace SyneticTool;
 
@@ -37,7 +38,10 @@ public partial class MainForm : Form
         glControl = new GLControl(new()
         {
             API = OpenTK.Windowing.Common.ContextAPI.OpenGL,
-            APIVersion = new Version(4, 5, 0, 0)
+            APIVersion = new Version(4, 5, 0, 0),
+            Flags = OpenTK.Windowing.Common.ContextFlags.Debug,
+
+
         });
         glControl.BackColor = Color.Black;
         glControl.Dock = DockStyle.Fill;
@@ -79,6 +83,7 @@ public partial class MainForm : Form
 
     private void MainForm_Shown(object sender, EventArgs e)
     {
+        Graphics.Setup();
         renderTimer.Start();
 
         if (Games.Count == 0)
