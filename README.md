@@ -1,4 +1,6 @@
 # WIP SyneticConverter
+Its code is still very messy, most things don’t work probably and it will probably eat your computer.
+Feel free to experiment with it, but don’t expect a working program yet.
 
 ## SyneticConverter
 An WinForms app on top of SyneticLib that allow viewing & converting scenarios and models.
