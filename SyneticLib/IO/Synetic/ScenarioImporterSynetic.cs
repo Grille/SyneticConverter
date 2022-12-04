@@ -26,7 +26,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
     private IVertexData ivtx;
     private IIndexData iidx;
 
-    public ScenarioImporterSynetic(Scenario target) : base(target)
+    public ScenarioImporterSynetic(ScenarioVGroup target) : base(target)
     {
         version = target.Version;
 
@@ -56,7 +56,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
     }
 
 
-    protected void OnLoadV(ScenarioVariant target)
+    protected void OnLoadV(Scenario target)
     {
         var synPath = Path.Combine(target.SourcePath, $"V{target.IdNumber}");
         syn.Path = synPath + ".syn";
@@ -160,8 +160,12 @@ public class ScenarioImporterSynetic : ScenarioImporter
 
         target.Lights.DataState = DataState.Loaded;
 
+
         // Terrain mesh
-        var terrain = target.Terrain;
+        if (target.Terrain.Chunks.Count < 1)
+            target.Terrain.Chunks.Add(new TerrainMesh(target.Terrain));
+
+        var terrain = target.Terrain.Chunks[0];
 
         var vertices = terrain.Vertices = new Vertex[ivtx.Vertecis.Length];
         for (int i = 0; i < ivtx.Vertecis.Length; i++)
@@ -197,6 +201,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
         }
         terrain.DataState = DataState.Loaded;
 
+        /*
         // Chunks
         for (int i = 0; i< qad.Chunks.Length;i++)
         {
@@ -207,5 +212,6 @@ public class ScenarioImporterSynetic : ScenarioImporter
             target.Chunks.Add(chunk);
         }
         target.Chunks.DataState = DataState.Loaded;
+        */
     }
 }

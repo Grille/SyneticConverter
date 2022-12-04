@@ -9,9 +9,9 @@ using SyneticLib.IO.Synetic.Files;
 namespace SyneticLib.IO;
 public abstract class ScenarioImporter
 {
-    protected Scenario Target;
+    protected ScenarioVGroup Target;
 
-    public ScenarioImporter(Scenario target)
+    public ScenarioImporter(ScenarioVGroup target)
     {
         Target = target;
     }

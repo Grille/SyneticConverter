@@ -138,7 +138,7 @@ public static class Graphics
         //}
     }
 
-    public static void DrawTerrain(Terrain terrain)
+    public static void DrawTerrain(TerrainMesh terrain)
     {
         AssertRessource(terrain);
         BindMesh(terrain);

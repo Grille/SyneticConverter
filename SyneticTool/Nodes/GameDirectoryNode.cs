@@ -14,7 +14,7 @@ public class GameDirectoryNode : DataTreeNode
 {
     public new GameDirectory DataValue { get => (GameDirectory)base.DataValue; set => DataValue = value; }
 
-    DataListTreeNode<Scenario> ScenariosNode;
+    DataListTreeNode<ScenarioVGroup> ScenariosNode;
     DataListTreeNode<Car> CarsNode;
     DataListTreeNode<Sound> SoundsNode;
 

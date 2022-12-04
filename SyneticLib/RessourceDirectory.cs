@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
+
 public class RessourceDirectory<T> : RessourceList<T> where T : Ressource
 {
     public static readonly Predicate<string> FileFilter = (path) => File.Exists(path);
@@ -20,7 +21,6 @@ public class RessourceDirectory<T> : RessourceList<T> where T : Ressource
 
     public RessourceDirectory(Ressource parent, string path, Predicate<string> filter, Func<string, T> constructor) : base(parent, path, PointerType.Directory)
     {
-        Items = new();
         Filter = filter;
         Constructor = constructor;
         Progress = new ProgressLogger();

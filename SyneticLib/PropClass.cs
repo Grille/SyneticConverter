@@ -16,24 +16,9 @@ public class PropClass : Ressource
 
     public ModelDirectory AssignedModels;
 
-    public PropClass(ScenarioVariant parent, string name) : base(parent, parent.ChildPath(name), PointerType.Virtual)
+    public PropClass(Scenario parent, string name) : base(parent, parent.ChildPath(name), PointerType.Virtual)
     {
         Name = FileName;
         AssignedModels = parent.Models;
-    }
-
-    protected override void OnLoad()
-    {
-
-    }
-
-    protected override void OnSave()
-    {
-
-    }
-
-    protected override void OnSeek()
-    {
-
     }
 }

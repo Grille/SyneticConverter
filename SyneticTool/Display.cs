@@ -41,15 +41,19 @@ public class Display
         Scene.MeshDrawBuffer.Add(mesh);
     }
 
-    public void ShowScenario(Scenario scenario)
+    public void ShowScenario(ScenarioVGroup scenario)
     {
         ShowScenario(scenario.V1);
     }
 
-    public void ShowScenario(ScenarioVariant v)
+    public void ShowScenario(Scenario v)
     {
         Scene.ClearScene();
-        Scene.MeshDrawBuffer.Add(v.Terrain);
+        //Scene.MeshDrawBuffer.Add(v.Terrain);
+        foreach (var chunk in v.Terrain.Chunks)
+        {
+            Scene.MeshDrawBuffer.Add(chunk);
+        }
         /*
         foreach (var instance in v.PropInstances)
         {

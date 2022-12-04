@@ -18,19 +18,4 @@ public class PropInstance : Ressource
     {
         Class = @class;
     }
-
-    protected override void OnLoad()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSave()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSeek()
-    {
-        throw new NotImplementedException();
-    }
 }

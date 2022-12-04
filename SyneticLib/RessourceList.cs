@@ -9,7 +9,7 @@ using System.IO;
 namespace SyneticLib;
 public class RessourceList<T> : Ressource, IList<T> where T : Ressource
 {
-    public List<T> Items;
+    public readonly List<T> Items;
 
     public RessourceList(Ressource parent, string path, PointerType type = PointerType.Virtual) : base(parent, path, type)
     {
@@ -32,26 +32,15 @@ public class RessourceList<T> : Ressource, IList<T> where T : Ressource
     public void CopyTo(T[] array, int arrayIndex) => Items.CopyTo(array, arrayIndex);
 
     public IEnumerator<T> GetEnumerator() => Items.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
 
-    public int IndexOf(T item)
-    {
-        throw new NotImplementedException();
-    }
+    public int IndexOf(T item) => Items.IndexOf(item);
 
-    public void Insert(int index, T item)
-    {
-        throw new NotImplementedException();
-    }
+    public void Insert(int index, T item) => Items.Insert(index, item);
 
-    public bool Remove(T item)
-    {
-        throw new NotImplementedException();
-    }
+    public bool Remove(T item) => Items.Remove(item);
 
-    public void RemoveAt(int index)
-    {
-        throw new NotImplementedException();
-    }
+    public void RemoveAt(int index) => Items.RemoveAt(index);
 
     protected override void OnLoad()
     {
@@ -59,22 +48,5 @@ public class RessourceList<T> : Ressource, IList<T> where T : Ressource
         {
             item.Load();
         }
-    }
-
-    protected override void OnSave()
-    {
-        throw new NotImplementedException();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        throw new NotImplementedException();
-    }
-
-
-
-    protected override void OnSeek()
-    {
-        //throw new NotImplementedException();
     }
 }

@@ -11,9 +11,9 @@ using System.Numerics;
 namespace SyneticLib.Graphics;
 public unsafe class TerrainBuffer : GLMeshBuffer
 {
-    public readonly Terrain Owner;
+    public readonly TerrainMesh Owner;
 
-    public TerrainBuffer(Terrain terrain)
+    public TerrainBuffer(TerrainMesh terrain)
     {
         Owner = terrain;
     }

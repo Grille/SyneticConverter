@@ -4,54 +4,71 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using SyneticLib.IO.Synetic;
+using System.Diagnostics;
 
 namespace SyneticLib;
 
-public class Scenario : Ressource
+public partial class Scenario : Ressource
 {
-    public new GameDirectory Parent { get => (GameDirectory)base.Parent; set => base.Parent = value; }
+    public int IdNumber;
+    public int Width, Height;
+
+    public new ScenarioVGroup Parent { get => (ScenarioVGroup)base.Parent; set => base.Parent = value; }
 
 
-    public List<ScenarioVariant> Variants;
+    public GroundModel GroundModel;
+    public Terrain Terrain;
+    public RessourceDirectory<Sound> Sounds;
+    public TextureDirectory TerrainTextures;
+    public RessourceList<TerrainMaterial> TerrainMaterials;
+    public ModelDirectory Models;
+    public TextureDirectory ModelTextures;
+    public RessourceList<PropClass> PropClasses;
+    public RessourceList<PropInstance> PropInstances;
+    public RessourceList<Light> Lights;
+    public RessourceList<ScenarioChunk> Chunks;
 
-    public int VariantCount { get => Variants.Count; }
-    public ScenarioVariant V1 { get => Variants.Count > 0 ? Variants[0] : null; } 
-    public ScenarioVariant V2 { get => Variants.Count > 1 ? Variants[1] : null; }
-    public ScenarioVariant V3 { get => Variants.Count > 2 ? Variants[2] : null; }
-    public ScenarioVariant V4 { get => Variants.Count > 3 ? Variants[3] : null; }
+    public ProgressLogger Progress;
 
-    public Scenario(GameDirectory game, string path) :base(game, path, PointerType.Directory)
+    //public InitState State { get; internal set; }
+
+    public Scenario(ScenarioVGroup parent, int number): base(parent, parent.ChildPath($"V{number}"), PointerType.Directory)
     {
-        Variants = new List<ScenarioVariant>();
+        IdNumber = number;
+
+        Sounds = Parent.Parent.Sounds;
+
+        TerrainTextures = new(this, ChildPath("Textures"));
+        TerrainMaterials = new(this, ChildPath("TerrainMaterials"));
+        Terrain = new(this);
+
+        ModelTextures = new(this, ChildPath("Objects/Textures"));
+        Models = new(this, ModelTextures, ChildPath("Objects"));
+
+        PropClasses = new(this, ChildPath("PropClasses"));
+        PropInstances = new(this, ChildPath("PropInstances"));
+        Lights = new(this, ChildPath("Lights"));
+        Chunks = new(this, ChildPath("Chunks"));
+    }
+
+    public void PeakHead()
+    {
+
     }
 
     protected override void OnLoad()
     {
-        foreach (var variant in Variants)
-        {
-            variant.Load();
-        }
+        new ScenarioImporterSynetic(this.Parent).LoadV(IdNumber);
     }
 
     protected override void OnSave()
     {
-        throw new NotImplementedException();
+
     }
 
     protected override void OnSeek()
     {
-        var dirs = Directory.GetDirectories(SourcePath);
 
-        var list = Variants;
-        list.Clear();
-
-        foreach (var dir in dirs)
-        {
-            string variantId = Path.GetFileName(dir);
-            if (variantId.Length == 2 && int.TryParse(variantId.Substring(1, 1), out int result))
-            {
-                list.Add(new ScenarioVariant(this, result));
-            }
-        }
     }
 }

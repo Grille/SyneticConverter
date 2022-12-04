@@ -9,29 +9,14 @@ namespace SyneticLib;
 
 public class ScenarioChunk : Ressource
 {
-    public MeshSectionPtr Terrain;
+    public TerrainMesh Terrain;
 
     public int VertexIdxOffset;
 
     public Vector3 Center;
     public float Radius;
 
-    public ScenarioChunk(ScenarioVariant parent, string path) : base(parent, path)
+    public ScenarioChunk(Scenario parent, string path) : base(parent, path)
     {
-    }
-
-    protected override void OnLoad()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSave()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSeek()
-    {
-        throw new NotImplementedException();
     }
 }

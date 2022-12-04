@@ -29,7 +29,11 @@ public abstract class Mesh: Ressource
         Materials = new(this);
     }
 
-    public abstract void ExportAsObj(string path);
+    public virtual void ExportAsObj(string path)
+    {
+        var exp = new MeshExporterObj(this);
+        exp.Save(path);
+    }
 
     public void ExportAsSbx(string path)
     {

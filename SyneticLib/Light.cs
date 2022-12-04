@@ -15,19 +15,4 @@ public class Light : Ressource
     public Light(Ressource parent) : base(parent, parent.ChildPath("Light"), PointerType.Virtual)
     {
     }
-
-    protected override void OnLoad()
-    {
-        //throw new NotImplementedException();
-    }
-
-    protected override void OnSave()
-    {
-        //throw new NotImplementedException();
-    }
-
-    protected override void OnSeek()
-    {
-        //throw new NotImplementedException();
-    }
 }

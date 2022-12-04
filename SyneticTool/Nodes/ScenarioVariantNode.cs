@@ -12,7 +12,7 @@ namespace SyneticTool.Nodes;
 
 internal class ScenarioVariantNode : DataTreeNode
 {
-    public new ScenarioVariant DataValue { get => (ScenarioVariant)base.DataValue; set => base.DataValue = value; }
+    public new Scenario DataValue { get => (Scenario)base.DataValue; set => base.DataValue = value; }
 
     public DataTreeNode TerrainNode;
     public TextureDirectoryNode TerrainTexturesNode;
@@ -21,7 +21,7 @@ internal class ScenarioVariantNode : DataTreeNode
     public LightsNode LightsNode;
     public PropListNode PropsNode;
 
-    public ScenarioVariantNode(ScenarioVariant variant) : base(variant)
+    public ScenarioVariantNode(Scenario variant) : base(variant)
     {
         Image = IconList.Terrain;
         Text = variant.FileName;

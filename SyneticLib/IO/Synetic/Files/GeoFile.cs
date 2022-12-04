@@ -114,7 +114,7 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
         Head.IndicesCount = Polygons.Length * 3;
         Head.Clear0 = 0;
         Head.Clear1 = 0;
-        Head.Clear1 = 0;
+        Head.Clear2 = 0;
     }
 
     [StructLayout(LayoutKind.Sequential)]

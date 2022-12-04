@@ -10,7 +10,7 @@ namespace SyneticLib;
 
 public class GameDirectory : Ressource
 {
-    public RessourceDirectory<Scenario> Scenarios;
+    public RessourceDirectory<ScenarioVGroup> Scenarios;
     public RessourceDirectory<Car> Cars;
     public RessourceDirectory<Sound> Sounds;
 
@@ -23,7 +23,7 @@ public class GameDirectory : Ressource
 
         Scenarios = new(this, ChildPath("Scenarios"),
             (path) => Directory.Exists(path),
-            (path) => new Scenario(this, path)
+            (path) => new ScenarioVGroup(this, path)
         );
 
         Cars = new(this, ChildPath("Autos"),
@@ -39,10 +39,10 @@ public class GameDirectory : Ressource
 
     internal static GameDirectory Global = new("Global", GameVersion.WR2);
 
-    public Scenario GetScenario(string name)
+    public ScenarioVGroup GetScenario(string name)
     {
         var path = Path.Combine(SourcePath, "Scenarios", name);
-        return new Scenario(this, path);
+        return new ScenarioVGroup(this, path);
     }
 
     public static GameVersion FindDirectoryGameVersion(string path)

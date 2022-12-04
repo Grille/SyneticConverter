@@ -12,9 +12,9 @@ namespace SyneticTool.Nodes;
 
 internal class ScenarioNode : DataTreeNode
 {
-    public new Scenario DataValue { get => (Scenario)base.DataValue; set => base.DataValue = value; }
+    public new ScenarioVGroup DataValue { get => (ScenarioVGroup)base.DataValue; set => base.DataValue = value; }
 
-    public ScenarioNode(Scenario scenario) : base(scenario)
+    public ScenarioNode(ScenarioVGroup scenario) : base(scenario)
     {
         SelectedImageIndex = ImageIndex = IconList.World;
     }

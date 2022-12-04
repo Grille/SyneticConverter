@@ -92,11 +92,20 @@ public abstract class Ressource {
         }
     }
 
-    protected abstract void OnLoad();
+    protected virtual void OnLoad()
+    {
+        throw new NotImplementedException();
+    }
 
-    protected abstract void OnSave();
+    protected virtual void OnSave()
+    {
+        throw new NotImplementedException();
+    }
 
-    protected abstract void OnSeek();
+    protected virtual void OnSeek()
+    {
+        throw new NotImplementedException();
+    }
 
     public bool NeedSeek => !(DataState == DataState.Seeked || DataState == DataState.Loaded);
 

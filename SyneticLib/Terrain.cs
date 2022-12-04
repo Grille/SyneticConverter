@@ -3,40 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK.Mathematics;
 using SyneticLib.Graphics;
 
 namespace SyneticLib;
 
-public class Terrain : Mesh
+public class Terrain : Ressource
 {
-    public Terrain(ScenarioVariant parrent) : base(parrent, parrent.ChildPath("Terrain"), PointerType.Virtual)
+    public float GridSize = 0;
+
+    public RessourceList<TerrainMesh> Chunks;
+    public Terrain(Scenario parrent) : base(parrent, parrent.ChildPath("Terrain"), PointerType.Virtual)
     {
-        GLBuffer = new TerrainBuffer(this);
+        Chunks = new(this, "Chunks");
     }
 
-    public void CalculateChunks()
+    public TerrainMesh this[int x, int y]
+    {
+        get => Chunks[CalcIdx(x, y)];
+    }
+
+    public int CalcIdx(int x, int y)
+    {
+        return 0;
+    }
+
+    public void ChunkifyMesh(TerrainMesh mesh)
     {
         var list = new List<ScenarioChunk>();
 
         //return list;
     }
 
-    protected override void OnLoad()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSave()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSeek()
-    {
-        //throw new NotImplementedException();
-    }
-
-    public override void ExportAsObj(string path)
+    public TerrainMesh JoinChunks()
     {
         throw new NotImplementedException();
     }

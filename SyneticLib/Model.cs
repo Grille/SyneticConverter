@@ -22,11 +22,6 @@ public class Model : Mesh
         AssignedTextures = textures;
     }
 
-    public override void ExportAsObj(string path)
-    {
-        throw new NotImplementedException();
-    }
-
     public void ImportFromMox()
     {
         new ModelmporterMox(this).Load();
