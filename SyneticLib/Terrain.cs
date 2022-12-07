@@ -8,16 +8,16 @@ using SyneticLib.Graphics;
 
 namespace SyneticLib;
 
-public class Terrain : Ressource
+public class TerrainMesh : Mesh
 {
     public float GridSize = 0;
 
-    public RessourceList<TerrainMesh> Chunks;
-    public Terrain(Scenario parrent) : base(parrent, parrent.ChildPath("Terrain"), PointerType.Virtual)
+    public TerrainMesh(Scenario parrent) : base(parrent, parrent.ChildPath("Terrain"), PointerType.Virtual)
     {
-        Chunks = new(this, "Chunks");
+        GLBuffer = new TerrainBuffer(this);
     }
 
+    /*
     public TerrainMesh this[int x, int y]
     {
         get => Chunks[CalcIdx(x, y)];
@@ -39,4 +39,5 @@ public class Terrain : Ressource
     {
         throw new NotImplementedException();
     }
+    */
 }

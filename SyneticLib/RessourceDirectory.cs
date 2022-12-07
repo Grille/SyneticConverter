@@ -81,4 +81,45 @@ public class RessourceDirectory<T> : RessourceList<T> where T : Ressource
         }
         return result;
     }
+
+    public void CopyFilesTo(string path)
+    {
+        foreach (var item in Items)
+        {
+            if (item.PointerType != PointerType.File)
+                throw new InvalidOperationException("Ressources must be files for CopyFromSource.");
+            string dst = Path.Join(path, item.FileNameWithExtension);
+            if (File.Exists(dst))
+                continue;
+            File.Copy(item.SourcePath, dst);
+        }
+    }
+
+    public void CopyFilesWithPrefixTo(string path, string prefix)
+    {
+        foreach (var item in Items)
+        {
+            if (item.PointerType != PointerType.File)
+                throw new InvalidOperationException("Ressources must be files for CopyFromSource.");
+            string dst = Path.Join(path, prefix + item.FileNameWithExtension);
+            if (File.Exists(dst))
+                continue;
+            File.Copy(item.SourcePath, dst);
+        }
+    }
+
+    public void CopyFileTo(string nameSrc, string nameDst, RessourceDirectory<T> target)
+    {
+        var item = GetByFileName(nameSrc);
+        string dst = Path.Join(target.SourcePath, nameDst + item.FileExtension);
+        if (!File.Exists(dst))
+            File.Copy(item.SourcePath, dst);
+    }
+
+    public void Create()
+    {
+        Directory.CreateDirectory(SourcePath);
+    }
+
+
 }

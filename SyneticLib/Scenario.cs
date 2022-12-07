@@ -11,14 +11,14 @@ namespace SyneticLib;
 
 public partial class Scenario : Ressource
 {
-    public int IdNumber;
+    public int VNumber;
     public int Width, Height;
 
     public new ScenarioVGroup Parent { get => (ScenarioVGroup)base.Parent; set => base.Parent = value; }
 
 
     public GroundModel GroundModel;
-    public Terrain Terrain;
+    public TerrainMesh Terrain;
     public RessourceDirectory<Sound> Sounds;
     public TextureDirectory TerrainTextures;
     public RessourceList<TerrainMaterial> TerrainMaterials;
@@ -35,7 +35,7 @@ public partial class Scenario : Ressource
 
     public Scenario(ScenarioVGroup parent, int number): base(parent, parent.ChildPath($"V{number}"), PointerType.Directory)
     {
-        IdNumber = number;
+        VNumber = number;
 
         Sounds = Parent.Parent.Sounds;
 
@@ -59,7 +59,7 @@ public partial class Scenario : Ressource
 
     protected override void OnLoad()
     {
-        new ScenarioImporterSynetic(this.Parent).LoadV(IdNumber);
+        new ScenarioImporterSynetic(this.Parent).LoadV(VNumber);
     }
 
     protected override void OnSave()

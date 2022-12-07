@@ -50,6 +50,7 @@ public class Display
     {
         Scene.ClearScene();
         //Scene.MeshDrawBuffer.Add(v.Terrain);
+        /*
         foreach (var chunk in v.Terrain.Chunks)
         {
             Scene.MeshDrawBuffer.Add(chunk);

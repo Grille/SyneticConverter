@@ -41,9 +41,9 @@ public class MeshExporterSbx : MeshExporter
             bw.Write(shadow);
         }
 
-        for (var i = 0; i < target.Poligons.Length; i++)
+        for (var i = 0; i < target.Polygons.Length; i++)
         {
-            var poly = target.Poligons[i];
+            var poly = target.Polygons[i];
             bw.Write(poly);
         }
         /*

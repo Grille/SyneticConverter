@@ -13,9 +13,9 @@ public unsafe class ModelBuffer : GLMeshBuffer
 
     protected override void OnCreate()
     {
-        ElementCount = Owner.Poligons.Length * 3;
+        ElementCount = Owner.Polygons.Length * 3;
 
-        var indices = Owner.Poligons;
+        var indices = Owner.Polygons;
         var vertices = new Vertex[Owner.Vertices.Length];
 
         for (int i = 0; i < Owner.Vertices.Length; i++)

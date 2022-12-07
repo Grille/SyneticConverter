@@ -137,7 +137,7 @@ public partial class Form1 : Form
                     dstidx = idx;
                 }
 
-                dstvtx.VtxQty = srcvtx.VtxQty;
+                dstvtx.IndicesOffset = srcvtx.IndicesOffset;
                 dstvtx.Vertecis = srcvtx.Vertecis;
                 dstidx.Polygons = srcidx.Polygons;
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 
 namespace SyneticLib;
 
@@ -42,6 +43,15 @@ public class GameDirectory : Ressource
     public ScenarioVGroup GetScenario(string name)
     {
         var path = Path.Combine(SourcePath, "Scenarios", name);
+        return new ScenarioVGroup(this, path);
+    }
+
+    public ScenarioVGroup CreateScenarioGroup(string name)
+    {
+        var path = Path.Combine(SourcePath, "Scenarios", name);
+
+
+
         return new ScenarioVGroup(this, path);
     }
 

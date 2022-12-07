@@ -43,7 +43,7 @@ public class Scene
 
         var plane = new Model()
         {
-            Poligons = new Vector3Int[2]
+            Polygons = new Vector3Int[2]
             {
                 new(2, 1, 0),
                 new(0, 3, 2),

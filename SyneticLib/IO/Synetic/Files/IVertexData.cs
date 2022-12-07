@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace SyneticLib.IO.Synetic.Files;
 public interface IVertexData
 {
-    public int[] VtxQty { get; set; }
+    public int[] IndicesOffset { get; set; }
     public Vertex[] Vertecis { get; set; }
 }

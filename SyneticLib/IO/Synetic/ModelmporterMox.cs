@@ -53,7 +53,7 @@ public class ModelmporterMox : MeshImporter
 
 
         Target.Vertices = mox.Vertecis;
-        Target.Poligons = mox.Polygons;
+        Target.Polygons = mox.Polygons;
 
         Target.MaterialRegion = new MaterialRegion[mox.Textures.Length];
         for (int i = 0; i < mox.Textures.Length; i++)

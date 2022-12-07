@@ -54,7 +54,7 @@ public class MeshExporterObj : MeshExporter
                 var end = begin + reg.ElementCount;
                 for (var i = begin; i < end; i++)
                 {
-                    ref var poly = ref target.Poligons[i];
+                    ref var poly = ref target.Polygons[i];
                     int idx0 = poly.X + 1;
                     int idx1 = poly.Y + 1;
                     int idx2 = poly.Z + 1;

@@ -9,16 +9,16 @@ using GGL.IO;
 namespace SyneticLib.IO.Synetic.Files;
 public class VtxFile : SyneticBinaryFile, IVertexData
 {
-    public int[] VtxQty { get; set; }
+    public int[] IndicesOffset { get; set; }
     public Vertex[] Vertecis { get; set; }
 
     public unsafe override void ReadFromView(BinaryViewReader br)
     {
-        VtxQty = br.ReadArray<int>(64);
+        IndicesOffset = br.ReadArray<int>(64);
 
         var vertexCount = 0;
-        for (var i = 0; i < VtxQty.Length; i++)
-            vertexCount += VtxQty[i];
+        for (var i = 0; i < IndicesOffset.Length; i++)
+            vertexCount += IndicesOffset[i];
 
         var finalpos = br.Position + vertexCount * sizeof(MVertex);
         if (br.Length != finalpos)
@@ -31,7 +31,7 @@ public class VtxFile : SyneticBinaryFile, IVertexData
 
     public override void WriteToView(BinaryViewWriter bw)
     {
-        bw.WriteArray(VtxQty, LengthPrefix.None);
+        bw.WriteArray(IndicesOffset, LengthPrefix.None);
 
         for (var i = 0; i < Vertecis.Length; i++)
             bw.Write<MVertex>(Vertecis[i]);

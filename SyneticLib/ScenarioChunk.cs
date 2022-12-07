@@ -9,14 +9,16 @@ namespace SyneticLib;
 
 public class ScenarioChunk : Ressource
 {
-    public TerrainMesh Terrain;
-
     public int VertexIdxOffset;
 
     public Vector3 Center;
     public float Radius;
 
-    public ScenarioChunk(Scenario parent, string path) : base(parent, path)
+    public int TerrainMaterialRegionOffset;
+    public int TerrainMaterialRegionCount;
+
+    public ScenarioChunk(Scenario parent, int x, int y) : base(parent, $"x{x},y{y}")
     {
+
     }
 }

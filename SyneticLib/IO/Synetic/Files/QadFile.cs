@@ -41,7 +41,8 @@ public class QadFile : SyneticBinaryFile
         public int WidthX, LengthZ, BlocksX, BlocksZ, BlocksTotal, PolyRegionCount;
         public ushort TexturesFileCount, BumpTexturesFileCount;
         public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicCount, ColliSize;
-        public ushort LightCount, x1, x2, x3;
+        public ushort LightCount;
+        public byte x1, x2, x3, x4, x5, x6;
         public int SoundCount;
     }
 
@@ -216,11 +217,15 @@ public class QadFile : SyneticBinaryFile
         Sounds = br.ReadArray<MSound>(Head.SoundCount);
     }
 
-    public override void WriteToView(BinaryViewWriter bw)
+    public unsafe override void WriteToView(BinaryViewWriter bw)
     {
         bw.DefaultLengthPrefix = LengthPrefix.None;
 
-        bw.Write(Head);
+        fixed (void* ptr = &Head)
+        {
+            int ptroffset = Has8ByteMagic ? 0 : 8;
+            bw.WriteFromPtr((byte*)ptr + ptroffset, sizeof(MHead) - ptroffset);
+        }
 
         bw.WriteArray(TextureNames);
         bw.WriteArray(BumpTexNames);

@@ -17,7 +17,7 @@ public abstract class Mesh: Ressource
     public string Name;
     //public int[] Indecies;
     public Vertex[] Vertices;
-    public Vector3Int[] Poligons;
+    public Vector3Int[] Polygons;
     public MaterialRegion[] MaterialRegion;
 
     public MaterialList Materials { get; set; }

@@ -58,7 +58,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
 
     protected void OnLoadV(Scenario target)
     {
-        var synPath = Path.Combine(target.SourcePath, $"V{target.IdNumber}");
+        var synPath = Path.Combine(target.SourcePath, $"V{target.VNumber}");
         syn.Path = synPath + ".syn";
 
         var filePath = Path.Combine(target.SourcePath, target.Parent.FileName);
@@ -160,7 +160,36 @@ public class ScenarioImporterSynetic : ScenarioImporter
 
         target.Lights.DataState = DataState.Loaded;
 
+        var terrain = target.Terrain;
+        terrain.Vertices = ivtx.Vertecis;
+        terrain.Polygons = iidx.Polygons;
+        terrain.MaterialRegion = new MaterialRegion[qad.PolyRegions.Length];
+        for (int i = 0; i < qad.PolyRegions.Length; i++)
+        {
+            terrain.MaterialRegion[i] = new MaterialRegion
+            (
+                qad.PolyRegions[i].PolyOffset,
+                qad.PolyRegions[i].PolyCount,
+                target.TerrainMaterials[qad.PolyRegions[i].SurfaceId1]
+            );
+        }
+        terrain.DataState= DataState.Loaded;
 
+        /*
+        for (int i = 0; i < qad.Chunks.Length; i++)
+        {
+            ref var chunkInfo = ref qad.Chunks[i];
+            //var chunk = new ScenarioChunk(target, "");
+            //var mesh = new Terrain(terrain);
+            mesh.Vertices = vertices;
+            //chunk.Terrain = terrain.CreateSectionPtr(chunkInfo.PolyRegionOffset, chunkInfo.PolyRegionCount);
+            mesh.DataState = DataState.Loaded;
+            terrain.Chunks.Add(mesh);
+        }
+        */
+
+        // mesh data
+        /*
         // Terrain mesh
         if (target.Terrain.Chunks.Count < 1)
             target.Terrain.Chunks.Add(new TerrainMesh(target.Terrain));
@@ -200,18 +229,20 @@ public class ScenarioImporterSynetic : ScenarioImporter
             }
         }
         terrain.DataState = DataState.Loaded;
-
-        /*
+        */
+        
         // Chunks
         for (int i = 0; i< qad.Chunks.Length;i++)
         {
             ref var chunkInfo = ref qad.Chunks[i];
-            var chunk = new ScenarioChunk(target, "");
-            chunk.Terrain = terrain.CreateSectionPtr(chunkInfo.PolyRegionOffset, chunkInfo.PolyRegionCount);
+            var chunk = new ScenarioChunk(target, chunkInfo.PosX, chunkInfo.PosZ);
+            //chunkInfo.
+            chunk.TerrainMaterialRegionOffset = chunkInfo.PolyRegionOffset; 
+            chunk.TerrainMaterialRegionOffset = chunkInfo.PolyRegionCount;
             chunk.DataState = DataState.Loaded;
             target.Chunks.Add(chunk);
         }
         target.Chunks.DataState = DataState.Loaded;
-        */
+        
     }
 }

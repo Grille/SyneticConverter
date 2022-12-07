@@ -20,7 +20,7 @@ public class ScenarioVGroup : Ressource
     public Scenario V3 { get => Variants.Count > 2 ? Variants[2] : null; }
     public Scenario V4 { get => Variants.Count > 3 ? Variants[3] : null; }
 
-    public ScenarioVGroup(GameDirectory game, string path) :base(game, path, PointerType.Directory)
+    public ScenarioVGroup(GameDirectory game, string path) : base(game, path, PointerType.Directory)
     {
         Variants = new List<Scenario>();
     }

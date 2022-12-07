@@ -18,7 +18,7 @@ public class MoxFile : SyneticBinaryFile, IVertexData, IIndexData
     public MHead Head;
     public MTex32[] Textures;
 
-    public int[] VtxQty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public int[] IndicesOffset { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public Vertex[] Vertecis { get; set; }
     public Vector3Int[] Polygons { get; set; }
 

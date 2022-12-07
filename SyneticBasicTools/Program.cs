@@ -10,8 +10,12 @@ namespace SyneticBasicTools
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            //ApplicationConfiguration.Initialize();
+            //Application.Run(new Form1());
+
+            var conv = new WR1ToWR2Conv(@"D:\\Games\\Synetic\\World Racing Scn-Data", @"D:\Games\Synetic\World Racing 2 Out");
+            //conv.CopySounds();
+            conv.ConvertVGroup("Alpen");
         }
     }
 }

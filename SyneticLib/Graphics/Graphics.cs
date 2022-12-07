@@ -138,7 +138,7 @@ public static class Graphics
         //}
     }
 
-    public static void DrawTerrain(TerrainMesh terrain)
+    public static void DrawTerrainChunk(TerrainMesh terrain, ScenarioChunk chunk)
     {
         AssertRessource(terrain);
         BindMesh(terrain);
@@ -157,7 +157,8 @@ public static class Graphics
             if (material.TexSlot0.Enabled)
                 BindTexture(material.TexSlot0.Texture);
 
-            GL.DrawElements(PrimitiveType.Triangles, region.ElementCount * 3, DrawElementsType.UnsignedInt, region.ElementOffset * 3 * 4);
+            GL.DrawElementsBaseVertex(PrimitiveType.Triangles, region.ElementCount * 3, DrawElementsType.UnsignedInt, new IntPtr(region.ElementOffset * 3 * 4), 0);
+            //GL.DrawElements(PrimitiveType.Triangles, region.ElementCount * 3, DrawElementsType.UnsignedInt, region.ElementOffset * 3 * 4);
         }
     }
 

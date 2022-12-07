@@ -16,7 +16,7 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
 
     public MHead Head;
 
-    public int[] VtxQty { get; set; }
+    public int[] IndicesOffset { get; set; }
     public Vertex[] Vertecis { get; set; }
     private ushort[] Indices { get; set; }
 
@@ -26,7 +26,7 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
     {
         Head = br.Read<MHead>();
 
-        VtxQty = br.ReadArray<int>(64);
+        IndicesOffset = br.ReadArray<int>(Head.IndicesOffsetCount);
 
         int vertexCount = getVertCount();
         assertFileSize(vertexCount, Head.IndicesCount, (int)br.Length);
@@ -50,7 +50,7 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
     {
         bw.Write(Head);
 
-        bw.WriteArray(VtxQty, LengthPrefix.None);
+        bw.WriteArray(IndicesOffset, LengthPrefix.None);
 
         var vertexCount = getVertCount();
 
@@ -75,8 +75,8 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
     private int getVertCount()
     {
         int vertexCount = 0;
-        for (int i = 0; i < VtxQty.Length; i++)
-            vertexCount += VtxQty[i];
+        for (int i = 0; i < IndicesOffset.Length; i++)
+            vertexCount += IndicesOffset[i];
         return vertexCount;
     }
     private unsafe int getEndPos(int vtxCount, int idxCount)
@@ -110,7 +110,7 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
         Head.X0 = 1;
         Head.X1 = 1;
         Head.SectionCount = 2;
-        Head.QtyCount = 64;
+        Head.IndicesOffsetCount = IndicesOffset.Length;
         Head.IndicesCount = Polygons.Length * 3;
         Head.Clear0 = 0;
         Head.Clear1 = 0;
@@ -122,7 +122,7 @@ public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
     {
         public String4 Magic;
         public ushort X0, X1;
-        public int SectionCount, QtyCount, IndicesCount;
+        public int SectionCount, IndicesOffsetCount, IndicesCount;
         public int Clear0, Clear1, Clear2;
     }
 

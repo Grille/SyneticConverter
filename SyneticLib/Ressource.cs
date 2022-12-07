@@ -66,9 +66,12 @@ public abstract class Ressource {
 
     public string FileExtension => Path.GetExtension(SourcePath);
 
+    /// <summary>
+    /// GetFileNameWithoutExtension
+    /// </summary>
     public string FileName => Path.GetFileNameWithoutExtension(SourcePath);
 
-    public string FileNameExt => Path.GetFileName(SourcePath);
+    public string FileNameWithExtension => Path.GetFileName(SourcePath);
 
     public string ChildPath(string path)
     {
@@ -181,6 +184,12 @@ public abstract class Ressource {
 
         if (PointerState != PointerState.Exists)
             throw new IOException($"Pointed Ressource '{SourcePath}' dont Exists.");
+    }
+
+    public void AssertLoaded()
+    {
+        if (DataState != DataState.Loaded)
+            throw new InvalidOperationException($"Ressource must be loaded for this operation.");
     }
 
     public void SaveAs(string path, GameVersion format)
