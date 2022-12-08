@@ -15,4 +15,17 @@ public struct Transform
     {
         return $"{X.Rotate} {X.Scale} {X.Move} {Y.Rotate} {Z.Rotate} {Z.Scale} {Z.Move}";
     }
+
+    public unsafe static Transform Empety
+    {
+        get
+        {
+            var t = new Transform();
+            t.X.Rotate = 1;
+            t.X.Scale = -0;
+            t.Z.Rotate = 1;
+            t.Z.Scale = -4.37114E-08f;
+            return t;
+        }
+    }
 }

@@ -36,8 +36,8 @@ public class WR1ToWR2Conv
         string v3 = Path.Join(scn, "V3");
 
         ConvertV(v1, name);
-        //ConvertV(v2, name);
-        //ConvertV(v3, name);
+        ConvertV(v2, name);
+        ConvertV(v3, name);
     }
 
     public void ConvertV(string path, string name)
@@ -55,10 +55,10 @@ public class WR1ToWR2Conv
         qad.SetFlagsAccordingToVersion(GameVersion.MBWR);
         qad.Load(path);
 
-        var matrix = new Transform();
-        matrix.X.Rotate = 90;
-        matrix.X.Scale = 1;
-        matrix.Z.Scale = 1;
+        qad.Head.FlagX2 = 1;
+        qad.Head.FlagX5 = 1;
+
+        var matrix = Transform.Empety;
 
         
         for (int i = 0; i< qad.Materials.Length; i++)
@@ -75,12 +75,15 @@ public class WR1ToWR2Conv
                 {
                     mat.Mode = 144;
                     mat.Matrix1 = matrix;
+                    mat.Matrix2 = matrix;
                     break;
                 }
                 case 80:
                 {
                     mat.Mode = 144;
+                    mat.Matrix0 = matrix;
                     mat.Matrix1 = matrix;
+                    mat.Matrix2 = matrix;
                     break;
                 }
                 case 112:
@@ -91,7 +94,9 @@ public class WR1ToWR2Conv
                 case 96:
                 {
                     mat.Mode = 176;
+                    mat.Matrix0 = matrix;
                     mat.Matrix1 = matrix;
+                    mat.Matrix2 = matrix;
                     break;
                 }
                 case 64: // Reflective
@@ -127,9 +132,9 @@ public class WR1ToWR2Conv
 
         foreach (var v in vtx.Vertecis)
         {
-            v.LightColor.R = (byte)(v.LightColor.R / 2 + 50);
-            v.LightColor.G = (byte)(v.LightColor.G / 2 + 50);
-            v.LightColor.B = (byte)(v.LightColor.B / 2 + 60);
+            v.LightColor.R = (byte)(v.LightColor.R * 0.75 + 64);
+            v.LightColor.G = (byte)(v.LightColor.G * 0.75 + 64);
+            v.LightColor.B = (byte)(v.LightColor.B * 0.75 + 64);
 
             float temp = v.Blending.X;
             v.Blending.X = v.Blending.Y;

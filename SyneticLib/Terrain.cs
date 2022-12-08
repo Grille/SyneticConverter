@@ -11,6 +11,8 @@ namespace SyneticLib;
 public class TerrainMesh : Mesh
 {
     public float GridSize = 0;
+    public int ChunkCountX = 0;
+    public int ChunkCountY = 0;
 
     public TerrainMesh(Scenario parrent) : base(parrent, parrent.ChildPath("Terrain"), PointerType.Virtual)
     {
@@ -25,7 +27,7 @@ public class TerrainMesh : Mesh
 
     public int CalcIdx(int x, int y)
     {
-        return 0;
+        return ChunkCountX * y + x;
     }
 
     public void ChunkifyMesh(TerrainMesh mesh)

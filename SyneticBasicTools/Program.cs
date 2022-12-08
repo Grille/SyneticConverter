@@ -13,9 +13,15 @@ namespace SyneticBasicTools
             //ApplicationConfiguration.Initialize();
             //Application.Run(new Form1());
 
-            var conv = new WR1ToWR2Conv(@"D:\\Games\\Synetic\\World Racing Scn-Data", @"D:\Games\Synetic\World Racing 2 Out");
+            var conv = new WR1ToWR2Conv(@"X:\\Games\\Synetic\\World Racing Scn-Data", @"C://World Racing 2");
             //conv.CopySounds();
-            conv.ConvertVGroup("Alpen");
+            conv.ConvertVGroup("MBWR_Alpen");
+            conv.ConvertVGroup("MBWR_Australien");
+            conv.ConvertVGroup("MBWR_Japan");
+            conv.ConvertVGroup("MBWR_Mexiko");
+            conv.ConvertVGroup("MBWR_Nevada");
+            conv.ConvertVGroup("MBWR_Stadt");
+            conv.ConvertVGroup("MBWR_Testcenter");
         }
     }
 }

@@ -42,7 +42,7 @@ public class QadFile : SyneticBinaryFile
         public ushort TexturesFileCount, BumpTexturesFileCount;
         public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicCount, ColliSize;
         public ushort LightCount;
-        public byte x1, x2, x3, x4, x5, x6;
+        public byte FlagX1, FlagX2, FlagX3, FlagX4, FlagX5, FlagX6;
         public int SoundCount;
     }
 
@@ -55,7 +55,7 @@ public class QadFile : SyneticBinaryFile
         public short PropOffset, PropCount, LightOffset, LightCount;
         public short Chunk65k, x1;
     }
-
+    
     public struct MPolyRegion
     {
         public int PolyOffset, PolyCount;
