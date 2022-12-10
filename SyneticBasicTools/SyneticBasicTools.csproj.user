@@ -4,7 +4,13 @@
     <_LastSelectedProfileId>C:\Users\Grille\Documents\GitHub\SyneticConverter\SyneticBasicTools\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="Form1.cs">
+    <Compile Update="EditTaksForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TextBoxDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="SynPipelineToolForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

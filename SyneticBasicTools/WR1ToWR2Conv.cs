@@ -1,11 +1,13 @@
 ﻿using SyneticLib;
 using SyneticLib.IO.Synetic.Files;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SyneticBasicTools;
 
@@ -66,6 +68,11 @@ public class WR1ToWR2Conv
             ref var mat = ref qad.Materials[i];
             switch (mat.Mode)
             {
+                case 2:
+                {
+                    mat.Mode = 0;
+                    break;
+                }
                 case 16:
                 {
                     mat.Matrix1 = matrix;
@@ -107,6 +114,9 @@ public class WR1ToWR2Conv
                 case 208: // Water
                 {
                     mat.Mode = 224;
+                    mat.X0 = 61420826;
+                    mat.X1 = 75580286;
+                    mat.X2 = 78329526;
                     break;
                 }
                 case 224: // Mask
@@ -117,8 +127,19 @@ public class WR1ToWR2Conv
 
             }
         }
-        
-        
+
+        for (int i = 0; i < qad.PropClassInfo.Length; i++)
+        {
+            ref var prop = ref qad.PropClassInfo[i];
+        }
+
+        for (int i = 0; i < qad.Chunks.Length; i++)
+        {
+            ref var chunk = ref qad.Chunks[i];
+            chunk.Radius *= 2;
+        }
+
+
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.Save();
         
@@ -139,10 +160,32 @@ public class WR1ToWR2Conv
             float temp = v.Blending.X;
             v.Blending.X = v.Blending.Y;
             v.Blending.Y = temp;
+            
             //v.LightColor.A = (byte)(v.LightColor.A / 2 + 32);
         }
 
         vtx.Save(path);
+    }
+
+    public void Log(string name)
+    {
+        string scn = Path.Join(WR2.SourcePath, "Scenarios", name);
+        string v1 = Path.Join(scn, "V1");
+        string path = Path.Join(v1, name + ".qad");
+        Console.WriteLine(path);
+        var qad = new QadFile();
+        qad.Load(path);
+
+        foreach (var m in qad.Materials)
+        {
+            if (m.Mode == 224)
+            {
+                Console.WriteLine("----");
+                Console.WriteLine(m.X0);
+                Console.WriteLine(m.X1);
+                Console.WriteLine(m.X2);
+            }
+        }
     }
 
 
