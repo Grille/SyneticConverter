@@ -4,17 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace SyneticBasicTools.Tasks;
 
-internal class ConvertQad : PipelineTask
+internal class NopTask : PipelineTask
 {
     protected override void OnInit()
     {
-
+        Parameters.Def(ParamType.String, "Text", "", "");
     }
+
     protected override void OnExecute()
     {
-        throw new NotImplementedException();
+    }
+
+    public override string ToString()
+    {
+        return $"// {Parameters["Text"]}";
     }
 }

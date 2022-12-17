@@ -70,10 +70,10 @@ public class GameDirectory : Ressource
         {
             var result = name switch
             {
-                "nice1.exe" => GameVersion.NICE,
+                "nice1.exe" => GameVersion.NICE1,
                 "breakneck.exe" => GameVersion.NICE2,
                 "mbtr_pc.exe" => GameVersion.MBTR,
-                "mbwr_pc.exe" => GameVersion.MBWR,
+                "mbwr_pc.exe" => GameVersion.WR1,
                 "wr2_pc.exe" => GameVersion.WR2,
                 "c11_pc.exe" => GameVersion.C11,
                 "crashtime.exe" => GameVersion.CT1,
@@ -85,7 +85,7 @@ public class GameDirectory : Ressource
 
                 "bn_setup.exe" => GameVersion.NICE2,
                 "tr_setup.exe" => GameVersion.MBTR,
-                "wr_setup.exe" => GameVersion.MBWR,
+                "wr_setup.exe" => GameVersion.WR1,
                 "wr2_setup.exe" => GameVersion.WR2,
                 "c11_setup.exe" => GameVersion.C11,
                 "ct_setup.exe" => GameVersion.CT1,
@@ -107,9 +107,9 @@ public class GameDirectory : Ressource
 
     public static GameVersion ParseGameVersion(string version) => version switch
     {
-        "NICE" => GameVersion.NICE,
+        "NICE" => GameVersion.NICE1,
         "NICE2" => GameVersion.NICE2,
-        "MBWR" => GameVersion.MBWR,
+        "MBWR" => GameVersion.WR1,
         "WR2" => GameVersion.WR2,
         "C11" => GameVersion.C11,
         "CT1" => GameVersion.CT1,

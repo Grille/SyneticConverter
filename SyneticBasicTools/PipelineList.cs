@@ -9,23 +9,30 @@ using System.Xml;
 
 namespace SyneticBasicTools;
 
-public class PiplineList : List<Pipeline>, IViewObject
+public class PipelineList : List<Pipeline>, IViewObject
 {
     public string Path = "pipelines.dat";
 
     public void ReadFromView(BinaryViewReader br)
     {
+        br.DefaultLengthPrefix = LengthPrefix.UInt16;
+        br.DefaultCharSize = CharSize.Byte;
+
         int count = br.ReadInt32();
         for (int i = 0; i < count; i++)
         {
             string name = br.ReadString();
-            var pipeline = Create(name);
+            var pipeline = CreateUnbound(name);
+            Add(pipeline);
             br.ReadToIView(pipeline);
         }
     }
 
     public void WriteToView(BinaryViewWriter bw)
     {
+        bw.DefaultLengthPrefix = LengthPrefix.UInt16;
+        bw.DefaultCharSize = CharSize.Byte;
+
         bw.WriteInt32(Count);
         for (int i = 0; i < Count; i++)
         {
@@ -73,13 +80,13 @@ public class PiplineList : List<Pipeline>, IViewObject
         return FindIndex(x => x.Name == name) != -1;
     }
 
-    public Pipeline Create(string name)
+    public Pipeline CreateUnbound(string name)
     {
         if (ContainsName(name))
             throw new InvalidOperationException();
 
         var pipeline = new Pipeline(this, name);
-        Add(pipeline);
+        pipeline.Owner = this;
         return pipeline;
     }
 

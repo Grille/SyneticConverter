@@ -58,10 +58,10 @@ public class GameDirectoryNode : DataTreeNode
 
         SelectedImageIndex = ImageIndex = DataValue.Version switch
         {
-            GameVersion.NICE => IconList.NICE,
+            GameVersion.NICE1 => IconList.NICE,
             GameVersion.NICE2 => IconList.NICE2,
             GameVersion.MBTR => IconList.MBTR,
-            GameVersion.MBWR => IconList.MBWR,
+            GameVersion.WR1 => IconList.MBWR,
             GameVersion.WR2 => IconList.WR2,
             GameVersion.C11 => IconList.C11,
             GameVersion.CT1 => IconList.CT1,

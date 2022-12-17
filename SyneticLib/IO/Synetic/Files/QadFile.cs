@@ -11,7 +11,7 @@ using OpenTK.Graphics.ES20;
 
 namespace SyneticLib.IO.Synetic.Files;
 
-public class QadFile : SyneticBinaryFile
+public class QadFile : FileBinary
 {
     public bool Has8ByteMagic = false;
     public bool Has56ByteBlock = false;
@@ -64,7 +64,8 @@ public class QadFile : SyneticBinaryFile
 
     public struct MMaterialType1
     {
-        public ushort Tex0Id, Tex1Id, Tex2Id, Mode;
+        public ushort Tex0Id, Tex1Id, Tex2Id;
+        public EMaterialMode Mode;
         public Transform Matrix0;
         public Transform Matrix1;
         public Transform Matrix2;
@@ -272,7 +273,7 @@ public class QadFile : SyneticBinaryFile
 
     public void SetFlagsAccordingToVersion(GameVersion version)
     {
-        UseSimpleData = version <= GameVersion.MBWR;
+        UseSimpleData = version <= GameVersion.WR1;
         Has8ByteMagic = version >= GameVersion.CT2;
         Has56ByteBlock = version >= GameVersion.CT2;
         UseMaterialType2 = version >= GameVersion.C11;
@@ -323,5 +324,22 @@ public class QadFile : SyneticBinaryFile
         endPos += sizeof(MSound) * Head.SoundCount;
 
         return endPos;
+    }
+
+    public record struct EMaterialMode
+    {
+        public ushort Value;
+
+        public readonly static EMaterialMode WR2Terrain = 0;
+        public readonly static EMaterialMode WR1Terrain = 0;
+
+        public readonly static EMaterialMode WR2Water = 0;
+        public readonly static EMaterialMode WR1Water = 0;
+
+        public readonly static EMaterialMode WR2Masked = 0;
+        public readonly static EMaterialMode WR1Masked = 0;
+
+        public static implicit operator ushort(EMaterialMode x) => x.Value;
+        public static implicit operator EMaterialMode(ushort x) => new EMaterialMode() { Value = x };
     }
 }

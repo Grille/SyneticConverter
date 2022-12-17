@@ -25,6 +25,21 @@ public class ScenarioVGroup : Ressource
         Variants = new List<Scenario>();
     }
 
+    public void ExecuteOnAll(Action<Scenario> action)
+    {
+        foreach (var variant in Variants)
+        {
+            action(variant);
+        }
+    }
+
+    public void CopyFilesTo(GameDirectory game)
+    {
+        ExecuteOnAll((v) =>
+        {
+        });
+    }
+
     protected override void OnLoad()
     {
         foreach (var variant in Variants)

@@ -10,10 +10,10 @@ public enum GameVersion
 {
     Invalid = -2,
     Auto = -1,
-    NICE,
+    NICE1,
     NICE2,
     MBTR,
-    MBWR,
+    WR1,
     WR2,
     C11,
     CT1,

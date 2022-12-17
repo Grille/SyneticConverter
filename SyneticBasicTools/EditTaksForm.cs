@@ -19,6 +19,8 @@ public partial class EditTaksForm : Form
     List<TextBox> inputs;
     Type displayedType = null;
 
+    bool setup = true;
+
     public EditTaksForm(Pipeline pipeline, PipelineTask task = null)
     {
         InitializeComponent();
@@ -28,9 +30,16 @@ public partial class EditTaksForm : Form
 
         types = new Dictionary<string, Type>()
         {
-            ["Set Variable"] = typeof(SetVarTask),
-            ["Run Pipeline"] = typeof(ExecutePipelineTask),
+            ["Comment"] = typeof(NopTask),
+            ["< Logic >"] = typeof(NopTask),
+            ["Variable"] = typeof(VariableOperationTask),
+            ["Call Pipeline"] = typeof(ExecutePipelineTask),
+            ["< IO >"] = typeof(NopTask),
             ["Copy File"] = typeof(CopyFileTask),
+            ["Copy Directory"] = typeof(CopyDirTask),
+            ["Remove Directory"] = typeof(RemoveDirTask),
+            ["< Tools >"] = typeof(NopTask),
+            ["Convert Scenario Files"] = typeof(ConvertScnFilesTask),
         };
 
         comboBoxType.BeginUpdate();
@@ -40,13 +49,39 @@ public partial class EditTaksForm : Form
         }
         comboBoxType.EndUpdate();
 
-        this.Pipeline = pipeline;
-        this.Task = task;
+        Pipeline = pipeline;
+
+        if (task != null)
+            Task = task.Clone();
+        else
+            Task = new NopTask();
+
+        DisplayType();
+        DisplayParameters();
+
+        setup = false;
     }
 
     public DialogResult ShowDialog(IWin32Window owner)
     {
         return base.ShowDialog(owner);
+    }
+
+    public void DisplayType()
+    {
+        if (Task == null)
+            return;
+
+        foreach (var pair in types)
+        {
+            if (pair.Value == Task.GetType())
+            {
+                comboBoxType.SelectedItem = pair.Key;
+                return;
+            }
+        }
+
+        throw new KeyNotFoundException();
     }
 
     public void DisplayParameters()
@@ -129,8 +164,11 @@ public partial class EditTaksForm : Form
 
     private void comboBoxType_SelectedIndexChanged(object sender, EventArgs e)
     {
+        if (setup)
+            return;
+
         var type = types[(string)comboBoxType.SelectedItem];
-        Task = Pipeline.CreateTask(type);
+        Task = Pipeline.Tasks.CreateUnbound(type);
 
         DisplayParameters();
     }

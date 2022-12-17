@@ -6,20 +6,23 @@ using System.Threading.Tasks;
 using System.IO;
 
 using GGL.IO;
+using SyneticLib.IO.Synetic;
 
-namespace SyneticLib.IO.Synetic.Files;
-public abstract class SyneticBinaryFile : IViewObject
+namespace SyneticLib.IO;
+public abstract class FileBinary : IViewObject
 {
     private string _path = "";
     public string Path
     {
-        get => _path; 
+        get => _path;
         set
         {
             _path = value;
             FileName = System.IO.Path.GetFileName(value);
         }
     }
+
+    public bool Exists => File.Exists(Path);
 
     public string FileName { get; private set; }
 
@@ -36,10 +39,6 @@ public abstract class SyneticBinaryFile : IViewObject
         br.ReadToIView(this);
     }
 
-    public bool Exists
-    {
-        get => File.Exists(Path);
-    }
 
     public void Load(string path = null)
     {

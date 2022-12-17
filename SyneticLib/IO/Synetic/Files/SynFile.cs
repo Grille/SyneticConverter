@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GGL.IO;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class SynFile : SyneticBinaryFile
+public class SynFile : FileBinary
 {
     public MHead Head;
     public MFileEntry[] Entries;

@@ -8,12 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace SyneticBasicTools;
 
 public partial class SynPipelineToolForm : Form
 {
-    PiplineList Piplines;
+    PipelineList Piplines;
 
     public Pipeline SelectedPipeline
     {
@@ -21,64 +22,122 @@ public partial class SynPipelineToolForm : Form
         set => pipelinesListBox.SelectedItem = value;
     }
 
+    public PipelineTask SelectedTask
+    {
+        get => (PipelineTask)tasksListBox.SelectedItem;
+        set => tasksListBox.SelectedItem = value;
+    }
+
     public SynPipelineToolForm()
     {
         InitializeComponent();
-        Piplines = new PiplineList();
+        Piplines = new PipelineList();
         Piplines.TryLoad();
-        DisplayPipelines();
-        if (pipelinesListBox.Items.Count > 0)
-            pipelinesListBox.SelectedIndex = 0;
-
-        PipelineChanged();
+        PipelinesChanged();
+        if (Piplines.Count > 0)
+            SelectedPipeline = Piplines[0];
     }
 
-    public void DisplayPipelines()
+    public void DisplayPipelines() => DisplayListBox(pipelinesListBox, Piplines);
+
+    public void DisplayTasks(Pipeline pipeline) => DisplayListBox(tasksListBox, pipeline?.Tasks);
+
+    public void DisplayListBox<T>(ListBox box, List<T> list) where T : class
     {
-        pipelinesListBox.Items.Clear();
+        var items = box.Items;
 
-        pipelinesListBox.BeginUpdate();
-        foreach (var pipeline in Piplines)
-        {
-            pipelinesListBox.Items.Add(pipeline);
-        }
-        pipelinesListBox.EndUpdate();
-    }
-
-    public void DisplayTasks(Pipeline pipeline)
-    {
-        tasksListBox.Items.Clear();
-
-        if (pipeline == null)
+        if (list == null)
             return;
 
-        tasksListBox.BeginUpdate();
-        foreach (var task in pipeline.Tasks)
+        box.BeginUpdate();
+
+        var selectet = box.SelectedItem;
+
+        if (items.Count == list.Count)
         {
-            tasksListBox.Items.Add(task);
+            for (int i = 0; i< list.Count; i++)
+            {
+                if (items[i] != list[i])
+                {
+                    items[i] = list[i];
+                }
+            }
         }
-        tasksListBox.EndUpdate();
+        else
+        {
+            items.Clear();
+            foreach (var item in list)
+            {
+                items.Add(item);
+            }
+            box.SelectedItem = selectet;
+        }
+
+        if (selectet != null && box.SelectedItem != selectet)
+            box.SelectedItem = selectet;
+
+        box.Invalidate();
+        box.EndUpdate();
     }
 
 
-    public void PipelineChanged()
+    public void PipelineSelectionChanged()
     {
-        var selected = SelectedPipeline;
-        bool enable = selected != null;
+        bool pipelineFlag = SelectedPipeline != null;
 
-        tasksListBox.Enabled = enable;
-        buttonEditP.Enabled = enable;
-        buttonRemoveP.Enabled = enable;
-        buttonExecuteP.Enabled = enable;
+        buttonCopyP.Enabled = pipelineFlag;
+        buttonEditP.Enabled = pipelineFlag;
+        buttonRemoveP.Enabled = pipelineFlag;
+        buttonExecuteP.Enabled = pipelineFlag;
 
-        DisplayTasks(selected);
+        buttonUpP.Enabled = pipelineFlag;
+        buttonDownP.Enabled = pipelineFlag;
 
-        Piplines.Save();
+        tasksListBox.Enabled = pipelineFlag;
+        buttonNewT.Enabled = pipelineFlag;
+
+        TasksChanged(false);
     }
 
-    private void pipelinesListBox_SelectedIndexChanged(object sender, EventArgs e)
+    public void TaskSelectionChanged()
     {
-        PipelineChanged();
+        bool taskFlag = SelectedTask != null;
+
+        buttonCopyT.Enabled = taskFlag;
+        buttonEditT.Enabled = taskFlag;
+        buttonRemoveT.Enabled = taskFlag;
+
+        buttonUpT.Enabled = taskFlag;
+        buttonDownT.Enabled = taskFlag;
+    }
+
+    public void PipelinesChanged(bool save = true)
+    {
+        DisplayPipelines();
+        PipelineSelectionChanged();
+
+        if (save)
+            Piplines.Save();
+    }
+
+    public void TasksChanged(bool save = true)
+    {
+        DisplayTasks(SelectedPipeline);
+        TaskSelectionChanged();
+
+        if (save)
+            Piplines.Save();
+    }
+
+    private void pipelinesListBox_SelectedIndexChanged(object sender, EventArgs e) => PipelineSelectionChanged();
+
+    private void tasksListBox_SelectedIndexChanged(object sender, EventArgs e) => TaskSelectionChanged();
+
+    private void buttonExecuteP_Click(object sender, EventArgs e)
+    {
+        Console.WriteLine("Start");
+        SelectedPipeline.Execute();
+        Console.WriteLine("Stop");
     }
 
     private void buttonNewP_Click(object sender, EventArgs e)
@@ -89,19 +148,18 @@ public partial class SynPipelineToolForm : Form
         {
             string newname = dialog.TextResult.Trim();
             string uname = Piplines.GetUniqueName(newname);
-            var pipeline = Piplines.Create(uname);
-
-            DisplayPipelines();
-            pipelinesListBox.SelectedItem = pipeline;
+            var pipeline = Piplines.CreateUnbound(uname);
+            Piplines.InsertAfter(SelectedPipeline, pipeline);
+            PipelinesChanged();
+            SelectedPipeline = pipeline;
         }
     }
-
 
     private void buttonCopyP_Click(object sender, EventArgs e)
     {
         var clone = SelectedPipeline.Clone();
-        DisplayPipelines();
-        pipelinesListBox.SelectedItem = clone;
+        Piplines.InsertAfter(SelectedPipeline, clone);
+        PipelinesChanged();
     }
 
     private void buttonEditP_Click(object sender, EventArgs e)
@@ -117,15 +175,29 @@ public partial class SynPipelineToolForm : Form
 
             string uname = Piplines.GetUniqueName(newname);
             Piplines.Rename(name, uname);
-            DisplayPipelines();
+            pipelinesListBox.Items.Add(0);
+            PipelinesChanged();
         }
     }
 
     private void buttonRemoveP_Click(object sender, EventArgs e)
     {
         Piplines.Remove((Pipeline)pipelinesListBox.SelectedItem);
-        DisplayPipelines();
-        PipelineChanged();
+        PipelinesChanged();
+    }
+
+    private void buttonUpP_Click(object sender, EventArgs e)
+    {
+        var selected = SelectedPipeline;
+        Piplines.UpItem(selected);
+        PipelinesChanged();
+    }
+
+    private void buttonDownP_Click(object sender, EventArgs e)
+    {
+        var selected = SelectedPipeline;
+        Piplines.DownItem(selected);
+        PipelinesChanged();
     }
 
     private void buttonNewT_Click(object sender, EventArgs e)
@@ -134,7 +206,67 @@ public partial class SynPipelineToolForm : Form
         var result = dialog.ShowDialog(this);
         if (result == DialogResult.OK)
         {
-            SelectedPipeline.Tasks.Add(dialog.Task);
+            SelectedPipeline.Tasks.InsertAfter(SelectedTask, dialog.Task);
+            TasksChanged();
+            SelectedTask = dialog.Task;
         }
+    }
+
+
+    private void buttonEditT_Click(object sender, EventArgs e)
+    {
+        var dialog = new EditTaksForm(SelectedPipeline, SelectedTask);
+        var result = dialog.ShowDialog(this);
+        if (result == DialogResult.OK)
+        {
+            dialog.Task.Pipeline = SelectedPipeline;
+            int idx = SelectedPipeline.Tasks.IndexOf(SelectedTask);
+            SelectedPipeline.Tasks[idx] = dialog.Task;
+            TasksChanged();
+        }
+    }
+
+    private void buttonRemoveT_Click(object sender, EventArgs e)
+    {
+        SelectedPipeline.Tasks.Remove(SelectedTask);
+        TasksChanged();
+    }
+
+    private void buttonCopyT_Click(object sender, EventArgs e)
+    {
+        var clone = SelectedTask.Clone();
+        clone.Pipeline = SelectedPipeline;
+        SelectedPipeline.Tasks.InsertAfter(SelectedTask, clone);
+        TasksChanged();
+    }
+
+    private void buttonUpT_Click(object sender, EventArgs e)
+    {
+        var selected = SelectedTask;
+        SelectedPipeline.Tasks.UpItem(selected);
+        TasksChanged();
+        SelectedTask = selected;
+    }
+
+    private void buttonDownT_Click(object sender, EventArgs e)
+    {
+        var selected = SelectedTask;
+        SelectedPipeline.Tasks.DownItem(selected);
+        TasksChanged();
+        SelectedTask = selected;
+    }
+
+    private void tasksListBox_DoubleClick(object sender, EventArgs e)
+    {
+        if (SelectedTask == null)
+            return;
+        buttonEditT_Click(sender, e);
+    }
+
+    private void pipelinesListBox_DoubleClick(object sender, EventArgs e)
+    {
+        if (SelectedPipeline == null)
+            return;
+        buttonEditP_Click(sender, e);
     }
 }

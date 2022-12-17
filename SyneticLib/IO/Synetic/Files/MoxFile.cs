@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using static SyneticLib.IO.Synetic.Files.MoxFile;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class MoxFile : SyneticBinaryFile, IVertexData, IIndexData
+public class MoxFile : FileBinary, IVertexData, IIndexData
 {
     public const int MBWR = 65536;
     public const int SimpleWR2 = 33554432;

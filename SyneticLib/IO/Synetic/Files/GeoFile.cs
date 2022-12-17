@@ -9,7 +9,7 @@ using GGL.IO;
 using System.Runtime.InteropServices;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class GeoFile : SyneticBinaryFile, IIndexData, IVertexData
+public class GeoFile : FileBinary, IIndexData, IVertexData
 {
     /// <summary>Used by CT5</summary>
     public bool HasX16VertexBlock = false;

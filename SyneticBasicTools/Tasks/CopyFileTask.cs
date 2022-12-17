@@ -12,19 +12,22 @@ internal class CopyFileTask : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def("Src", "String", "", "SrcFile");
-        Parameters.Def("Dst", "String", "", "DstFile");
+        Parameters.Def(ParamType.Path, "Src", "", "SrcFile");
+        Parameters.Def(ParamType.Path, "Dst", "", "DstFile");
     }
 
     protected override void OnExecute()
     {
-        string srcPath = Pipeline.PathFromVar(Parameters["Src"]);
-        string dstPath = Pipeline.PathFromVar(Parameters["Dst"]);
+        string srcPath = GetValue("Src");
+        string dstPath = GetValue("Dst");
+
+        Console.WriteLine($"Copy dir {srcPath} to {dstPath}");
+
         File.Copy(srcPath, dstPath, true);
     }
 
     public override string ToString()
     {
-        return $"Copy File {Parameters["Src"]} To {Parameters["Dst"]}";
+        return $"Copy file {Parameters["Src"]} to {Parameters["Dst"]}";
     }
 }

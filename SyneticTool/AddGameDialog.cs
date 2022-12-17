@@ -30,10 +30,10 @@ public partial class AddGameDialog : Form
         var citems = comboBoxVersion.Items;
         citems.Add(GameVersion.Invalid);
         citems.Add(GameVersion.Auto);
-        citems.Add(GameVersion.NICE);
+        citems.Add(GameVersion.NICE1);
         citems.Add(GameVersion.NICE2);
         citems.Add(GameVersion.MBTR);
-        citems.Add(GameVersion.MBWR);
+        citems.Add(GameVersion.WR1);
         citems.Add(GameVersion.WR2);
         citems.Add(GameVersion.C11);
         citems.Add(GameVersion.CT1);

@@ -4,25 +4,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace SyneticBasicTools.Tasks;
 
-internal class SetVarTask : PipelineTask
+internal class RemoveDirTask : PipelineTask
 {
-
     protected override void OnInit()
     {
-        Parameters.Def("Name", "String", "", "Name");
-        Parameters.Def("Value", "String", "", "Value");
+        Parameters.Def(ParamType.Path, "Dir", "", "Dir");
     }
 
     protected override void OnExecute()
     {
-        Pipeline.Variables[Parameters["Name"]] = Parameters["Value"];
+        string path = GetValue("Dir");
+        Directory.Delete(path, true);
+
+        Console.WriteLine($"Remove dir {path}");
     }
 
     public override string ToString()
     {
-        return $"{Parameters["Name"]} = {Parameters["Value"]}";
+        return $"Remove dir {Parameters["Dir"]}";
     }
 }

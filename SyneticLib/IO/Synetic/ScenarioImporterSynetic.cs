@@ -116,7 +116,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
             if (matInfo.Tex2Id < textureIndex.Length)
                 mat.TexSlot2.Enable(textureIndex[matInfo.Tex2Id]);
 
-            mat.Mode = (TerrainMaterialType)matInfo.Mode;
+            mat.Mode = (TerrainMaterialType)(ushort)matInfo.Mode;
             mat.DataState = DataState.Loaded;
 
             target.TerrainMaterials.Add(mat);

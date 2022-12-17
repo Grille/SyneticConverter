@@ -7,7 +7,7 @@ using System.Numerics;
 using GGL.IO;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class VtxFile : SyneticBinaryFile, IVertexData
+public class VtxFile : FileBinary, IVertexData
 {
     public int[] IndicesOffset { get; set; }
     public Vertex[] Vertecis { get; set; }

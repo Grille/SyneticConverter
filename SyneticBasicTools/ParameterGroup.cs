@@ -13,12 +13,12 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
     private bool isSealed = false;
     private Dictionary<string, Parameter> parameters = new();
 
-    public void Def(string name, string type, string desc = "", string value = "")
+    public void Def(ParamType type, string name, string desc = "", string value = "")
     {
         if (isSealed == true)
             throw new InvalidOperationException();
 
-        var parameter = new Parameter(name, type, desc, value);
+        var parameter = new Parameter(type, name, desc, value);
         parameters.Add(name, parameter);
     }
 
@@ -41,7 +41,6 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
         }
     }
 
-
     public string[] Keys => parameters.Keys.ToArray();
 
 
@@ -50,7 +49,7 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
     public void ReadFromView(BinaryViewReader br)
     {
         AssertSealed();
-
+        br.ReadUInt16();
         foreach (var parameter in parameters.Values)
             parameter.Value = br.ReadString();
     }
@@ -64,7 +63,7 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
     public void WriteToView(BinaryViewWriter bw)
     {
         AssertSealed();
-
+        bw.WriteUInt16((ushort)parameters.Values.Count);
         foreach (var parameter in parameters.Values)
             bw.WriteString(parameter.Value);
     }

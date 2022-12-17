@@ -1,4 +1,6 @@
-﻿namespace SyneticBasicTools
+﻿using System.Windows.Forms;
+
+namespace SyneticBasicTools
 {
     partial class SynPipelineToolForm
     {
@@ -29,17 +31,22 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonDownP = new System.Windows.Forms.Button();
+            this.buttonUpP = new System.Windows.Forms.Button();
+            this.buttonCopyP = new System.Windows.Forms.Button();
             this.buttonExecuteP = new System.Windows.Forms.Button();
             this.buttonRemoveP = new System.Windows.Forms.Button();
             this.buttonEditP = new System.Windows.Forms.Button();
             this.buttonNewP = new System.Windows.Forms.Button();
             this.pipelinesListBox = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.buttonDownT = new System.Windows.Forms.Button();
+            this.buttonUpT = new System.Windows.Forms.Button();
+            this.buttonCopyT = new System.Windows.Forms.Button();
             this.buttonRemoveT = new System.Windows.Forms.Button();
             this.buttonEditT = new System.Windows.Forms.Button();
             this.buttonNewT = new System.Windows.Forms.Button();
             this.tasksListBox = new System.Windows.Forms.ListBox();
-            this.buttonCopyP = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -48,6 +55,8 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Controls.Add(this.buttonDownP);
+            this.groupBox1.Controls.Add(this.buttonUpP);
             this.groupBox1.Controls.Add(this.buttonCopyP);
             this.groupBox1.Controls.Add(this.buttonExecuteP);
             this.groupBox1.Controls.Add(this.buttonRemoveP);
@@ -61,6 +70,36 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pipelines";
             // 
+            // buttonDownP
+            // 
+            this.buttonDownP.Location = new System.Drawing.Point(6, 109);
+            this.buttonDownP.Name = "buttonDownP";
+            this.buttonDownP.Size = new System.Drawing.Size(75, 23);
+            this.buttonDownP.TabIndex = 7;
+            this.buttonDownP.Text = "Down";
+            this.buttonDownP.UseVisualStyleBackColor = true;
+            this.buttonDownP.Click += new System.EventHandler(this.buttonDownP_Click);
+            // 
+            // buttonUpP
+            // 
+            this.buttonUpP.Location = new System.Drawing.Point(6, 80);
+            this.buttonUpP.Name = "buttonUpP";
+            this.buttonUpP.Size = new System.Drawing.Size(75, 23);
+            this.buttonUpP.TabIndex = 6;
+            this.buttonUpP.Text = "Up";
+            this.buttonUpP.UseVisualStyleBackColor = true;
+            this.buttonUpP.Click += new System.EventHandler(this.buttonUpP_Click);
+            // 
+            // buttonCopyP
+            // 
+            this.buttonCopyP.Location = new System.Drawing.Point(6, 51);
+            this.buttonCopyP.Name = "buttonCopyP";
+            this.buttonCopyP.Size = new System.Drawing.Size(75, 23);
+            this.buttonCopyP.TabIndex = 5;
+            this.buttonCopyP.Text = "Copy";
+            this.buttonCopyP.UseVisualStyleBackColor = true;
+            this.buttonCopyP.Click += new System.EventHandler(this.buttonCopyP_Click);
+            // 
             // buttonExecuteP
             // 
             this.buttonExecuteP.Location = new System.Drawing.Point(87, 51);
@@ -69,6 +108,7 @@
             this.buttonExecuteP.TabIndex = 4;
             this.buttonExecuteP.Text = "Execute";
             this.buttonExecuteP.UseVisualStyleBackColor = true;
+            this.buttonExecuteP.Click += new System.EventHandler(this.buttonExecuteP_Click);
             // 
             // buttonRemoveP
             // 
@@ -105,20 +145,25 @@
             this.pipelinesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pipelinesListBox.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.pipelinesListBox.FormattingEnabled = true;
             this.pipelinesListBox.IntegralHeight = false;
-            this.pipelinesListBox.ItemHeight = 15;
-            this.pipelinesListBox.Location = new System.Drawing.Point(6, 88);
+            this.pipelinesListBox.ItemHeight = 14;
+            this.pipelinesListBox.Location = new System.Drawing.Point(6, 139);
             this.pipelinesListBox.Name = "pipelinesListBox";
-            this.pipelinesListBox.Size = new System.Drawing.Size(236, 349);
+            this.pipelinesListBox.Size = new System.Drawing.Size(236, 298);
             this.pipelinesListBox.TabIndex = 0;
             this.pipelinesListBox.SelectedIndexChanged += new System.EventHandler(this.pipelinesListBox_SelectedIndexChanged);
+            this.pipelinesListBox.DoubleClick += new System.EventHandler(this.pipelinesListBox_DoubleClick);
             // 
             // groupBox2
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.buttonDownT);
+            this.groupBox2.Controls.Add(this.buttonUpT);
+            this.groupBox2.Controls.Add(this.buttonCopyT);
             this.groupBox2.Controls.Add(this.buttonRemoveT);
             this.groupBox2.Controls.Add(this.buttonEditT);
             this.groupBox2.Controls.Add(this.buttonNewT);
@@ -130,6 +175,36 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Tasks";
             // 
+            // buttonDownT
+            // 
+            this.buttonDownT.Location = new System.Drawing.Point(411, 22);
+            this.buttonDownT.Name = "buttonDownT";
+            this.buttonDownT.Size = new System.Drawing.Size(75, 23);
+            this.buttonDownT.TabIndex = 8;
+            this.buttonDownT.Text = "Down";
+            this.buttonDownT.UseVisualStyleBackColor = true;
+            this.buttonDownT.Click += new System.EventHandler(this.buttonDownT_Click);
+            // 
+            // buttonUpT
+            // 
+            this.buttonUpT.Location = new System.Drawing.Point(330, 22);
+            this.buttonUpT.Name = "buttonUpT";
+            this.buttonUpT.Size = new System.Drawing.Size(75, 23);
+            this.buttonUpT.TabIndex = 8;
+            this.buttonUpT.Text = "Up";
+            this.buttonUpT.UseVisualStyleBackColor = true;
+            this.buttonUpT.Click += new System.EventHandler(this.buttonUpT_Click);
+            // 
+            // buttonCopyT
+            // 
+            this.buttonCopyT.Location = new System.Drawing.Point(249, 22);
+            this.buttonCopyT.Name = "buttonCopyT";
+            this.buttonCopyT.Size = new System.Drawing.Size(75, 23);
+            this.buttonCopyT.TabIndex = 7;
+            this.buttonCopyT.Text = "Copy";
+            this.buttonCopyT.UseVisualStyleBackColor = true;
+            this.buttonCopyT.Click += new System.EventHandler(this.buttonCopyT_Click);
+            // 
             // buttonRemoveT
             // 
             this.buttonRemoveT.Location = new System.Drawing.Point(168, 22);
@@ -138,6 +213,7 @@
             this.buttonRemoveT.TabIndex = 6;
             this.buttonRemoveT.Text = "Remove";
             this.buttonRemoveT.UseVisualStyleBackColor = true;
+            this.buttonRemoveT.Click += new System.EventHandler(this.buttonRemoveT_Click);
             // 
             // buttonEditT
             // 
@@ -147,6 +223,7 @@
             this.buttonEditT.TabIndex = 5;
             this.buttonEditT.Text = "Edit";
             this.buttonEditT.UseVisualStyleBackColor = true;
+            this.buttonEditT.Click += new System.EventHandler(this.buttonEditT_Click);
             // 
             // buttonNewT
             // 
@@ -163,23 +240,16 @@
             this.tasksListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tasksListBox.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.tasksListBox.FormattingEnabled = true;
             this.tasksListBox.IntegralHeight = false;
-            this.tasksListBox.ItemHeight = 15;
+            this.tasksListBox.ItemHeight = 14;
             this.tasksListBox.Location = new System.Drawing.Point(6, 51);
             this.tasksListBox.Name = "tasksListBox";
             this.tasksListBox.Size = new System.Drawing.Size(511, 386);
             this.tasksListBox.TabIndex = 0;
-            // 
-            // buttonCopyP
-            // 
-            this.buttonCopyP.Location = new System.Drawing.Point(6, 51);
-            this.buttonCopyP.Name = "buttonCopyP";
-            this.buttonCopyP.Size = new System.Drawing.Size(75, 23);
-            this.buttonCopyP.TabIndex = 5;
-            this.buttonCopyP.Text = "Copy";
-            this.buttonCopyP.UseVisualStyleBackColor = true;
-            this.buttonCopyP.Click += new System.EventHandler(this.buttonCopyP_Click);
+            this.tasksListBox.SelectedIndexChanged += new System.EventHandler(this.tasksListBox_SelectedIndexChanged);
+            this.tasksListBox.DoubleClick += new System.EventHandler(this.tasksListBox_DoubleClick);
             // 
             // SynPipelineToolForm
             // 
@@ -188,8 +258,9 @@
             this.ClientSize = new System.Drawing.Size(801, 467);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.DoubleBuffered = true;
             this.Name = "SynPipelineToolForm";
-            this.Text = "SynPipelineToolForm";
+            this.Text = "Synetic Pipeline Tool";
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -210,5 +281,10 @@
         private System.Windows.Forms.Button buttonEditT;
         private System.Windows.Forms.Button buttonNewT;
         private System.Windows.Forms.Button buttonCopyP;
+        private System.Windows.Forms.Button buttonDownP;
+        private System.Windows.Forms.Button buttonUpP;
+        private System.Windows.Forms.Button buttonDownT;
+        private System.Windows.Forms.Button buttonUpT;
+        private System.Windows.Forms.Button buttonCopyT;
     }
 }

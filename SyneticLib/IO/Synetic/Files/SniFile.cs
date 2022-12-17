@@ -9,7 +9,7 @@ using GGL.IO;
 using System.Runtime.InteropServices;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class SniFile : SyneticBinaryFile
+public class SniFile : FileBinary
 {
     public MHead Head;
 

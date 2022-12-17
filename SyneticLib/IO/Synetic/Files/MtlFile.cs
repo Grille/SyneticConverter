@@ -7,12 +7,10 @@ using System.IO;
 using System.Globalization;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class MtlFile : SyneticTextFile
+public class MtlFile : FileText
 {
     public SHead Head;
     public List<SMaterial> Sections;
-
-    public string Path;
 
     public MtlFile()
     {
@@ -20,17 +18,13 @@ public class MtlFile : SyneticTextFile
         Sections = new();
     }
 
-    public void Load(string path = null)
+    public override void ReadFromFile(StreamReader r)
     {
-        if (path == null)
-            path = Path;
-
         MtlSection usedSection = Head;
-
-        var lines = File.ReadAllLines(path);
-        for (var i = 0; i < lines.Length; i++)
+        while (!r.EndOfStream)
         {
-            var line = lines[i].Trim();
+            var line = r.ReadLine().Trim();
+                
             if (line.Length == 0)
                 continue;
 
@@ -48,9 +42,9 @@ public class MtlFile : SyneticTextFile
         }
     }
 
-    public void Save(string path)
+    public override void WriteToFile(StreamWriter w)
     {
-
+        throw new NotImplementedException();
     }
 
     public class MtlSection : Dictionary<string, string>

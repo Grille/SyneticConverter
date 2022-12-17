@@ -5,44 +5,65 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using GGL.IO;
+using System.Runtime.InteropServices;
 
 namespace SyneticLib.IO.Synetic.Files;
-internal class PtxFile : FileBinary
+internal class DdsFile : FileBinary
 {
-    public MHead Head;
+    public uint Magic;
+    public MHeader Head;
     public Level[] Levels;
     public override void ReadFromView(BinaryViewReader br)
     {
-        Head = br.Read<MHead>();
-
-        if (Head.Clear0 != 0)
-            throw new InvalidDataException();
-
-        Levels = new Level[Head.MipMapLevels];
-        for (int i = 0; i < Levels.Length; i++)
-        {
-            Levels[i] = br.ReadIView<Level>();
-        }
+        Head = br.Read<MHeader>();
     }
 
     public override void WriteToView(BinaryViewWriter bw)
     {
         bw.Write(Head);
-        for (int i = 0; i < Levels.Length; i++)
-        {
-            bw.WriteIView(Levels[i]);
-        }
+
     }
 
-    public struct MHead
+    public struct MHeader
     {
-        public byte Compression;
-        public byte BitPerPixel;
-        public ushort Clear0;
-        public int Width;
-        public int Height;
-        public byte MipMapLevels;
-        public byte R, G, B;
+        public uint Size;
+        public uint Flags;
+        public uint Height;
+        public uint Width;
+        public uint PitchOrLinearSize;
+        public uint Depth;
+        public uint MipMapCount;
+        Clear0Type clear0;
+        public MPixelFormat ddspf;
+        public uint Caps;
+        public uint Caps2;
+        public uint Caps3;
+        public uint Caps4;
+        public uint Reserved2;
+
+        [StructLayout(LayoutKind.Sequential, Size = 44)] struct Clear0Type { }
+    }
+
+    public struct MPixelFormat
+    {
+        public uint Size;
+        public EFlags Flags;
+        public uint FourCC;
+        public uint RGBBitCount;
+        public uint RBitMask;
+        public uint GBitMask;
+        public uint BBitMask;
+        public uint ABitMask;
+
+        public enum EFlags : uint
+        {
+            AlphaPixels = 0x1,
+            Alpha = 0x2,
+            FourCC = 0x4,
+            RGB = 0x40,
+            YUV = 0x200,
+            Luminance = 0x20000,
+        }
     }
 
     public class Level : IViewObject

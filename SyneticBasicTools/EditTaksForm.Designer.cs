@@ -45,7 +45,7 @@
             this.textBox.Location = new System.Drawing.Point(12, 41);
             this.textBox.Name = "textBox";
             this.textBox.ReadOnly = true;
-            this.textBox.Size = new System.Drawing.Size(388, 23);
+            this.textBox.Size = new System.Drawing.Size(619, 23);
             this.textBox.TabIndex = 0;
             // 
             // comboBoxType
@@ -55,7 +55,7 @@
             this.comboBoxType.FormattingEnabled = true;
             this.comboBoxType.Location = new System.Drawing.Point(85, 12);
             this.comboBoxType.Name = "comboBoxType";
-            this.comboBoxType.Size = new System.Drawing.Size(315, 23);
+            this.comboBoxType.Size = new System.Drawing.Size(546, 23);
             this.comboBoxType.TabIndex = 1;
             this.comboBoxType.SelectedIndexChanged += new System.EventHandler(this.comboBoxType_SelectedIndexChanged);
             // 
@@ -76,7 +76,7 @@
             this.groupBoxParameters.Controls.Add(this.panelParameters);
             this.groupBoxParameters.Location = new System.Drawing.Point(12, 70);
             this.groupBoxParameters.Name = "groupBoxParameters";
-            this.groupBoxParameters.Size = new System.Drawing.Size(388, 253);
+            this.groupBoxParameters.Size = new System.Drawing.Size(619, 253);
             this.groupBoxParameters.TabIndex = 3;
             this.groupBoxParameters.TabStop = false;
             this.groupBoxParameters.Text = "Parameters";
@@ -87,13 +87,13 @@
             this.panelParameters.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelParameters.Location = new System.Drawing.Point(3, 19);
             this.panelParameters.Name = "panelParameters";
-            this.panelParameters.Size = new System.Drawing.Size(382, 231);
+            this.panelParameters.Size = new System.Drawing.Size(613, 231);
             this.panelParameters.TabIndex = 0;
             // 
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.Location = new System.Drawing.Point(325, 329);
+            this.buttonCancel.Location = new System.Drawing.Point(556, 329);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 4;
@@ -104,7 +104,7 @@
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.Location = new System.Drawing.Point(244, 329);
+            this.buttonOK.Location = new System.Drawing.Point(475, 329);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 5;
@@ -116,7 +116,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(412, 364);
+            this.ClientSize = new System.Drawing.Size(643, 364);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.groupBoxParameters);
@@ -124,6 +124,7 @@
             this.Controls.Add(this.comboBoxType);
             this.Controls.Add(this.textBox);
             this.Name = "EditTaksForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "EditTaksForm";
             this.groupBoxParameters.ResumeLayout(false);
             this.ResumeLayout(false);
