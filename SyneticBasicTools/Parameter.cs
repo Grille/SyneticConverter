@@ -13,6 +13,7 @@ public class Parameter
     public readonly string Name;
     public readonly string Description;
     public string Value;
+    public object Args;
 
     public Parameter(ParamType type, string name, string desc = "", string value = "")
     {
@@ -21,11 +22,18 @@ public class Parameter
         Type = type;
         Value = value;
     }
+
+    public bool Validate()
+    {
+        return true;
+    }
 }
 
 public enum ParamType
 {
     String,
     Path,
+    Enum,
     Version,
+    List,
 }

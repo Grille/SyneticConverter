@@ -39,6 +39,7 @@ public abstract class PipelineTask : IViewObject
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(err.Message);
             Console.ForegroundColor = ConsoleColor.Gray;
+            throw;
         }
     }
 

@@ -40,9 +40,9 @@ public class ModelmporterMox : MeshImporter
             {
                 var srcMtl = mtl.Sections[i];
                 var dstMat = new ModelMaterial(Target);
-                dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]);
+                //dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]);
 
-                dstMat.TexSlot0.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex1Name);
+                //dstMat.TexSlot0.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex1Name);
                 //dstMat.TexSlot1.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex2Name);
                 //dstMat.TexSlot2.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex3Name);
 

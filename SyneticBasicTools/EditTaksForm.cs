@@ -33,13 +33,15 @@ public partial class EditTaksForm : Form
             ["Comment"] = typeof(NopTask),
             ["< Logic >"] = typeof(NopTask),
             ["Variable"] = typeof(VariableOperationTask),
-            ["Call Pipeline"] = typeof(ExecutePipelineTask),
+            ["Call pipeline"] = typeof(ExecutePipelineTask),
             ["< IO >"] = typeof(NopTask),
-            ["Copy File"] = typeof(CopyFileTask),
-            ["Copy Directory"] = typeof(CopyDirTask),
-            ["Remove Directory"] = typeof(RemoveDirTask),
+            ["Copy file"] = typeof(CopyFileTask),
+            ["Copy directory"] = typeof(CopyDirTask),
+            ["Clear directory"] = typeof(ClearDirTask),
+            ["Remove directory"] = typeof(RemoveDirTask),
             ["< Tools >"] = typeof(NopTask),
-            ["Convert Scenario Files"] = typeof(ConvertScnFilesTask),
+            ["Convert scenario files"] = typeof(ConvertScnFilesTask),
+            ["Convert MBWR sprites to WR2"] = typeof(FixTreeNormTask),
         };
 
         comboBoxType.BeginUpdate();

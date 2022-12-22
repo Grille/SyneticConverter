@@ -22,6 +22,8 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
     public Vertex[] Vertecis { get; set; }
     public Vector3Int[] Polygons { get; set; }
 
+    public byte[] Rest;
+
     public unsafe override void ReadFromView(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
@@ -32,14 +34,7 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
         Vertecis = new Vertex[Head.VertCount];
         for (int i = 0; i < Vertecis.Length; i++)
         {
-            var src = br.Read<MVertex>();
-            Vertecis[i] = new Vertex()
-            {
-                Position = new Vector3(src.Position.X, src.Position.Z, src.Position.Y),
-                Normal = new Vector3(src.Normal.X, src.Normal.Y, src.Normal.Z/*, src.Normal.A / 255f*/),
-                UV0 = src.UV,
-                UV1 = Vector2.Zero,
-            };
+            Vertecis[i] = (Vertex)br.Read<MVertex>();
         }
 
         var indices = br.ReadArray<ushort>(Head.PolyCount * 3);
@@ -62,6 +57,10 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
             Textures = br.ReadArray<MTex32>(Head.TextureCount);
         }
 
+        var list = new List<byte>();
+        br.ReadRemainderToIList(list, 0);
+        Rest = list.ToArray();
+
         /*
         br.Seek(0x150 * Head.MatCount);
         br.Seek(0x0C4 * Head.PartCount);
@@ -71,7 +70,33 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
 
     public override void WriteToView(BinaryViewWriter bw)
     {
-        throw new NotImplementedException();
+        bw.Write(Head);
+
+        for (int i = 0; i < Vertecis.Length; i++)
+        {
+            bw.Write((MVertex)Vertecis[i]);
+        }
+
+        for (int i = 0; i< Head.PolyCount; i++)
+        {
+            bw.Write((ushort)Polygons[i].X);
+            bw.Write((ushort)Polygons[i].Z);
+            bw.Write((ushort)Polygons[i].Y);
+        }
+
+        if (Head.Version == MBWR)
+        {
+            for (int i = 0; i < Head.TextureCount; i++)
+            {
+                bw.Write((MTex16)Textures[i]);
+            }
+        }
+        else
+        {
+            bw.WriteArray(Textures, LengthPrefix.None);
+        }
+
+        bw.WriteArray(Rest, LengthPrefix.None);
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -89,9 +114,24 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
         public Vector3 Normal;
         public Vector2 UV;
         public float c, d;
+
+        public static explicit operator Vertex(MVertex src) => new Vertex()
+        {
+            InvPosition = src.Position,
+            Normal = src.Normal,
+            UV0 = src.UV,
+            UV1 = Vector2.Zero,
+        };
+
+        public static explicit operator MVertex(Vertex src) => new MVertex()
+        {
+            Position = src.InvPosition,
+            Normal = src.Normal,
+            UV = src.UV0,
+        };
     }
 
-    public struct MPoly
+    public struct MPoly16
     {
         public ushort X, Y, Z;
     }
@@ -102,19 +142,6 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
         public byte Flag0, Flag1;
         public ushort Clear0;
         public int PolyOffset, PolyCount, VertBegin, VertEnd;
-
-        public static explicit operator MTex32(MTex16 a)
-        {
-            var b = new MTex32();
-            b.MatId = a.MatId;
-            b.Flag0 = a.Flag0;
-            b.Flag1 = a.Flag1;
-            b.PolyOffset = a.PolyOffset;
-            b.PolyCount = a.PolyCount;
-            b.VertBegin = a.VertBegin;
-            b.VertEnd = a.VertEnd;
-            return b;
-        }
     }
 
     public struct MTex16
@@ -122,5 +149,27 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
         public ushort MatId;
         public byte Flag0, Flag1;
         public ushort PolyOffset, PolyCount, VertBegin, VertEnd;
+
+        public static explicit operator MTex16(MTex32 a) => new MTex16()
+        {
+            MatId = (ushort)a.MatId,
+            Flag0 = a.Flag0,
+            Flag1 = a.Flag1,
+            PolyOffset = (ushort)a.PolyOffset,
+            PolyCount = (ushort)a.PolyCount,
+            VertBegin = (ushort)a.VertBegin,
+            VertEnd = (ushort)a.VertEnd,
+        };
+
+        public static explicit operator MTex32(MTex16 a) => new MTex32()
+        {
+            MatId = a.MatId,
+            Flag0 = a.Flag0,
+            Flag1 = a.Flag1,
+            PolyOffset = a.PolyOffset,
+            PolyCount = a.PolyCount,
+            VertBegin = a.VertBegin,
+            VertEnd = a.VertEnd,
+        };
     }
 }

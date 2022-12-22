@@ -57,7 +57,7 @@ public class VtxFile : FileBinary, IVertexData
 
         public static implicit operator MVertex(Vertex a) => new MVertex()
         {
-            Position = new Vector3(a.Position.X, a.Position.Z, a.Position.Y),
+            Position = a.InvPosition,
             Normal = a.RGBAInvNormal,
             UV = a.UV0,
             Blend = a.RGBABlend,

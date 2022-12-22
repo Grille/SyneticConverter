@@ -21,6 +21,9 @@ internal class CopyDirTask : PipelineTask
         string sourcePath = GetValue("Src");
         string targetPath = GetValue("Dst");
 
+        if (!Directory.Exists(targetPath))
+            Directory.CreateDirectory(targetPath);
+
         //Now Create all of the directories
         foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
         {
