@@ -56,6 +56,12 @@ public static class WR1ToWR2Conv
             ref var chunk = ref qad.Chunks[i];
         }
 
+        int idx0 = Array.FindIndex(qad.TextureNames, (a) => a == "Blumen");
+        int idx1 = Array.FindIndex(qad.GroundPhysics, (a) => a.Name == "Gras");
+
+        if (idx0 != -1 && idx1 != -1)
+            qad.Tex2Ground[idx0] = (ushort)idx1;
+
         FixObjects(qad);
         SortMaterials(qad);
         FixGrounds(qad);
@@ -175,6 +181,7 @@ public static class WR1ToWR2Conv
     }
 
     record class SortContainer(int id, QadFile.MMaterialType1 mat);
+
 
 
     public static void SortMaterials(QadFile qad)
@@ -322,12 +329,14 @@ public static class WR1ToWR2Conv
                 case "kies":
                 case "kiesbett":
                 case "gras":
+                case "grass":
                 case "sand":
                 case "erde-sand":
                 case "erdemittel":
                 case "erdestark":
                 case "erdeasph":
                 case "feldweg":
+                case "schmutz":
                 {
                     pys.SkidID = 2;
                     pys.x8 = 2;
@@ -340,9 +349,12 @@ public static class WR1ToWR2Conv
                     pys.x8 = 2;
                     break;
                 }
+                case "curbs":
+                case "beton":
                 case "strasselstaub":
                 {
                     pys.NoiseID = 0;
+                    pys.SkidID = 1;
                     break;
                 }
             }
