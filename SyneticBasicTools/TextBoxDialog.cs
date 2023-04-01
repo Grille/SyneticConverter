@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace SyneticBasicTools;
+namespace SyneticPipelineTool;
 
 public partial class TextBoxDialog : Form
 {

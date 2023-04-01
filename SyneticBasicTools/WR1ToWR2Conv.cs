@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Drawing.Drawing2D;
 
-namespace SyneticBasicTools;
+namespace SyneticPipelineTool;
 
 public static class WR1ToWR2Conv
 {

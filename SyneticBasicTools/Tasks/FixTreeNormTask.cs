@@ -6,14 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace SyneticBasicTools.Tasks;
+namespace SyneticPipelineTool.Tasks;
 
 internal class FixTreeNormTask : PipelineTask
 {
     protected override void OnInit()
     {
         Parameters.Def(ParamType.Path, "Dir", "", "Dir");
-        Parameters.Def(ParamType.Path, "Tree List", "", "Tree0; Tree1;");
+        Parameters.Def(ParamType.List, "Tree List", "", "Tree0; Tree1;");
     }
 
     protected override void OnExecute()

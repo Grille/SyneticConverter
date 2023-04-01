@@ -1,4 +1,4 @@
-﻿using SyneticBasicTools.Tasks;
+﻿using SyneticPipelineTool.Tasks;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.ComponentModel.Design.ObjectSelectorEditor;
 
-namespace SyneticBasicTools;
+namespace SyneticPipelineTool;
 
 public partial class SynPipelineToolForm : Form
 {

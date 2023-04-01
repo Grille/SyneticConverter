@@ -11,7 +11,7 @@ using OpenTK.Graphics.ES20;
 
 namespace SyneticLib.IO.Synetic.Files;
 
-public class QadFile : FileBinary
+public unsafe class QadFile : FileBinary
 {
     public bool Has8ByteMagic = false;
     public bool Has56ByteBlock = false;
@@ -99,12 +99,9 @@ public class QadFile : FileBinary
     {
         public String64 Name;
         public ushort Dirt, GripF, GripR, Stick, NoiseID, SkidID;
-        Clear0Type clear0; //empty
+        public fixed byte Padding0[64];
         public ushort NoColliFlag, x8;
-        Clear1Type clear1; //empty
-
-        [StructLayout(LayoutKind.Sequential, Size = 32 * 2)] struct Clear0Type { }
-        [StructLayout(LayoutKind.Sequential, Size = 6 * 2)] struct Clear1Type { }
+        public fixed byte Padding1[12];
     }
 
     public struct MSound
@@ -112,9 +109,7 @@ public class QadFile : FileBinary
         public float X, Y, Z;
         public String32 Name;
         public ushort Volume, PlaySpeed, Radius, z4, z5, Delay;
-
-        Misc misc;
-        [StructLayout(LayoutKind.Sequential, Size = 12)] struct Misc { }
+        public fixed byte Misc[12];
     }
 
 

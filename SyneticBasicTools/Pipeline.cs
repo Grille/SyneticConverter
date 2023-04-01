@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection.PortableExecutable;
 
-namespace SyneticBasicTools;
+namespace SyneticPipelineTool;
 
 public class Pipeline : IViewObject
 {
+    const int Magic = 23658;
     public string Name;
 
     public PipelineList Owner;
@@ -30,7 +32,7 @@ public class Pipeline : IViewObject
     public void ReadFromView(BinaryViewReader br)
     {
         int magic = br.ReadInt32();
-        if (magic != 23658)
+        if (magic != Magic)
             throw new InvalidDataException();
 
         br.DefaultLengthPrefix = LengthPrefix.UInt16;
@@ -58,7 +60,7 @@ public class Pipeline : IViewObject
 
     public void WriteToView(BinaryViewWriter bw)
     {
-        bw.WriteInt32(23658);
+        bw.WriteInt32(Magic);
 
         bw.DefaultLengthPrefix = LengthPrefix.UInt16;
         bw.DefaultCharSize = CharSize.Byte;

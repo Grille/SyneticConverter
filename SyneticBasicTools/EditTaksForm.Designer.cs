@@ -1,4 +1,4 @@
-﻿namespace SyneticBasicTools
+﻿namespace SyneticPipelineTool
 {
     partial class EditTaksForm
     {

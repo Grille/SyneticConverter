@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace SyneticBasicTools;
+namespace SyneticPipelineTool;
 
 internal static class Program
 {

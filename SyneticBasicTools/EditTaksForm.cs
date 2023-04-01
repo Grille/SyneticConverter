@@ -1,4 +1,4 @@
-﻿using SyneticBasicTools.Tasks;
+﻿using SyneticPipelineTool.Tasks;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,14 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SyneticBasicTools;
+namespace SyneticPipelineTool;
 
 public partial class EditTaksForm : Form
 {
     public Pipeline Pipeline;
     public PipelineTask Task;
     Dictionary<string, Type> types;
-    List<TextBox> inputs;
+    List<Control> inputs;
     Type displayedType = null;
 
     bool setup = true;
@@ -26,7 +26,7 @@ public partial class EditTaksForm : Form
         InitializeComponent();
         DisplayParameters();
 
-        inputs= new List<TextBox>();
+        inputs= new List<Control>();
 
         types = new Dictionary<string, Type>()
         {
@@ -64,7 +64,7 @@ public partial class EditTaksForm : Form
         setup = false;
     }
 
-    public DialogResult ShowDialog(IWin32Window owner)
+    public new DialogResult ShowDialog(IWin32Window owner)
     {
         return base.ShowDialog(owner);
     }
@@ -107,10 +107,30 @@ public partial class EditTaksForm : Form
             label.Top = posY + 2;
             label.Width = 100;
 
-            var input = new TextBox();
+            Control input;
+            switch (param.Type)
+            {
+                case ParamType.Enum:
+                    var obj = new ComboBox();
+                    obj.BeginUpdate();
+                    foreach (var it in (string[])param.Args)
+                    {
+                        obj.Items.Add(it);
+                    }
+                    obj.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    obj.SelectedItem = param.Value;
+                    obj.EndUpdate();
+                    input = obj;
+                    break;
+                default:
+                    input = new TextBox();
+                    input.Text = param.Value;
+                    break;
+            }
+
             input.Left = label.Width;
             input.Width = panel.Width - label.Width - 10;
-            input.Text = param.Value;
+
             input.Top = posY;
             input.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             input.TextChanged += Input_TextChanged;

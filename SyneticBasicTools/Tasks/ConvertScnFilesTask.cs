@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticBasicTools.Tasks;
+namespace SyneticPipelineTool.Tasks;
 
 internal class ConvertScnFilesTask : PipelineTask
 {
     protected override void OnInit()
     {
         Parameters.Def(ParamType.Path, "Path", "Path to directory containing scenario <Alps> or single variant <Alps/V1>.");
-        Parameters.Def(ParamType.Version, "SrcVersion", "Allowed values [WR1]", "WR1");
-        Parameters.Def(ParamType.Version, "DstVersion", "Allowed values [WR2]", "WR2");
+        Parameters.Def(ParamType.Enum, "SrcVersion", "Allowed values [WR1]", "WR1", new[] { "WR1" });
+        Parameters.Def(ParamType.Enum, "DstVersion", "Allowed values [WR2]", "WR2", new[] { "WR2" });
     }
 
     protected override void OnExecute()

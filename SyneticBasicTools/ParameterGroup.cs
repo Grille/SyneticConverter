@@ -6,19 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticBasicTools;
+namespace SyneticPipelineTool;
 
 public class ParameterGroup : IEnumerable<Parameter>, IViewObject
 {
     private bool isSealed = false;
     private Dictionary<string, Parameter> parameters = new();
 
-    public void Def(ParamType type, string name, string desc = "", string value = "")
+    public void Def(ParamType type, string name, string desc = "", string value = "", object args = null)
     {
         if (isSealed == true)
             throw new InvalidOperationException();
 
-        var parameter = new Parameter(type, name, desc, value);
+        var parameter = new Parameter(type, name, desc, value, args);
         parameters.Add(name, parameter);
     }
 

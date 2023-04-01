@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticBasicTools;
+namespace SyneticPipelineTool;
 
 internal static class ListExtension
 {

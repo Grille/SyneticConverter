@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace SyneticBasicTools
+namespace SyneticPipelineTool
 {
     partial class SynPipelineToolForm
     {

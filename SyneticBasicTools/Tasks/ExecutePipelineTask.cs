@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticBasicTools.Tasks;
+namespace SyneticPipelineTool.Tasks;
 
 internal class ExecutePipelineTask : PipelineTask
 {

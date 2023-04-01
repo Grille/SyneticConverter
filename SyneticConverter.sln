@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyneticBasicTools", "SyneticBasicTools\SyneticBasicTools.csproj", "{416746E8-D2FA-4645-A55E-9D5C31CC8E14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticPipelineTool", "SyneticBasicTools\SyneticPipelineTool.csproj", "{416746E8-D2FA-4645-A55E-9D5C31CC8E14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

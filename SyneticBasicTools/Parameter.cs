@@ -5,26 +5,45 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SyneticBasicTools;
+namespace SyneticPipelineTool;
 
 public class Parameter
 {
     public readonly ParamType Type;
     public readonly string Name;
     public readonly string Description;
+    public readonly object Args;
     public string Value;
-    public object Args;
 
-    public Parameter(ParamType type, string name, string desc = "", string value = "")
+    public Parameter(ParamType type, string name, string desc, string value, object args)
     {
         Name = name;
         Description = desc;
         Type = type;
         Value = value;
+        Args = args;
+
+        AssertValid();
     }
 
-    public bool Validate()
+    public void AssertValid()
     {
+        switch (Type)
+        {
+            case ParamType.Enum:
+                if (!typeof(string[]).IsInstanceOfType(Args))
+                    throw new ArgumentException();
+                return;
+        }
+    }
+
+    public bool ValidateValue()
+    {
+        switch (Type)
+        {
+            case ParamType.Enum:
+                return ((string[])Args).Contains(Value);
+        }
         return true;
     }
 }
