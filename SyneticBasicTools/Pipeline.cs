@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.PortableExecutable;
+using SyneticPipelineTool.Tasks;
 
 namespace SyneticPipelineTool;
 
@@ -17,6 +18,8 @@ public class Pipeline : IViewObject
     public PipelineList Owner;
 
     public Dictionary<string, string> Variables;
+    public int TaskPosition { get; set; }
+
     public PipelineTaskList Tasks { get; private set; }
 
 
@@ -27,6 +30,7 @@ public class Pipeline : IViewObject
         Name = name;
         Variables = new();
         Tasks = new(this);
+        TaskPosition = 0;
     }
 
     public void ReadFromView(BinaryViewReader br)
@@ -39,12 +43,10 @@ public class Pipeline : IViewObject
         br.DefaultCharSize = CharSize.Byte;
 
         int typeCount = br.ReadInt32();
-        var types = new List<Type>();
+        var types = new List<FileTaskTypeInfo>();
         for (int i = 0; i < typeCount; i++)
         {
-            var name = br.ReadString();
-            var type = Type.GetType(name);
-            types.Add(type);
+            types.Add(br.ReadIView<FileTaskTypeInfo>());
         }
 
         Tasks.Clear();
@@ -52,7 +54,8 @@ public class Pipeline : IViewObject
         for (int i = 0; i < count; i++)
         {
             int typeId = br.ReadInt32();
-            var task = Tasks.Create(types[typeId]);
+            var task = types[typeId].Create();
+            Tasks.Link(task);
             br.ReadToIView(task);
         }
 
@@ -65,32 +68,26 @@ public class Pipeline : IViewObject
         bw.DefaultLengthPrefix = LengthPrefix.UInt16;
         bw.DefaultCharSize = CharSize.Byte;
 
-        var types = new List<Type>();
-        for (int i = 0; i < Tasks.Count; i++)
-        {
-            var type = Tasks[i].GetType();
-            if (!types.Contains(type))
-                types.Add(type);
-        }
+        var types = FileTaskTypeInfo.GetTypes(Tasks);
 
         bw.WriteInt32(types.Count);
         foreach (var type in types)
-            bw.WriteString(type.AssemblyQualifiedName);
+            bw.WriteIView(type);
 
         bw.WriteInt32(Tasks.Count);
         for (int i = 0; i < Tasks.Count; i++)
         {
             var task = Tasks[i];
-            bw.WriteInt32(types.IndexOf(task.GetType()));
+            bw.WriteInt32(FileTaskTypeInfo.IndexOf(types, task));
             bw.WriteIView(task);
         }
     }
 
     public void Execute()
     {
-        foreach (var task in Tasks)
+        for (TaskPosition = 0; TaskPosition < Tasks.Count; TaskPosition++)
         {
-            task.Execute();
+            Tasks[TaskPosition].Execute();
         }
         Variables.Clear();
     }
@@ -111,5 +108,97 @@ public class Pipeline : IViewObject
         }
 
         return clone;
+    }
+}
+
+internal class FileTaskTypeInfo : IViewObject
+{
+    public string AssemblyQualifiedName;
+    public int ParametersCount;
+
+    public FileTaskTypeInfo()
+    {
+
+    }
+
+    public FileTaskTypeInfo(PipelineTask task)
+    {
+        var type = task.GetType();
+        AssemblyQualifiedName = type.AssemblyQualifiedName;
+        ParametersCount = task.Parameters.Count;
+    }
+
+    public static int IndexOf(List<FileTaskTypeInfo> list, PipelineTask task)
+    {
+        if (task is InvalidTypeTask)
+        {
+            var itask = (InvalidTypeTask)task;
+            return list.FindIndex((a) => a.AssemblyQualifiedName == itask.AssemblyQualifiedName);
+        }
+        else
+        {
+            return list.FindIndex((a) => a.AssemblyQualifiedName == task.GetType().AssemblyQualifiedName);
+        }
+    }
+
+    public static bool Contains(List<FileTaskTypeInfo> list, PipelineTask task)
+    {
+        return IndexOf(list, task) != -1;
+    }
+
+    public static List<FileTaskTypeInfo> GetTypes(PipelineTaskList tasks)
+    {
+        var types = new List<FileTaskTypeInfo>();
+        for (int i = 0; i < tasks.Count; i++)
+        {
+            var task = tasks[i];
+            if (task is InvalidTypeTask)
+            {
+                var itask = (InvalidTypeTask)task;
+                if (!Contains(types, tasks[i]))
+                {
+                    types.Add(new()
+                    {
+                        AssemblyQualifiedName = itask.AssemblyQualifiedName,
+                        ParametersCount = itask.Parameters.Count,
+                    });
+                }
+            }
+            else
+            {
+                if (!Contains(types, tasks[i]))
+                {
+                    types.Add(new(tasks[i]));
+                }
+            }
+        }
+        return types;
+    }
+
+    public PipelineTask Create()
+    {
+        var type = Type.GetType(AssemblyQualifiedName);
+        if (type == null)
+        {
+            Console.WriteLine(AssemblyQualifiedName);
+            Console.WriteLine(ParametersCount);
+            return new InvalidTypeTask(AssemblyQualifiedName, ParametersCount);
+        }
+        else
+        {
+            return (PipelineTask)Activator.CreateInstance(type);
+        }
+    }
+
+    public void ReadFromView(BinaryViewReader br)
+    {
+        AssemblyQualifiedName = br.ReadString();
+        ParametersCount = br.ReadByte();
+    }
+
+    public void WriteToView(BinaryViewWriter bw)
+    {
+        bw.WriteString(AssemblyQualifiedName);
+        bw.WriteByte((byte)ParametersCount);
     }
 }

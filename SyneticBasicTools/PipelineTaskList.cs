@@ -40,4 +40,10 @@ public class PipelineTaskList : List<PipelineTask>
         Add(task);
         return task;
     }
+
+    public void Link(PipelineTask task)
+    {
+        task.Pipeline = Pipeline;
+        Add(task);
+    }
 }

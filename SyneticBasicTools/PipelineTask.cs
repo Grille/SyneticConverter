@@ -14,6 +14,12 @@ public abstract class PipelineTask : IViewObject
 
     public ParameterGroup Parameters = new();
 
+    protected PipelineTask(bool autoinit)
+    {
+        if (autoinit)
+            Init();
+    }
+
     public PipelineTask()
     {
         Init();

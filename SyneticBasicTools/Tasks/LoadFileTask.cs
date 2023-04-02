@@ -8,26 +8,23 @@ using System.IO;
 
 namespace SyneticPipelineTool.Tasks;
 
-internal class CopyFileTask : PipelineTask
+internal class LoadFileTask : PipelineTask
 {
     protected override void OnInit()
     {
         Parameters.Def(ParameterTypes.String, "Src", "", "SrcFile");
-        Parameters.Def(ParameterTypes.String, "Dst", "", "DstFile");
+        Parameters.Def(ParameterTypes.String, "Variable", "", "Var");
     }
 
     protected override void OnExecute()
     {
-        string srcPath = GetValue("Src");
-        string dstPath = GetValue("Dst");
-
-        Console.WriteLine($"Copy dir {srcPath} to {dstPath}");
-
-        File.Copy(srcPath, dstPath, true);
+        var src = GetValue("Src");
+        var var = GetValue("Variable");
+        Pipeline.Variables[var] = File.ReadAllText(src);
     }
 
     public override string ToString()
     {
-        return $"Copy file {Parameters["Src"]} to {Parameters["Dst"]}";
+        return $"Load file {Parameters["Src"]} as {Parameters["Variable"]}";
     }
 }

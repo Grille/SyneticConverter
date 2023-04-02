@@ -32,10 +32,12 @@ public partial class SynPipelineToolForm : Form
     {
         InitializeComponent();
         Piplines = new PipelineList();
-        Piplines.TryLoad();
+        Piplines.Load();
         PipelinesChanged();
         if (Piplines.Count > 0)
             SelectedPipeline = Piplines[0];
+
+        tasksListBox.DrawMode = DrawMode.OwnerDrawFixed;
     }
 
     public void DisplayPipelines() => DisplayListBox(pipelinesListBox, Piplines);
@@ -102,9 +104,10 @@ public partial class SynPipelineToolForm : Form
     public void TaskSelectionChanged()
     {
         bool taskFlag = SelectedTask != null;
+        bool invalid = SelectedTask is InvalidTypeTask;
 
-        buttonCopyT.Enabled = taskFlag;
-        buttonEditT.Enabled = taskFlag;
+        buttonCopyT.Enabled = taskFlag & !invalid;
+        buttonEditT.Enabled = taskFlag & !invalid;
         buttonRemoveT.Enabled = taskFlag;
 
         buttonUpT.Enabled = taskFlag;
@@ -258,7 +261,7 @@ public partial class SynPipelineToolForm : Form
 
     private void tasksListBox_DoubleClick(object sender, EventArgs e)
     {
-        if (SelectedTask == null)
+        if (SelectedTask == null || SelectedTask is InvalidTypeTask)
             return;
         buttonEditT_Click(sender, e);
     }
@@ -268,5 +271,27 @@ public partial class SynPipelineToolForm : Form
         if (SelectedPipeline == null)
             return;
         buttonEditP_Click(sender, e);
+    }
+
+    private void tasksListBox_DrawItem(object sender, DrawItemEventArgs e)
+    {
+        var item = tasksListBox.Items[e.Index];
+
+        e.DrawBackground();
+        e.DrawFocusRectangle();
+     
+        var g = e.Graphics;
+
+        SolidBrush brush;
+
+        if (item is NopTask)
+            brush = new SolidBrush(Color.Gray);
+        else if (item is InvalidTypeTask)
+            brush = new SolidBrush(Color.Red);
+        else
+            brush = new SolidBrush(e.ForeColor);
+
+        g.DrawString(item.ToString(), e.Font, brush, (RectangleF)e.Bounds);
+        
     }
 }

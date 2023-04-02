@@ -12,7 +12,7 @@ internal class NopTask : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParamType.String, "Text", "", "");
+        Parameters.Def(ParameterTypes.String, "Text", "", "");
     }
 
     protected override void OnExecute()
@@ -21,6 +21,7 @@ internal class NopTask : PipelineTask
 
     public override string ToString()
     {
-        return $"// {Parameters["Text"]}";
+        var value = Parameters["Text"];
+        return value == "" ? "" : $"// {value}";
     }
 }

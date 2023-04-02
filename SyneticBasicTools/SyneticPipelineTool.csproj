@@ -14,4 +14,8 @@
     <ProjectReference Include="..\SyneticLib\SyneticLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ParaTypes\" />
+  </ItemGroup>
+
 </Project>

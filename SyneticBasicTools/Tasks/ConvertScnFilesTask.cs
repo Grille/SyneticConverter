@@ -11,9 +11,9 @@ internal class ConvertScnFilesTask : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParamType.Path, "Path", "Path to directory containing scenario <Alps> or single variant <Alps/V1>.");
-        Parameters.Def(ParamType.Enum, "SrcVersion", "Allowed values [WR1]", "WR1", new[] { "WR1" });
-        Parameters.Def(ParamType.Enum, "DstVersion", "Allowed values [WR2]", "WR2", new[] { "WR2" });
+        Parameters.Def(ParameterTypes.String, "Path", "Path to directory containing scenario <Alps> or single variant <Alps/V1>.");
+        Parameters.Def(ParameterTypes.Enum, "SrcVersion", "Allowed values [WR1]", "WR1", new[] { "WR1" });
+        Parameters.Def(ParameterTypes.Enum, "DstVersion", "Allowed values [WR2]", "WR2", new[] { "WR2" });
     }
 
     protected override void OnExecute()

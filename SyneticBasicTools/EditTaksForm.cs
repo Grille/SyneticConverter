@@ -33,8 +33,10 @@ public partial class EditTaksForm : Form
             ["Comment"] = typeof(NopTask),
             ["< Logic >"] = typeof(NopTask),
             ["Variable"] = typeof(VariableOperationTask),
+            ["Repeat Next"] = typeof(RepeatNextTask),
             ["Call pipeline"] = typeof(ExecutePipelineTask),
             ["< IO >"] = typeof(NopTask),
+            ["Load file"] = typeof(LoadFileTask),
             ["Copy file"] = typeof(CopyFileTask),
             ["Copy directory"] = typeof(CopyDirTask),
             ["Clear directory"] = typeof(ClearDirTask),
@@ -107,26 +109,7 @@ public partial class EditTaksForm : Form
             label.Top = posY + 2;
             label.Width = 100;
 
-            Control input;
-            switch (param.Type)
-            {
-                case ParamType.Enum:
-                    var obj = new ComboBox();
-                    obj.BeginUpdate();
-                    foreach (var it in (string[])param.Args)
-                    {
-                        obj.Items.Add(it);
-                    }
-                    obj.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-                    obj.SelectedItem = param.Value;
-                    obj.EndUpdate();
-                    input = obj;
-                    break;
-                default:
-                    input = new TextBox();
-                    input.Text = param.Value;
-                    break;
-            }
+            Control input = param.CreateControl();
 
             input.Left = label.Width;
             input.Width = panel.Width - label.Width - 10;

@@ -13,9 +13,9 @@ internal class VariableOperationTask : PipelineTask
 
     protected override void OnInit()
     {
-        Parameters.Def(ParamType.String, "Name", "", "Name");
-        Parameters.Def(ParamType.String, "Operator", "(Set)=, (Add)+", "=");
-        Parameters.Def(ParamType.String, "Value", "", "Value");
+        Parameters.Def(ParameterTypes.String, "Name", "", "Var");
+        Parameters.Def(ParameterTypes.Enum, "Operator", "", "=",new string[] {"=", "+" });
+        Parameters.Def(ParameterTypes.String, "Value", "", "Value");
     }
 
     protected override void OnExecute()
@@ -25,14 +25,17 @@ internal class VariableOperationTask : PipelineTask
         var value = GetValue("Value");
         switch (op)
         {
-            case "set":
             case "=":
             {
                 Pipeline.Variables[name] = value;
                 break;
             }
-            case "add":
             case "+":
+            {
+                Pipeline.Variables[name] += value;
+                break;
+            }
+            case "Replace":
             {
                 Pipeline.Variables[name] += value;
                 break;

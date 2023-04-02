@@ -12,7 +12,7 @@ internal class RemoveDirTask : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParamType.Path, "Dir", "", "Dir");
+        Parameters.Def(ParameterTypes.String, "Dir", "", "Dir");
     }
 
     protected override void OnExecute()

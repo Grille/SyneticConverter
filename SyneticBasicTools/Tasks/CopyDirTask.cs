@@ -12,8 +12,8 @@ internal class CopyDirTask : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParamType.Path, "Src", "", "SrcDir");
-        Parameters.Def(ParamType.Path, "Dst", "", "DstFile");
+        Parameters.Def(ParameterTypes.String, "Src", "", "SrcDir");
+        Parameters.Def(ParameterTypes.String, "Dst", "", "DstFile");
     }
 
     protected override void OnExecute()

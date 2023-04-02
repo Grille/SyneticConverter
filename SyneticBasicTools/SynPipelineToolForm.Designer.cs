@@ -248,6 +248,7 @@ namespace SyneticPipelineTool
             this.tasksListBox.Name = "tasksListBox";
             this.tasksListBox.Size = new System.Drawing.Size(511, 386);
             this.tasksListBox.TabIndex = 0;
+            this.tasksListBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tasksListBox_DrawItem);
             this.tasksListBox.SelectedIndexChanged += new System.EventHandler(this.tasksListBox_SelectedIndexChanged);
             this.tasksListBox.DoubleClick += new System.EventHandler(this.tasksListBox_DoubleClick);
             // 

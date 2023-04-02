@@ -12,8 +12,8 @@ internal class FixTreeNormTask : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParamType.Path, "Dir", "", "Dir");
-        Parameters.Def(ParamType.List, "Tree List", "", "Tree0; Tree1;");
+        Parameters.Def(ParameterTypes.String, "Dir", "", "Dir");
+        Parameters.Def(ParameterTypes.String, "Tree List", "", "Tree0; Tree1;");
     }
 
     protected override void OnExecute()
