@@ -21,8 +21,8 @@ internal class VariableOperationTask : PipelineTask
     protected override void OnExecute()
     {
         var op = Parameters["Operator"].ToLower();
-        var name = GetValue("Name");
-        var value = GetValue("Value");
+        var name = EvalParameter("Name");
+        var value = EvalParameter("Value");
         switch (op)
         {
             case "=":

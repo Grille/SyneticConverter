@@ -18,8 +18,8 @@ internal class CopyDirTask : PipelineTask
 
     protected override void OnExecute()
     {
-        string sourcePath = GetValue("Src");
-        string targetPath = GetValue("Dst");
+        string sourcePath = EvalParameter("Src");
+        string targetPath = EvalParameter("Dst");
 
         if (!Directory.Exists(targetPath))
             Directory.CreateDirectory(targetPath);

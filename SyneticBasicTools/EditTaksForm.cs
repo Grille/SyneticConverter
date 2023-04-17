@@ -33,7 +33,7 @@ public partial class EditTaksForm : Form
             ["Comment"] = typeof(NopTask),
             ["< Logic >"] = typeof(NopTask),
             ["Variable"] = typeof(VariableOperationTask),
-            ["Repeat Next"] = typeof(RepeatNextTask),
+            ["For Each"] = typeof(ForEachTask),
             ["Call pipeline"] = typeof(ExecutePipelineTask),
             ["< IO >"] = typeof(NopTask),
             ["Load file"] = typeof(LoadFileTask),
@@ -85,7 +85,7 @@ public partial class EditTaksForm : Form
             }
         }
 
-        throw new KeyNotFoundException();
+        //throw new KeyNotFoundException();
     }
 
     public void DisplayParameters()
@@ -146,12 +146,31 @@ public partial class EditTaksForm : Form
 
     public void ApplyInputs()
     {
+
         int i = 0;
         foreach (var param in Task.Parameters)
         {
-            param.Value = inputs[i++].Text;
+            var input = inputs[i];
+            param.Value = inputs[i].Text;
+
+            if (param.Value.Length > 0 && (param.Value[0] == '$' || param.Value[0] == '*'))
+            {
+                input.ForeColor = Color.Blue;
+            }
+            else if (param.ValidateValue())
+            {
+                input.ForeColor = Color.Black;
+            }
+            else
+            {
+                input.ForeColor = Color.Red;
+            }
+
+            i++;
         }
         textBox.Text = Task.ToString();
+
+        Task.Update();
     }
 
     private void buttonOK_Click(object sender, EventArgs e)

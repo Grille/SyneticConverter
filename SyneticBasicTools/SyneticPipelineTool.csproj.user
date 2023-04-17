@@ -7,10 +7,10 @@
     <Compile Update="EditTaksForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="TextBoxDialog.cs">
+    <Compile Update="SynPipelineToolForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="SynPipelineToolForm.cs">
+    <Compile Update="TextBoxDialog.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

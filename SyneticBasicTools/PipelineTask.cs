@@ -49,6 +49,12 @@ public abstract class PipelineTask : IViewObject
         }
     }
 
+    public void Update() => OnUpdate();
+    protected virtual void OnUpdate()
+    {
+
+    }
+
     protected abstract void OnExecute();
 
     public void ReadFromView(BinaryViewReader br)
@@ -86,7 +92,7 @@ public abstract class PipelineTask : IViewObject
         target.Tasks.Add(clone);
     }
 
-    protected string GetValue(in string name)
+    protected string EvalParameter(in string name)
     {
         return parseValue(Parameters[name]);
     }
@@ -99,6 +105,10 @@ public abstract class PipelineTask : IViewObject
         if (value[0] == '*')
         {
             var key = parseValue(value.Substring(1));
+            if (!Pipeline.Variables.ContainsKey(key))
+            {
+                throw new InvalidOperationException($"Variable '{key}' not found.");
+            }
             return Pipeline.Variables[key];
         }
         if (value[0] == '$')

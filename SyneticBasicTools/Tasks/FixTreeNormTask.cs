@@ -14,30 +14,24 @@ internal class FixTreeNormTask : PipelineTask
     {
         Parameters.Def(ParameterTypes.String, "Dir", "", "Dir");
         Parameters.Def(ParameterTypes.String, "Tree List", "", "Tree0; Tree1;");
+        Parameters.Def(ParameterTypes.Boolean, "Ignore Missing", "Skips missing files if they can't be found, elsewise throws error.", "false");
+        Parameters.Def(ParameterTypes.String, "Diffuse Color", "", "0xa0a0a0");
+        Parameters.Def(ParameterTypes.String, "Ambient Color", "", "0x202020");
     }
 
     protected override void OnExecute()
     {
-        string dirPath = GetValue("Dir");
-        string filesStr = GetValue("Tree List");
-
-        var files = new List<string>();
-
-        foreach (string file in filesStr.Split(';', StringSplitOptions.RemoveEmptyEntries))
-        {
-            string trim = file.Trim();
-            if (trim.Length > 0)
-                files.Add(trim);
-        }
+        string dirPath = EvalParameter("Dir");
+        var files = Parameter.ValueToList(EvalParameter("Tree List"));
+        bool ignoreMissing = bool.Parse(EvalParameter("Ignore Missing"));
+        string diffuse = EvalParameter("Diffuse Color"); 
+        string ambient = EvalParameter("Ambient Color");
 
         foreach (string file in files)
         {
             string path = Path.Combine(dirPath, file);
-            WR1ToWR2Conv.FixTreeSprite(path);
+            WR1ToWR2Conv.FixTreeSprite(path, ignoreMissing, diffuse, ambient);
         }
-
-
-        Console.WriteLine($"Fix Sprites {filesStr}");
     }
 
     public override string ToString()

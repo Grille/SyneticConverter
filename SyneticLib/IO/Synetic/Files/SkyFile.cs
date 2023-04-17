@@ -9,7 +9,7 @@ using GGL.IO;
 namespace SyneticLib.IO.Synetic.Files;
 public class SkyFile : FileText
 {
-    List<SkyData> Skys;
+    List<SkyData> Skys = new List<SkyData>();
     public override void ReadFromFile(StreamReader r)
     {
         SkyData sky = null;

@@ -22,6 +22,8 @@ public class Pipeline : IViewObject
 
     public PipelineTaskList Tasks { get; private set; }
 
+    public Stack<Pipeline> CallStack { get; private set; }
+
 
 
     public Pipeline(PipelineList owner, string name)
@@ -38,6 +40,7 @@ public class Pipeline : IViewObject
         int magic = br.ReadInt32();
         if (magic != Magic)
             throw new InvalidDataException();
+
 
         br.DefaultLengthPrefix = LengthPrefix.UInt16;
         br.DefaultCharSize = CharSize.Byte;
@@ -83,13 +86,31 @@ public class Pipeline : IViewObject
         }
     }
 
-    public void Execute()
+    public void Execute(Stack<Pipeline> callStack)
     {
-        for (TaskPosition = 0; TaskPosition < Tasks.Count; TaskPosition++)
+
+        if (callStack.Contains(this))
+            throw new InvalidOperationException($"Pipeline already in call stack.");
+
+        CallStack = callStack;
+
+        try
         {
-            Tasks[TaskPosition].Execute();
+            CallStack.Push(this);
+
+            for (TaskPosition = 0; TaskPosition < Tasks.Count; TaskPosition++)
+            {
+                Tasks[TaskPosition].Execute();
+            }
+
+            CallStack.Pop();
         }
-        Variables.Clear();
+        finally
+        {
+            Variables.Clear();
+
+            CallStack = null;
+        }
     }
 
     public override string ToString()

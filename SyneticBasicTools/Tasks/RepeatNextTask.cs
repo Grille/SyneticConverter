@@ -19,13 +19,13 @@ internal class RepeatNextTask : PipelineTask
 
     protected override void OnExecute()
     {
+        int start = int.Parse(EvalParameter("Start"));
+        int end = int.Parse(EvalParameter("End"));
+        string variable = EvalParameter("Variable");
+
         var next = Pipeline.Tasks[Pipeline.TaskPosition += 1];
         if (next == null)
             throw new NullReferenceException();
-
-        int start = int.Parse(GetValue("Start"));
-        int end = int.Parse(GetValue("End"));
-        string variable = GetValue("Variable");
 
         Console.WriteLine("start");
         for (int i = start; i <= end; i++)

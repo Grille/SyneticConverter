@@ -17,7 +17,7 @@ internal class ClearDirTask : PipelineTask
 
     protected override void OnExecute()
     {
-        string path = GetValue("Dir");
+        string path = EvalParameter("Dir");
 
         if (!Directory.Exists(path))
             throw new DirectoryNotFoundException(path);

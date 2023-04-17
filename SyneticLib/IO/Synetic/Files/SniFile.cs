@@ -46,7 +46,7 @@ public class SniFile : FileBinary
         public ushort Id;
         public ushort NodeOffset;
         public ushort Mode;
-        public String32 SoundFileBuffer;
+        public String32 SoundFile;
         public ushort Volume;
         public ushort Tempo;
         public ushort Radius;

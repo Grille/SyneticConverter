@@ -18,8 +18,8 @@ internal class CopyFileTask : PipelineTask
 
     protected override void OnExecute()
     {
-        string srcPath = GetValue("Src");
-        string dstPath = GetValue("Dst");
+        string srcPath = EvalParameter("Src");
+        string dstPath = EvalParameter("Dst");
 
         Console.WriteLine($"Copy dir {srcPath} to {dstPath}");
 

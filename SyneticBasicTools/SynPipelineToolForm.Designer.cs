@@ -30,6 +30,7 @@ namespace SyneticPipelineTool
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonDownP = new System.Windows.Forms.Button();
             this.buttonUpP = new System.Windows.Forms.Button();
@@ -47,6 +48,7 @@ namespace SyneticPipelineTool
             this.buttonEditT = new System.Windows.Forms.Button();
             this.buttonNewT = new System.Windows.Forms.Button();
             this.tasksListBox = new System.Windows.Forms.ListBox();
+            this.refreshTimer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -153,6 +155,7 @@ namespace SyneticPipelineTool
             this.pipelinesListBox.Name = "pipelinesListBox";
             this.pipelinesListBox.Size = new System.Drawing.Size(236, 298);
             this.pipelinesListBox.TabIndex = 0;
+            this.pipelinesListBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.pipelinesListBox_DrawItem);
             this.pipelinesListBox.SelectedIndexChanged += new System.EventHandler(this.pipelinesListBox_SelectedIndexChanged);
             this.pipelinesListBox.DoubleClick += new System.EventHandler(this.pipelinesListBox_DoubleClick);
             // 
@@ -246,11 +249,18 @@ namespace SyneticPipelineTool
             this.tasksListBox.ItemHeight = 14;
             this.tasksListBox.Location = new System.Drawing.Point(6, 51);
             this.tasksListBox.Name = "tasksListBox";
+            this.tasksListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.tasksListBox.Size = new System.Drawing.Size(511, 386);
             this.tasksListBox.TabIndex = 0;
             this.tasksListBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tasksListBox_DrawItem);
             this.tasksListBox.SelectedIndexChanged += new System.EventHandler(this.tasksListBox_SelectedIndexChanged);
             this.tasksListBox.DoubleClick += new System.EventHandler(this.tasksListBox_DoubleClick);
+            // 
+            // refreshTimer
+            // 
+            this.refreshTimer.Enabled = true;
+            this.refreshTimer.Interval = 200;
+            this.refreshTimer.Tick += new System.EventHandler(this.refreshTimer_Tick);
             // 
             // SynPipelineToolForm
             // 
@@ -287,5 +297,6 @@ namespace SyneticPipelineTool
         private System.Windows.Forms.Button buttonDownT;
         private System.Windows.Forms.Button buttonUpT;
         private System.Windows.Forms.Button buttonCopyT;
+        private Timer refreshTimer;
     }
 }

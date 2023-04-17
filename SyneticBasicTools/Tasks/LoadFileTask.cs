@@ -18,8 +18,8 @@ internal class LoadFileTask : PipelineTask
 
     protected override void OnExecute()
     {
-        var src = GetValue("Src");
-        var var = GetValue("Variable");
+        var src = EvalParameter("Src");
+        var var = EvalParameter("Variable");
         Pipeline.Variables[var] = File.ReadAllText(src);
     }
 

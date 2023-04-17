@@ -17,7 +17,7 @@ internal class RemoveDirTask : PipelineTask
 
     protected override void OnExecute()
     {
-        string path = GetValue("Dir");
+        string path = EvalParameter("Dir");
         Directory.Delete(path, true);
 
         Console.WriteLine($"Remove dir {path}");

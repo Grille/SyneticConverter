@@ -20,17 +20,42 @@ public static class WR1ToWR2Conv
         string v1 = Path.Join(path, "V1");
         string v2 = Path.Join(path, "V2");
         string v3 = Path.Join(path, "V3");
-
+        /*
         ConvertV(v1, name);
         ConvertV(v2, name);
         ConvertV(v3, name);
+        */
     }
 
-    public static void ConvertV(string path, string name)
+    public static void ConvertV(string path, string name, float ambientOffset)
     {
         Console.WriteLine($"Convert '{path}'");
-        ConvertQad(Path.Join(path, name + ".qad"));
-        ConvertVtx(Path.Join(path, name + ".vtx"));
+
+        string qadpath = Path.Join(path, name + ".qad");
+        string vtxpath = Path.Join(path, name + ".vtx");
+        string snipath = Path.Join(path, name + ".sni");
+
+        ConvertQad(qadpath);
+        ConvertVtx(vtxpath, ambientOffset);
+        ConvertSni(snipath);
+    }
+
+    public static void ConvertSni(string path)
+    {
+        var sni = new SniFile();
+        sni.Load(path);
+
+        for (int i = 0; i< sni.Objects.Length; i++)
+        {
+            ref var obj = ref sni.Objects[i];
+            string oldfile = obj.SoundFile;
+            if (oldfile == "")
+                continue;
+            string newfile = $"MBWR_{oldfile}";
+            obj.SoundFile = (String32)newfile;
+        }
+
+        sni.Save();
     }
 
     public static void ConvertQad(string path)
@@ -361,16 +386,22 @@ public static class WR1ToWR2Conv
         }
     }
 
-    public static void FixTreeSprite(string path)
+    public static void FixTreeSprite(string path, bool ignoreMissing, string diffuse = "0xa0a0a0", string ambient = "0x1a1a1a")
     {
+        string moxpath = Path.ChangeExtension(path, "mox");
+        string mtlpath = Path.ChangeExtension(path, "mtl");
+
+        if (!File.Exists(moxpath) && !File.Exists(mtlpath) && ignoreMissing)
+            return;
+
         var mox = new MoxFile();
         var mtl = new MtlFile();
-        mox.Path = Path.ChangeExtension(path, "mox");
-        mtl.Path = Path.ChangeExtension(path, "mtl");
+        mox.Path = moxpath;
+        mtl.Path = mtlpath;
 
         mtl.Load();
-        mtl.Sections[0]["Diffuse"] = new[] { "0xa0a0a0" };
-        mtl.Sections[0]["Ambient"] = new[] { "0x1a1a1a" };
+        mtl.Sections[0]["Diffuse"] = new[] { diffuse };
+        mtl.Sections[0]["Ambient"] = new[] { ambient };
         mtl.Save();
 
         
@@ -388,15 +419,14 @@ public static class WR1ToWR2Conv
 
     }
 
-    public static void ConvertVtx(string path)
+    public static void ConvertVtx(string path, float ambientOffset)
     {
         Console.WriteLine($"Convert Vtx '{path}'");
         var vtx = new VtxFile();
         vtx.Load(path);
 
-        float lightScale = 0.22f;
-        float add = 255 * lightScale;
-        float mul = 1f - lightScale;
+        float add = 255 * ambientOffset;
+        float mul = 1f - ambientOffset;
         foreach (var v in vtx.Vertecis)
         {
             v.LightColor.R = (byte)(v.LightColor.R * mul + add);

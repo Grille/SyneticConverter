@@ -15,15 +15,13 @@ internal class ExecutePipelineTask : PipelineTask
     }
     protected override void OnExecute()
     {
-        string name = GetValue("Name");
-        if (name == Pipeline.Name)
-            throw new InvalidOperationException();
+        string name = EvalParameter("Name");
 
         var pipeline = Pipeline.Owner[name];
         foreach (var key in Pipeline.Variables.Keys)
             pipeline.Variables[key] = Pipeline.Variables[key];
-        Console.WriteLine($"Call {GetValue("Name")}");
-        pipeline.Execute();
+        Console.WriteLine($"Call {EvalParameter("Name")}");
+        pipeline.Execute(Pipeline.CallStack);
         Console.WriteLine($"Return");
     }
 

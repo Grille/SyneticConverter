@@ -1,5 +1,6 @@
 ﻿using SyneticPipelineTool.Tasks;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +13,12 @@ using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace SyneticPipelineTool;
 
+
 public partial class SynPipelineToolForm : Form
 {
+    AsyncPipelineExecuter executer;
     PipelineList Piplines;
+    bool timerCleanup = false;
 
     public Pipeline SelectedPipeline
     {
@@ -28,15 +32,41 @@ public partial class SynPipelineToolForm : Form
         set => tasksListBox.SelectedItem = value;
     }
 
+    public List<PipelineTask> SelectedTasks
+    {
+        get
+        {
+            var list = new List<PipelineTask>();
+            foreach (var item in tasksListBox.SelectedItems)
+            {
+                list.Add((PipelineTask)item);
+            }
+            return list;
+        }
+        set
+        {
+            tasksListBox.ClearSelected();
+            foreach (var task in value)
+            {
+                int idx = tasksListBox.Items.IndexOf(task);
+                tasksListBox.SetSelected(idx, true);
+            }
+        }
+    }
+
     public SynPipelineToolForm()
     {
         InitializeComponent();
+        executer = new AsyncPipelineExecuter();
         Piplines = new PipelineList();
         Piplines.Load();
         PipelinesChanged();
         if (Piplines.Count > 0)
             SelectedPipeline = Piplines[0];
 
+        refreshTimer.Interval = 100;
+
+        pipelinesListBox.DrawMode= DrawMode.OwnerDrawFixed;
         tasksListBox.DrawMode = DrawMode.OwnerDrawFixed;
     }
 
@@ -85,33 +115,34 @@ public partial class SynPipelineToolForm : Form
 
     public void PipelineSelectionChanged()
     {
-        bool pipelineFlag = SelectedPipeline != null;
+        bool single = SelectedPipeline != null;
 
-        buttonCopyP.Enabled = pipelineFlag;
-        buttonEditP.Enabled = pipelineFlag;
-        buttonRemoveP.Enabled = pipelineFlag;
-        buttonExecuteP.Enabled = pipelineFlag;
+        buttonCopyP.Enabled = single;
+        buttonEditP.Enabled = single;
+        buttonRemoveP.Enabled = single;
+        buttonExecuteP.Enabled = single;
 
-        buttonUpP.Enabled = pipelineFlag;
-        buttonDownP.Enabled = pipelineFlag;
+        buttonUpP.Enabled = single;
+        buttonDownP.Enabled = single;
 
-        tasksListBox.Enabled = pipelineFlag;
-        buttonNewT.Enabled = pipelineFlag;
+        tasksListBox.Enabled = single;
+        buttonNewT.Enabled = single;
 
         TasksChanged(false);
     }
 
     public void TaskSelectionChanged()
     {
-        bool taskFlag = SelectedTask != null;
+        bool single = SelectedTasks.Count == 1;
+        bool multi = SelectedTasks.Count > 1;
         bool invalid = SelectedTask is InvalidTypeTask;
 
-        buttonCopyT.Enabled = taskFlag & !invalid;
-        buttonEditT.Enabled = taskFlag & !invalid;
-        buttonRemoveT.Enabled = taskFlag;
+        buttonCopyT.Enabled = single && !invalid;
+        buttonEditT.Enabled = single && !invalid;
+        buttonRemoveT.Enabled = (single || multi);
 
-        buttonUpT.Enabled = taskFlag;
-        buttonDownT.Enabled = taskFlag;
+        buttonUpT.Enabled = (single || multi);
+        buttonDownT.Enabled = (single || multi);
     }
 
     public void PipelinesChanged(bool save = true)
@@ -138,9 +169,9 @@ public partial class SynPipelineToolForm : Form
 
     private void buttonExecuteP_Click(object sender, EventArgs e)
     {
-        Console.WriteLine("Start");
-        SelectedPipeline.Execute();
-        Console.WriteLine("Stop");
+        executer.Execute(SelectedPipeline);
+        PipelineSelectionChanged();
+        TaskSelectionChanged();
     }
 
     private void buttonNewP_Click(object sender, EventArgs e)
@@ -231,7 +262,10 @@ public partial class SynPipelineToolForm : Form
 
     private void buttonRemoveT_Click(object sender, EventArgs e)
     {
-        SelectedPipeline.Tasks.Remove(SelectedTask);
+        foreach (var task in SelectedTasks)
+        {
+            SelectedPipeline.Tasks.Remove(task);
+        }
         TasksChanged();
     }
 
@@ -245,18 +279,25 @@ public partial class SynPipelineToolForm : Form
 
     private void buttonUpT_Click(object sender, EventArgs e)
     {
-        var selected = SelectedTask;
-        SelectedPipeline.Tasks.UpItem(selected);
+        var selected = SelectedTasks;
+        foreach (var task in selected)
+        {
+            SelectedPipeline.Tasks.UpItem(task);
+        }
         TasksChanged();
-        SelectedTask = selected;
+        SelectedTasks = selected;
     }
 
     private void buttonDownT_Click(object sender, EventArgs e)
     {
-        var selected = SelectedTask;
-        SelectedPipeline.Tasks.DownItem(selected);
+        var selected = SelectedTasks;
+        selected.Reverse();
+        foreach (var task in selected)
+        {
+            SelectedPipeline.Tasks.DownItem(task);
+        }
         TasksChanged();
-        SelectedTask = selected;
+        SelectedTasks = selected;
     }
 
     private void tasksListBox_DoubleClick(object sender, EventArgs e)
@@ -275,23 +316,121 @@ public partial class SynPipelineToolForm : Form
 
     private void tasksListBox_DrawItem(object sender, DrawItemEventArgs e)
     {
-        var item = tasksListBox.Items[e.Index];
+        if (e.Index == -1)
+            return;
+
+        var pipeline = SelectedPipeline;
+        var task = tasksListBox.Items[e.Index];
 
         e.DrawBackground();
-        e.DrawFocusRectangle();
-     
+
         var g = e.Graphics;
 
-        SolidBrush brush;
+        Brush brushLineBack = Brushes.Gainsboro;
+        Brush brushLine = Brushes.DimGray;
+        Brush brushText;
 
-        if (item is NopTask)
-            brush = new SolidBrush(Color.Gray);
-        else if (item is InvalidTypeTask)
-            brush = new SolidBrush(Color.Red);
+        if (task is NopTask)
+            brushText = new SolidBrush(Color.Gray);
+        else if (task is InvalidTypeTask)
+            brushText = new SolidBrush(Color.Red);
         else
-            brush = new SolidBrush(e.ForeColor);
+            brushText = new SolidBrush(Color.Black);
 
-        g.DrawString(item.ToString(), e.Font, brush, (RectangleF)e.Bounds);
-        
+        if (e.State.HasFlag(DrawItemState.Selected))
+        {
+            //brushLine = Brushes.White;
+            brushText = Brushes.White;
+        }
+
+        if (executer.CallStack.Contains(pipeline) && pipeline.TaskPosition == e.Index) {
+            brushLineBack = Brushes.LightGreen;
+            brushLine = Brushes.DarkGreen;
+        }
+
+        int lineColumnWidth = 24;
+
+        var boundsLine = (RectangleF)e.Bounds;
+        boundsLine.Width = lineColumnWidth;
+        var boundsText = (RectangleF)e.Bounds;
+        boundsText.Width -= lineColumnWidth;
+        boundsText.X += lineColumnWidth;
+
+        g.FillRectangle(brushLineBack, boundsLine);
+
+        g.DrawString((e.Index + 1).ToString(), e.Font, brushLine, boundsLine);
+
+        g.DrawString(task.ToString(), e.Font, brushText, boundsText);
+
     }
+
+    private void pipelinesListBox_DrawItem(object sender, DrawItemEventArgs e)
+    {
+        if (e.Index == -1)
+            return;
+
+        var pipeline = Piplines[e.Index];
+
+        e.DrawBackground();
+
+        var g = e.Graphics;
+
+        Brush brushLineBack = Brushes.Gainsboro;
+        Brush brushLine = Brushes.DimGray;
+        Brush brushText;
+
+        brushText = new SolidBrush(Color.Black);
+
+        if (e.State.HasFlag(DrawItemState.Selected))
+        {
+            //brushLine = Brushes.White;
+            brushText = Brushes.White;
+        }
+
+        bool stackContains = executer.CallStack.Contains(pipeline);
+
+        if (stackContains)
+        {
+            brushLineBack = Brushes.LightGreen;
+            brushLine = Brushes.DarkGreen;
+        }
+
+        int lineColumnWidth = 24;
+
+        var boundsLine = (RectangleF)e.Bounds;
+        boundsLine.Width = lineColumnWidth;
+        var boundsText = (RectangleF)e.Bounds;
+        boundsText.Width -= lineColumnWidth;
+        boundsText.X += lineColumnWidth;
+
+        g.FillRectangle(brushLineBack, boundsLine);
+
+        if (stackContains)
+        {
+            var list = executer.CallStack.ToList();
+            list.Reverse();
+            int stackIdx = list.IndexOf(pipeline);
+            g.DrawString((stackIdx + 1).ToString(), e.Font, brushLine, boundsLine);
+        }
+
+        g.DrawString(pipeline.ToString(), e.Font, brushText, boundsText);
+    }
+
+    private void refreshTimer_Tick(object sender, EventArgs e)
+    {
+        if (executer.Running)
+        {
+            pipelinesListBox.Invalidate();
+            tasksListBox.Invalidate();
+            timerCleanup = true;
+        }
+        else if (timerCleanup)
+        {
+            pipelinesListBox.Invalidate();
+            tasksListBox.Invalidate();
+            timerCleanup = false;
+        }
+    }
+
+
 }
