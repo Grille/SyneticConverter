@@ -32,17 +32,17 @@ public class ModelmporterMox : MeshImporter
 
         for (int i = 0; i< mox.Head.MatCount; i++)
         {
-            if (i >= mtl.Sections.Count)
+            if (i >= mtl.Materials.Count)
             {
                 //Target.Materials.Add(dstMat);
             }
             else
             {
-                var srcMtl = mtl.Sections[i];
+                var srcMtl = mtl.Materials[i];
                 var dstMat = new ModelMaterial(Target);
                 //dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]);
 
-                //dstMat.TexSlot0.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex1Name);
+                dstMat.TexSlot0.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex1Name);
                 //dstMat.TexSlot1.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex2Name);
                 //dstMat.TexSlot2.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex3Name);
 

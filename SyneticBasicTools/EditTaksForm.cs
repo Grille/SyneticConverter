@@ -21,6 +21,8 @@ public partial class EditTaksForm : Form
 
     bool setup = true;
 
+    bool keepValues = false;
+
     public EditTaksForm(Pipeline pipeline, PipelineTask task = null)
     {
         InitializeComponent();
@@ -35,12 +37,12 @@ public partial class EditTaksForm : Form
             ["Variable"] = typeof(VariableOperationTask),
             ["For Each"] = typeof(ForEachTask),
             ["Call pipeline"] = typeof(ExecutePipelineTask),
-            ["< IO >"] = typeof(NopTask),
+            ["< IO - file >"] = typeof(NopTask),
             ["Load file"] = typeof(LoadFileTask),
-            ["Copy file"] = typeof(CopyFileTask),
-            ["Copy directory"] = typeof(CopyDirTask),
+            ["Copy file/directory"] = typeof(CopyFileOrDirTask),
+            ["Remove file/directory"] = typeof(RemoveFileOrDirTask),
             ["Clear directory"] = typeof(ClearDirTask),
-            ["Remove directory"] = typeof(RemoveDirTask),
+            ["Rename files in directory"] = typeof(RenameFilesTask),
             ["< Tools >"] = typeof(NopTask),
             ["Convert scenario files"] = typeof(ConvertScnFilesTask),
             ["Convert MBWR sprites to WR2"] = typeof(FixTreeNormTask),
@@ -55,6 +57,8 @@ public partial class EditTaksForm : Form
 
         Pipeline = pipeline;
 
+        if (task is InvalidTypeTask)
+            keepValues = true;
         if (task != null)
             Task = task.Clone();
         else
@@ -191,8 +195,19 @@ public partial class EditTaksForm : Form
         if (setup)
             return;
 
+        var oldTask = Task;
+
         var type = types[(string)comboBoxType.SelectedItem];
         Task = Pipeline.Tasks.CreateUnbound(type);
+
+        if (keepValues)
+        {
+            int count = Math.Min(oldTask.Parameters.Count, Task.Parameters.Count);
+            for (int i = 0; i < count; i++)
+            {
+                Task.Parameters[i] = oldTask.Parameters[i];
+            }
+        }
 
         DisplayParameters();
     }

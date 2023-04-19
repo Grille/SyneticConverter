@@ -5,60 +5,52 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GGL.IO;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class SkyFile : FileText
+public class SkyFile : SyneticTextFile
 {
     List<SkyData> Skys = new List<SkyData>();
-    public override void ReadFromFile(StreamReader r)
+    protected override void OnRead()
     {
-        SkyData sky = null;
+        Skys.Clear();
 
-        while (!r.EndOfStream)
+        foreach (var section in Sections)
         {
-            var line = r.ReadLine();
-            var split = line.Split(' ',2);
-            if (split.Length != 2)
-                continue;
+            var sky = new SkyData() { Name = section.Name };
+            Skys.Add(sky);
 
-            var key = split[0].Trim();
-            var value = split[1].Trim();
-
-            switch (key)
+            foreach (var pair in section)
             {
-                case "#":
+                switch (pair.Key)
                 {
-                    sky = new SkyData();
-                    sky.Name = value;
-                    Skys.Add(sky);
-                    break;
+                    case "SkyTex": { sky.SkyTex = pair.Value; break; }
+                    case "FogTab": { sky.FogTab = pair.Value; break; }
+                    case "FogCol": { sky.FogCol = pair.Value; break; }
+                    case "SunCol": { sky.SunCol = pair.Value; break; }
+                    case "AmbCol": { sky.AmbCol = pair.Value; break; }
+                    case "WlkAmb": { sky.WlkAmb = pair.Value; break; }
+                    case "WlkSun": { sky.WlkSun = pair.Value; break; }
+                    case "CarShd": { sky.CarShd = pair.Value; break; }
                 }
-                case "SkyTex": { sky.SkyTex = value; break; }
-                case "FogTab": { sky.FogTab = value; break; }
-                case "FogCol": { sky.FogCol = value; break; }
-                case "SunCol": { sky.SunCol = value; break; }
-                case "AmbCol": { sky.AmbCol = value; break; }
-                case "WlkAmb": { sky.WlkAmb = value; break; }
-                case "WlkSun": { sky.WlkSun = value; break; }
-                case "CarShd": { sky.CarShd = value; break; }
             }
         }
     }
 
-    public override void WriteToFile(StreamWriter w)
+    protected override void OnWrite()
     {
-        foreach (var sky in Skys)
-        {
-            w.WriteLine($"# {sky.Name}");
+        foreach (var sky in Skys) { 
+            var sec = new Section() { Name = sky.Name };
+            Sections.Add(sec);
 
-            w.WriteLine($"SkyTex {sky.SkyTex}");
-            w.WriteLine($"FogTab {sky.FogTab}");
-            w.WriteLine($"FogCol {sky.FogCol}");
-            w.WriteLine($"SunCol {sky.SunCol}");
-            w.WriteLine($"AmbCol {sky.AmbCol}");
-            w.WriteLine($"WlkAmb {sky.WlkAmb}");
-            w.WriteLine($"WlkSun {sky.WlkSun}");
-            w.WriteLine($"CarShd {sky.CarShd}");
+            sec.Add("SkyTex", sky.SkyTex);
+            sec.Add("FogTab", sky.FogTab);
+            sec.Add("FogCol", sky.FogCol);
+            sec.Add("SunCol", sky.SunCol);
+            sec.Add("AmbCol", sky.AmbCol);
+            sec.Add("WlkAmb", sky.WlkAmb);
+            sec.Add("WlkSun", sky.WlkSun);
+            sec.Add("CarShd", sky.CarShd);
         }
     }
 

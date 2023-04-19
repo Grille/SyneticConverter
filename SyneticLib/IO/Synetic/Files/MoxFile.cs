@@ -16,7 +16,7 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
     public const int ComplexWR2 = 33685504;
 
     public MHead Head;
-    public MTex32[] Textures;
+    public MPaintRegionInt32[] Textures;
 
     public int[] IndicesOffset { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public Vertex[] Vertecis { get; set; }
@@ -46,15 +46,15 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
 
         if (Head.Version == MBWR)
         {
-            Textures = new MTex32[Head.TextureCount];
+            Textures = new MPaintRegionInt32[Head.TextureCount];
             for (int i = 0; i < Head.TextureCount; i++)
             {
-                Textures[i] = (MTex32)br.Read<MTex16>();
+                Textures[i] = (MPaintRegionInt32)br.Read<MPaintRegionUInt16>();
             }
         }
         else
         {
-            Textures = br.ReadArray<MTex32>(Head.TextureCount);
+            Textures = br.ReadArray<MPaintRegionInt32>(Head.TextureCount);
         }
 
         var list = new List<byte>();
@@ -88,7 +88,7 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
         {
             for (int i = 0; i < Head.TextureCount; i++)
             {
-                bw.Write((MTex16)Textures[i]);
+                bw.Write((MPaintRegionUInt16)Textures[i]);
             }
         }
         else
@@ -131,12 +131,12 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
         };
     }
 
-    public struct MPoly16
+    public struct MPolygonUInt16
     {
         public ushort X, Y, Z;
     }
 
-    public struct MTex32
+    public struct MPaintRegionInt32
     {
         public int MatId;
         public byte Flag0, Flag1;
@@ -144,13 +144,13 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
         public int PolyOffset, PolyCount, VertBegin, VertEnd;
     }
 
-    public struct MTex16
+    public struct MPaintRegionUInt16
     {
         public ushort MatId;
         public byte Flag0, Flag1;
         public ushort PolyOffset, PolyCount, VertBegin, VertEnd;
 
-        public static explicit operator MTex16(MTex32 a) => new MTex16()
+        public static explicit operator MPaintRegionUInt16(MPaintRegionInt32 a) => new MPaintRegionUInt16()
         {
             MatId = (ushort)a.MatId,
             Flag0 = a.Flag0,
@@ -161,7 +161,7 @@ public class MoxFile : FileBinary, IVertexData, IIndexData
             VertEnd = (ushort)a.VertEnd,
         };
 
-        public static explicit operator MTex32(MTex16 a) => new MTex32()
+        public static explicit operator MPaintRegionInt32(MPaintRegionUInt16 a) => new MPaintRegionInt32()
         {
             MatId = a.MatId,
             Flag0 = a.Flag0,

@@ -138,7 +138,7 @@ public partial class SynPipelineToolForm : Form
         bool invalid = SelectedTask is InvalidTypeTask;
 
         buttonCopyT.Enabled = single && !invalid;
-        buttonEditT.Enabled = single && !invalid;
+        buttonEditT.Enabled = single;
         buttonRemoveT.Enabled = (single || multi);
 
         buttonUpT.Enabled = (single || multi);

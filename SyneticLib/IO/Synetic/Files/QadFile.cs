@@ -265,6 +265,62 @@ public unsafe class QadFile : FileBinary
         assertFileSize(bw.Length);
     }
 
+    public void RecalcMaterialChecksum()
+    {
+        var list = new List<Transform>();
+
+        for (int i = 0; i < Materials.Length; i++)
+        {
+            ref var mat = ref Materials[i];
+            if (!list.Contains(mat.Matrix0))
+                list.Add(mat.Matrix0);
+
+            if (!list.Contains(mat.Matrix1))
+                list.Add(mat.Matrix1);
+
+            if (!list.Contains(mat.Matrix2))
+                list.Add(mat.Matrix2);
+        }
+
+        for (int i = 0; i < Materials.Length; i++)
+        {
+            ref var mat = ref Materials[i];
+
+            mat.X0 = list.IndexOf(mat.Matrix0);
+            mat.X1 = list.IndexOf(mat.Matrix1);
+            mat.X2 = list.IndexOf(mat.Matrix2);
+        }
+
+    }
+
+    record class SortContainer(int id, MMaterialType1 mat);
+    public void SortMaterials()
+    {
+        var list = new List<SortContainer>();
+
+        for (int i = 0; i < Materials.Length; i++)
+            list.Add(new(i, Materials[i]));
+
+        int size = TextureNames.Length;
+        list.Sort((a, b) =>
+            (a.mat.Mode - b.mat.Mode) * (size * size) + (a.mat.Tex0Id - b.mat.Tex0Id) * size + (a.mat.Tex1Id - b.mat.Tex1Id)
+        );
+
+        for (int i = 0; i < Materials.Length; i++)
+            Materials[i] = list[i].mat;
+
+        int[] ids = new int[list.Count];
+        for (int i = 0; i < list.Count; i++)
+            ids[list[i].id] = i;
+
+        for (int i = 0; i < PolyRegions.Length; i++)
+        {
+            ref var reg = ref PolyRegions[i];
+            reg.SurfaceId1 = (ushort)ids[reg.SurfaceId1];
+        }
+
+    }
+
 
     public void SetFlagsAccordingToVersion(GameVersion version)
     {

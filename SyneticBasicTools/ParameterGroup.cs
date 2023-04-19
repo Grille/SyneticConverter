@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,15 +12,16 @@ namespace SyneticPipelineTool;
 public class ParameterGroup : IEnumerable<Parameter>, IViewObject
 {
     private bool isSealed = false;
-    private Dictionary<string, Parameter> parameters = new();
+
+    private List<string> keys = new();
+    private List<Parameter> values = new();
 
     public void Def(ParameterTypes type, string name, string desc = "", string value = "", object args = null)
     {
         if (isSealed == true)
             throw new InvalidOperationException();
 
-        var parameter = ParameterFactory.Create(type, name, desc, value, args);
-        parameters.Add(name, parameter);
+        Add(ParameterFactory.Create(type, name, desc, value, args));
     }
 
     public void Add(Parameter parameter)
@@ -27,7 +29,11 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
         if (isSealed == true)
             throw new InvalidOperationException();
 
-        parameters.Add(parameter.Name, parameter);
+        if (keys.Contains(parameter.Name))
+            throw new InvalidOperationException();
+
+        keys.Add(parameter.Name);
+        values.Add(parameter);
     }
 
     public void Add(Parameter[] parameters)
@@ -43,38 +49,52 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
         isSealed = true;
     }
 
+    public string this[int index]
+    {
+        get
+        {
+            AssertSealed();
+            return values[index].Value;
+        }
+        set
+        {
+            AssertSealed();
+            values[index].Value = value;
+        }
+    }
+
     public string this[string name]
     {
         get
         {
             AssertSealed();
-            return parameters[name].Value;
+            return values[keys.IndexOf(name)].Value;
         }
         set
         {
             AssertSealed();
-            parameters[name].Value = value;
+            values[keys.IndexOf(name)].Value = value;
         }
     }
 
-    public string[] Keys => parameters.Keys.ToArray();
+    public string[] Keys => keys.ToArray();
 
-    public int Count => parameters.Count;
+    public int Count => keys.Count;
 
 
-    public IEnumerator<Parameter> GetEnumerator() => parameters.Values.GetEnumerator();
+    public IEnumerator<Parameter> GetEnumerator() => values.GetEnumerator();
 
     public void ReadFromView(BinaryViewReader br)
     {
         AssertSealed();
         int count = br.ReadUInt16();
-        var keys = parameters.Keys.ToArray();
+        var keys = Keys;
         for (int i = 0; i < count; i++)
         {
             string value = br.ReadString();
             if (i < keys.Length)
             {
-                parameters[keys[i]].Value = value;
+                this[keys[i]] = value;
             }
         }
     }
@@ -88,8 +108,8 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
     public void WriteToView(BinaryViewWriter bw)
     {
         AssertSealed();
-        bw.WriteUInt16((ushort)parameters.Values.Count);
-        foreach (var parameter in parameters.Values)
+        bw.WriteUInt16((ushort)values.Count);
+        foreach (var parameter in values)
             bw.WriteString(parameter.Value);
     }
 

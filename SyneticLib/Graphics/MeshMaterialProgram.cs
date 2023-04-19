@@ -1,6 +1,7 @@
 ﻿using System;
 using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
+using SyneticLib.Graphics.Shaders;
 
 namespace SyneticLib.Graphics;
 public class MeshMaterialProgram : GLProgram
@@ -20,7 +21,7 @@ public class MeshMaterialProgram : GLProgram
 
     protected override void OnCreate()
     {
-        Compile(GLSLSource.MeshVertex, GLSLSource.MeshFragment);
+        Compile(GLSLSources.MeshVertex, GLSLSources.MeshFragment);
 
         UModelMatrix4 = GetUniformLocation("uModel");
         UViewMatrix4 = GetUniformLocation("uView");

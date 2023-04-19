@@ -71,16 +71,6 @@ public static class WR1ToWR2Conv
             ConvertMaterial(ref qad.Materials[i]);
         }
 
-        for (int i = 0; i < qad.PropClassInfo.Length; i++)
-        {
-            ref var prop = ref qad.PropClassInfo[i];
-        }
-
-        for (int i = 0; i < qad.Chunks.Length; i++)
-        {
-            ref var chunk = ref qad.Chunks[i];
-        }
-
         int idx0 = Array.FindIndex(qad.TextureNames, (a) => a == "Blumen");
         int idx1 = Array.FindIndex(qad.GroundPhysics, (a) => a.Name == "Gras");
 
@@ -88,10 +78,10 @@ public static class WR1ToWR2Conv
             qad.Tex2Ground[idx0] = (ushort)idx1;
 
         FixObjects(qad);
-        SortMaterials(qad);
         FixGrounds(qad);
-        RecalcMaterialChecksum(qad);
 
+        qad.SortMaterials();
+        qad.RecalcMaterialChecksum();
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.Head.FlagX2 = 1;
@@ -175,65 +165,6 @@ public static class WR1ToWR2Conv
                 throw new InvalidDataException($"Unexpected material mode: '{mat.Mode}'");
             }
         }
-    }
-
-    public static void RecalcMaterialChecksum(QadFile qad)
-    {
-        var list = new List<Transform>();
-
-        for (int i = 0; i < qad.Materials.Length; i++)
-        {
-            ref var mat = ref qad.Materials[i];
-            if (!list.Contains(mat.Matrix0))
-                list.Add(mat.Matrix0);
-
-            if (!list.Contains(mat.Matrix1))
-                list.Add(mat.Matrix1);
-
-            if (!list.Contains(mat.Matrix2))
-                list.Add(mat.Matrix2);
-        }
-
-        for (int i = 0; i < qad.Materials.Length; i++)
-        {
-            ref var mat = ref qad.Materials[i];
-
-            mat.X0 = list.IndexOf(mat.Matrix0);
-            mat.X1 = list.IndexOf(mat.Matrix1);
-            mat.X2 = list.IndexOf(mat.Matrix2);
-        }
-
-    }
-
-    record class SortContainer(int id, QadFile.MMaterialType1 mat);
-
-
-
-    public static void SortMaterials(QadFile qad)
-    {
-        var list = new List<SortContainer>();
-
-        for (int i = 0; i < qad.Materials.Length; i++)
-            list.Add(new(i, qad.Materials[i]));
-
-        int size = qad.TextureNames.Length;
-        list.Sort((a, b) =>
-            (a.mat.Mode - b.mat.Mode) * (size * size) + (a.mat.Tex0Id - b.mat.Tex0Id) * size + (a.mat.Tex1Id - b.mat.Tex1Id)
-        );
-
-        for (int i = 0; i < qad.Materials.Length; i++)
-            qad.Materials[i] = list[i].mat;
-
-        int[] ids = new int[list.Count];
-        for (int i = 0; i < list.Count; i++)
-            ids[list[i].id] = i;
-
-        for (int i = 0; i< qad.PolyRegions.Length; i++)
-        {
-            ref var reg = ref qad.PolyRegions[i];
-            reg.SurfaceId1 = (ushort)ids[reg.SurfaceId1];
-        }
-
     }
 
     public static void FixObjects(QadFile qad)
@@ -400,8 +331,8 @@ public static class WR1ToWR2Conv
         mtl.Path = mtlpath;
 
         mtl.Load();
-        mtl.Sections[0]["Diffuse"] = new[] { diffuse };
-        mtl.Sections[0]["Ambient"] = new[] { ambient };
+        mtl.Materials[0]["Diffuse"] = new[] { diffuse };
+        mtl.Materials[0]["Ambient"] = new[] { ambient };
         mtl.Save();
 
         

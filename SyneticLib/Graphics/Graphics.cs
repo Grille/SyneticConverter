@@ -180,7 +180,7 @@ public static class Graphics
         if (!sprite.Texture.GLBuffer.TryCreate())
             throw new InvalidOperationException("Could not create GL buffer.");
 
-        sprite.Texture.GLBuffer.Bind();
+        BindTexture(sprite.Texture);
 
         GL.DrawElements(PrimitiveType.Triangles, Sprite.GLBuffer.ElementCount, DrawElementsType.UnsignedShort, 0 * 3 * 2);
     }
@@ -190,13 +190,13 @@ public static class Graphics
     public static void AssertRessource(Ressource ressource)
     {
         if (ressource.DataState != DataState.Loaded)
-            throw new ArgumentException(nameof(ressource), $"{ressource.GetType().Name} is not loaded.");
+            throw new ArgumentException($"{ressource.GetType().Name} {ressource.SourcePath} is not loaded.", nameof(ressource));
     }
 
     public static void AssertGLState(GLStateObject obj)
     {
         if (!obj.TryCreate())
-            throw new ArgumentException(nameof(obj), $"{obj.GetType().Name} is not ready.");
+            throw new ArgumentException($"{obj.GetType().Name} is not ready.", nameof(obj));
     }
 
 }

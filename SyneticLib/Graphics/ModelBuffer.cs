@@ -28,20 +28,17 @@ public unsafe class ModelBuffer : GLMeshBuffer
             dstv.UV = srcv.UV0;
         }
 
+        VertexArrayID = GL.GenVertexArray();
         VerticesID = GL.GenBuffer();
         IndicesID = GL.GenBuffer();
 
+        GL.BindVertexArray(VertexArrayID);
 
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndicesID);
         GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * 3 * indices.Length, indices, BufferUsageHint.StaticDraw);
 
         GL.BindBuffer(BufferTarget.ArrayBuffer, VerticesID);
         GL.BufferData(BufferTarget.ArrayBuffer, sizeof(Vertex) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
-
-        AttribID = GL.GenVertexArray();
-
-        GL.BindVertexArray(AttribID);
-
 
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LPosition);
         GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(Vertex), Vertex.LNormal);

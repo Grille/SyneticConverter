@@ -34,6 +34,19 @@ internal class InvalidTypeTask : PipelineTask
         throw new NotImplementedException();
     }
 
+    public override InvalidTypeTask Clone()
+    {
+        var clone = new InvalidTypeTask(AssemblyQualifiedName, ParametersCount);
+
+        var keys = Parameters.Keys;
+        foreach (var key in keys)
+        {
+            clone.Parameters[key] = Parameters[key];
+        }
+
+        return clone;
+    }
+
     public override string ToString()
     {
         string name = AssemblyQualifiedName.Split(',', 2)[0];

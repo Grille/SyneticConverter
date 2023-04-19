@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using OpenTK.Graphics.OpenGL4;
 using System.Numerics;
+using SyneticLib.Graphics.Shaders;
 
 namespace SyneticLib.Graphics;
 public class Sprite
@@ -38,7 +39,7 @@ public class Sprite
         public int UScale;
         protected override void OnCreate()
         {
-            Compile(GLSLSource.SpriteVertex, GLSLSource.SpriteFragment);
+            Compile(GLSLSources.SpriteVertex, GLSLSources.SpriteFragment);
             UScale = GetUniformLocation("uScale");
         }
     }
@@ -62,8 +63,11 @@ public class Sprite
                 new(new(-1,-1),new(0,1)),
             };
 
+            VertexArrayID = GL.GenVertexArray();
             VerticesID = GL.GenBuffer();
             IndicesID = GL.GenBuffer();
+
+            GL.BindVertexArray(VertexArrayID);
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndicesID);
             GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(ushort) * indices.Length, indices, BufferUsageHint.StaticDraw);
@@ -71,8 +75,6 @@ public class Sprite
             GL.BindBuffer(BufferTarget.ArrayBuffer, VerticesID);
             GL.BufferData(BufferTarget.ArrayBuffer, sizeof(Vertex) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
 
-            AttribID = GL.GenVertexArray();
-            GL.BindVertexArray(AttribID);
             GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, sizeof(Vertex), 0);
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, sizeof(Vertex), 8);
             GL.EnableVertexAttribArray(0);

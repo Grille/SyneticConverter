@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
 
-namespace SyneticLib.Graphics;
-internal static class GLSLSource
+namespace SyneticLib.Graphics.Shaders;
+internal static class GLSLSources
 {
     public static string TerrainVertex;
     public static string TerrainFragment;
@@ -16,7 +16,7 @@ internal static class GLSLSource
     public static string SpriteVertex;
     public static string SpriteFragment;
 
-    static GLSLSource()
+    static GLSLSources()
     {
         TerrainVertex = LoadInternalShader("TerrainVertex");
         TerrainFragment = LoadInternalShader("TerrainFragment");
@@ -30,10 +30,10 @@ internal static class GLSLSource
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = $"SyneticLib.Graphics.Shaders.{name}.glsl";
-        using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-        using (StreamReader reader = new StreamReader(stream))
+        using (var stream = assembly.GetManifestResourceStream(resourceName))
+        using (var reader = new StreamReader(stream))
         {
-            string result = reader.ReadToEnd();
+            var result = reader.ReadToEnd();
             return result;
         }
     }

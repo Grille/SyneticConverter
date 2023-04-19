@@ -8,7 +8,7 @@ public abstract class GLMeshBuffer : GLStateObject
 {
     public int VerticesID;
     public int IndicesID;
-    public int AttribID;
+    public int VertexArrayID;
     public int ElementCount;
 
     public bool IsInitialized;
@@ -16,15 +16,13 @@ public abstract class GLMeshBuffer : GLStateObject
 
     protected sealed override void OnBind()
     {
-        GL.BindVertexArray(AttribID);
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndicesID);
-        GL.BindBuffer(BufferTarget.ArrayBuffer, VerticesID);
+        GL.BindVertexArray(VertexArrayID);
     }
 
     protected sealed override void OnDestroy()
     {
         GL.DeleteBuffer(IndicesID);
         GL.DeleteBuffer(VerticesID);
-        GL.DeleteVertexArray(AttribID);
+        GL.DeleteVertexArray(VertexArrayID);
     }
 }

@@ -7,57 +7,60 @@ using System.IO;
 using System.Globalization;
 
 namespace SyneticLib.IO.Synetic.Files;
-public class MtlFile : FileText
+public class MtlFile : SyneticTextFile
 {
-    public SHead Head;
-    public List<SMaterial> Sections;
+    public string[] ColSetInf;
+    public List<SMaterial> Materials;
 
     public MtlFile()
     {
-        Head = new();
-        Sections = new();
+        Materials = new();
     }
 
-    public override void ReadFromFile(StreamReader r)
+    protected override void OnRead()
     {
-        MtlSection usedSection = Head;
-        while (!r.EndOfStream)
+        if (Head.TryGetValue("ColSetInf", out string value))
         {
-            var line = r.ReadLine().Trim();
-
-
-            var split = line.Split(' ', 2);
-            if (split.Length != 2)
-                continue;
-
-            var key = split[0];
-            var value = split[1].Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            if (key == "#")
-            {
-                var section = new SMaterial();
-                usedSection = section;
-                Sections.Add(section);
-            }
-
-            usedSection.Add(key, value);
+            ColSetInf = Head["ColSetInf"].Split(' ');
         }
-    }
-
-    public override void WriteToFile(StreamWriter w)
-    {
-        foreach (var pair in Head) { 
-            w.WriteLine($"{pair.Key} {string.Join(' ',pair.Value)}");
+        else
+        {
+            ColSetInf = new[] { "\"Default\"" };
         }
+
+        Materials.Clear();
 
         foreach (var section in Sections)
         {
+            var material = new SMaterial() { ID = section.Name };
+            Materials.Add(material);
+
             foreach (var pair in section)
             {
-                w.WriteLine($"{pair.Key} {string.Join(' ', pair.Value)}");
+                switch (pair.Key)
+                {
+                    case "Tex1Name": { material.Tex1Name = pair.Value.Trim('"'); break; }
+                }
             }
         }
     }
+
+    protected override void OnWrite()
+    {
+
+    }
+    /*
+    uint[] ReadHexArray(Section section, string key, int size)
+    {
+        var split = section[key].Split(' ');
+
+
+        for (int i = 0;i< split.Length;i++)
+        {
+
+        }
+    }
+    */
 
     public class MtlSection : Dictionary<string, string[]>
     {
@@ -66,13 +69,31 @@ public class MtlFile : FileText
 
     public class SHead : MtlSection
     {
-        //public string[] ColSetInf ;
+        public string[] ColSetInf;
     }
 
     public class SMaterial : MtlSection
     {
-        /*
+        public string ID;
+        public int[] MatClass;
+        public uint[] Diffuse;
+        public uint[] Ambient;
+        public uint[] Specular;
+        public uint[] Reflect;
+        public uint[] Specular2;
+        public uint[] XDiffuse;
+        public uint[] XSpecular;
 
+        public string[] Transparency;
+        public string Tex1Name;
+        public string Tex2Name;
+        public string Tex3Name;
+        public uint[] TexFlags;
+        public float[] TexOffset;
+        public float[] TexScale;
+        public float TexAngle;
+
+        /*
         public int ID => (int)GetHexArray("#")[0];
         public int[] MatClass => GetIntArray("MatClass");
         public uint[] Diffuse => GetHexArray("Diffuse");
@@ -92,5 +113,6 @@ public class MtlFile : FileText
         public float[] TexScale => GetFloatArray("TexScale");
         public float TexAngle => GetFloatArray("TexAngle")[0];
         */
+
     }
 }

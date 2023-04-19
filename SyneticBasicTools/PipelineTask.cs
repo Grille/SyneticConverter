@@ -71,7 +71,7 @@ public abstract class PipelineTask : IViewObject
 
     }
 
-    public PipelineTask Clone()
+    public virtual PipelineTask Clone()
     {
         var type = GetType();
         var clone = Pipeline.Tasks.CreateUnbound(type);

@@ -36,11 +36,11 @@ public unsafe class TerrainBuffer : GLMeshBuffer
             dstv.DebugColor = srcv.LightColor.ToNormalizedRGB();
         }
 
+        VertexArrayID = GL.GenVertexArray();
         VerticesID = GL.GenBuffer();
         IndicesID = GL.GenBuffer();
-        AttribID = GL.GenVertexArray();
 
-        GL.BindVertexArray(AttribID);
+        GL.BindVertexArray(VertexArrayID);
 
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndicesID);
         GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(Vector3Int) * indices.Length, indices, BufferUsageHint.StaticDraw);
@@ -61,8 +61,8 @@ public unsafe class TerrainBuffer : GLMeshBuffer
     [StructLayout(LayoutKind.Explicit, Size = Size)]
     internal unsafe struct Vertex
     {
-        private const int s_vec2 = 4 * 2;
-        private const int s_vec3 = 4 * 3;
+        private const int s_vec2 = sizeof(float) * 2;
+        private const int s_vec3 = sizeof(float) * 3;
 
         public const int LPosition = 0;
         public const int LNormal = LPosition + s_vec3;

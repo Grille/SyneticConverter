@@ -49,6 +49,8 @@ public class Texture : Ressource
             0, 0, 255, 255,
             0, 0, 0, 255
         };
+
+        DataState = DataState.Loaded;
     }
 
     public Texture(Ressource parent, string path) : base(parent, path, PointerType.File)
