@@ -27,13 +27,13 @@ public static class WR1ToWR2Conv
         */
     }
 
-    public static void ConvertV(string path, string name, float ambientOffset)
+    public static void Convert(string path, float ambientOffset)
     {
         Console.WriteLine($"Convert '{path}'");
 
-        string qadpath = Path.Join(path, name + ".qad");
-        string vtxpath = Path.Join(path, name + ".vtx");
-        string snipath = Path.Join(path, name + ".sni");
+        string qadpath = Path.ChangeExtension(path, ".qad");
+        string vtxpath = Path.ChangeExtension(path, ".vtx");
+        string snipath = Path.ChangeExtension(path, ".sni");
 
         ConvertQad(qadpath);
         ConvertVtx(vtxpath, ambientOffset);

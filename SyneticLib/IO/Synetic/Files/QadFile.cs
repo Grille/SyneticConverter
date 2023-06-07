@@ -81,7 +81,19 @@ public unsafe class QadFile : FileBinary
         public Transform Mat1;
         public int A;
         public int B;
-        public int C;
+
+        public static implicit operator MMaterialType1(MMaterialType2 a) => new MMaterialType1()
+        {
+            Tex0Id = a.L0Tex0Id,
+            Tex1Id = a.L0Tex1Id,
+            Tex2Id = a.L0Tex2Id,
+            Mode = a.L1Mode,
+            Matrix0 = Transform.Empety,
+            Matrix1 = Transform.Empety,
+            Matrix2 = Transform.Empety,
+            X0 = a.A,
+            X1 = a.B,
+        };
     }
 
     public struct MPropInstance
@@ -201,7 +213,11 @@ public unsafe class QadFile : FileBinary
 
         
         PolyRegions = br.ReadArray<MPolyRegion>(Head.PolyRegionCount);
-        Materials = br.ReadArray<MMaterialType1>(Head.MaterialCount);
+        Materials = new MMaterialType1[Head.MaterialCount];
+        for (int i = 0; i < Head.MaterialCount; i++)
+            Materials[i] = UseMaterialType2 ? br.Read<MMaterialType2>() : br.Read<MMaterialType1>();
+
+        //Materials = br.ReadArray<MMaterialType1>(Head.MaterialCount);
         PropInstances = br.ReadArray<MPropInstance>(Head.PropInstanceCount);
 
         Lights = new MLight[Head.LightCount];
@@ -339,7 +355,7 @@ public unsafe class QadFile : FileBinary
     private void assertFileSize(long length)
     {
         int endPos = calcFileSize();
-        int diff = endPos - (int)length;
+        int diff = endPos - (int)length; // + to small, - to big
         if (diff != 0)
             throw new Exception($"Invalid File Size: ({endPos} != {length}) Diff {diff}");
 

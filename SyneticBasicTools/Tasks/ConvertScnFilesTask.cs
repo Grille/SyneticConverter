@@ -14,18 +14,25 @@ internal class ConvertScnFilesTask : PipelineTask
     {
         Parameters.Def(ParameterTypes.String, "Path", "Path to directory containing scenario variant e.g. <C:/Alps/V1>.");
         Parameters.Def(ParameterTypes.String, "Name", "Scenario name e.g. <Alps>");
-        Parameters.Def(ParameterTypes.Enum, "SrcVersion", "", "WR1", new[] { "WR1" });
+        Parameters.Def(ParameterTypes.Enum, "SrcVersion", "", "WR1", new[] { "WR1", "C11" });
         Parameters.Def(ParameterTypes.Enum, "DstVersion", "", "WR2", new[] { "WR2" });
         Parameters.Def(ParameterTypes.Single, "Ambient Light", "", "0.22");
     }
 
     protected override void OnExecute()
     {
+        string verSrc = EvalParameter("SrcVersion");
+        string verDst = EvalParameter("DstVersion");
+
         string path = EvalParameter("Path");
         string name = EvalParameter("Name");
         float ambient = float.Parse(EvalParameter("Ambient Light"));
 
-        WR1ToWR2Conv.ConvertV(path, name, ambient);
+        if (verSrc == "WR1")
+        WR1ToWR2Conv.Convert(path, ambient);
+        if (verSrc == "C11")
+            C11ToWR2Conv.Convert(path);
+
         Console.WriteLine($"Convert files {EvalParameter("SrcVersion")} to {EvalParameter("DstVersion")} {path}");
     }
 

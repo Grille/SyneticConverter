@@ -35,18 +35,8 @@ public abstract class PipelineTask : IViewObject
 
     public void Execute()
     {
-        try
-        {
-            Parameters.AssertSealed();
-            OnExecute();
-        }
-        catch (Exception err)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(err.Message);
-            Console.ForegroundColor = ConsoleColor.Gray;
-            throw;
-        }
+        Parameters.AssertSealed();
+        OnExecute();
     }
 
     public void Update() => OnUpdate();

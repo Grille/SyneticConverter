@@ -1,4 +1,4 @@
-﻿namespace SyneticGraphicsLib
+﻿namespace SyneticLib.Graphics
 {
     public class Class1
     {
