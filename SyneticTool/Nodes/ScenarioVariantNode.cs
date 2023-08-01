@@ -12,7 +12,7 @@ namespace SyneticTool.Nodes;
 
 internal class ScenarioVariantNode : DataTreeNode
 {
-    public new Scenario DataValue { get => (Scenario)base.DataValue; set => base.DataValue = value; }
+    public new Scenario DataValue => (Scenario)base.Ressource;
 
     public DataTreeNode TerrainNode;
     public TextureDirectoryNode TerrainTexturesNode;
@@ -24,20 +24,20 @@ internal class ScenarioVariantNode : DataTreeNode
     public ScenarioVariantNode(Scenario variant) : base(variant)
     {
         Image = IconList.Terrain;
-        Text = variant.FileName;
+        Text = variant.Name;
 
         TerrainNode = new(variant.Terrain);
         TerrainNode.Image = IconList.Terrain;
 
-        TerrainTexturesNode = new(variant.TerrainTextures, "Terrain-Textures");
-        ObjectsNode = new(variant.Models);
-        ObjectTexturesNode = new(variant.ModelTextures, "Object-Textures");
+        //TerrainTexturesNode = new(variant.TerrainTextures, "Terrain-Textures");
+        //ObjectsNode = new(variant.Models);
+        //ObjectTexturesNode = new(variant.ModelTextures, "Object-Textures");
         LightsNode = new(variant.Lights);
         PropsNode = new(variant.PropClasses);
 
-        Nodes.Add(TerrainTexturesNode);
-        Nodes.Add(ObjectTexturesNode);
-        Nodes.Add(ObjectsNode);
+        //Nodes.Add(TerrainTexturesNode);
+        //Nodes.Add(ObjectTexturesNode);
+        //Nodes.Add(ObjectsNode);
         Nodes.Add(TerrainNode);
         Nodes.Add(LightsNode);
         Nodes.Add(PropsNode);
@@ -45,8 +45,6 @@ internal class ScenarioVariantNode : DataTreeNode
 
     public override void OnSelect(TreeViewCancelEventArgs e)
     {
-        if (DataValue.NeedLoad)
-            DataValue.Load();
         MainForm.Display.ShowScenario(DataValue);
     }
 }

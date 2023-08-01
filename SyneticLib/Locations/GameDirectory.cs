@@ -7,13 +7,15 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
+using static System.IO.Path;
+
 using SyneticLib.LowLevel;
 
-namespace SyneticLib;
+namespace SyneticLib.Locations;
 
-public class GameDirectory : Ressource
+public class GameDirectory : Location
 {
-    public RessourceDirectory<ScenarioVGroup> Scenarios { get; }
+    public RessourceDirectory<ScenarioGroup> Scenarios { get; }
 
     public RessourceDirectory<Car> Cars { get; }
 
@@ -21,47 +23,58 @@ public class GameDirectory : Ressource
 
     public GameVersion Version { get; }
 
-    public GameDirectory(string path, GameVersion version) : base(null, path)
+    public GameDirectory(string path, GameVersion version) : base(path)
     {
         if (version == GameVersion.None)
-            Version = FindDirectoryGameVersion(path);
+            Version = GetDirectoryGameVersion(path);
         else
             Version = version;
 
-        Scenarios = new(this, ChildPath("Scenarios"),
+        Scenarios = new(ChildPath("Scenarios"),
             (path) => Directory.Exists(path),
-            (path) => new ScenarioVGroup(this, path)
+            (path) => new ScenarioGroup(this, path)
         );
 
-        Cars = new(this, ChildPath("Autos"),
+        Cars = new(ChildPath("Autos"),
             (path) => Directory.Exists(path),
-            (path) => new Car(this, path)
+            (path) => null
         );
 
-        Sounds = new(this, ChildPath("Sounds"),
+        Sounds = new(ChildPath("Sounds"),
             (path) => File.Exists(path),
-            (path) => new Sound(this, path)
+            (path) => null
         );
     }
+
+    protected override void OnSeek()
+    {
+        Scenarios.Seek();
+        Cars.Seek();
+        Sounds.Seek();
+    }
+
+    public GameDirectory(string path) :
+        this(path, GetDirectoryGameVersion(path))
+    { }
 
     internal static GameDirectory Global = new("Global", GameVersion.WR2);
 
-    public ScenarioVGroup GetScenario(string name)
+    public ScenarioGroup GetScenario(string name)
     {
-        var path = Path.Combine(SourcePath, "Scenarios", name);
-        return new ScenarioVGroup(this, path);
+        var path = Combine(Path, "Scenarios", name);
+        return new ScenarioGroup(this, path);
     }
 
-    public ScenarioVGroup CreateScenarioGroup(string name)
+    public ScenarioGroup CreateScenarioGroup(string name)
     {
-        var path = Path.Combine(SourcePath, "Scenarios", name);
+        var path = Combine(Path, "Scenarios", name);
 
 
 
-        return new ScenarioVGroup(this, path);
+        return new ScenarioGroup(this, path);
     }
 
-    public static GameVersion FindDirectoryGameVersion(string path)
+    public static GameVersion GetDirectoryGameVersion(string path)
     {
         if (!Directory.Exists(path))
             return GameVersion.None;
@@ -70,7 +83,7 @@ public class GameDirectory : Ressource
         var names = new List<string>();
 
         foreach (var file in files)
-            names.Add(Path.GetFileName(file).ToLower());
+            names.Add(GetFileName(file).ToLower());
 
         foreach (var name in names)
         {
@@ -127,21 +140,4 @@ public class GameDirectory : Ressource
 
         _ => GameVersion.None,
     };
-
-    protected override void OnLoad()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSave()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnSeek()
-    {
-        Scenarios.TrySeek();
-        Cars.TrySeek();
-        Sounds.TrySeek();
-    }
 }

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace SyneticLib.IO;
 public abstract class ScenarioExporter
 {
-    protected ScenarioVGroup Target;
+    protected ScenarioGroup Target;
     protected string path;
 
-    public ScenarioExporter(ScenarioVGroup target)
+    public ScenarioExporter(ScenarioGroup target)
     {
         Target = target;
         //path = target.RootDir;

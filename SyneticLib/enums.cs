@@ -7,34 +7,18 @@ using SyneticLib;
 
 namespace SyneticLib;
 
-public enum PointerState
-{
-    None,
-    Exists,
-    Invalid,
-}
-
 public enum PointerType
 {
-    Virtual,
     Directory,
     File,
 }
 
-public enum DataState
-{
-    None,
-    Seeked,
-    Loaded,
-    Changed,
-    Error,
-}
-
 public enum TextureFormat
 {
-    Rgba32,
-    Rgba24Dxt1,
-    Rgba32Dxt5,
+    RGB24,
+    RGBA32,
+    RGB24Dxt1,
+    RGBA32Dxt5,
 }
 
 public enum MaterialShadingMode

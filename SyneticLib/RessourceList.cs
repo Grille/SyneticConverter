@@ -7,25 +7,22 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace SyneticLib;
-public class RessourceList<T> : Ressource, IList<T> where T : Ressource
+public class RessourceList<T> : IReadOnlyList<T> where T : Ressource
 {
     public readonly List<T> Items;
 
-    public RessourceList(Ressource parent, string path, PointerType type = PointerType.Virtual) : base(parent, path, type)
+    public RessourceList()
     {
         Items = new();
     }
 
-
-    public T this[int index] { get => Items[index]; set => Items[index] = value; }
+    public T this[int index] { 
+        get => Items[index]; 
+    }
 
     public int Count => Items.Count;
 
-    public bool IsReadOnly => false;
-
-    public void Add(T item) => Items.Add(item);
-
-    public void Clear() => Items.Clear();
+    public bool IsReadOnly => true;
 
     public bool Contains(T item) => Items.Contains(item);
 
@@ -35,18 +32,4 @@ public class RessourceList<T> : Ressource, IList<T> where T : Ressource
     IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
 
     public int IndexOf(T item) => Items.IndexOf(item);
-
-    public void Insert(int index, T item) => Items.Insert(index, item);
-
-    public bool Remove(T item) => Items.Remove(item);
-
-    public void RemoveAt(int index) => Items.RemoveAt(index);
-
-    protected override void OnLoad()
-    {
-        foreach (var item in Items)
-        {
-            item.Load();
-        }
-    }
 }

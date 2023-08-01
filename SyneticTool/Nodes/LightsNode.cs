@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using SyneticLib;
-using SyneticLib.IO.Extern;
 
 namespace SyneticTool.Nodes;
 
@@ -29,8 +28,8 @@ public class LightsNode : DataListTreeNode<Light>
 
             if (result == DialogResult.OK)
             {
-                var export = new LightExportBeamNgJSON(lights);
-                export.Save(dialog.FileName);
+                //var export = new LightExportBeamNgJSON(lights);
+                //export.Save(dialog.FileName);
             }
         };
 

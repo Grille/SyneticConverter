@@ -13,8 +13,8 @@ public class ModelProgram : GLProgram
     public int UColorReflect { get; protected set; }
 
 
-    public readonly ModelMaterial Owner;
-    public ModelProgram(ModelMaterial material)
+    public readonly Material Owner;
+    public ModelProgram(Material material)
     {
         Owner = material;
 
@@ -28,6 +28,6 @@ public class ModelProgram : GLProgram
         UColorDiffuse = GetUniformLocation("uColorDiffuse");
 
         Bind();
-        GL.Uniform3(UColorDiffuse, Owner.Diffuse.R / 255f, Owner.Diffuse.G / 255f, Owner.Diffuse.B / 255f);
+        //GL.Uniform3(UColorDiffuse, Owner.Diffuse.R / 255f, Owner.Diffuse.G / 255f, Owner.Diffuse.B / 255f);
     }
 }

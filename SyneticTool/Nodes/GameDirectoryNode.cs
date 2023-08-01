@@ -5,29 +5,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using SyneticLib.Locations;
 using SyneticLib;
-using SyneticLib.IO.Extern;
+using SyneticLib.LowLevel;
 
 namespace SyneticTool.Nodes;
 
-public class GameDirectoryNode : DataTreeNode
+public class GameDirectoryNode : LocationTreeNode
 {
-    public new GameDirectory DataValue { get => (GameDirectory)base.DataValue; set => DataValue = value; }
+    public GameDirectory GameDirectory => (GameDirectory)base.Location;
 
-    DataListTreeNode<ScenarioVGroup> ScenariosNode;
-    DataListTreeNode<Car> CarsNode;
-    DataListTreeNode<Sound> SoundsNode;
+    DirectoryListTreeNode<ScenarioGroup> ScenariosNode;
+    DirectoryListTreeNode<Car> CarsNode;
+    DirectoryListTreeNode<Sound> SoundsNode;
 
     public GameDirectoryNode(GameDirectory game) : base(game)
     {
         ScenariosNode = new(game.Scenarios, (a) => new ScenarioNode(a));
         CarsNode = new(game.Cars, (a) => new CarNode(a));
         SoundsNode = new(game.Sounds, (a) => new SoundNode(a));
-
+        
         Nodes.Add(ScenariosNode);
         Nodes.Add(CarsNode);
         Nodes.Add(SoundsNode);
-
+        
         var menu = new ContextMenuStrip();
 
         var entry0 = new ToolStripMenuItem("Edit");
@@ -35,11 +36,11 @@ public class GameDirectoryNode : DataTreeNode
 
         entry0.Click += (object sender, EventArgs e) =>
         {
-            MainForm.ShowAddOrEditGameDialog(DataValue);
+            MainForm.ShowAddOrEditGameDialog(GameDirectory);
         };
         entry1.Click += (object sender, EventArgs e) =>
         {
-            MainForm.Games.Remove(DataValue);
+            MainForm.Games.Remove(GameDirectory);
             MainForm.Config.Save();
             MainForm.RefreshGamesTree();
         };
@@ -53,10 +54,10 @@ public class GameDirectoryNode : DataTreeNode
     {
         base.OnUpdateAppearance();
 
-        Name = $"{DataValue.Version} ({DataValue.SourcePath})";
+        Name = $"{GameDirectory.Version} ({GameDirectory.Path})";
         Text = Name;
 
-        SelectedImageIndex = ImageIndex = DataValue.Version switch
+        SelectedImageIndex = ImageIndex = GameDirectory.Version switch
         {
             GameVersion.NICE1 => IconList.NICE,
             GameVersion.NICE2 => IconList.NICE2,

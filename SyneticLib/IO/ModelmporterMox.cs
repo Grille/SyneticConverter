@@ -6,28 +6,23 @@ using System.Threading.Tasks;
 using System.IO;
 
 using SyneticLib.LowLevel.Files;
+using SyneticLib.Locations;
 
 namespace SyneticLib.IO;
-public class ModelmporterMox
+public static class ModelmporterMox
 {
-    protected new Model Target { get => (Model)base.Target; set => base.Target = value; }
-
-    private MoxFile mox;
-    private MtlFile mtl;
-
-    public ModelmporterMox(Model target)
+    public static Model Load(string path, TextureDirectory textures)
     {
-        mox = new();
-        mox.Path = target.SourcePath;
+        var mox = new MoxFile();
+        var mtl = new MtlFile();
 
-        mtl = new();
-        mtl.Path = Path.Join(Path.GetDirectoryName(target.SourcePath), Path.GetFileNameWithoutExtension(target.SourcePath) + ".mtl");
-    }
+        mox.Path = path;
+        mtl.Path = Path.Join(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".mtl");
 
-    protected override void OnLoad()
-    {
         mox.Load();
         mtl.Load();
+
+        var materials = new List<Material>();
 
         for (var i = 0; i < mox.Head.MatCount; i++)
         {
@@ -38,35 +33,32 @@ public class ModelmporterMox
             else
             {
                 var srcMtl = mtl.Materials[i];
-                var dstMat = new ModelMaterial(Target);
+                var dstMat = new Material("");
                 //dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]);
 
-                dstMat.TexSlot0.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex1Name);
+                dstMat.TexSlot0.TryEnableByFile(textures, srcMtl.Tex1Name);
                 //dstMat.TexSlot1.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex2Name);
                 //dstMat.TexSlot2.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex3Name);
 
-                dstMat.DataState = DataState.Loaded;
-                Target.Materials.Add(dstMat);
+                materials.Add(dstMat);
             }
         }
 
+        var mesh = new Mesh("", mox.Vertecis, mox.Indices);
 
-        Target.Mesh.Vertices = mox.Vertecis;
-        Target.Mesh.Polygons = mox.Indices;
-
-        Target.MaterialRegions = new ModelMaterialRegion[mox.Textures.Length];
+        var regions = new ModelMaterialRegion[mox.Textures.Length];
         for (var i = 0; i < mox.Textures.Length; i++)
         {
             ref var src = ref mox.Textures[i];
             Material material;
-            if (src.MatId >= Target.Materials.Count)
-                material = Target.Materials[0];
+            if (src.MatId >= materials.Count)
+                material = materials[0];
             else
-                material = Target.Materials[src.MatId];
-            Target.MaterialRegions[i] = new ModelMaterialRegion(src.PolyOffset, src.PolyCount, material);
+                material = materials[src.MatId];
+            regions[i] = new ModelMaterialRegion(src.PolyOffset, src.PolyCount, material);
         }
 
-        Target.DataState = DataState.Loaded;
+        return new Model("", mesh, regions);
     }
 
 }

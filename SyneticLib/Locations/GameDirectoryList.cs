@@ -5,15 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib;
+using SyneticLib.LowLevel;
+
+namespace SyneticLib.Locations;
 public class GameDirectoryList : List<GameDirectory>
 {
     public GameDirectoryList() : base() { }
 
     public List<GameDirectory> FindByPath(string path)
     {
-        string fullpath = Path.GetFullPath(path).ToLower();
-        return FindAll((a) => Path.GetFullPath(a.SourcePath).ToLower() == fullpath);
+        var fullpath = Path.GetFullPath(path).ToLower();
+        return FindAll((a) => Path.GetFullPath(a.Path).ToLower() == fullpath);
     }
 
     public bool PathExists(string path)
@@ -95,13 +97,13 @@ public class GameDirectoryList : List<GameDirectory>
                         GameVersion version;
                         try
                         {
-                            version = GameDirectory.FindDirectoryGameVersion(fpath);
+                            version = GameDirectory.GetDirectoryGameVersion(fpath);
                         }
                         catch (UnauthorizedAccessException)
                         {
                             continue;
                         }
-                        if (version != GameVersion.Invalid)
+                        if (version != GameVersion.None)
                         {
                             if (!PathExists(fpath))
                             {

@@ -8,8 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
-using SyneticLib;
+using SyneticLib.Locations;
 
+using SyneticLib.LowLevel;
 
 namespace SyneticTool;
 
@@ -28,8 +29,7 @@ public partial class AddGameDialog : Form
         Games = games;
 
         var citems = comboBoxVersion.Items;
-        citems.Add(GameVersion.Invalid);
-        citems.Add(GameVersion.Auto);
+        citems.Add(GameVersion.None);
         citems.Add(GameVersion.NICE1);
         citems.Add(GameVersion.NICE2);
         citems.Add(GameVersion.MBTR);
@@ -42,14 +42,14 @@ public partial class AddGameDialog : Form
         citems.Add(GameVersion.CT4);
         citems.Add(GameVersion.CT5);
 
-        comboBoxVersion.SelectedItem = GameVersion.Auto;
+        comboBoxVersion.SelectedItem = GameVersion.None;
 
     }
 
     public AddGameDialog(GameDirectoryList games, GameDirectory selected) : this(games)
     {
         Games = games;
-        textBoxPath.Text = selected.SourcePath;
+        textBoxPath.Text = selected.Path;
         comboBoxVersion.SelectedItem = selected.Version;
     }
 
@@ -72,7 +72,7 @@ public partial class AddGameDialog : Form
     {
         NewGamePath = textBoxPath.Text.Trim();
         SelectedGame = Games.GetOrCreateEntry(NewGamePath);
-        comboBoxVersion.SelectedItem = GameDirectory.FindDirectoryGameVersion(NewGamePath);
+        comboBoxVersion.SelectedItem = GameDirectory.GetDirectoryGameVersion(NewGamePath);
 
         if (Directory.Exists(NewGamePath))
         {
@@ -103,12 +103,12 @@ public partial class AddGameDialog : Form
 
     public void ApplyToGame()
     {
-        SelectedGame.SourcePath = NewGamePath;
-        SelectedGame.Version = NewGameVersion;
+        //SelectedGame.SourcePath = NewGamePath;
+        //SelectedGame.Version = NewGameVersion;
     }
 
     private void button1_Click(object sender, EventArgs e)
     {
-        comboBoxVersion.SelectedItem = GameDirectory.FindDirectoryGameVersion(NewGamePath);
+        comboBoxVersion.SelectedItem = GameDirectory.GetDirectoryGameVersion(NewGamePath);
     }
 }

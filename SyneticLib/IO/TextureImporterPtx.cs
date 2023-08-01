@@ -1,39 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SyneticLib.LowLevel.Files;
 
 namespace SyneticLib.IO;
-public class TextureImporterPtx : TextureImporter
+public static class TextureImporterPtx
 {
-    private PtxFile ptx;
-    public TextureImporterPtx(Texture target) : base(target)
-    {
-        ptx = new();
-        ptx.Path = target.SourcePath;
-    }
 
-    protected override void OnLoad()
+    public static Texture LoadPtxTexture(string path)
     {
-        ptx.Load();
+        var ptx = new PtxFile();
+        ptx.Load(path);
 
-        Target.Format = (ptx.Head.Compression, ptx.Head.BitPerPixel) switch
+        var name = Path.GetFileNameWithoutExtension(path);
+
+        var format = (ptx.Head.Compression, ptx.Head.BitPerPixel) switch
         {
-            (0, 32) => TextureFormat.Rgba32,
-            (1, 32) => TextureFormat.Rgba32Dxt5,
+            (0, 32) => TextureFormat.RGBA32,
+            (1, 32) => TextureFormat.RGBA32Dxt5,
             _ => throw new Exception(),
         };
 
-        Target.Width = ptx.Head.Width;
-        Target.Height = ptx.Head.Height;
+        int width = ptx.Head.Width;
+        int height = ptx.Head.Height;
 
-        Target.Levels = new TextureLevel[ptx.Head.MipMapLevels];
-        for (var i = 0; i < Target.Levels.Length; i++)
+        var levels = new TextureLevel[ptx.Head.MipMapLevels];
+        for (var i = 0; i < levels.Length; i++)
         {
-            var level = Target.Levels[i] = new();
-            level.PixelData = ptx.Levels[i].Decoded;
+            var pixels = ptx.Levels[i].Decoded;
+
+            int lwidth = width / (i + 1);
+            int lheight = height / (i + 1);
+
+            levels[i] = new TextureLevel(lwidth, lheight, pixels);
         }
+
+        return new Texture(name, format, levels);
     }
 }

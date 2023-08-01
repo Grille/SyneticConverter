@@ -36,8 +36,8 @@ public class Scene
         ModelRegistry = new(model => new(model));
 
         buffer = new ModelBuffer(assets.GroundPlane);
-        program = new ModelProgram((ModelMaterial)assets.GroundPlane.MaterialRegion[0].Material);
-        texture = new TextureBuffer(assets.GroundPlane.MaterialRegion[0].Material.TexSlot0.Texture);
+        program = new ModelProgram(assets.GroundPlane.MaterialRegions[0].Material);
+        texture = new TextureBuffer(assets.GroundPlane.MaterialRegions[0].Material.TexSlot0.Texture);
     }
 
     public Mesh Raycast(Vector2 position)
@@ -50,7 +50,7 @@ public class Scene
     public void Add(Model mesh, in Matrix4 matrix)
     {
         buffer = new ModelBuffer(assets.GroundPlane);
-        program = new ModelProgram((ModelMaterial)assets.GroundPlane.MaterialRegion[0].Material);
+        program = new ModelProgram(assets.GroundPlane.MaterialRegions[0].Material);
         //mesh.MaterialRegion
     }
 

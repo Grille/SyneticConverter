@@ -14,7 +14,7 @@ public class PropInstance : Ressource
     public float Angle;
     public float Scale;
 
-    public PropInstance(Ressource parent, PropClass @class) : base(parent, parent.ChildPath("PropInstance"), PointerType.Virtual)
+    public PropInstance(PropClass @class) : base("PropInstance")
     {
         Class = @class;
     }

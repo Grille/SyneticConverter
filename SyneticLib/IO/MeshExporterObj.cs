@@ -7,54 +7,53 @@ using System.Threading.Tasks;
 using System.Numerics;
 
 namespace SyneticLib.IO;
-public class MeshExporterObj : MeshExporter
+public static class MeshExporterObj
 {
-    public Vector3 PositionMultiplier = Vector3.One;
-    public MeshExporterObj(Mesh target) : base(target)
-    {
+    //public Vector3 PositionMultiplier = Vector3.One;
 
-    }
-
-    protected override void OnSave()
+    public static void Save(Model model, string path)
     {
+        var PositionMultiplier = Vector3.One;
+
+        var mesh = model.Mesh;
+
         var mtlpath = Path.ChangeExtension(path, "mtl");
-
         {
             using var fs = new FileStream(path, FileMode.Create);
             using var sw = new StreamWriter(fs);
 
 
             sw.WriteLine($"mtllib {mtlpath}");
-            sw.WriteLine($"o {target.Name}");
+            sw.WriteLine($"o {mesh.Name}");
 
-            for (var i = 0; i < target.Vertices.Length; i++)
+            for (var i = 0; i < mesh.Vertices.Length; i++)
             {
-                var pos = target.Vertices[i].Position * PositionMultiplier;
+                var pos = mesh.Vertices[i].Position * PositionMultiplier;
                 sw.WriteLine($"v {pos.X} {pos.Y} {pos.Z}");
             }
 
-            for (var i = 0; i < target.Vertices.Length; i++)
+            for (var i = 0; i < mesh.Vertices.Length; i++)
             {
-                var norm = target.Vertices[i].Normal;
+                var norm = mesh.Vertices[i].Normal;
                 sw.WriteLine($"vn {norm.X} {norm.Y} {norm.Z}");
             }
 
-            for (var i = 0; i < target.Vertices.Length; i++)
+            for (var i = 0; i < mesh.Vertices.Length; i++)
             {
-                var uv = target.Vertices[i].UV0;
+                var uv = mesh.Vertices[i].UV0;
                 sw.WriteLine($"vt {uv.X} {uv.Y}");
             }
 
 
             sw.WriteLine("s on");
-            foreach (var reg in target.MaterialRegion)
+            foreach (var reg in model.MaterialRegions)
             {
-                sw.WriteLine($"usemtl {((TerrainMaterial)reg.Material).Name}");
+                sw.WriteLine($"usemtl {(reg.Material).Name}");
                 var begin = reg.ElementOffset;
                 var end = begin + reg.ElementCount;
                 for (var i = begin; i < end; i++)
                 {
-                    ref var poly = ref target.Indices[i];
+                    ref var poly = ref mesh.Indices[i];
                     var idx0 = poly.X + 1;
                     var idx1 = poly.Y + 1;
                     var idx2 = poly.Z + 1;

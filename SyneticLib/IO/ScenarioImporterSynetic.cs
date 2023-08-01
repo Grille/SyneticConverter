@@ -6,62 +6,35 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
+using SyneticLib.LowLevel;
 using SyneticLib.LowLevel.Files;
+using SyneticLib.Locations;
 
+using static System.IO.Path;
 
 namespace SyneticLib.IO;
-public class ScenarioImporterSynetic : ScenarioImporter
+public static class ScenarioImporterSynetic
 {
-    private GameVersion version;
 
-    private SynFile syn;
-    private GeoFile geo;
-    private IdxFile idx;
-    private LvlFile lvl;
-    private SniFile sni;
-    private VtxFile vtx;
-    private QadFile qad;
-    private SkyFile sky;
-
-    private IVertexData ivtx;
-    private IIndexData iidx;
-
-    public ScenarioImporterSynetic(ScenarioVGroup target) : base(target)
+    public static Scenario Load(string path, string fileName, GameVersion version)
     {
-        version = target.Version;
+        /*
+        var syn = new SynFile();
+        var geo = new GeoFile();
+        var idx = new IdxFile();
+        var lvl = new LvlFile();
+        var sni = new SniFile();
+        var vtx = new VtxFile();
+        var qad = new QadFile();
+        var sky = new SkyFile();
 
-        syn = new();
-        geo = new();
-        idx = new();
-        lvl = new();
-        sni = new();
-        vtx = new();
-        qad = new();
-        sky = new();
-    }
+        IVertexData ivtx;
+        IIndexData iidx;
 
-    public void LoadV(int iv)
-    {
-        if (iv > Target.Variants.Count)
-            return;
-        OnLoadV(Target.Variants[iv - 1]);
-    }
-
-    protected override void OnLoad()
-    {
-        foreach (var v in Target.Variants)
-        {
-            OnLoadV(v);
-        }
-    }
-
-
-    protected void OnLoadV(Scenario target)
-    {
-        var synPath = Path.Combine(target.SourcePath, $"V{target.VNumber}");
+        var synPath = Combine(path, $"V{0}");
         syn.Path = synPath + ".syn";
 
-        var filePath = Path.Combine(target.SourcePath, target.Parent.FileName);
+        var filePath = Combine(path, fileName);
         geo.Path = filePath + ".geo";
         idx.Path = filePath + ".idx";
         lvl.Path = filePath + ".lvl";
@@ -95,12 +68,14 @@ public class ScenarioImporterSynetic : ScenarioImporter
             sky.Load();
 
         //target.Sounds.Load();
-        target.TerrainTextures.Load();
-        target.ModelTextures.Load();
+
+        var terrainTextures = new TextureDirectory(Combine(path, "textures"));
+        var modelTextures = new TextureDirectory(Combine(path, "objects/textures"));
+
         //target.Models.Load();
 
         // Materials
-        var textureIndex = target.TerrainTextures.CreateIndexedArray(qad.TextureNames);
+        var textureIndex = terrainTextures.CreateIndexedArray(qad.TextureNames);
 
         for (var i = 0; i < qad.Materials.Length; i++)
         {
@@ -232,6 +207,7 @@ public class ScenarioImporterSynetic : ScenarioImporter
         */
 
         // Chunks
+        /*
         for (var i = 0; i < qad.Chunks.Length; i++)
         {
             ref var chunkInfo = ref qad.Chunks[i];
@@ -243,6 +219,8 @@ public class ScenarioImporterSynetic : ScenarioImporter
             target.Chunks.Add(chunk);
         }
         target.Chunks.DataState = DataState.Loaded;
+        */
+        return null;
 
     }
 }

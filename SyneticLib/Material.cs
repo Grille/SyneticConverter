@@ -5,19 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using OpenTK.Mathematics;
+using SyneticLib.Locations;
 
 namespace SyneticLib;
 
-public abstract class Material : Ressource
+public class Material : Ressource
 {
-    public int ID = -1;
-    readonly TextureSlot[] TextureSlots = new TextureSlot[3];
+    TextureSlot[] TextureSlots { get; }
+
     public TextureSlot TexSlot0 => TextureSlots[0];
+
     public TextureSlot TexSlot1 => TextureSlots[1];
+
     public TextureSlot TexSlot2 => TextureSlots[2];
 
-    protected Material(Ressource parent, string path, PointerType type = PointerType.Virtual) : base(parent, path, type)
+    public Material(string name) : base(name)
     {
+        TextureSlots = new TextureSlot[3];
         TextureSlots[0] = new TextureSlot();
         TextureSlots[1] = new TextureSlot();
         TextureSlots[2] = new TextureSlot();

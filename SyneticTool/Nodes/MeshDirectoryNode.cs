@@ -11,7 +11,7 @@ namespace SyneticTool.Nodes;
 
 internal class ModelDirectoryNode : DataListTreeNode<Model>
 {
-    public ModelDirectoryNode(ModelDirectory meshes, string name = "Objects") : base(meshes, (a) => new ModelNode(a))
+    public ModelDirectoryNode(RessourceList<Model> meshes, string name = "Objects") : base(meshes, (a) => new ModelNode(a))
     {
         Text = name;
 

@@ -1,5 +1,4 @@
 ﻿using SyneticLib;
-using SyneticLib.IO.Extern;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace SyneticTool.Nodes;
 
 public class ModelNode : DataTreeNode
 {
-    public new Model DataValue { get => (Model)base.DataValue; set => base.DataValue = value; }
+    public Model Model => (Model)base.Ressource;
 
     public ModelNode(Model data) : base(data)
     {
@@ -23,12 +22,12 @@ public class ModelNode : DataTreeNode
         entry.Click += (object sender, EventArgs e) =>
         {
             using var dialog = new SaveFileDialog();
-            dialog.FileName = $"{DataValue.FileName}.obj";
+            //dialog.FileName = $"{DataValue.FileName}.obj";
             var result = dialog.ShowDialog();
 
             if (result == DialogResult.OK)
             {
-                DataValue.ExportAsObj(dialog.FileName);
+                //DataValue.ExportAsObj(dialog.FileName);
             }
         };
 
@@ -38,8 +37,8 @@ public class ModelNode : DataTreeNode
 
     public override void OnSelect(TreeViewCancelEventArgs e)
     {
-        if (DataValue.NeedLoad)
-            DataValue.Load();
-        MainForm.Display.ShowMesh(DataValue);
+        //if (DataValue.NeedLoad)
+        //    DataValue.Load();
+        //MainForm.Display.ShowMesh(DataValue);
     }
 }

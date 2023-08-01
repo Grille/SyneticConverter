@@ -3,65 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SyneticLib.IO.Synetic;
 
 namespace SyneticLib;
 public class Model : Ressource
 {
-    public Mesh Mesh { get; set; }
+    public Mesh Mesh { get; }
 
-    public MaterialList Materials { get; set; }
+    public Material[] Materials { get; }
 
-    public ModelMaterialRegion[] MaterialRegions { get; set; }
+    public ModelMaterialRegion[] MaterialRegions { get; }
 
-
-    public Model() : base(null, "Model", PointerType.Virtual)
+    public Model(string name, Mesh mesh, ModelMaterialRegion[] regions) : base(name)
     {
-    }
+        Mesh = mesh;
+        MaterialRegions = regions;
 
-    public Model(Ressource parent, string path) : base(parent, path, PointerType.File)
-    {
-    }
-
-    public void MaterialsFromRegions()
-    {
-        Materials.Clear();
-
-        foreach (var region in MaterialRegions)
+        var materials = new List<Material>();
+        foreach (var region in regions)
         {
+            var material = region.Material;
+            if (materials.Contains(material))
+                continue;
 
-        }
-    }
-
-    public void ImportFromMox()
-    {
-        new ModelmporterMox(this).Load();
-    }
-
-    protected override void OnLoad()
-    {
-        switch (FileExtension.ToLower())
-        {
-            case ".mox":
-                ImportFromMox();
-                break;
-            default:
-                throw new InvalidOperationException($"'{SourcePath}' is not a valid model file.");
+            materials.Add(material);
         }
 
-        foreach (var texture in Materials)
-        {
-            texture.Load();
-        }
+        Materials = materials.ToArray();
     }
 
-    protected override void OnSave()
-    {
-
-    }
-
-    protected override void OnSeek()
-    {
-
-    }
+    public Model(string name, Mesh mesh, Material material) :
+        this(name, mesh, new[] { new ModelMaterialRegion(0, mesh.Indices.Length, material) })
+    { }
 }

@@ -1,0 +1,18 @@
+﻿using SyneticLib;
+using SyneticLib.Locations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace SyneticTool.Nodes;
+
+public class LocationTreeNode : MyTreeNode
+{
+    public Location Location => (Location)Object;
+    public LocationTreeNode(Location location) : base(location)
+    {
+    }
+}

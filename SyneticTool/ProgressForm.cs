@@ -20,7 +20,7 @@ public partial class ProgressForm : Form
         InitializeComponent();
         this.target = target;
 
-        target.ProgressInfo.HasUpdated += ProgressInfo_HasUpdated;
+        //target.ProgressInfo.HasUpdated += ProgressInfo_HasUpdated;
         Update(0, "Loading...");
     }
 

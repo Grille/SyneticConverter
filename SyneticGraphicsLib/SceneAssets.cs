@@ -21,55 +21,36 @@ internal class SceneAssets
         int gridSize = size * 1000_0;
         int uvScale = size;
 
-        var texture = new Texture(2, 2);
-        fixed (byte* bytes = texture.PixelData)
+        byte[] pixels = new byte[2 * 2 * 4];
+        fixed (byte* bptr = pixels)
         {
-            uint* pixels = (uint*)bytes;
-            pixels[0] = pixels[3] = 0x969696;
-            pixels[1] = pixels[2] = 0xA9A9A9;
+            uint* iptr = (uint*)bptr;
+            iptr[0] = iptr[3] = 0x969696;
+            iptr[1] = iptr[2] = 0xA9A9A9;
         }
-        texture.DataState = DataState.Loaded;
 
-        var material = new ModelMaterial();
+        var texture = new Texture("", TextureFormat.RGBA32, 2, 2, pixels);
+
+        var material = new Material("");
         material.TexSlot0.Enable(texture);
-        material.DataState = DataState.Loaded;
 
-        var mesh = new Mesh()
+        var indices = new IndexTriangle[2]
         {
-            Indices = new IndexTriangle[2]
-            {
-                new(2, 1, 0),
-                new(0, 3, 2),
-            },
-            Vertices = new Vertex[4]
-            {
-                new(new(-gridSize, +gridSize, 0), new(0, 0)),
-                new(new(+gridSize, +gridSize, 0), new(uvScale, 0)),
-                new(new(+gridSize, -gridSize, 0), new(uvScale, uvScale)),
-                new(new(-gridSize, -gridSize, 0), new(0, uvScale)),
-            },
+            new(2, 1, 0),
+            new(0, 3, 2),
         };
 
-        var plane = new Model()
+        var vertices = new Vertex[4]
         {
-            Polygons = new IndexTriangle[2]
-            {
-                new(2, 1, 0),
-                new(0, 3, 2),
-            },
-            Vertices = new Vertex[4]
-            {
-                new(new(-gridSize, +gridSize, 0), new(0, 0)),
-                new(new(+gridSize, +gridSize, 0), new(uvScale, 0)),
-                new(new(+gridSize, -gridSize, 0), new(uvScale, uvScale)),
-                new(new(-gridSize, -gridSize, 0), new(0, uvScale)),
-            },
-            MaterialRegion = new ModelMaterialRegion[1]
-            {
-                new(0, 2, material),
-            },
-            DataState = DataState.Loaded
+            new(new(-gridSize, +gridSize, 0), new(0, 0)),
+            new(new(+gridSize, +gridSize, 0), new(uvScale, 0)),
+            new(new(+gridSize, -gridSize, 0), new(uvScale, uvScale)),
+            new(new(-gridSize, -gridSize, 0), new(0, uvScale)),
         };
+
+        var mesh = new Mesh("", vertices, indices);
+
+        var plane = new Model("", mesh, material);
 
         return plane;
     }

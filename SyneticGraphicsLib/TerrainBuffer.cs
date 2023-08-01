@@ -12,11 +12,11 @@ using SyneticLib.LowLevel;
 namespace SyneticLib.Graphics;
 public unsafe class TerrainBuffer : GLMeshBuffer
 {
-    public TerrainBuffer(TerrainMesh mesh)
+    public TerrainBuffer(Mesh mesh)
     {
-        ElementCount = mesh.Polygons.Length * 3;
+        ElementCount = mesh.Indices.Length * 3;
 
-        var indices = mesh.Polygons;
+        var indices = mesh.Indices;
         var vertices = new Vertex[mesh.Vertices.Length];
 
         for (int i = 0; i < mesh.Vertices.Length; i++)

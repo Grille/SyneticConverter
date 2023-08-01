@@ -10,8 +10,8 @@ using SyneticLib.Graphics.Shaders;
 namespace SyneticLib.Graphics;
 public class TerrainMaterialProgram : GLProgram
 {
-    public TerrainMaterial Owner;
-    public TerrainMaterialProgram(TerrainMaterial material)
+    public Material Owner;
+    public TerrainMaterialProgram(Material material)
     {
         Owner = material;
 

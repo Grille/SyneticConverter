@@ -12,9 +12,9 @@ namespace SyneticTool.Nodes;
 
 internal class ScenarioNode : DataTreeNode
 {
-    public new ScenarioVGroup DataValue { get => (ScenarioVGroup)base.DataValue; set => base.DataValue = value; }
+    public new ScenarioGroup DataValue => (ScenarioGroup)base.Ressource;
 
-    public ScenarioNode(ScenarioVGroup scenario) : base(scenario)
+    public ScenarioNode(ScenarioGroup scenario) : base(scenario)
     {
         SelectedImageIndex = ImageIndex = IconList.World;
     }
@@ -23,7 +23,7 @@ internal class ScenarioNode : DataTreeNode
     {
         base.OnUpdateContent();
 
-        Text = DataValue.FileName;
+        Text = DataValue.Name;
 
         var variants = DataValue.Variants;
         for (int i = 0; i < variants.Count; i++)
@@ -39,8 +39,6 @@ internal class ScenarioNode : DataTreeNode
 
     public override void OnSelect(TreeViewCancelEventArgs e)
     {
-        if (DataValue.NeedLoad)
-            DataValue.Load();
         MainForm.Display.ShowScenario(DataValue);
     }
 }

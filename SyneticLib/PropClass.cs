@@ -16,9 +16,8 @@ public class PropClass : Ressource
 
     public ModelDirectory AssignedModels;
 
-    public PropClass(Scenario parent, string name) : base(parent, parent.ChildPath(name), PointerType.Virtual)
+    public PropClass(string name) : base(name)
     {
-        Name = FileName;
-        AssignedModels = parent.Models;
+
     }
 }

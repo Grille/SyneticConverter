@@ -9,30 +9,13 @@ namespace SyneticLib;
 
 public class Sound : Ressource
 {
-    public byte[] Buffer;
+    public string Type { get; }
 
-    public Sound(GameDirectory parent, string path): base(parent, path, PointerType.File)
+    public byte[] Buffer { get; }
+
+    public Sound(string name, string type, byte[] buffer): base(name)
     {
-
-    }
-
-    protected override void OnLoad()
-    {
-        Buffer = File.ReadAllBytes(SourcePath);
-    }
-
-    protected override void OnSave()
-    {
-        File.WriteAllBytes(SourcePath, Buffer);
-    }
-
-    public void Play()
-    {
-
-    }
-
-    protected override void OnSeek()
-    {
-
+        Type = type;
+        Buffer = buffer;
     }
 }

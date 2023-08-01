@@ -17,17 +17,15 @@ public class CarNode : DataTreeNode
     {
         SelectedImageIndex = ImageIndex = IconList.Car;
 
-        ObjectTexturesNode = new(car.Textures);
+        //ObjectTexturesNode = new(car.Textures);
         MeshNode = new ModelNode(car.Model);
 
-        Nodes.Add(ObjectTexturesNode);
+        //Nodes.Add(ObjectTexturesNode);
         Nodes.Add(MeshNode);
     }
 
     public override void OnSelect(TreeViewCancelEventArgs e)
     {
-        if (DataValue.NeedLoad)
-            DataValue.Load();
-        MainForm.Display.ShowCar((Car)DataValue);
+        MainForm.Display.ShowCar((Car)Ressource);
     }
 }

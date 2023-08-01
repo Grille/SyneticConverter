@@ -9,7 +9,7 @@ namespace SyneticTool.Nodes;
 
 public class PropNode : DataTreeNode
 {
-    public new PropClass DataValue { get => (PropClass)base.DataValue; set => base.DataValue = value; }
+    public new PropClass DataValue => (PropClass)base.Ressource;
 
     public PropNode(PropClass data) : base(data)
     {

@@ -11,12 +11,10 @@ using System.IO;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.WinForms;
 using System.Numerics;
-
-
-using SyneticLib;
 using SyneticLib.Graphics;
 using SyneticTool.Nodes;
 using Graphics = SyneticLib.Graphics;
+using SyneticLib.Locations;
 
 namespace SyneticTool;
 
@@ -188,20 +186,15 @@ public partial class MainForm : Form
     {
         dataTreeView.BeginUpdate();
 
-        if (e.Node is DataTreeNode)
+        if (e.Node is MyTreeNode)
         {
-            var node = (DataTreeNode)e.Node;
-            if (node.DataValue.PointerState == PointerState.Invalid)
-            {
-                e.Cancel = true;
-                return;
-            }
+            var node = (MyTreeNode)e.Node;
             node.OnExpand(e);
             foreach (var cnode in node.Nodes)
             {
-                if (cnode is DataTreeNode)
+                if (cnode is MyTreeNode)
                 {
-                    ((DataTreeNode)cnode).OnShown();
+                    ((MyTreeNode)cnode).OnShown();
                 }
             }
         }
@@ -223,7 +216,7 @@ public partial class MainForm : Form
         foreach (var node in dataTreeView.Nodes)
         {
             var gnode = (GameDirectoryNode)node;
-            if (!Games.Contains(gnode.DataValue))
+            if (!Games.Contains(gnode.GameDirectory))
             {
                 listToRemove.Add(gnode);
             }
@@ -235,7 +228,7 @@ public partial class MainForm : Form
             foreach (var node in dataTreeView.Nodes)
             {
                 var gnode = (GameDirectoryNode)node;
-                if (gnode.DataValue == game)
+                if (gnode.GameDirectory == game)
                 {
                     found = true;
                     break;
@@ -275,12 +268,16 @@ public partial class MainForm : Form
         {
             dialog.ApplyToGame();
             var game = dialog.SelectedGame;
+
+            if (game == null)
+                return;
+
             if (Games.Contains(game))
             {
                 foreach (var node in dataTreeView.Nodes)
                 {
                     var gfnode = (GameDirectoryNode)node;
-                    if (gfnode.DataValue == game)
+                    if (gfnode.GameDirectory == game)
                     {
                         gfnode.OnShown();
                     }
@@ -306,7 +303,7 @@ public partial class MainForm : Form
             sb.AppendLine();
             foreach (var game in games)
             {
-                sb.AppendLine($"{game.Version} {game.SourcePath}");
+                sb.AppendLine($"{game.Version} {game.Path}");
             }
         }
         var result = MessageBox.Show(this, sb.ToString(), "Find Games", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
@@ -324,9 +321,9 @@ public partial class MainForm : Form
 
     private void dataTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
     {
-        if (e.Node is DataTreeNode)
+        if (e.Node is MyTreeNode)
         {
-            var node = (DataTreeNode)e.Node;
+            var node = (MyTreeNode)e.Node;
             node.OnSelect(e);
 
 

@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Reflection;
 using System.Xml.Linq;
 using GGL.IO;
-using SyneticLib;
+using SyneticLib.Locations;
 
 namespace SyneticTool;
 
@@ -39,7 +39,7 @@ public class Config : IViewObject
         for (int i = 0; i < Games.Count; i++)
         {
             var game = Games[i];
-            bw.WriteString(game.SourcePath);
+            bw.WriteString(game.Path);
             bw.WriteString(game.Version.ToString());
         }
     }

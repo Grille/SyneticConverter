@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 using System.Numerics;
 using System.IO;
 
-using SyneticLib.IO.Synetic;
-using SyneticLib.IO.Extern;
+
 using SyneticLib.LowLevel;
 
 namespace SyneticLib;
 
 public class Mesh: Ressource
 {
-    public string Name;
-    //public int[] Indecies;
-    public Vertex[] Vertices { get; init; }
-    public IndexTriangle[] Indices { get; init; }
+    public Vertex[] Vertices { get; }
+    public IndexTriangle[] Indices { get; }
 
-    public Mesh(Ressource parent, string path, PointerType type) : base(parent, path, type)
+    public Mesh(string path, Vertex[] vertices, IndexTriangle[] indices) : base(path)
     {
+        Vertices = vertices;
+        Indices = indices;
     }
 
+    /*
     public virtual void ExportAsObj(string path)
     {
         var exp = new MeshExporterObj(this);
@@ -34,11 +34,10 @@ public class Mesh: Ressource
         var exp = new MeshExporterSbx(this);
         exp.Save(path);
     }
+    */
 
     public MeshSectionPtr CreateSectionPtr(int offset, int count)
     {
         return new MeshSectionPtr(this, offset, count);
     }
-
-
 }

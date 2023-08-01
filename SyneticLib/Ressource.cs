@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace SyneticLib;
+
+/// <summary>
+/// Data of an game resource, mostly immutable.
+/// </summary>
 public abstract class Ressource {
 
     private static int RessourceIDCounter;
@@ -14,11 +18,8 @@ public abstract class Ressource {
 
     public string Name { get; }
 
-    public Ressource Parent { get; set; }
-
-    public Ressource(Ressource parent, string name)
+    public Ressource(string name)
     {
-        Parent = parent;
         Name = name;
 
         RessourceID = RessourceIDCounter++;

@@ -26,9 +26,6 @@ public class GLObjectRegistry<TKey, TValue> : IReadOnlyCollection<TValue> where 
             return buffer;
         }
 
-        if (ressource.DataState != DataState.Loaded)
-            throw new ArgumentException($"{ressource.GetType().Name} {ressource.SourcePath} is not loaded.", nameof(ressource));
-
         buffer = mapper(ressource);
         pairs.Add(ressource, buffer);
         return buffer;

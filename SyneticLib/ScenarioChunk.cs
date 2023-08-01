@@ -17,7 +17,7 @@ public class ScenarioChunk : Ressource
     public int TerrainMaterialRegionOffset;
     public int TerrainMaterialRegionCount;
 
-    public ScenarioChunk(Scenario parent, int x, int y) : base(parent, $"x{x},y{y}")
+    public ScenarioChunk(int x, int y) : base($"x{x},y{y}")
     {
 
     }

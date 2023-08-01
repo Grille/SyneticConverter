@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using SyneticLib.Locations;
 
 namespace SyneticLib;
 
-public class ScenarioVGroup : Ressource
+public class ScenarioGroup : Ressource
 {
-    public new GameDirectory Parent { get => (GameDirectory)base.Parent; set => base.Parent = value; }
-
-
     public List<Scenario> Variants;
 
     public int VariantCount { get => Variants.Count; }
@@ -20,7 +18,7 @@ public class ScenarioVGroup : Ressource
     public Scenario V3 { get => Variants.Count > 2 ? Variants[2] : null; }
     public Scenario V4 { get => Variants.Count > 3 ? Variants[3] : null; }
 
-    public ScenarioVGroup(GameDirectory game, string path) : base(game, path, PointerType.Directory)
+    public ScenarioGroup(GameDirectory game, string path) : base(path)
     {
         Variants = new List<Scenario>();
     }
@@ -40,6 +38,7 @@ public class ScenarioVGroup : Ressource
         });
     }
 
+    /*
     protected override void OnLoad()
     {
         foreach (var variant in Variants)
@@ -69,4 +68,5 @@ public class ScenarioVGroup : Ressource
             }
         }
     }
+    */
 }

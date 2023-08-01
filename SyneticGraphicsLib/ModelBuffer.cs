@@ -5,12 +5,14 @@ using System.Numerics;
 namespace SyneticLib.Graphics;
 public unsafe class ModelBuffer : GLMeshBuffer
 {
-    internal ModelBuffer(Model mesh) : base()
+    internal ModelBuffer(Model model) : base()
     {
-        ElementCount = mesh.Polygons.Length * 3;
+        var mesh = model.Mesh;
+
+        ElementCount = mesh.Indices.Length * 3;
         VertexStride = sizeof(Vertex);
 
-        var indices = mesh.Polygons;
+        var indices = mesh.Indices;
         var vertices = new Vertex[mesh.Vertices.Length];
 
         for (int i = 0; i < mesh.Vertices.Length; i++)

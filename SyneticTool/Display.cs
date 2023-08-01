@@ -41,7 +41,7 @@ public class Display
         //Scene.Add(mesh);
     }
 
-    public void ShowScenario(ScenarioVGroup scenario)
+    public void ShowScenario(ScenarioGroup scenario)
     {
         ShowScenario(scenario.V1);
     }

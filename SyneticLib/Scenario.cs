@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using SyneticLib.IO.Synetic;
 using System.Diagnostics;
+using SyneticLib.Locations;
 
 namespace SyneticLib;
 
@@ -13,8 +13,6 @@ public partial class Scenario : Ressource
 {
     public int VNumber;
     public int Width, Height;
-
-    public new ScenarioVGroup Parent { get => (ScenarioVGroup)base.Parent; set => base.Parent = value; }
 
     public Model Terrain;
     public RessourceDirectory<Sound> Sounds;
@@ -30,10 +28,11 @@ public partial class Scenario : Ressource
 
     //public InitState State { get; internal set; }
 
-    public Scenario(ScenarioVGroup parent, int number): base(parent, parent.ChildPath($"V{number}"), PointerType.Directory)
+    public Scenario(int number): base($"V{number}")
     {
         VNumber = number;
 
+        /*
         Sounds = Parent.Parent.Sounds;
 
         TerrainTextures = new(this, ChildPath("Textures"));
@@ -47,6 +46,7 @@ public partial class Scenario : Ressource
         PropInstances = new(this, ChildPath("PropInstances"));
         Lights = new(this, ChildPath("Lights"));
         Chunks = new(this, ChildPath("Chunks"));
+        */
     }
 
     public void PeakHead()
@@ -54,6 +54,7 @@ public partial class Scenario : Ressource
 
     }
 
+    /*
     protected override void OnLoad()
     {
         new ScenarioImporterSynetic(this.Parent).LoadV(VNumber);
@@ -68,4 +69,5 @@ public partial class Scenario : Ressource
     {
 
     }
+    */
 }
