@@ -4,22 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SyneticLib.IO.Synetic;
-using SyneticLib.Graphics;
 
 namespace SyneticLib;
-public class Model : Mesh
+public class Model : Ressource
 {
-    public TextureDirectory AssignedTextures;
+    public Mesh Mesh { get; set; }
+
+    public MaterialList Materials { get; set; }
+
+    public ModelMaterialRegion[] MaterialRegions { get; set; }
+
 
     public Model() : base(null, "Model", PointerType.Virtual)
     {
-        GLBuffer = new ModelBuffer(this);
     }
 
-    public Model(Ressource parent, TextureDirectory textures, string path) : base(parent, path, PointerType.File)
+    public Model(Ressource parent, string path) : base(parent, path, PointerType.File)
     {
-        GLBuffer = new ModelBuffer(this);
-        AssignedTextures = textures;
+    }
+
+    public void MaterialsFromRegions()
+    {
+        Materials.Clear();
+
+        foreach (var region in MaterialRegions)
+        {
+
+        }
     }
 
     public void ImportFromMox()
@@ -38,7 +49,7 @@ public class Model : Mesh
                 throw new InvalidOperationException($"'{SourcePath}' is not a valid model file.");
         }
 
-        foreach (var texture in AssignedTextures)
+        foreach (var texture in Materials)
         {
             texture.Load();
         }

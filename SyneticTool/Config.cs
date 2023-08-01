@@ -24,7 +24,7 @@ public class Config : IViewObject
 
     public void ReadFromView(BinaryViewReader br)
     {
-        br.DefaultCharSize = CharSize.Byte;
+        br.Encoding = Encoding.UTF8;
 
         int Count = br.ReadInt32();
         for (int i = 0; i < Count; i++)
@@ -33,7 +33,7 @@ public class Config : IViewObject
 
     public void WriteToView(BinaryViewWriter bw)
     {
-        bw.DefaultCharSize = CharSize.Byte;
+        bw.Encoding = Encoding.UTF8;
 
         bw.WriteInt32(Games.Count);
         for (int i = 0; i < Games.Count; i++)

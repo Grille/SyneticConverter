@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net6</TargetFrameworks>
+    <TargetFramework>net6</TargetFramework>
     <LangVersion>10</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GGL.BinaryView" Version="2.3.2" />
-    <PackageReference Include="OpenTK" Version="4.7.4" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
+    <PackageReference Include="GGL.BinaryView" Version="2.4.2" />
+    <PackageReference Include="OpenTK.Mathematics" Version="4.8.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,28 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Graphics\Shaders\MeshDebugFragment.glsl" />
-    <None Remove="Graphics\Shaders\MeshDebugVertex.glsl" />
-    <None Remove="Graphics\Shaders\MeshFragment.glsl" />
-    <None Remove="Graphics\Shaders\SpriteFragment.glsl" />
-    <None Remove="Graphics\Shaders\SpriteVertex.glsl" />
-    <None Remove="Graphics\Shaders\TerrainFragment.glsl" />
-    <None Remove="Graphics\Shaders\TerrainVertex.glsl" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Graphics\Shaders\MeshDebugFragment.glsl" />
-    <EmbeddedResource Include="Graphics\Shaders\MeshDebugVertex.glsl" />
-    <EmbeddedResource Include="Graphics\Shaders\SpriteFragment.glsl" />
-    <EmbeddedResource Include="Graphics\Shaders\TerrainFragment.glsl" />
-    <EmbeddedResource Include="Graphics\Shaders\MeshFragment.glsl" />
-    <EmbeddedResource Include="Graphics\Shaders\SpriteVertex.glsl" />
-    <EmbeddedResource Include="Graphics\Shaders\TerrainVertex.glsl" />
-    <EmbeddedResource Include="Graphics\Shaders\MeshVertex.glsl" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="C:\Users\Grille\source\repos\SyneticConverter\SyneticLib\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SyneticLib.IO.Files\SyneticLib.LowLevel.csproj" />
   </ItemGroup>
 
 </Project>

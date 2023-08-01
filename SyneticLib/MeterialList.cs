@@ -7,16 +7,18 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class MaterialList : RessourceList<Material>
 {
-    public MaterialList(Ressource parent) : base(parent, parent.ChildPath("Materials"))
-    {
+    public TextureDirectory Textures { get; }
 
+    public MaterialList(Ressource parent, TextureDirectory textures) : base(parent, parent.ChildPath("Materials"))
+    {
+        Textures = textures;
     }
 
     public void DisposeAll()
     {
         foreach (var material in this)
         {
-            material.GLProgram.Dispose();
+
         }
     }
 

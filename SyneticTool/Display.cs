@@ -32,13 +32,13 @@ public class Display
     public void ShowCar(Car car)
     {
         Scene.ClearScene();
-        Scene.MeshDrawBuffer.Add(car.Model);
+        //Scene.MeshDrawBuffer.Add(car.Model);
     }
 
     public void ShowMesh(Mesh mesh)
     {
         Scene.ClearScene();
-        Scene.MeshDrawBuffer.Add(mesh);
+        //Scene.Add(mesh);
     }
 
     public void ShowScenario(ScenarioVGroup scenario)

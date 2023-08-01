@@ -7,20 +7,26 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
+using SyneticLib.LowLevel;
+
 namespace SyneticLib;
 
 public class GameDirectory : Ressource
 {
-    public RessourceDirectory<ScenarioVGroup> Scenarios;
-    public RessourceDirectory<Car> Cars;
-    public RessourceDirectory<Sound> Sounds;
+    public RessourceDirectory<ScenarioVGroup> Scenarios { get; }
 
-    public GameDirectory(string path, GameVersion target = GameVersion.Auto) : base(null, path, PointerType.Directory)
+    public RessourceDirectory<Car> Cars { get; }
+
+    public RessourceDirectory<Sound> Sounds { get; }
+
+    public GameVersion Version { get; }
+
+    public GameDirectory(string path, GameVersion version) : base(null, path)
     {
-        if (target == GameVersion.Auto)
+        if (version == GameVersion.None)
             Version = FindDirectoryGameVersion(path);
         else
-            Version = target;
+            Version = version;
 
         Scenarios = new(this, ChildPath("Scenarios"),
             (path) => Directory.Exists(path),
@@ -58,7 +64,7 @@ public class GameDirectory : Ressource
     public static GameVersion FindDirectoryGameVersion(string path)
     {
         if (!Directory.Exists(path))
-            return GameVersion.Invalid;
+            return GameVersion.None;
 
         var files = Directory.GetFiles(path);
         var names = new List<string>();
@@ -95,14 +101,14 @@ public class GameDirectory : Ressource
                 "ct4_setup.exe" => GameVersion.CT4,
                 "ct5_config.exe" => GameVersion.CT5,
 
-                _ => GameVersion.Invalid,
+                _ => GameVersion.None,
             };
 
-            if (result != GameVersion.Invalid)
+            if (result != GameVersion.None)
                 return result;
         }
 
-        return GameVersion.Invalid;
+        return GameVersion.None;
     }
 
     public static GameVersion ParseGameVersion(string version) => version switch
@@ -119,7 +125,7 @@ public class GameDirectory : Ressource
         "CT4" => GameVersion.CT4,
         "CT5" => GameVersion.CT5,
 
-        _ => GameVersion.Invalid,
+        _ => GameVersion.None,
     };
 
     protected override void OnLoad()

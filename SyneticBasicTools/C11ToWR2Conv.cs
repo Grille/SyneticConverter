@@ -1,4 +1,5 @@
-﻿using SyneticLib.IO.Synetic.Files;
+﻿using SyneticLib.LowLevel;
+using SyneticLib.LowLevel.Files;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,7 +33,7 @@ public static class C11ToWR2Conv
 
         geo.Load();
 
-        idx.Polygons = geo.Polygons;
+        idx.Indices = geo.Indices;
         vtx.Vertecis = geo.Vertecis;
         vtx.IndicesOffset = geo.IndicesOffset;
 
@@ -50,12 +51,12 @@ public static class C11ToWR2Conv
 
         qad.Path = qadpath;
 
-        qad.SetFlagsAccordingToVersion(SyneticLib.GameVersion.C11);
+        qad.SetFlagsAccordingToVersion(GameVersion.C11);
         qad.Load();
 
         qad.SortMaterials();
         qad.RecalcMaterialChecksum();
-        qad.SetFlagsAccordingToVersion(SyneticLib.GameVersion.WR2);
+        qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.Save();
     }
 }

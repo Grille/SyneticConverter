@@ -41,9 +41,8 @@ public class Pipeline : IViewObject
         if (magic != Magic)
             throw new InvalidDataException();
 
-
-        br.DefaultLengthPrefix = LengthPrefix.UInt16;
-        br.DefaultCharSize = CharSize.Byte;
+        br.LengthPrefix = LengthPrefix.UInt16;
+        br.Encoding = Encoding.UTF8;
 
         int typeCount = br.ReadInt32();
         var types = new List<FileTaskTypeInfo>();
@@ -68,8 +67,8 @@ public class Pipeline : IViewObject
     {
         bw.WriteInt32(Magic);
 
-        bw.DefaultLengthPrefix = LengthPrefix.UInt16;
-        bw.DefaultCharSize = CharSize.Byte;
+        bw.LengthPrefix = LengthPrefix.UInt16;
+        bw.Encoding = Encoding.UTF8;
 
         var types = FileTaskTypeInfo.GetTypes(Tasks);
 

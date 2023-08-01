@@ -15,8 +15,8 @@ public class PipelineList : List<Pipeline>, IViewObject
 
     public void ReadFromView(BinaryViewReader br)
     {
-        br.DefaultLengthPrefix = LengthPrefix.UInt16;
-        br.DefaultCharSize = CharSize.Byte;
+        br.LengthPrefix = LengthPrefix.UInt16;
+        br.Encoding = Encoding.UTF8;
 
         int count = br.ReadInt32();
         for (int i = 0; i < count; i++)
@@ -30,8 +30,8 @@ public class PipelineList : List<Pipeline>, IViewObject
 
     public void WriteToView(BinaryViewWriter bw)
     {
-        bw.DefaultLengthPrefix = LengthPrefix.UInt16;
-        bw.DefaultCharSize = CharSize.Byte;
+        bw.LengthPrefix = LengthPrefix.UInt16;
+        bw.Encoding = Encoding.UTF8;
 
         bw.WriteInt32(Count);
         for (int i = 0; i < Count; i++)

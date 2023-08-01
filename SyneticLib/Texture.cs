@@ -5,13 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SyneticLib.IO.Synetic;
-using SyneticLib.Graphics;
 
 namespace SyneticLib;
 public class Texture : Ressource
 {
-    public bool Compressed;
-    public int Bits;
+    public TextureFormat Format;
     public int Width;
     public int Height;
 
@@ -20,12 +18,9 @@ public class Texture : Ressource
 
     public int Id;
 
-    public readonly TextureBuffer GLBuffer;
-
     public Texture(int width, int height) : base(null, "Texture", PointerType.Virtual)
     {
-        GLBuffer = new TextureBuffer(this);
-        Bits = 32;
+        Format = TextureFormat.Rgba32;
 
         Width = width;
         Height = height;
@@ -36,8 +31,7 @@ public class Texture : Ressource
 
     public Texture() : base(null, "Texture", PointerType.Virtual)
     {
-        GLBuffer = new TextureBuffer(this);
-        Bits = 32;
+        Format = TextureFormat.Rgba32;
 
         Width = 2;
         Height = 2;
@@ -55,7 +49,6 @@ public class Texture : Ressource
 
     public Texture(Ressource parent, string path) : base(parent, path, PointerType.File)
     {
-        GLBuffer = new TextureBuffer(this);
     }
 
     public static Texture CreatePlaceholder(string name)

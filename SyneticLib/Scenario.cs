@@ -16,12 +16,9 @@ public partial class Scenario : Ressource
 
     public new ScenarioVGroup Parent { get => (ScenarioVGroup)base.Parent; set => base.Parent = value; }
 
-
-    public GroundModel GroundModel;
-    public TerrainMesh Terrain;
+    public Model Terrain;
     public RessourceDirectory<Sound> Sounds;
     public TextureDirectory TerrainTextures;
-    public RessourceList<TerrainMaterial> TerrainMaterials;
     public ModelDirectory Models;
     public TextureDirectory ModelTextures;
     public RessourceList<PropClass> PropClasses;

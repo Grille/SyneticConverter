@@ -7,15 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GGL.BinaryView" Version="2.3.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SyneticLib\SyneticLib.csproj" />
+    <PackageReference Include="GGL.BinaryView" Version="2.4.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ParaTypes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SyneticLib.IO.Files\SyneticLib.LowLevel.csproj" />
   </ItemGroup>
 
 </Project>

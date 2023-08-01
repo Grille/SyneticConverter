@@ -1,11 +1,41 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <RootNamespace>SyneticLib.Graphics</RootNamespace>
-    <AssemblyName>SyneticLibGraphics</AssemblyName>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<LangVersion>10</LangVersion>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<RootNamespace>SyneticLib.Graphics</RootNamespace>
+		<AssemblyName>SyneticLibGraphics</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Shaders\MeshDebugFragment.glsl" />
+		<None Remove="Shaders\MeshDebugVertex.glsl" />
+		<None Remove="Shaders\MeshFragment.glsl" />
+		<None Remove="Shaders\MeshVertex.glsl" />
+		<None Remove="Shaders\SpriteFragment.glsl" />
+		<None Remove="Shaders\SpriteVertex.glsl" />
+		<None Remove="Shaders\TerrainFragment.glsl" />
+		<None Remove="Shaders\TerrainVertex.glsl" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Shaders\MeshDebugFragment.glsl" />
+		<EmbeddedResource Include="Shaders\MeshDebugVertex.glsl" />
+		<EmbeddedResource Include="Shaders\MeshFragment.glsl" />
+		<EmbeddedResource Include="Shaders\MeshVertex.glsl" />
+		<EmbeddedResource Include="Shaders\SpriteFragment.glsl" />
+		<EmbeddedResource Include="Shaders\SpriteVertex.glsl" />
+		<EmbeddedResource Include="Shaders\TerrainFragment.glsl" />
+		<EmbeddedResource Include="Shaders\TerrainVertex.glsl" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="OpenTK" Version="4.8.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\SyneticLib\SyneticLib.csproj" />
+	</ItemGroup>
 
 </Project>

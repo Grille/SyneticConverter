@@ -1,5 +1,6 @@
 ﻿using SyneticLib;
-using SyneticLib.IO.Synetic.Files;
+using SyneticLib.LowLevel;
+using SyneticLib.LowLevel.Files;
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -358,8 +359,11 @@ public static class WR1ToWR2Conv
 
         float add = 255 * ambientOffset;
         float mul = 1f - ambientOffset;
-        foreach (var v in vtx.Vertecis)
+
+        for (int i = 0;i< vtx.Vertecis.Length;i++)
         {
+            ref var v = ref vtx.Vertecis[i];
+
             v.LightColor.R = (byte)(v.LightColor.R * mul + add);
             v.LightColor.G = (byte)(v.LightColor.G * mul + add);
             v.LightColor.B = (byte)(v.LightColor.B * mul + add);

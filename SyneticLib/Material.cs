@@ -6,19 +6,15 @@ using System.Threading.Tasks;
 using System.Numerics;
 using OpenTK.Mathematics;
 
-using SyneticLib.Graphics;
-
 namespace SyneticLib;
 
 public abstract class Material : Ressource
 {
     public int ID = -1;
-    public readonly TextureSlot[] TextureSlots = new TextureSlot[3];
+    readonly TextureSlot[] TextureSlots = new TextureSlot[3];
     public TextureSlot TexSlot0 => TextureSlots[0];
     public TextureSlot TexSlot1 => TextureSlots[1];
     public TextureSlot TexSlot2 => TextureSlots[2];
-
-    public GLProgram GLProgram;
 
     protected Material(Ressource parent, string path, PointerType type = PointerType.Virtual) : base(parent, path, type)
     {

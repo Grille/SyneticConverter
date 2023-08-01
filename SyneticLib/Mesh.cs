@@ -8,25 +8,19 @@ using System.IO;
 
 using SyneticLib.IO.Synetic;
 using SyneticLib.IO.Extern;
-using SyneticLib.Graphics;
+using SyneticLib.LowLevel;
 
 namespace SyneticLib;
 
-public abstract class Mesh: Ressource
+public class Mesh: Ressource
 {
     public string Name;
     //public int[] Indecies;
-    public Vertex[] Vertices;
-    public Vector3Int[] Polygons;
-    public MaterialRegion[] MaterialRegion;
-
-    public MaterialList Materials { get; set; }
-
-    public GLMeshBuffer GLBuffer;
+    public Vertex[] Vertices { get; init; }
+    public IndexTriangle[] Indices { get; init; }
 
     public Mesh(Ressource parent, string path, PointerType type) : base(parent, path, type)
     {
-        Materials = new(this);
     }
 
     public virtual void ExportAsObj(string path)

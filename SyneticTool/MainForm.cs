@@ -16,7 +16,7 @@ using System.Numerics;
 using SyneticLib;
 using SyneticLib.Graphics;
 using SyneticTool.Nodes;
-using Graphics = SyneticLib.Graphics.Graphics;
+using Graphics = SyneticLib.Graphics;
 
 namespace SyneticTool;
 
@@ -48,7 +48,7 @@ public partial class MainForm : Form
         glPanel.MouseWheel += GlPanel_MouseWheel;
         glControl.MouseMove += GlPanel_MouseMove;
         glPanel.Controls.Add(glControl);
-        Display = new(glControl);
+
 
         Config = new("config.dat");
         Config.TryLoad();
@@ -83,7 +83,7 @@ public partial class MainForm : Form
 
     private void MainForm_Shown(object sender, EventArgs e)
     {
-        Graphics.Setup();
+        Display = new(glControl);
         renderTimer.Start();
 
         if (Games.Count == 0)
