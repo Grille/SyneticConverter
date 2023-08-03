@@ -8,11 +8,11 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-public class DataTreeNode : MyTreeNode
+public class RessourceNode : BaseNode
 {
-    public Ressource Ressource => (Ressource)Object;
+    public Ressource Ressource => (Ressource)Value;
 
-    public DataTreeNode(Ressource data) : base(data)
+    public RessourceNode(Ressource data) : base(data)
     {
 
     }

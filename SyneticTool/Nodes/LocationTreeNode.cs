@@ -9,9 +9,10 @@ using System.Windows.Forms;
 
 namespace SyneticTool.Nodes;
 
-public class LocationTreeNode : MyTreeNode
+public class LocationTreeNode : BaseNode
 {
-    public Location Location => (Location)Object;
+    public Location Location => (Location)Value;
+
     public LocationTreeNode(Location location) : base(location)
     {
     }

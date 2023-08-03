@@ -9,9 +9,18 @@ using SyneticLib.LowLevel.Files;
 using SyneticLib.Locations;
 
 namespace SyneticLib.IO;
-public static class ModelmporterMox
+
+public static partial class Imports
 {
-    public static Model Load(string path, TextureDirectory textures)
+    public static Model LoadModelFromMox(string path)
+    {
+        var texpath = Path.Combine(path, "textures");
+        var textures = new TextureDirectory(texpath);
+
+        return LoadModelFromMox(path, textures);
+    }
+
+    public static Model LoadModelFromMox(string path, TextureDirectory textures)
     {
         var mox = new MoxFile();
         var mtl = new MtlFile();

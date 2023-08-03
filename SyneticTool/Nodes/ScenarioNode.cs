@@ -7,14 +7,13 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using SyneticLib;
+using SyneticTool.Nodes.System;
 
 namespace SyneticTool.Nodes;
 
-internal class ScenarioNode : DataTreeNode
+internal class ScenarioNode : LazyRessourceNode<ScenarioGroup>
 {
-    public new ScenarioGroup DataValue => (ScenarioGroup)base.Ressource;
-
-    public ScenarioNode(ScenarioGroup scenario) : base(scenario)
+    public ScenarioNode(Lazy<ScenarioGroup> scenario) : base(scenario)
     {
         SelectedImageIndex = ImageIndex = IconList.World;
     }
@@ -23,13 +22,17 @@ internal class ScenarioNode : DataTreeNode
     {
         base.OnUpdateContent();
 
-        Text = DataValue.Name;
+        var value = Value.Value;
 
-        var variants = DataValue.Variants;
-        for (int i = 0; i < variants.Count; i++)
+        Text = value.Name;
+
+        
+        var variants = value.Variants;
+        for (int i = 0; i < variants.Length; i++)
         {
             Nodes.Add(new ScenarioVariantNode(variants[i]));
         }
+        
     }
 
     public ScenarioVariantNode V1
@@ -39,6 +42,6 @@ internal class ScenarioNode : DataTreeNode
 
     public override void OnSelect(TreeViewCancelEventArgs e)
     {
-        MainForm.Display.ShowScenario(DataValue);
+        MainForm.Display.ShowScenario(Value.Value);
     }
 }

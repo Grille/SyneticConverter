@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using SyneticLib.Locations;
 using SyneticLib;
 using SyneticLib.LowLevel;
+using SyneticTool.Nodes.System;
 
 namespace SyneticTool.Nodes;
 
@@ -15,19 +16,19 @@ public class GameDirectoryNode : LocationTreeNode
 {
     public GameDirectory GameDirectory => (GameDirectory)base.Location;
 
-    DirectoryListTreeNode<ScenarioGroup> ScenariosNode;
-    DirectoryListTreeNode<Car> CarsNode;
-    DirectoryListTreeNode<Sound> SoundsNode;
+    LazyRessourceDirectoryNode<ScenarioGroup> ScenariosNode;
+    LazyRessourceDirectoryNode<Car> CarsNode;
+    LazyRessourceDirectoryNode<Sound> SoundsNode;
 
     public GameDirectoryNode(GameDirectory game) : base(game)
     {
         ScenariosNode = new(game.Scenarios, (a) => new ScenarioNode(a));
-        CarsNode = new(game.Cars, (a) => new CarNode(a));
-        SoundsNode = new(game.Sounds, (a) => new SoundNode(a));
+        //CarsNode = new(game.Cars, (a) => new CarNode(a));
+        //SoundsNode = new(game.Sounds, (a) => new SoundNode(a));
         
         Nodes.Add(ScenariosNode);
-        Nodes.Add(CarsNode);
-        Nodes.Add(SoundsNode);
+        //Nodes.Add(CarsNode);
+        //Nodes.Add(SoundsNode);
         
         var menu = new ContextMenuStrip();
 

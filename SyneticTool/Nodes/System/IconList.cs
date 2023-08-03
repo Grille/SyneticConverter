@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace SyneticTool.Nodes;
+namespace SyneticTool.Nodes.System;
 internal static class IconList
 {
     public static int Default;
@@ -69,7 +69,7 @@ internal static class IconList
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = $"SyneticTool.Nodes.Icons.{name}.png";
         using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-        Images.Images.Add(new Bitmap(stream));
+            Images.Images.Add(new Bitmap(stream));
         return Images.Images.Count - 1;
     }
 

@@ -7,14 +7,15 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using SyneticLib;
+using SyneticTool.Nodes.System;
 
 namespace SyneticTool.Nodes;
 
-internal class ScenarioVariantNode : DataTreeNode
+internal class ScenarioVariantNode : RessourceNode
 {
     public new Scenario DataValue => (Scenario)base.Ressource;
 
-    public DataTreeNode TerrainNode;
+    public RessourceNode TerrainNode;
     public TextureDirectoryNode TerrainTexturesNode;
     public ModelDirectoryNode ObjectsNode;
     public TextureDirectoryNode ObjectTexturesNode;

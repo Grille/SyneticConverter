@@ -11,7 +11,7 @@ using static System.IO.Path;
 
 namespace SyneticLib.Locations;
 
-public class RessourceDirectory<T> : Location, IReadOnlyCollection<T> where T : Ressource
+public class LazyRessourceDirectory<T> : Location, IReadOnlyCollection<Lazy<T>> where T : Ressource
 {
     public static readonly Predicate<string> FileFilter = (path) => File.Exists(path);
     public static readonly Predicate<string> DirectoryFilter = (path) => Directory.Exists(path);
@@ -19,11 +19,11 @@ public class RessourceDirectory<T> : Location, IReadOnlyCollection<T> where T : 
     readonly Predicate<string> Filter;
     readonly Func<string, T> Constructor;
 
-    readonly Dictionary<string, T> dict;
+    readonly Dictionary<string, Lazy<T>> dict;
 
-    public RessourceDirectory(string path, Predicate<string> filter, Func<string, T> constructor) : base(path)
+    public LazyRessourceDirectory(string path, Predicate<string> filter, Func<string, T> constructor) : base(path)
     {
-        dict = new Dictionary<string, T>();
+        dict = new Dictionary<string, Lazy<T>>();
         Filter = filter;
         Constructor = constructor;
 
@@ -42,7 +42,8 @@ public class RessourceDirectory<T> : Location, IReadOnlyCollection<T> where T : 
             if (Filter(entry))
             {
                 var key = GetFullPath(entry).ToLower();
-                dict[key] = null;
+                var factory = () => Constructor(key);
+                dict[key] = new Lazy<T>(factory); ;
             }
         }
     }
@@ -51,15 +52,12 @@ public class RessourceDirectory<T> : Location, IReadOnlyCollection<T> where T : 
     {
         var key = GetFullPath(Combine(Path, name)).ToLower();
 
-        if (dict.TryGetValue(key, out result))
+        if (dict.TryGetValue(key, out var lazy))
         {
-            if (result == null)
-            {
-                result = Constructor(key);
-                dict[key] = result;
-            }
+            result = lazy.Value;
             return true;
         }
+        result = null;
         return false;
     }
 
@@ -86,7 +84,7 @@ public class RessourceDirectory<T> : Location, IReadOnlyCollection<T> where T : 
         return CreateIndexedArray(names);
     }
 
-    public IEnumerator<T> GetEnumerator()
+    public IEnumerator<Lazy<T>> GetEnumerator()
     {
         return dict.Values.GetEnumerator();
     }

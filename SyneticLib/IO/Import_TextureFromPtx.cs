@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SyneticLib.LowLevel.Files;
 
 namespace SyneticLib.IO;
-public static class TextureImporterPtx
+public static partial class Imports
 {
 
     public static Texture LoadPtxTexture(string path)
@@ -19,7 +19,9 @@ public static class TextureImporterPtx
 
         var format = (ptx.Head.Compression, ptx.Head.BitPerPixel) switch
         {
+            (0, 24) => TextureFormat.RGB24,
             (0, 32) => TextureFormat.RGBA32,
+            (1, 24) => TextureFormat.RGB24Dxt1,
             (1, 32) => TextureFormat.RGBA32Dxt5,
             _ => throw new Exception(),
         };

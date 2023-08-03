@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using SyneticLib;
+using SyneticTool.Nodes.System;
 
 namespace SyneticTool.Nodes;
 
-internal class TextureNode : DataTreeNode
+internal class TextureNode : RessourceNode
 {
     public new Texture DataValue { get => (Texture)base.Ressource; set => DataValue = value; }
 

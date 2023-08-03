@@ -15,7 +15,7 @@ public partial class Scenario : Ressource
     public int Width, Height;
 
     public Model Terrain;
-    public RessourceDirectory<Sound> Sounds;
+    public LazyRessourceDirectory<Sound> Sounds;
     public TextureDirectory TerrainTextures;
     public ModelDirectory Models;
     public TextureDirectory ModelTextures;

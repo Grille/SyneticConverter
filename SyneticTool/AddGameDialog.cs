@@ -103,8 +103,9 @@ public partial class AddGameDialog : Form
 
     public void ApplyToGame()
     {
-        //SelectedGame.SourcePath = NewGamePath;
-        //SelectedGame.Version = NewGameVersion;
+        SelectedGame.Path = NewGamePath;
+        SelectedGame.Version = NewGameVersion;
+        SelectedGame.Seek();
     }
 
     private void button1_Click(object sender, EventArgs e)

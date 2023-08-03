@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using System.Numerics;
 
 namespace SyneticLib.IO;
-public static class MeshExporterObj
+public static partial class Exports
 {
     //public Vector3 PositionMultiplier = Vector3.One;
 
-    public static void Save(Model model, string path)
+    public static void SaveAsObj(this Model model, string path)
     {
         var PositionMultiplier = Vector3.One;
 

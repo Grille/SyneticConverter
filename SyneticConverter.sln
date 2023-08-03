@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticPipelineTool", "Syne
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.Graphics", "SyneticGraphicsLib\SyneticLib.Graphics.csproj", "{7964B0C8-45A9-4436-8A08-C26B92E66BE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyneticLib.LowLevel", "SyneticLib.IO.Files\SyneticLib.LowLevel.csproj", "{A5207D1F-7466-4307-A29C-9F226C96960C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.LowLevel", "SyneticLib.IO.Files\SyneticLib.LowLevel.csproj", "{A5207D1F-7466-4307-A29C-9F226C96960C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyneticLib.Viewer", "SynetcLib.Viewer\SyneticLib.Viewer.csproj", "{A6B862FE-7BA9-4743-B31E-19E5FCA83551}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +48,10 @@ Global
 		{A5207D1F-7466-4307-A29C-9F226C96960C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5207D1F-7466-4307-A29C-9F226C96960C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5207D1F-7466-4307-A29C-9F226C96960C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6B862FE-7BA9-4743-B31E-19E5FCA83551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6B862FE-7BA9-4743-B31E-19E5FCA83551}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6B862FE-7BA9-4743-B31E-19E5FCA83551}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6B862FE-7BA9-4743-B31E-19E5FCA83551}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

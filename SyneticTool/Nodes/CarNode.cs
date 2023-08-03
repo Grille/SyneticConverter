@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SyneticLib;
+using SyneticTool.Nodes.System;
 
 namespace SyneticTool.Nodes;
 
-public class CarNode : DataTreeNode
+public class CarNode : RessourceNode
 {
     public TextureDirectoryNode ObjectTexturesNode;
     public ModelNode MeshNode;

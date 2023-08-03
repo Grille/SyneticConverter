@@ -1,5 +1,4 @@
 ﻿using SyneticLib;
-using SyneticTool.Nodes.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace SyneticTool.Nodes;
 
-public class SoundNode : RessourceNode
+public class LazyRessourceNode<T> : BaseNode where T : Ressource
 {
-    public SoundNode(Sound data) : base(data)
+    public new Lazy<T> Value => (Lazy<T>)base.Value;
+
+    public LazyRessourceNode(Lazy<T> obj) : base(obj)
     {
-        SelectedImageIndex = ImageIndex = IconList.Audio;
     }
 }

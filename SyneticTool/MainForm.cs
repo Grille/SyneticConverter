@@ -15,6 +15,7 @@ using SyneticLib.Graphics;
 using SyneticTool.Nodes;
 using Graphics = SyneticLib.Graphics;
 using SyneticLib.Locations;
+using SyneticTool.Nodes.System;
 
 namespace SyneticTool;
 
@@ -186,15 +187,15 @@ public partial class MainForm : Form
     {
         dataTreeView.BeginUpdate();
 
-        if (e.Node is MyTreeNode)
+        if (e.Node is BaseNode)
         {
-            var node = (MyTreeNode)e.Node;
+            var node = (BaseNode)e.Node;
             node.OnExpand(e);
             foreach (var cnode in node.Nodes)
             {
-                if (cnode is MyTreeNode)
+                if (cnode is BaseNode)
                 {
-                    ((MyTreeNode)cnode).OnShown();
+                    ((BaseNode)cnode).OnShown();
                 }
             }
         }
@@ -321,9 +322,9 @@ public partial class MainForm : Form
 
     private void dataTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
     {
-        if (e.Node is MyTreeNode)
+        if (e.Node is BaseNode)
         {
-            var node = (MyTreeNode)e.Node;
+            var node = (BaseNode)e.Node;
             node.OnSelect(e);
 
 

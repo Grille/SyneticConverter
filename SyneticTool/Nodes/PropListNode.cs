@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SyneticLib;
+using SyneticTool.Nodes.System;
 
 namespace SyneticTool.Nodes;
 
-public class PropListNode : DataListTreeNode<PropClass>
+public class PropListNode : RessourceListNode<PropClass>
 {
     public PropListNode(RessourceList<PropClass> list) : base(list, (a) => new PropNode(a))
     {
@@ -18,6 +19,6 @@ public class PropListNode : DataListTreeNode<PropClass>
     protected override void OnUpdateAppearance()
     {
         base.OnUpdateAppearance();
-        Text = $"Props [{DataValue.Count}]";
+        Text = $"Props [{Value.Count}]";
     }
 }

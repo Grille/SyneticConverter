@@ -13,12 +13,33 @@ using SyneticLib.Locations;
 using static System.IO.Path;
 
 namespace SyneticLib.IO;
-public static class ScenarioImporterSynetic
+public static partial class Imports
 {
-
-    public static Scenario Load(string path, string fileName, GameVersion version)
+    public static ScenarioGroup LoadScenarioGroup(string path, string name, GameVersion version)
     {
-        /*
+        var dirs = Directory.GetDirectories(path);
+
+        var variants = new List<Scenario>();
+
+        for (int i = 0; i < dirs.Length; i++)
+        {
+            var dirpath = dirs[i];
+            string dirname = GetFileName(dirpath);
+            if (dirname.Length == 2 && int.TryParse(dirname.Substring(1, 1), out int id))
+            {
+                var scenario = LoadScenario(dirpath, name, version);
+                variants.Add(scenario);
+            }
+        }
+
+        var group = new ScenarioGroup(name, variants.ToArray());
+        return group;
+    }
+
+
+    public static Scenario LoadScenario(string path, string name, GameVersion version)
+    {
+        
         var syn = new SynFile();
         var geo = new GeoFile();
         var idx = new IdxFile();
@@ -34,7 +55,7 @@ public static class ScenarioImporterSynetic
         var synPath = Combine(path, $"V{0}");
         syn.Path = synPath + ".syn";
 
-        var filePath = Combine(path, fileName);
+        var filePath = Combine(path, name);
         geo.Path = filePath + ".geo";
         idx.Path = filePath + ".idx";
         lvl.Path = filePath + ".lvl";
@@ -77,10 +98,12 @@ public static class ScenarioImporterSynetic
         // Materials
         var textureIndex = terrainTextures.CreateIndexedArray(qad.TextureNames);
 
+        var materials = new List<Material>();
+
         for (var i = 0; i < qad.Materials.Length; i++)
         {
             var matInfo = qad.Materials[i];
-            var mat = new TerrainMaterial(Target);
+            var mat = new Material($"MAT_{i}");
 
             if (matInfo.Tex0Id < textureIndex.Length)
                 mat.TexSlot0.Enable(textureIndex[matInfo.Tex0Id]);
@@ -91,13 +114,14 @@ public static class ScenarioImporterSynetic
             if (matInfo.Tex2Id < textureIndex.Length)
                 mat.TexSlot2.Enable(textureIndex[matInfo.Tex2Id]);
 
-            mat.Mode = (TerrainMaterialType)(ushort)matInfo.Mode;
-            mat.DataState = DataState.Loaded;
+            //mat.Mode = (TerrainMaterialType)(ushort)matInfo.Mode;
+            //mat.DataState = DataState.Loaded;
 
-            target.TerrainMaterials.Add(mat);
+            materials.Add(mat);
         }
 
         // Props
+        /*
         for (var i = 0; i < qad.Head.PropClassCount; i++)
         {
             var name = qad.PropClassObjNames[i];
@@ -134,6 +158,8 @@ public static class ScenarioImporterSynetic
         }
 
         target.Lights.DataState = DataState.Loaded;
+
+        
 
         var terrain = target.Terrain;
         terrain.Vertices = ivtx.Vertecis;
@@ -220,7 +246,8 @@ public static class ScenarioImporterSynetic
         }
         target.Chunks.DataState = DataState.Loaded;
         */
-        return null;
+
+        return new Scenario(0);
 
     }
 }

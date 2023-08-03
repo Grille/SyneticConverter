@@ -10,17 +10,17 @@ namespace SyneticLib;
 
 public class ScenarioGroup : Ressource
 {
-    public List<Scenario> Variants;
+    public Scenario[] Variants { get; }
 
-    public int VariantCount { get => Variants.Count; }
-    public Scenario V1 { get => Variants.Count > 0 ? Variants[0] : null; } 
-    public Scenario V2 { get => Variants.Count > 1 ? Variants[1] : null; }
-    public Scenario V3 { get => Variants.Count > 2 ? Variants[2] : null; }
-    public Scenario V4 { get => Variants.Count > 3 ? Variants[3] : null; }
+    public int VariantCount { get => Variants.Length; }
+    public Scenario V1 { get => Variants.Length > 0 ? Variants[0] : null; } 
+    public Scenario V2 { get => Variants.Length > 1 ? Variants[1] : null; }
+    public Scenario V3 { get => Variants.Length > 2 ? Variants[2] : null; }
+    public Scenario V4 { get => Variants.Length > 3 ? Variants[3] : null; }
 
-    public ScenarioGroup(GameDirectory game, string path) : base(path)
+    public ScenarioGroup(string name, Scenario[] variants) : base(name)
     {
-        Variants = new List<Scenario>();
+        Variants = variants;
     }
 
     public void ExecuteOnAll(Action<Scenario> action)

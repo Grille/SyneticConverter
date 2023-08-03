@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace SyneticLib.IO;
-public static class SoundExport
+public static partial class Exports
 {
     public static void Save(this Sound sound, string path)
     {

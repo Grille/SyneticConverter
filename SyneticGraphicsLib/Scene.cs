@@ -79,6 +79,12 @@ public class Scene
         program.SubCameraMatrix(Camera);
         program.SubModelMatrix(Matrix4.Identity);
 
+        foreach (Sprite sprite in Sprites)
+        {
+            var texture = TextureRegistry.Get(sprite.Texture);
+            texture.Bind();
+        }
+
         GL.DrawElements(PrimitiveType.Triangles, 2 * 3, DrawElementsType.UnsignedInt, 0 * 3 * 4);
 
         Console.WriteLine(GL.GetError());
@@ -93,9 +99,7 @@ public class Scene
             Graphics.DrawMesh(instance);
 
         Graphics.DepthTestEnabled = false;
-
-        foreach (Sprite sprite in Sprites)
-            Graphics.DrawSprite(sprite);
         */
+     
     }
 }

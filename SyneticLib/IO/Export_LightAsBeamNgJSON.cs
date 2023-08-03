@@ -8,30 +8,20 @@ using System.IO;
 using System.Numerics;
 
 namespace SyneticLib.IO;
-public class LightExportBeamNgJSON
+public static partial class Exports
 {
-    public RessourceList<Light> Lights;
-    public Vector3 Scale = Vector3.One;
-    public Vector3 Offset = Vector3.Zero;
-    public string Parent = "Lights";
-
-    public LightExportBeamNgJSON(RessourceList<Light> lights = null)
+    public static void SaveAsBeamNGJson(this RessourceList<Light> lights, string path)
     {
-        Lights = lights;
-    }
-
-    public void Save(string path)
-    {
+        const string parent = "Lights";
         var sb = new StringBuilder();
 
         var i = 0;
-        foreach (var light in Lights)
+        foreach (var light in lights)
         {
             var pos = new Vector3(-light.Position.X * 0.1f + 1228.5f, -light.Position.Z * 0.1f + 1228.5f, light.Position.Y * 0.1f + 180f);
 
-
             sb.Append("{");
-            sb.Append($"\"__parent\":\"{Parent}\",");
+            sb.Append($"\"__parent\":\"{parent}\",");
             sb.Append($"\"name\":\"elight_{i++}\",");
             sb.Append($"\"class\":\"SpotLight\",");
             sb.Append($"\"position\":[{pos.X},{pos.Y},{pos.Z}],");
@@ -49,12 +39,4 @@ public class LightExportBeamNgJSON
     }
 
 
-}
-
-public static class BeamNGExportUtils
-{
-    public static void ExportAsBeamNGJSON(this RessourceList<Light> lights, string path)
-    {
-
-    }
 }

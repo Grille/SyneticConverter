@@ -16,6 +16,7 @@ public class GLObjectRegistry<TKey, TValue> : IReadOnlyCollection<TValue> where 
 
     public GLObjectRegistry(Func<TKey, TValue> mapper)
     {
+        pairs = new Dictionary<TKey, TValue>();
         this.mapper = mapper;
     }
 

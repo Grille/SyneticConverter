@@ -9,7 +9,7 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-internal class ModelDirectoryNode : DataListTreeNode<Model>
+internal class ModelDirectoryNode : RessourceListNode<Model>
 {
     public ModelDirectoryNode(RessourceList<Model> meshes, string name = "Objects") : base(meshes, (a) => new ModelNode(a))
     {

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace SyneticTool.Nodes;
 
-public class PropNode : DataTreeNode
+public class PropNode : RessourceNode
 {
-    public new PropClass DataValue => (PropClass)base.Ressource;
+    public new PropClass Value => (PropClass)base.Ressource;
 
     public PropNode(PropClass data) : base(data)
     {
@@ -19,6 +19,6 @@ public class PropNode : DataTreeNode
     protected override void OnUpdateAppearance()
     {
         base.OnUpdateAppearance();
-        Text = $"{DataValue.Name}";
+        Text = $"{Value.Name}";
     }
 }

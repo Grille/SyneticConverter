@@ -10,11 +10,11 @@ using static System.IO.Path;
 using SyneticLib.IO;
 
 namespace SyneticLib;
-public class ModelDirectory : RessourceDirectory<Model>
+public class ModelDirectory : LazyRessourceDirectory<Model>
 {
     static bool filter(string path) => File.Exists(path) && GetExtension(path).ToLower() == ".mox";
 
-    public ModelDirectory(TextureDirectory textures, string path) : base(path, filter, (a) => ModelmporterMox.Load(path, textures))
+    public ModelDirectory(TextureDirectory textures, string path) : base(path, filter, (a) => Imports.LoadModelFromMox(path, textures))
     {
         //TextureFolder = new();
     }

@@ -10,7 +10,7 @@ using SyneticLib.Locations;
 
 namespace SyneticTool.Nodes;
 
-public class TextureDirectoryNode : DataListTreeNode<Texture>
+public class TextureDirectoryNode : RessourceListNode<Texture>
 {
 
     public TextureDirectoryNode(RessourceList<Texture> textures, string name = "Textures") : base(textures, (a) => new TextureNode(a))
@@ -22,7 +22,7 @@ public class TextureDirectoryNode : DataListTreeNode<Texture>
     {
         Nodes.Clear();
 
-        foreach (var texture in DataValue)
+        foreach (var texture in Value)
         {
             Nodes.Add(new TextureNode(texture));
         }

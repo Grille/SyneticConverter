@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SyneticLib;
+using SyneticLib.Locations;
 
 namespace SyneticTool.Nodes;
 
-public class DataListTreeNode<T> : MyTreeNode where T : Ressource
+public class LazyRessourceDirectoryNode<T> : BaseNode where T : Ressource
 {
-    public new RessourceList<T> DataValue => (RessourceList<T>)base.Object;
+    public new LazyRessourceDirectory<T> Value => (LazyRessourceDirectory<T>)base.Value;
 
-    public Func<T, DataTreeNode> Constructor;
+    public Func<Lazy<T>, LazyRessourceNode<T>> Constructor;
 
-    public DataListTreeNode(RessourceList<T> list, Func<T, DataTreeNode> constructor) :base(list)
+    public LazyRessourceDirectoryNode(LazyRessourceDirectory<T> list, Func<Lazy<T>, LazyRessourceNode<T>> constructor) :base(list)
     {
         Constructor = constructor;
     }
@@ -22,7 +23,7 @@ public class DataListTreeNode<T> : MyTreeNode where T : Ressource
     {
         base.OnUpdateContent();
 
-        foreach (var item in DataValue)
+        foreach (var item in Value)
         {
             Nodes.Add(Constructor(item));
         }
@@ -31,6 +32,6 @@ public class DataListTreeNode<T> : MyTreeNode where T : Ressource
     protected override void OnUpdateAppearance()
     {
         base.OnUpdateAppearance();
-        Text = $"{Text} [{DataValue.Count}]";
+        Text = $"{Text} [{Value.Count}]";
     }
 }

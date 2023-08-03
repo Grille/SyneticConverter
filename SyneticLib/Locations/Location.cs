@@ -11,7 +11,7 @@ namespace SyneticLib.Locations;
 
 public abstract class Location
 {
-    public string Path { get; }
+    public string Path { get; set; }
 
     public Location(string path)
     {
@@ -25,7 +25,7 @@ public abstract class Location
 
     public void Seek()
     {
-        OnSeek();
+        OnSeek();    
     }
 
     protected abstract void OnSeek();

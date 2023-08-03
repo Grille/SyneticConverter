@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using SyneticLib;
+using SyneticTool.Nodes.System;
 
 namespace SyneticTool.Nodes;
 
-public class LightsNode : DataListTreeNode<Light>
+public class LightsNode : RessourceListNode<Light>
 {
-    public LightsNode(RessourceList<Light> lights) : base(lights, (a) => new DataTreeNode(a))
+    public LightsNode(RessourceList<Light> lights) : base(lights, (a) => new RessourceNode(a))
     {
         Text = "Lights";
 

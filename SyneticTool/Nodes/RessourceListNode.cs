@@ -4,17 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SyneticLib;
-using SyneticLib.Locations;
 
 namespace SyneticTool.Nodes;
 
-public class DirectoryListTreeNode<T> : MyTreeNode where T : Ressource
+public class RessourceListNode<T> : BaseNode where T : Ressource
 {
-    public RessourceDirectory<T> Directory => (RessourceDirectory<T>)base.Object;
+    public new RessourceList<T> Value => (RessourceList<T>)base.Value;
 
-    public Func<T, DataTreeNode> Constructor;
+    public Func<T, RessourceNode> Constructor;
 
-    public DirectoryListTreeNode(RessourceDirectory<T> list, Func<T, DataTreeNode> constructor) :base(list)
+    public RessourceListNode(RessourceList<T> list, Func<T, RessourceNode> constructor) :base(list)
     {
         Constructor = constructor;
     }
@@ -23,7 +22,7 @@ public class DirectoryListTreeNode<T> : MyTreeNode where T : Ressource
     {
         base.OnUpdateContent();
 
-        foreach (var item in Directory)
+        foreach (var item in Value)
         {
             Nodes.Add(Constructor(item));
         }
@@ -32,6 +31,6 @@ public class DirectoryListTreeNode<T> : MyTreeNode where T : Ressource
     protected override void OnUpdateAppearance()
     {
         base.OnUpdateAppearance();
-        Text = $"{Text} [{Directory.Count}]";
+        Text = $"{Text} [{Value.Count}]";
     }
 }

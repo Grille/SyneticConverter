@@ -1,4 +1,5 @@
 ﻿using SyneticLib;
+using SyneticTool.Nodes.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Windows.Forms;
 
 namespace SyneticTool.Nodes;
 
-public class ModelNode : DataTreeNode
+public class ModelNode : RessourceNode
 {
     public Model Model => (Model)base.Ressource;
 

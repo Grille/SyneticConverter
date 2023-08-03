@@ -6,21 +6,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static SyneticLib.LowLevel.Files.LvlFile;
+using static SyneticLib.LowLevel.Files.SniFile;
 
 namespace SyneticTool.Nodes;
 
-public class MyTreeNode : TreeNode
+public class BaseNode : TreeNode
 {
     public MainForm MainForm => (MainForm)TreeView.FindForm();
 
-    public object Object { get; }
+    public object Value { get; }
 
-    public MyTreeNode(object obj)
+    public BaseNode(object obj)
     {
         if (obj == null)
             throw new ArgumentNullException(nameof(obj));
 
-        Object = obj;
+        Value = obj;
     }
 
     public int Image

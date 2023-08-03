@@ -7,7 +7,7 @@ using System.Drawing;
 
 using SyneticLib;
 
-namespace SyneticTool.Nodes;
+namespace SyneticTool.Nodes.System;
 
 internal static class NodeColors
 {

@@ -10,11 +10,11 @@ using static System.IO.Path;
 using SyneticLib.IO;
 namespace SyneticLib.Locations;
 
-public class TextureDirectory : RessourceDirectory<Texture>
+public class TextureDirectory : LazyRessourceDirectory<Texture>
 {
     static bool filter(string path) => File.Exists(path) && GetExtension(path).ToLower() == ".ptx";
 
-    static Texture constructor(string path) => TextureImporterPtx.LoadPtxTexture(path);
+    static Texture constructor(string path) => Imports.LoadPtxTexture(path);
 
     public TextureDirectory(string path) :
         base(path, filter, constructor)

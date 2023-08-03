@@ -10,29 +10,31 @@ using System.Xml.Linq;
 using static System.IO.Path;
 
 using SyneticLib.LowLevel;
+using SyneticLib.IO;
 
 namespace SyneticLib.Locations;
 
 public class GameDirectory : Location
 {
-    public RessourceDirectory<ScenarioGroup> Scenarios { get; }
+    public LazyRessourceDirectory<ScenarioGroup> Scenarios { get; private set; }
 
-    public RessourceDirectory<Car> Cars { get; }
+    public LazyRessourceDirectory<Car> Cars { get; private set; }
 
-    public RessourceDirectory<Sound> Sounds { get; }
+    public LazyRessourceDirectory<Sound> Sounds { get; private set; }
 
-    public GameVersion Version { get; }
+    public GameVersion Version { get; set; }
 
     public GameDirectory(string path, GameVersion version) : base(path)
     {
-        if (version == GameVersion.None)
-            Version = GetDirectoryGameVersion(path);
-        else
-            Version = version;
+        Version = version;
+        Seek();
+    }
 
+    protected override void OnSeek()
+    {
         Scenarios = new(ChildPath("Scenarios"),
             (path) => Directory.Exists(path),
-            (path) => new ScenarioGroup(this, path)
+            GetScenario
         );
 
         Cars = new(ChildPath("Autos"),
@@ -44,10 +46,10 @@ public class GameDirectory : Location
             (path) => File.Exists(path),
             (path) => null
         );
-    }
 
-    protected override void OnSeek()
-    {
+        if (!Directory.Exists(Path))
+            return;
+
         Scenarios.Seek();
         Cars.Seek();
         Sounds.Seek();
@@ -62,16 +64,8 @@ public class GameDirectory : Location
     public ScenarioGroup GetScenario(string name)
     {
         var path = Combine(Path, "Scenarios", name);
-        return new ScenarioGroup(this, path);
-    }
-
-    public ScenarioGroup CreateScenarioGroup(string name)
-    {
-        var path = Combine(Path, "Scenarios", name);
-
-
-
-        return new ScenarioGroup(this, path);
+        var n = GetFileName(path);
+        return Imports.LoadScenarioGroup(path, n, Version);
     }
 
     public static GameVersion GetDirectoryGameVersion(string path)
