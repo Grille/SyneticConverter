@@ -11,9 +11,9 @@ using System.IO;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.WinForms;
 using System.Numerics;
-using SyneticLib.Graphics;
+
 using SyneticTool.Nodes;
-using Graphics = SyneticLib.Graphics;
+
 using SyneticLib.Locations;
 using SyneticTool.Nodes.System;
 

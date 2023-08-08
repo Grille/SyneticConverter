@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace SyneticLib.Graphics;
 
-public class GLObjectRegistry<TKey, TValue> : IReadOnlyCollection<TValue> where TKey : Ressource where TValue : GLStateObject
+public class GLObjectCache<TKey, TValue> : IReadOnlyCollection<TValue> where TKey : Ressource where TValue : GLObject
 {
     readonly Dictionary<TKey, TValue> pairs;
     readonly Func<TKey, TValue> mapper;
 
     public int Count => pairs.Count;
 
-    public GLObjectRegistry(Func<TKey, TValue> mapper)
+    public GLObjectCache(Func<TKey, TValue> mapper)
     {
         pairs = new Dictionary<TKey, TValue>();
         this.mapper = mapper;

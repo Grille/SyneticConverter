@@ -13,11 +13,13 @@ namespace SyneticPipelineTool;
 public class Pipeline : IViewObject
 {
     const int Magic = 23658;
-    public string Name;
 
-    public PipelineList Owner;
+    public string Name { get; set; }
 
-    public Dictionary<string, string> Variables;
+    public PipelineList Owner { get; set; }
+
+    public Dictionary<string, string> Variables { get; }
+
     public int TaskPosition { get; set; }
 
     public PipelineTaskList Tasks { get; private set; }

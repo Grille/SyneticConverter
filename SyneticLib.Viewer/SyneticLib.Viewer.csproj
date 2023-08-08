@@ -9,12 +9,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\SyneticGraphicsLib\SyneticLib.Graphics.csproj" />
+		<PackageReference Include="OpenTK" Version="4.8.0" />
+		<PackageReference Include="OpenTK.WinForms" Version="4.0.0-pre.6" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="OpenTK" Version="4.8.0" />
-		<PackageReference Include="OpenTK.WinForms" Version="4.0.0-pre.6" />
+	  <ProjectReference Include="..\SyneticLib.Graphics\SyneticLib.Graphics.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

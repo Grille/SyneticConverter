@@ -15,17 +15,17 @@ public static class ParameterFactory
         ParameterTypes.Integer => new ParameterInteger(name, desc, value),
         ParameterTypes.Single => new ParameterSingle(name, desc, value),
         ParameterTypes.Boolean => new ParameterBoolean(name, desc, value),
-        ParameterTypes.String => new Parameter(name, desc, value),
+        ParameterTypes.String => new ParameterString(name, desc, value),
         _ => throw new NotImplementedException()
     };
 }
 
-public class Parameter
+public abstract class Parameter
 {
-    public readonly string Name;
-    public readonly string Description;
-    public bool Enabled = true;
-    public string Value;
+    public string Name { get; }
+    public string Description { get; }
+    public bool Enabled { get; set; } = true;
+    public string Value { get; set; }
 
     public Parameter(string name, string desc, string value)
     {
@@ -55,6 +55,13 @@ public class Parameter
             list.Add(item.Trim());
         }
         return list;
+    }
+}
+
+public class ParameterString : Parameter
+{
+    public ParameterString(string name, string desc, string value) : base(name, desc, value)
+    {
     }
 }
 

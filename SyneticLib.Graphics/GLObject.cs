@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib.Graphics;
-public abstract class GLStateObject : IDisposable
+public abstract class GLObject : IDisposable
 {
     bool _disposed;
 
@@ -28,7 +28,7 @@ public abstract class GLStateObject : IDisposable
 
     protected abstract void OnDestroy();
 
-    ~GLStateObject() => Destroy();
+    ~GLObject() => Destroy();
 
     public void Dispose()
     {

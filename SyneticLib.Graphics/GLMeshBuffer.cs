@@ -4,7 +4,7 @@ using OpenTK.Graphics.OpenGL4;
 using System.Numerics;
 
 namespace SyneticLib.Graphics;
-public abstract class GLMeshBuffer : GLStateObject
+public abstract class GLMeshBuffer : GLObject
 {
     public int VerticesID { get; }
     public int IndicesID { get; }

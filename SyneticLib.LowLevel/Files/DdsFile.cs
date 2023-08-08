@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using SyneticLib.LowLevel.Compression;
 
 namespace SyneticLib.LowLevel.Files;
-internal class DdsFile : BinaryFile
+public class DdsFile : BinaryFile
 {
     public uint Magic;
     public MHeader Head;

@@ -10,7 +10,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 
 namespace SyneticLib.Graphics;
-public sealed class TextureBuffer : GLStateObject
+public sealed class TextureBuffer : GLObject
 {
     readonly int textureID;
 

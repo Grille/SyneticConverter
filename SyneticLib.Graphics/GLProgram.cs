@@ -4,7 +4,7 @@ using OpenTK.Graphics.OpenGL4;
 using System.Runtime.CompilerServices;
 
 namespace SyneticLib.Graphics;
-public abstract class GLProgram : GLStateObject
+public abstract class GLProgram : GLObject
 {
     readonly int ProgramID;
 

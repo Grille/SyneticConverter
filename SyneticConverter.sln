@@ -7,20 +7,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib", "SyneticLib\Sy
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticTool", "SyneticTool\SyneticTool.csproj", "{F13F1CAB-988C-453E-9F06-8ED9B95B7049}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticPipelineTool", "SyneticPipelineTool\SyneticPipelineTool.csproj", "{416746E8-D2FA-4645-A55E-9D5C31CC8E14}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.Graphics", "SyneticLib.Graphics\SyneticLib.Graphics.csproj", "{7964B0C8-45A9-4436-8A08-C26B92E66BE2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.LowLevel", "SyneticLib.LowLevel\SyneticLib.LowLevel.csproj", "{A5207D1F-7466-4307-A29C-9F226C96960C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyneticLib.Viewer", "SyneticLib.Viewer\SyneticLib.Viewer.csproj", "{A6B862FE-7BA9-4743-B31E-19E5FCA83551}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{34D40845-522B-47E3-985E-7BCE84BBBE18}"
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticPipelineTool", "SyneticBasicTools\SyneticPipelineTool.csproj", "{416746E8-D2FA-4645-A55E-9D5C31CC8E14}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.Graphics", "SyneticGraphicsLib\SyneticLib.Graphics.csproj", "{7964B0C8-45A9-4436-8A08-C26B92E66BE2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.LowLevel", "SyneticLib.IO.Files\SyneticLib.LowLevel.csproj", "{A5207D1F-7466-4307-A29C-9F226C96960C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyneticLib.Viewer", "SynetcLib.Viewer\SyneticLib.Viewer.csproj", "{A6B862FE-7BA9-4743-B31E-19E5FCA83551}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

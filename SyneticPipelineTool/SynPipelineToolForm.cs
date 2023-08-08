@@ -59,7 +59,7 @@ public partial class SynPipelineToolForm : Form
         InitializeComponent();
         executer = new AsyncPipelineExecuter();
         Piplines = new PipelineList();
-        Piplines.Load();
+        Piplines.TryLoad();
         PipelinesChanged();
         if (Piplines.Count > 0)
             SelectedPipeline = Piplines[0];

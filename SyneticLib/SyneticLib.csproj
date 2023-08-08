@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SyneticLib.IO.Files\SyneticLib.LowLevel.csproj" />
+    <ProjectReference Include="..\SyneticLib.LowLevel\SyneticLib.LowLevel.csproj" />
   </ItemGroup>
 
 </Project>

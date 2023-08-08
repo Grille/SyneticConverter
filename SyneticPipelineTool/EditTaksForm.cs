@@ -13,11 +13,11 @@ namespace SyneticPipelineTool;
 
 public partial class EditTaksForm : Form
 {
-    public Pipeline Pipeline;
-    public PipelineTask Task;
+    public Pipeline Pipeline { get; }
+    public PipelineTask Task { get; private set; }
+
     Dictionary<string, Type> types;
     List<Control> inputs;
-    Type displayedType = null;
 
     bool setup = true;
 
@@ -25,6 +25,9 @@ public partial class EditTaksForm : Form
 
     public EditTaksForm(Pipeline pipeline, PipelineTask task = null)
     {
+        if (pipeline == null)
+            throw new ArgumentNullException(nameof(pipeline));
+
         InitializeComponent();
         DisplayParameters();
 

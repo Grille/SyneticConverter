@@ -25,6 +25,7 @@ public abstract class PipelineTask : IViewObject
         Init();
     }
 
+
     public void Init()
     {
         OnInit();

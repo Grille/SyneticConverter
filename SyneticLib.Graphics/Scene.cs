@@ -15,8 +15,8 @@ public class Scene
     public readonly List<DrawCall> MeshDrawBuffer;
     public Camera Camera;
 
-    public GLObjectRegistry<Texture, TextureBuffer> TextureRegistry { get; }
-    public GLObjectRegistry<Model, ModelBuffer> ModelRegistry { get; }
+    public GLObjectCache<Texture, TextureBuffer> TextureCache { get; }
+    public GLObjectCache<Model, ModelBuffer> ModelCache { get; }
 
 
     readonly SceneAssets assets;
@@ -32,17 +32,12 @@ public class Scene
         Camera = new OrbitCamera();
         assets = new SceneAssets();
 
-        TextureRegistry = new(tex => new(tex));
-        ModelRegistry = new(model => new(model));
+        TextureCache = new(tex => new(tex));
+        ModelCache = new(model => new(model));
 
         buffer = new ModelBuffer(assets.GroundPlane);
         program = new ModelProgram(assets.GroundPlane.MaterialRegions[0].Material);
         texture = new TextureBuffer(assets.GroundPlane.MaterialRegions[0].Material.TexSlot0.Texture);
-    }
-
-    public Mesh Raycast(Vector2 position)
-    {
-        return null;
     }
 
     public void Add(Model mesh) => Add(mesh, Matrix4.Identity);
@@ -81,7 +76,7 @@ public class Scene
 
         foreach (Sprite sprite in Sprites)
         {
-            var texture = TextureRegistry.Get(sprite.Texture);
+            var texture = TextureCache.Get(sprite.Texture);
             texture.Bind();
         }
 
