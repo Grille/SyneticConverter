@@ -9,4 +9,12 @@ public interface IVertexData
 {
     public int[] IndicesOffset { get; set; }
     public Vertex[] Vertecis { get; set; }
+
+    public int GetVertexCount()
+    {
+        int vertexCount = 0;
+        for (int i = 0; i < IndicesOffset.Length; i++)
+            vertexCount += IndicesOffset[i];
+        return vertexCount;
+    }
 }

@@ -2,9 +2,10 @@
 using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using SyneticLib.Graphics.Shaders;
+using SyneticLib.LowLevel;
 
 namespace SyneticLib.Graphics;
-public class ModelProgram : GLProgram
+public class MaterialProgram : GLProgram
 {
     public int UColorAmbient {get; protected set;}
     public int UColorDiffuse { get; protected set; }
@@ -12,13 +13,20 @@ public class ModelProgram : GLProgram
     public int UColorSpec2 { get; protected set; }
     public int UColorReflect { get; protected set; }
 
+    public TextureBindingInfo TextureBinding0 { get; }
+    //public TextureBindingInfo TextureBinding0 { get; }
+    //public TextureBindingInfo TextureBinding0 { get; }
 
-    public readonly Material Owner;
-    public ModelProgram(Material material)
+    public MaterialProgram(Context ctx, Material material) : base(ctx)
     {
-        Owner = material;
+        using (var shader = new Shader(ctx, material.ShaderType))
+        {
+            GL.AttachShader(ProgramID, shader.VertexID);
+            GL.AttachShader(ProgramID, shader.FragmentID);
+            GL.LinkProgram(ProgramID);
+        }
 
-        Compile(GLSLSources.MeshVertex, GLSLSources.MeshFragment);
+        TextureBinding0 = new TextureBindingInfo(0, ctx.Create(material.TexSlot0.Texture));
 
         UModelMatrix4 = GetUniformLocation("uModel");
         UViewMatrix4 = GetUniformLocation("uView");
@@ -28,6 +36,8 @@ public class ModelProgram : GLProgram
         UColorDiffuse = GetUniformLocation("uColorDiffuse");
 
         Bind();
-        //GL.Uniform3(UColorDiffuse, Owner.Diffuse.R / 255f, Owner.Diffuse.G / 255f, Owner.Diffuse.B / 255f);
+        GL.Uniform3(UColorDiffuse, material.Diffuse);
     }
+
+
 }

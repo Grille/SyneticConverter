@@ -2,12 +2,25 @@
 Its code is still very messy, most things don’t work probably and it will probably eat your computer.
 Feel free to experiment with it, but don’t expect a working program yet.
 
+##
+
+## SyneticPipelineTool
+Windows application that allows chaining predefined operations together, Program I used to convert the MBWR scenarios to WR2.
+
 ## SyneticConverter
 An WinForms app on top of SyneticLib that allow viewing & converting scenarios and models.
 
 ## SyneticLib
-A library that allows reading and writing to most of Synetic file formats.
-Also includes an basic OpenTK renderer for preview.
+Abstract representation of game data without having to worry too much about format specifics.
+End goal is that formats from all games can be loaded and are represented the same.
+This part is pretty much still WIP, I would advise against using it yet.
+
+## SyneticLib.LowLevel
+Classes for file formats, allows to read synetic formats and edit the fields directly.
+This layer reads and writes data “as is” conversion between versions and other work has to be done manually.
+
+## SyneticLib.Graphics
+Layer on top of SyneticLib, uses OpenGL4(OpenTK_4.8) for rendering of meshes, scenarios and textures.
 
 ### Supported formats
 

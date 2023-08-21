@@ -5,16 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace SyneticPipelineTool.Tasks;
 
+[PipelineTask(Name = "For Each")]
 internal class ForEachTask : PipelineTask
 {
+    /*
+    public Parameter Mode { get; } = new ParameterEnum("Mode", "", "list", new string[] { "List", "Directorys", "Files" });
+    public Parameter Collection { get; } = new ParameterString("Collection", "", "1");
+    public Parameter Variable { get; } = new ParameterString("Variable", "", "i");
+    */
+
     protected override void OnInit()
     {
-        Parameters.Def(ParameterTypes.Enum, "Mode", "", "List", new string[] { "List", "Directorys", "Files" });
-        Parameters.Def(ParameterTypes.String, "Collection", "", "1");
-        Parameters.Def(ParameterTypes.String, "Variable", "", "i");
+        Parameters.Add(
+            new ParameterEnum("Mode", "", "List", new string[] { "List", "Directorys", "Files" }),
+            new ParameterString("Collection", "", "1"),
+            new ParameterString("Variable", "", "i")
+        );
     }
 
     protected override void OnExecute()
@@ -23,22 +33,22 @@ internal class ForEachTask : PipelineTask
         string collection = EvalParameter("Collection");
         string variable = EvalParameter("Variable");
 
-        var next = Pipeline.Tasks[Pipeline.TaskPosition += 1];
+        var next = Pipeline.Tasks[Runtime.Position += 1];
         if (next == null)
             throw new NullReferenceException();
 
         string[] items = mode switch
         {
-            "List" => collection.Split(',', StringSplitOptions.RemoveEmptyEntries),
+            "List" => Parameter.ValueToList(collection).ToArray(),
             "Directorys" => Directory.GetDirectories(collection),
-            "Files" => Directory.GetDirectories(collection),
+            "Files" => Directory.GetFiles(collection),
             _ => throw new ArgumentOutOfRangeException(mode)
         };
 
         foreach (var item in items)
         {
-            Pipeline.Variables[variable] = item.Trim();
-            next.Execute();
+            Runtime.Variables[variable] = item.Trim();
+            next.Execute(Runtime);
         }
 
     }

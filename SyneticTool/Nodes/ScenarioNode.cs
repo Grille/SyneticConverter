@@ -42,6 +42,6 @@ internal class ScenarioNode : LazyRessourceNode<ScenarioGroup>
 
     public override void OnSelect(TreeViewCancelEventArgs e)
     {
-        MainForm.Display.ShowScenario(Value.Value);
+        //MainForm.Display.ShowScenario(Value.Value);
     }
 }

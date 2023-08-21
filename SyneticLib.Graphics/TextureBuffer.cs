@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
 
 namespace SyneticLib.Graphics;
 public sealed class TextureBuffer : GLObject
 {
     readonly int textureID;
 
-    public TextureBuffer(Texture texture)
+    public TextureBuffer(Context ctx, Texture texture) : base(ctx)
     {
         textureID = GL.GenTexture();
 
@@ -25,12 +23,13 @@ public sealed class TextureBuffer : GLObject
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.NearestMipmapLinear);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, texture.Levels.Length - 1);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxAnisotropy, 16);
 
         int width = texture.Width;
         int height = texture.Height;
         for (int i = 0; i < texture.Levels.Length; i++)
         {
-            var pixelData = texture.Levels[i].PixelData;
+            var pixelData = texture.Levels[i].Data;
 
             
             switch (texture.Format)
@@ -73,7 +72,7 @@ public sealed class TextureBuffer : GLObject
         GL.BindTexture(TextureTarget.Texture2D, textureID);
     }
 
-    protected override void OnDestroy()
+    protected override void OnDelete()
     {
         GL.DeleteTexture(textureID);
     }

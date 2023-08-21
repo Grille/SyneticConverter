@@ -100,10 +100,10 @@ public static partial class Imports
 
         var materials = new List<Material>();
 
-        for (var i = 0; i < qad.Materials.Length; i++)
+        for (var i = 0; i < qad.MaterialsWR.Length; i++)
         {
-            var matInfo = qad.Materials[i];
-            var mat = new Material($"MAT_{i}");
+            var matInfo = qad.MaterialsWR[i];
+            var mat = new Material($"Terrain_MAT_{i}");
 
             if (matInfo.Tex0Id < textureIndex.Length)
                 mat.TexSlot0.Enable(textureIndex[matInfo.Tex0Id]);

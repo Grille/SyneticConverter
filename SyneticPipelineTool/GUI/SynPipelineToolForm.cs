@@ -1,4 +1,5 @@
-﻿using SyneticPipelineTool.Tasks;
+﻿using SyneticPipelineTool.GUI;
+using SyneticPipelineTool.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -243,6 +244,7 @@ public partial class SynPipelineToolForm : Form
             SelectedPipeline.Tasks.InsertAfter(SelectedTask, dialog.Task);
             TasksChanged();
             SelectedTask = dialog.Task;
+            SelectedTask.Pipeline = SelectedPipeline;
         }
     }
 
@@ -343,10 +345,12 @@ public partial class SynPipelineToolForm : Form
             brushText = Brushes.White;
         }
 
-        if (executer.CallStack.Contains(pipeline) && pipeline.TaskPosition == e.Index) {
+        var entry = executer.Runtime.CallStack.FirstOrDefault(a => a.Pipeline == pipeline,null);
+        if (entry != null && entry.Position == e.Index) {
             brushLineBack = Brushes.LightGreen;
             brushLine = Brushes.DarkGreen;
         }
+        
 
         int lineColumnWidth = 24;
 
@@ -387,13 +391,15 @@ public partial class SynPipelineToolForm : Form
             brushText = Brushes.White;
         }
 
-        bool stackContains = executer.CallStack.Contains(pipeline);
+        
+        bool stackContains = executer.Runtime.CallStack.Any(a => a.Pipeline == pipeline);
 
         if (stackContains)
         {
             brushLineBack = Brushes.LightGreen;
             brushLine = Brushes.DarkGreen;
         }
+        
 
         int lineColumnWidth = 24;
 
@@ -405,13 +411,15 @@ public partial class SynPipelineToolForm : Form
 
         g.FillRectangle(brushLineBack, boundsLine);
 
+        
         if (stackContains)
         {
-            var list = executer.CallStack.ToList();
+            var list = executer.Runtime.CallStack.ToList();
             list.Reverse();
-            int stackIdx = list.IndexOf(pipeline);
+            int stackIdx = list.FindIndex(a => a.Pipeline == pipeline);
             g.DrawString((stackIdx + 1).ToString(), e.Font, brushLine, boundsLine);
         }
+        
 
         g.DrawString(pipeline.ToString(), e.Font, brushText, boundsText);
     }

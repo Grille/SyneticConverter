@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SyneticPipelineTool.Tasks;
 
+[PipelineTask(Name = "Variable")]
 internal class VariableOperationTask : PipelineTask
 {
 
@@ -27,17 +28,17 @@ internal class VariableOperationTask : PipelineTask
         {
             case "=":
             {
-                Pipeline.Variables[name] = value;
+                Runtime.Variables[name] = value;
                 break;
             }
             case "+":
             {
-                Pipeline.Variables[name] += value;
+                Runtime.Variables[name] += value;
                 break;
             }
             case "Replace":
             {
-                Pipeline.Variables[name] += value;
+                Runtime.Variables[name] += value;
                 break;
             }
             default:
@@ -45,7 +46,7 @@ internal class VariableOperationTask : PipelineTask
                 throw new ArgumentOutOfRangeException();
             }
         }
-        Console.WriteLine($"{name} {op} {value} -> {Pipeline.Variables[name]}");
+        Console.WriteLine($"{name} {op} {value} -> {Runtime.Variables[name]}");
     }
 
     public override string ToString()

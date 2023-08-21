@@ -24,7 +24,7 @@ public partial class MainForm : Form
     public GameDirectoryList Games;
     GLControl glControl;
     public Config Config;
-    public Display Display;
+    //public Display Display;
     Task LoadingTask;
     Task QueuedLoadingTask;
 
@@ -57,15 +57,15 @@ public partial class MainForm : Form
 
     private void GlPanel_MouseMove(object sender, MouseEventArgs e)
     {
-        Display.Camera.MouseMove(e.X, e.Y, e.Button == MouseButtons.Left);
+        //Display.Camera.MouseMove(e.X, e.Y, e.Button == MouseButtons.Left);
     }
 
     private void GlPanel_MouseWheel(object sender, MouseEventArgs e)
     {
-        Display.Camera.Scroll(e.Delta);
+        //Display.Camera.Scroll(e.Delta);
     }
 
-    private void GlControl_Paint(object sender, PaintEventArgs e) => Display.Render();
+    private void GlControl_Paint(object sender, PaintEventArgs e) { }//Display.Render();
 
 
     private void addGameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -82,7 +82,7 @@ public partial class MainForm : Form
 
     private void MainForm_Shown(object sender, EventArgs e)
     {
-        Display = new(glControl);
+        //Display = new(glControl);
         renderTimer.Start();
 
         if (Games.Count == 0)
@@ -106,7 +106,7 @@ public partial class MainForm : Form
 
     }
 
-    private void renderTimer_Tick(object sender, EventArgs e) => Display.Render();
+    private void renderTimer_Tick(object sender, EventArgs e)  {}
 
 
     private void dataTreeView_AfterSelect(object sender, TreeViewEventArgs e)

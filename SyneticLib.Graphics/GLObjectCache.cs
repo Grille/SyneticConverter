@@ -9,26 +9,28 @@ namespace SyneticLib.Graphics;
 
 public class GLObjectCache<TKey, TValue> : IReadOnlyCollection<TValue> where TKey : Ressource where TValue : GLObject
 {
-    readonly Dictionary<TKey, TValue> pairs;
+    readonly Dictionary<int, TValue> pairs;
     readonly Func<TKey, TValue> mapper;
 
     public int Count => pairs.Count;
 
     public GLObjectCache(Func<TKey, TValue> mapper)
     {
-        pairs = new Dictionary<TKey, TValue>();
+        pairs = new Dictionary<int, TValue>();
         this.mapper = mapper;
     }
 
     public TValue Get(TKey ressource)
     {
-        if (pairs.TryGetValue(ressource, out TValue buffer))
+        int id = ressource.RessourceID;
+
+        if (pairs.TryGetValue(id, out TValue buffer))
         {
             return buffer;
         }
 
         buffer = mapper(ressource);
-        pairs.Add(ressource, buffer);
+        pairs.Add(id, buffer);
         return buffer;
     }
 

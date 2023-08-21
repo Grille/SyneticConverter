@@ -39,6 +39,16 @@ public abstract class BinaryFile : IViewObject
         br.ReadToIView(this);
     }
 
+    public void Validate()
+    {
+         OnValidate();
+    }
+
+    protected virtual void OnValidate()
+    {
+
+    }
+
 
     public void Load(string path = null)
     {

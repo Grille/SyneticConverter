@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Numerics;
 using OpenTK.Mathematics;
 using SyneticLib.Locations;
 
@@ -13,11 +12,15 @@ public class Material : Ressource
 {
     TextureSlot[] TextureSlots { get; }
 
+    public Vector3 Diffuse;
+
     public TextureSlot TexSlot0 => TextureSlots[0];
 
     public TextureSlot TexSlot1 => TextureSlots[1];
 
     public TextureSlot TexSlot2 => TextureSlots[2];
+
+    public MaterialShaderType ShaderType { get; }
 
     public Material(string name) : base(name)
     {
@@ -49,11 +52,14 @@ public class Material : Ressource
             if (name == "")
                 return;
 
-            Texture = textures.TryGetByFileName(name, out var tex) ? tex : Texture.CreatePlaceholder(name);
+            Texture = textures.TryGetByKey(name, out var tex) ? tex : Texture.CreatePlaceholder(name);
             Enabled = true;
         }
     }
 
+}
 
-
+public enum MaterialShaderType
+{
+    Default,
 }

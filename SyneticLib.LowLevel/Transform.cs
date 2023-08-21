@@ -16,7 +16,7 @@ public struct Transform
         return $"{X.Rotate} {X.Scale} {X.Move} {Y.Rotate} {Z.Rotate} {Z.Scale} {Z.Move}";
     }
 
-    public unsafe static Transform Empety
+    public static Transform Empety
     {
         get
         {

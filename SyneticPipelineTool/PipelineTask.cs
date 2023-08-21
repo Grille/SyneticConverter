@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,9 +11,11 @@ namespace SyneticPipelineTool;
 
 public abstract class PipelineTask : IViewObject
 {
-    public Pipeline Pipeline;
+    public Pipeline Pipeline { get; set; }
 
-    public ParameterGroup Parameters = new();
+    public ParameterGroup Parameters { get; } = new();
+
+    protected Runtime Runtime { get; private set; }
 
     protected PipelineTask(bool autoinit)
     {
@@ -25,18 +28,38 @@ public abstract class PipelineTask : IViewObject
         Init();
     }
 
-
     public void Init()
     {
         OnInit();
+
+        if (Parameters.Count == 0)
+        {
+            var infos = GetType().GetProperties();
+
+            foreach (var info in infos)
+            {
+                if (info.PropertyType.IsAssignableTo(typeof(Parameter)))
+                {
+                    var obj = (Parameter)info.GetValue(this);
+
+                    if (obj == null)
+                        throw new NullReferenceException();
+
+                    Parameters.Add(obj);
+                }
+
+            }
+        }
+
         Parameters.Seal();
     }
 
     protected abstract void OnInit();
 
-    public void Execute()
+    public void Execute(Runtime runtime)
     {
         Parameters.AssertSealed();
+        Runtime = runtime;
         OnExecute();
     }
 
@@ -83,51 +106,13 @@ public abstract class PipelineTask : IViewObject
         target.Tasks.Add(clone);
     }
 
+    protected string EvalParameter(Parameter parameter)
+    {
+        return Runtime.EvalParameter(parameter);
+    }
     protected string EvalParameter(in string name)
     {
-        return parseValue(Parameters[name]);
-    }
-
-    private string parseValue(in string value)
-    {
-        if (value.Length == 0)
-            return value;
-
-        if (value[0] == '*')
-        {
-            var key = parseValue(value.Substring(1));
-            if (!Pipeline.Variables.ContainsKey(key))
-            {
-                throw new InvalidOperationException($"Variable '{key}' not found.");
-            }
-            return Pipeline.Variables[key];
-        }
-        if (value[0] == '$')
-        {
-            var exp = parseValue(value.Substring(1));
-
-            var list = new List<string>();
-            var split0 = exp.Split("{");
-            foreach (var s0 in split0)
-            {
-                var split1 = s0.Split("}", 2);
-                list.Add(split1[0]);
-                if (split1.Length > 1)
-                    list.Add(split1[1]);
-            }
-
-            string result = "";
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (i % 2 == 0)
-                    result += list[i];
-                else
-                    result += parseValue(list[i]);
-            }
-
-            return result;
-        }
-
-        return value;
+        var value = Parameters[name];
+        return Runtime.EvalParameterValue(value);
     }
 }

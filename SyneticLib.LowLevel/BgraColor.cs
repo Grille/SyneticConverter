@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using OpenTK.Mathematics;
 
 namespace SyneticLib.LowLevel;
 public struct BgraColor
@@ -15,9 +15,14 @@ public struct BgraColor
         return $"(R:{R} G:{G} B:{B} A:{A})";
     }
 
-    public Vector3 ToNormalizedRGB()
+    public Vector3 ToNormalizedVector3()
     {
         return new Vector3(R / 255f, G / 255f, B / 255f);
+    }
+
+    public static BgraColor FromNormalizedVector3(Vector3 vector)
+    {
+        return FromArgb(0, (byte)(vector.X * 255), (byte)(vector.Y * 255), (byte)(vector.Z * 255));
     }
 
     public static BgraColor FromArgb(int a, int r, int g, int b) => new BgraColor() { A = (byte)a, R = (byte)r, G = (byte)g, B = (byte)b };

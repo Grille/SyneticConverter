@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class MeshSectionPtr
 {
-    public readonly Mesh Target;
+    public Mesh Target;
     public int Offset;
     public int Count;
 

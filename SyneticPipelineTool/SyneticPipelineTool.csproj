@@ -7,11 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GGL.BinaryView" Version="2.4.2" />
+    <Compile Remove="ParaTypes\**" />
+    <EmbeddedResource Remove="ParaTypes\**" />
+    <None Remove="ParaTypes\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ParaTypes\" />
+    <PackageReference Include="GGL.BinaryView" Version="2.4.2" />
+    <PackageReference Include="OpenTK.Mathematics" Version="4.8.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Numerics;
+using OpenTK.Mathematics;
 using GGL.IO;
 
 namespace SyneticLib.LowLevel.Files;
@@ -25,7 +25,7 @@ public class LvlFile : BinaryFile
     public struct MData
     {
         public float A, B, C;
-        public Matrix3x3 Matrix;
+        public Matrix3 Matrix;
         public Vector4 Sun;
     }
 }

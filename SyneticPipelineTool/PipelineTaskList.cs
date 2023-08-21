@@ -8,10 +8,18 @@ namespace SyneticPipelineTool;
 
 public class PipelineTaskList : List<PipelineTask>
 {
-    public readonly Pipeline Pipeline;
+    public Pipeline Pipeline { get; }
 
     public PipelineTaskList(Pipeline pipeline) { 
-        Pipeline = pipeline;
+        Pipeline = pipeline ?? throw new ArgumentNullException(nameof(pipeline));
+    }
+
+    public new void Add(PipelineTask task)
+    {
+        if (task.Pipeline != Pipeline)
+            throw new InvalidOperationException();
+
+        base.Add(task);
     }
 
     public PipelineTask CreateUnbound(string assemblyQualifiedName)

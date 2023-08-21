@@ -8,6 +8,7 @@ using System.IO;
 
 namespace SyneticPipelineTool.Tasks;
 
+[PipelineTask(Name = "Load file")]
 internal class LoadFileTask : PipelineTask
 {
     protected override void OnInit()
@@ -20,7 +21,7 @@ internal class LoadFileTask : PipelineTask
     {
         var src = EvalParameter("Src");
         var var = EvalParameter("Variable");
-        Pipeline.Variables[var] = File.ReadAllText(src);
+        Runtime.Variables[var] = File.ReadAllText(src);
     }
 
     public override string ToString()

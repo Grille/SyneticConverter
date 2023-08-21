@@ -46,6 +46,6 @@ internal class ScenarioVariantNode : RessourceNode
 
     public override void OnSelect(TreeViewCancelEventArgs e)
     {
-        MainForm.Display.ShowScenario(DataValue);
+        //MainForm.Display.ShowScenario(DataValue);
     }
 }

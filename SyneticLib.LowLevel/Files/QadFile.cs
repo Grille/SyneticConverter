@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Numerics;
+using OpenTK.Mathematics;
 using System.IO;
 using GGL.IO;
 using System.Runtime.InteropServices;
+using System.Drawing;
 
 namespace SyneticLib.LowLevel.Files;
 
@@ -15,7 +16,7 @@ public unsafe class QadFile : BinaryFile
     public bool Has8ByteMagic = false;
     public bool Has56ByteBlock = false;
     public bool UseSimpleData = false;
-    public bool UseMaterialType2 = false;
+    public bool UseMaterialTypeCT = false;
 
     public MHead Head;
     public String32[] TextureNames;
@@ -24,7 +25,8 @@ public unsafe class QadFile : BinaryFile
     public MChunk[] Chunks;
     public int[] ChunkDataPtr;
     public ushort[][] ChunkData;
-    public MMaterialType1[] Materials;
+    public MMaterialTypeWR[] MaterialsWR;
+    public MMaterialTypeCT[] MaterialsCT;
     public MPolyRegion[] PolyRegions;
     public MPropInstance[] PropInstances;
     public MGroundPhysics[] GroundPhysics;
@@ -32,144 +34,6 @@ public unsafe class QadFile : BinaryFile
     public MSound[] Sounds;
     public MPropClass[] PropClassInfo;
     public MLight[] Lights;
-
-    public struct MHead
-    {
-        public String4 Head;
-        public int Version;
-        public int WidthX, LengthZ, BlocksX, BlocksZ, BlocksTotal, PolyRegionCount;
-        public ushort TexturesFileCount, BumpTexturesFileCount;
-        public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicCount, ColliSize;
-        public ushort LightCount;
-        public byte FlagX1, FlagX2, FlagX3, FlagX4, FlagX5, FlagX6;
-        public int SoundCount;
-    }
-
-    public struct MChunk
-    {
-        public ushort PosX, PosZ;
-        public int PolyOffset, PolyCount, PolyRegionOffset, PolyRegionCount;
-        public Vector3 Center;
-        public float Radius;
-        public short PropOffset, PropCount, LightOffset, LightCount;
-        public short Chunk65k, x1;
-    }
-
-    public struct MPolyRegion
-    {
-        public int PolyOffset, PolyCount;
-        public ushort SurfaceId1, SurfaceId2;
-    }
-
-    public struct MMaterialType1
-    {
-        public ushort Tex0Id, Tex1Id, Tex2Id;
-        public EMaterialMode Mode;
-        public Transform Matrix0;
-        public Transform Matrix1;
-        public Transform Matrix2;
-        public int X0;
-        public int X1;
-        public int X2;
-    }
-
-    public struct MMaterialType2
-    {
-        public ushort L0Tex0Id, L0Tex1Id, L0Tex2Id, L0Mode;
-        public ushort L1Tex0Id, L1Tex1Id, L1Tex2Id, L1Mode;
-        public Transform Mat1;
-        public int A;
-        public int B;
-
-        public static implicit operator MMaterialType1(MMaterialType2 a) => new MMaterialType1()
-        {
-            Tex0Id = a.L0Tex0Id,
-            Tex1Id = a.L0Tex1Id,
-            Tex2Id = a.L0Tex2Id,
-            Mode = a.L1Mode,
-            Matrix0 = Transform.Empety,
-            Matrix1 = Transform.Empety,
-            Matrix2 = Transform.Empety,
-            X0 = a.A,
-            X1 = a.B,
-        };
-    }
-
-    public struct MPropInstance
-    {
-        public String32 Name;
-        public int ClassId;
-        public Vector3 Position;
-        public float Angl, Size;
-        public Matrix3x3 Matrix;
-        public ushort x1, InShadow;
-        public float x5;
-    }
-
-    public struct MGroundPhysics
-    {
-        public String64 Name;
-        public ushort Dirt, GripF, GripR, Stick, NoiseID, SkidID;
-        public fixed byte Padding0[64];
-        public ushort NoColliFlag, x8;
-        public fixed byte Padding1[12];
-    }
-
-    public struct MSound
-    {
-        public float X, Y, Z;
-        public String32 Name;
-        public ushort Volume, PlaySpeed, Radius, z4, z5, Delay;
-        public fixed byte Misc[12];
-    }
-
-
-    public struct MPropClassSimple
-    {
-        public ushort Mode;
-
-        public static implicit operator MPropClass(MPropClassSimple a) => new MPropClass()
-        {
-            Mode = a.Mode,
-        };
-        public static explicit operator MPropClassSimple(MPropClass a) => new MPropClassSimple()
-        {
-            Mode = a.Mode,
-        };
-    }
-
-    public struct MLightSimple
-    {
-        public Vector3 Position;
-        public BgraColor Color;
-
-        public static implicit operator MLight(MLightSimple a) => new MLight()
-        {
-            Matrix = Matrix4x4.CreateTranslation(a.Position),
-            Color = a.Color,
-        };
-        public static explicit operator MLightSimple(MLight a) => new MLightSimple()
-        {
-            Position = a.Matrix.Translation,
-            Color = a.Color,
-        };
-    }
-
-    public struct MPropClass
-    {
-        public ushort Mode, Shape, Weight, p4;
-        public int x1, x2, x3;
-        public String48 HitSound, FallSound;
-    }
-
-    public struct MLight
-    {
-        public int Mode;
-        public float Size, Offset, Freq;
-        public BgraColor Color;
-        public byte b1, b2, b3, b4;
-        public Matrix4x4 Matrix;
-    }
 
     public unsafe override void ReadFromView(BinaryViewReader br)
     {
@@ -212,11 +76,16 @@ public unsafe class QadFile : BinaryFile
 
 
         PolyRegions = br.ReadArray<MPolyRegion>(Head.PolyRegionCount);
-        Materials = new MMaterialType1[Head.MaterialCount];
-        for (int i = 0; i < Head.MaterialCount; i++)
-            Materials[i] = UseMaterialType2 ? br.Read<MMaterialType2>() : br.Read<MMaterialType1>();
 
-        //Materials = br.ReadArray<MMaterialType1>(Head.MaterialCount);
+        if (UseMaterialTypeCT)
+        {
+            MaterialsCT = br.ReadArray<MMaterialTypeCT>(Head.MaterialCount);
+        }
+        else
+        {
+            MaterialsWR = br.ReadArray<MMaterialTypeWR>(Head.MaterialCount);
+        }
+
         PropInstances = br.ReadArray<MPropInstance>(Head.PropInstanceCount);
 
         Lights = new MLight[Head.LightCount];
@@ -264,7 +133,16 @@ public unsafe class QadFile : BinaryFile
         }
 
         bw.WriteArray(PolyRegions);
-        bw.WriteArray(Materials);
+
+        if (UseMaterialTypeCT)
+        {
+            bw.WriteArray(MaterialsCT);
+        }
+        else
+        {
+            bw.WriteArray(MaterialsWR);
+        }
+
         bw.WriteArray(PropInstances);
         for (int i = 0; i < Lights.Length; i++)
         {
@@ -282,11 +160,19 @@ public unsafe class QadFile : BinaryFile
 
     public void RecalcMaterialChecksum()
     {
+        if (UseMaterialTypeCT)
+            throw new NotImplementedException();
+        else
+            RecalcMaterialChecksum(MaterialsWR);
+    }
+
+    public void RecalcMaterialChecksum(MMaterialTypeWR[] materials)
+    {
         var list = new List<Transform>();
 
-        for (int i = 0; i < Materials.Length; i++)
+        for (int i = 0; i < materials.Length; i++)
         {
-            ref var mat = ref Materials[i];
+            ref var mat = ref materials[i];
             if (!list.Contains(mat.Matrix0))
                 list.Add(mat.Matrix0);
 
@@ -297,43 +183,50 @@ public unsafe class QadFile : BinaryFile
                 list.Add(mat.Matrix2);
         }
 
-        for (int i = 0; i < Materials.Length; i++)
+        for (int i = 0; i < materials.Length; i++)
         {
-            ref var mat = ref Materials[i];
+            ref var mat = ref materials[i];
 
-            mat.X0 = list.IndexOf(mat.Matrix0);
-            mat.X1 = list.IndexOf(mat.Matrix1);
-            mat.X2 = list.IndexOf(mat.Matrix2);
+            mat.MatrixChecksum0 = list.IndexOf(mat.Matrix0);
+            mat.MatrixChecksum1 = list.IndexOf(mat.Matrix1);
+            mat.MatrixChecksum2 = list.IndexOf(mat.Matrix2);
         }
 
     }
 
-    record class SortContainer(int id, MMaterialType1 mat);
     public void SortMaterials()
     {
-        var list = new List<SortContainer>();
+        if (UseMaterialTypeCT)
+            SortMaterials(MaterialsCT);
+        else
+            SortMaterials(MaterialsWR);
+    }
 
-        for (int i = 0; i < Materials.Length; i++)
-            list.Add(new(i, Materials[i]));
+    record class SortContainer<T>(int ID, T Value);
+    public void SortMaterials<T>(T[] materials) where T : IMaterialType
+    {
+        var list = new List<SortContainer<T>>();
+
+        for (int i = 0; i < materials.Length; i++)
+            list.Add(new(i, materials[i]));
 
         int size = TextureNames.Length;
         list.Sort((a, b) =>
-            (a.mat.Mode - b.mat.Mode) * size * size + (a.mat.Tex0Id - b.mat.Tex0Id) * size + (a.mat.Tex1Id - b.mat.Tex1Id)
+            a.Value.GetSortID(size) - b.Value.GetSortID(size)
         );
 
-        for (int i = 0; i < Materials.Length; i++)
-            Materials[i] = list[i].mat;
+        for (int i = 0; i < materials.Length; i++)
+            materials[i] = list[i].Value;
 
         int[] ids = new int[list.Count];
         for (int i = 0; i < list.Count; i++)
-            ids[list[i].id] = i;
+            ids[list[i].ID] = i;
 
         for (int i = 0; i < PolyRegions.Length; i++)
         {
             ref var reg = ref PolyRegions[i];
             reg.SurfaceId1 = (ushort)ids[reg.SurfaceId1];
         }
-
     }
 
 
@@ -342,7 +235,7 @@ public unsafe class QadFile : BinaryFile
         UseSimpleData = version <= GameVersion.WR1;
         Has8ByteMagic = version >= GameVersion.CT2;
         Has56ByteBlock = version >= GameVersion.CT2;
-        UseMaterialType2 = version >= GameVersion.C11;
+        UseMaterialTypeCT = version >= GameVersion.C11;
     }
 
     private void assertBlockCount()
@@ -381,7 +274,7 @@ public unsafe class QadFile : BinaryFile
         endPos += Head.ColliSize;
 
         endPos += sizeof(MPolyRegion) * Head.PolyRegionCount;
-        endPos += (UseMaterialType2 ? sizeof(MMaterialType2) : sizeof(MMaterialType1)) * Head.MaterialCount;
+        endPos += (UseMaterialTypeCT ? sizeof(MMaterialTypeCT) : sizeof(MMaterialTypeWR)) * Head.MaterialCount;
         endPos += sizeof(MPropInstance) * Head.PropInstanceCount;
 
 
@@ -390,6 +283,137 @@ public unsafe class QadFile : BinaryFile
         endPos += sizeof(MSound) * Head.SoundCount;
 
         return endPos;
+    }
+
+    public struct MHead
+    {
+        public String4 Head;
+        public int Version;
+        public int WidthX, LengthZ, BlocksX, BlocksZ, BlocksTotal, PolyRegionCount;
+        public ushort TexturesFileCount, BumpTexturesFileCount;
+        public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicCount, ColliSize;
+        public ushort LightCount;
+        public byte FlagX1, FlagX2, FlagX3, FlagX4, FlagX5, FlagX6;
+        public int SoundCount;
+    }
+
+    public struct MChunk
+    {
+        public ushort PosX, PosZ;
+        public int PolyOffset, PolyCount, PolyRegionOffset, PolyRegionCount;
+        public Vector3 Center;
+        public float Radius;
+        public short PropOffset, PropCount, LightOffset, LightCount;
+        public short Chunk65k, x1;
+    }
+
+    public struct MPolyRegion
+    {
+        public int PolyOffset, PolyCount;
+        public ushort SurfaceId1, SurfaceId2;
+    }
+
+    public interface IMaterialType
+    {
+        public int GetSortID(int count);
+    }
+
+    public struct MMaterialTypeWR : IMaterialType
+    {
+        public ushort Tex0Id, Tex1Id, Tex2Id;
+        public EMaterialMode Mode;
+        public Transform Matrix0;
+        public Transform Matrix1;
+        public Transform Matrix2;
+        public int MatrixChecksum0;
+        public int MatrixChecksum1;
+        public int MatrixChecksum2;
+        public int GetSortID(int count) => (Mode) * count * count + (Tex0Id) * count + (Tex1Id);
+    }
+    public struct MMaterialTypeCT : IMaterialType
+    {
+        public ushort L0Tex0Id, L0Tex1Id, L0Tex2Id, L0Mode;
+        public ushort L1Tex0Id, L1Tex1Id, L1Tex2Id, L1Mode;
+        public Transform Mat1;
+        public int A;
+        public int B;
+
+        public int GetSortID(int count) => 0;
+    }
+
+    public struct MPropInstance
+    {
+        public String32 Name;
+        public int ClassId;
+        public Vector3 Position;
+        public float Angl, Size;
+        public Matrix3 Matrix;
+        public ushort x1, InShadow;
+        public float x5;
+    }
+
+    public struct MGroundPhysics
+    {
+        public String64 Name;
+        public ushort Dirt, GripF, GripR, Stick, NoiseID, SkidID;
+        public fixed byte Padding0[64];
+        public ushort NoColliFlag, x8;
+        public fixed byte Padding1[12];
+    }
+
+    public struct MSound
+    {
+        public float X, Y, Z;
+        public String32 Name;
+        public ushort Volume, PlaySpeed, Radius, z4, z5, Delay;
+        public fixed byte Misc[12];
+    }
+
+    public struct MPropClassSimple
+    {
+        public ushort Mode;
+
+        public static implicit operator MPropClass(MPropClassSimple a) => new MPropClass()
+        {
+            Mode = a.Mode,
+        };
+        public static explicit operator MPropClassSimple(MPropClass a) => new MPropClassSimple()
+        {
+            Mode = a.Mode,
+        };
+    }
+
+    public struct MPropClass
+    {
+        public ushort Mode, Shape, Weight, p4;
+        public int x1, x2, x3;
+        public String48 HitSound, FallSound;
+    }
+
+    public struct MLightSimple
+    {
+        public Vector3 Position;
+        public BgraColor Color;
+
+        public static implicit operator MLight(MLightSimple a) => new MLight()
+        {
+            Matrix = Matrix4.CreateTranslation(a.Position),
+            Color = a.Color,
+        };
+        public static explicit operator MLightSimple(MLight a) => new MLightSimple()
+        {
+            Position = a.Matrix.ExtractTranslation(),
+            Color = a.Color,
+        };
+    }
+
+    public struct MLight
+    {
+        public int Mode;
+        public float Size, Offset, Freq;
+        public BgraColor Color;
+        public byte b1, b2, b3, b4;
+        public Matrix4 Matrix;
     }
 
     public record struct EMaterialMode

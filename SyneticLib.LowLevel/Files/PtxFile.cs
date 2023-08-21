@@ -50,7 +50,7 @@ public class PtxFile : BinaryFile
     public class Level : IViewObject
     {
         public MHead Head;
-        public byte[] Decoded;
+        public byte[] Pixels;
 
         public void ReadFromView(BinaryViewReader br)
         {
@@ -60,27 +60,27 @@ public class PtxFile : BinaryFile
             {
                 var DecodeStream = new MemoryStream();
                 SynCompressor.Decompress(br.PeakStream, DecodeStream, (int)Head.SynSize);
-                Decoded = DecodeStream.ToArray();
-                long diff = Decoded.Length - Head.Size;
+                Pixels = DecodeStream.ToArray();
+                long diff = Pixels.Length - Head.Size;
                 if (diff != 0)
                 {
-                    throw new InvalidDataException($"Invalid size (result:{Decoded.Length} != expected:{Head.Size}) diff:{diff}");
+                    throw new InvalidDataException($"Invalid size (result:{Pixels.Length} != expected:{Head.Size}) diff:{diff}");
                 }
 
             }
             else
             {
-                Decoded = br.ReadArray<byte>(Head.Size);
+                Pixels = br.ReadArray<byte>(Head.Size);
             }
         }
 
         public void WriteToView(BinaryViewWriter bw)
         {
-            Head.Size = (uint)Decoded.Length;
+            Head.Size = (uint)Pixels.Length;
             Head.SynSize = 0;
 
             bw.Write(Head);
-            bw.WriteArray(Decoded, LengthPrefix.None);
+            bw.WriteArray(Pixels, LengthPrefix.None);
         }
 
         public struct MHead

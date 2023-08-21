@@ -7,32 +7,38 @@ using System.Threading.Tasks;
 namespace SyneticLib.Graphics;
 public abstract class GLObject : IDisposable
 {
+    public Context Context { get; }
     bool _disposed;
+
+    public GLObject(Context ctx)
+    {
+        Context = ctx;
+    }
 
     public void Bind()
     {
         OnBind();
     }
 
-    public void Destroy()
+    protected abstract void OnBind();
+
+    protected abstract void OnDelete();
+
+    private void Dispose(bool disposing)
     {
         if (_disposed)
             return;
 
-        OnDestroy();
+        OnDelete();
 
         _disposed = true;
     }
 
-    protected abstract void OnBind();
-
-    protected abstract void OnDestroy();
-
-    ~GLObject() => Destroy();
+    ~GLObject() => Dispose(false);
 
     public void Dispose()
     {
-        Destroy();
+        Dispose(true);
         GC.SuppressFinalize(this);
     }
 }

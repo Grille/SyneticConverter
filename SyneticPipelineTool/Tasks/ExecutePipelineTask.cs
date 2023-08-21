@@ -7,21 +7,24 @@ using System.Threading.Tasks;
 
 namespace SyneticPipelineTool.Tasks;
 
+[PipelineTask(Name = "Call pipeline")]
 internal class ExecutePipelineTask : PipelineTask
 {
     protected override void OnInit()
     {
         Parameters.Def(ParameterTypes.String, "Name");
     }
+
     protected override void OnExecute()
     {
         string name = EvalParameter("Name");
 
         var pipeline = Pipeline.Owner[name];
-        foreach (var key in Pipeline.Variables.Keys)
-            pipeline.Variables[key] = Pipeline.Variables[key];
+
         Console.WriteLine($"Call {EvalParameter("Name")}");
-        pipeline.Execute(Pipeline.CallStack);
+
+        Runtime.Call(pipeline);
+
         Console.WriteLine($"Return");
     }
 

@@ -10,8 +10,8 @@ namespace SyneticPipelineTool.Tasks;
 
 internal class InvalidTypeTask : PipelineTask
 {
-    public string AssemblyQualifiedName;
-    public int ParametersCount;
+    public string AssemblyQualifiedName { get; }
+    public int ParametersCount { get; }
 
     public InvalidTypeTask(string assemblyQualifiedName, int parametersCount) : base(false)
     {
@@ -25,7 +25,7 @@ internal class InvalidTypeTask : PipelineTask
     {
         for (int i = 0; i < ParametersCount; i++)
         {
-            Parameters.Def(ParameterTypes.String, $"U{i}");
+            Parameters.Add(new ParameterString($"U{i}", "", ""));
         }
     }
 

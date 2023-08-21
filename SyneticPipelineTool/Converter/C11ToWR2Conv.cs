@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticPipelineTool;
+namespace SyneticPipelineTool.Converter;
 
 public static class C11ToWR2Conv
 {

@@ -5,9 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using SyneticPipelineTool.Converter;
 
 namespace SyneticPipelineTool.Tasks;
 
+[PipelineTask(Name = "Convert MBWR sprites to WR2")]
 internal class FixTreeNormTask : PipelineTask
 {
     protected override void OnInit()

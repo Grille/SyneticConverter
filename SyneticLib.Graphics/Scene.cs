@@ -12,47 +12,44 @@ namespace SyneticLib.Graphics;
 public class Scene
 {
     public readonly List<Sprite> Sprites;
-    public readonly List<DrawCall> MeshDrawBuffer;
+    public readonly List<DrawCallInfo> MeshDrawBuffer;
     public Camera Camera;
 
-    public GLObjectCache<Texture, TextureBuffer> TextureCache { get; }
-    public GLObjectCache<Model, ModelBuffer> ModelCache { get; }
-
+    public Context Context { get; }
 
     readonly SceneAssets assets;
 
-    GLMeshBuffer buffer;
-    GLProgram program;
+    MeshBuffer buffer;
+    MaterialProgram program;
     TextureBuffer texture;
 
     public unsafe Scene()
     {
         Sprites = new List<Sprite>();
-        MeshDrawBuffer = new List<DrawCall>();
+        MeshDrawBuffer = new List<DrawCallInfo>();
         Camera = new OrbitCamera();
         assets = new SceneAssets();
 
-        TextureCache = new(tex => new(tex));
-        ModelCache = new(model => new(model));
+        Context = new Context();
 
-        buffer = new ModelBuffer(assets.GroundPlane);
-        program = new ModelProgram(assets.GroundPlane.MaterialRegions[0].Material);
-        texture = new TextureBuffer(assets.GroundPlane.MaterialRegions[0].Material.TexSlot0.Texture);
+        buffer = Context.Create(assets.GroundPlane.Mesh);
+        program = Context.Create(assets.GroundPlane.MaterialRegions[0].Material);
+        texture = Context.Create(assets.GroundPlane.MaterialRegions[0].Material.TexSlot0.Texture);
     }
 
     public void Add(Model mesh) => Add(mesh, Matrix4.Identity);
 
-    public void Add(Model mesh, in Matrix4 matrix)
+    public void Add(Model model, in Matrix4 matrix)
     {
-        buffer = new ModelBuffer(assets.GroundPlane);
-        program = new ModelProgram(assets.GroundPlane.MaterialRegions[0].Material);
+        buffer = Context.Create(model.Mesh);
+        program = Context.Create(model.MaterialRegions[0].Material);
         //mesh.MaterialRegion
     }
 
     public void ClearScreen()
     {
         GL.ClearColor(Color.AliceBlue);
-        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.ColorBufferBit);
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     }
 
     public void ClearScene()
@@ -64,25 +61,33 @@ public class Scene
     public void Render()
     {
         GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
+        GL.Enable(EnableCap.CullFace);
+        GL.Enable(EnableCap.DepthTest);
 
-        //GL.Disable(EnableCap.DepthTest | EnableCap.CullFace);
-
-        texture.Bind();
+        //texture.Bind();
         buffer.Bind();
         program.Bind();
+        program.TextureBinding0.Texture.Bind();
 
         program.SubCameraMatrix(Camera);
         program.SubModelMatrix(Matrix4.Identity);
 
         foreach (Sprite sprite in Sprites)
         {
-            var texture = TextureCache.Get(sprite.Texture);
+            var texture = Context.Create(sprite.Texture);
             texture.Bind();
         }
 
-        GL.DrawElements(PrimitiveType.Triangles, 2 * 3, DrawElementsType.UnsignedInt, 0 * 3 * 4);
+        var reg = new MeshBufferRegionInfo(buffer, 0, buffer.ElementCount);
+        reg.DrawElements();
+        //GL.DrawElements(PrimitiveType.Triangles, buffer.ElementCount, DrawElementsType.UnsignedInt, 0 * 3 * 4);
 
-        Console.WriteLine(GL.GetError());
+        var error = GL.GetError();
+        if (error != ErrorCode.NoError)
+        {
+            Console.WriteLine($"{DateTime.Now} {error}");
+        }
+ 
 
 
 

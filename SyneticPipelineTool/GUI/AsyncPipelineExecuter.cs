@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using static System.ComponentModel.Design.ObjectSelectorEditor;
 using System.Windows.Forms;
 
-namespace SyneticPipelineTool;
+namespace SyneticPipelineTool.GUI;
 
 internal class AsyncPipelineExecuter
 {
-    public Stack<Pipeline> CallStack;
+    public Runtime Runtime;
+
+    //public Stack<Pipeline> CallStack;
 
     public Task task;
 
@@ -18,22 +20,8 @@ internal class AsyncPipelineExecuter
 
     public AsyncPipelineExecuter()
     {
-        CallStack = new Stack<Pipeline>();
-    }
-
-    public string StackTrace
-    {
-        get
-        {
-            var list = CallStack.ToList();
-            list.Reverse();
-            string stackTrace = "";
-            foreach (var item in list)
-            {
-                stackTrace += $"Pipeline: {item.Name}, Line: {item.TaskPosition + 1}\n";
-            }
-            return stackTrace;
-        }
+        Runtime = new Runtime();
+        //CallStack = new Stack<Pipeline>();
     }
 
     public void Execute(Pipeline pipeline)
@@ -44,26 +32,19 @@ internal class AsyncPipelineExecuter
         }
 
         Running = true;
-        CallStack.Clear();
+        Runtime.Clear();
 
         task = Task.Run(() =>
         {
-            var stack = new Stack<Pipeline>();
             try
             {
-                pipeline.Execute(CallStack);
+                Runtime.Call(pipeline);
             }
             catch (Exception ex)
             {
                 Running = false;
 
-                var list = CallStack.ToList();
-                list.Reverse();
-                string stackTrace = "";
-                foreach (var item in list)
-                {
-                    stackTrace += $"Pipeline: {item.Name}, Line: {item.TaskPosition + 1}\n";
-                }
+                string stackTrace = Runtime.StackTrace;
                 string message = $"{ex.Message}\n\n{stackTrace}";
                 Console.WriteLine(message);
                 MessageBox.Show(message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);

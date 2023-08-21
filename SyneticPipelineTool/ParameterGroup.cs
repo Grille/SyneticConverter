@@ -11,14 +11,19 @@ namespace SyneticPipelineTool;
 
 public class ParameterGroup : IEnumerable<Parameter>, IViewObject
 {
-    private bool isSealed = false;
+    public bool IsSealed { get; private set; } = false;
 
     private List<string> keys = new();
     private List<Parameter> values = new();
 
+    public void Def<T>(string name, string desc = "", string value = "", object args = null) where T : Parameter
+    {
+
+    }
+
     public void Def(ParameterTypes type, string name, string desc = "", string value = "", object args = null)
     {
-        if (isSealed == true)
+        if (IsSealed == true)
             throw new InvalidOperationException();
 
         Add(ParameterFactory.Create(type, name, desc, value, args));
@@ -26,7 +31,7 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
 
     public void Add(Parameter parameter)
     {
-        if (isSealed == true)
+        if (IsSealed == true)
             throw new InvalidOperationException();
 
         if (keys.Contains(parameter.Name))
@@ -36,7 +41,7 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
         values.Add(parameter);
     }
 
-    public void Add(Parameter[] parameters)
+    public void Add(params Parameter[] parameters)
     {
         foreach (var parameter in parameters)
         {
@@ -46,7 +51,7 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
 
     public void Seal()
     {
-        isSealed = true;
+        IsSealed = true;
     }
 
     public string this[int index]
@@ -101,7 +106,7 @@ public class ParameterGroup : IEnumerable<Parameter>, IViewObject
 
     public void AssertSealed()
     {
-        if (isSealed == false)
+        if (IsSealed == false)
             throw new InvalidOperationException();
     }
 

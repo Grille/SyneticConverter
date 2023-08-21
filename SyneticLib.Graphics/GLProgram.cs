@@ -6,15 +6,13 @@ using System.Runtime.CompilerServices;
 namespace SyneticLib.Graphics;
 public abstract class GLProgram : GLObject
 {
-    readonly int ProgramID;
+    public int ProgramID { get; }
 
     internal int UModelMatrix4;
     internal int UViewMatrix4;
     internal int UProjectionMatrix4;
 
-    static GLProgram bound;
-
-    public GLProgram()
+    public GLProgram(Context ctx):base(ctx)
     {
         ProgramID = GL.CreateProgram();
     }
@@ -35,7 +33,6 @@ public abstract class GLProgram : GLObject
         GL.GetShaderInfoLog(fragmentID, out string idxlog);
         if (idxlog != "")
             throw new ArgumentException(idxlog);
-
 
         GL.AttachShader(ProgramID, vertexID);
         GL.AttachShader(ProgramID, fragmentID);
@@ -65,14 +62,10 @@ public abstract class GLProgram : GLObject
 
     protected sealed override void OnBind()
     {
-        if (bound == this)
-            return;
-
         GL.UseProgram(ProgramID);
-        bound = this;
     }
 
-    protected sealed override void OnDestroy()
+    protected sealed override void OnDelete()
     {
         GL.DeleteProgram(ProgramID);
     }

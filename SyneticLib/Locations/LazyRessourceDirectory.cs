@@ -48,9 +48,10 @@ public class LazyRessourceDirectory<T> : Location, IReadOnlyCollection<Lazy<T>> 
         }
     }
 
-    public bool TryGetByFileName(string name, out T result)
+    public bool TryGetByKey(string name, out T result)
     {
-        var key = GetFullPath(Combine(Path, name)).ToLower();
+        var key = GetPath(name);
+
 
         if (dict.TryGetValue(key, out var lazy))
         {
@@ -61,9 +62,20 @@ public class LazyRessourceDirectory<T> : Location, IReadOnlyCollection<Lazy<T>> 
         return false;
     }
 
+    public string GetKey(string path)
+    {
+        return GetFileNameWithoutExtension(path).ToLower();
+    }
+
+    public string GetPath(string key)
+    {
+        return dict.Keys.First((path) => GetKey(path) == GetKey(key));
+        //return Combine(Path, key);
+    }
+
     public T GetByFileName(string name)
     {
-        if (TryGetByFileName(name, out var result))
+        if (TryGetByKey(name, out var result))
             return result;
 
         throw new KeyNotFoundException(name);

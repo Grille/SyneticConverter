@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SyneticPipelineTool.Converter;
 
 namespace SyneticPipelineTool.Tasks;
 
+[PipelineTask(Name = "Convert scenario files")]
 internal class ConvertScnFilesTask : PipelineTask
 {
     protected override void OnInit()

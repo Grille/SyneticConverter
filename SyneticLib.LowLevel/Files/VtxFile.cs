@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Numerics;
+using OpenTK.Mathematics;
 using GGL.IO;
 
 namespace SyneticLib.LowLevel.Files;
@@ -52,7 +52,7 @@ public class VtxFile : BinaryFile, IVertexData
             UV0 = a.UV,
             UV1 = Vector2.Zero,
             RGBABlend = a.Blend,
-            LightColor = a.Color,
+            LightColor = a.Color.ToNormalizedVector3(),
         };
 
         public static implicit operator MVertex(Vertex a) => new MVertex()
@@ -61,7 +61,7 @@ public class VtxFile : BinaryFile, IVertexData
             Normal = a.RGBAInvNormal,
             UV = a.UV0,
             Blend = a.RGBABlend,
-            Color = a.LightColor,
+            Color = BgraColor.FromNormalizedVector3(a.LightColor),
         };
     }
 }

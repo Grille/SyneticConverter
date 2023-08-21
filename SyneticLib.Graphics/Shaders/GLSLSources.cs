@@ -18,27 +18,27 @@ internal static class GLSLSources
 
     static GLSLSources()
     {
-        TerrainVertex = LoadInternalShader("TerrainVertex");
-        TerrainFragment = LoadInternalShader("TerrainFragment");
-        MeshVertex = LoadInternalShader("MeshVertex");
-        MeshFragment = LoadInternalShader("MeshFragment");
-        SpriteVertex = LoadInternalShader("SpriteVertex");
-        SpriteFragment = LoadInternalShader("SpriteFragment");
+        //TerrainVertex = LoadInternalShaderFile("TerrainVertex");
+        //TerrainFragment = LoadInternalShaderFile("TerrainFragment");
+        MeshVertex = LoadInternalShaderFile("Mesh.vert");
+        MeshFragment = LoadInternalShaderFile("Mesh.frag");
+        //SpriteVertex = LoadInternalShaderFile("SpriteVertex");
+        //SpriteFragment = LoadInternalShaderFile("SpriteFragment");
     }
 
-    public static string LoadInternalShader(string name)
+    public static string LoadInternalShaderFile(string name)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"SyneticLib.Graphics.Shaders.{name}.glsl";
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        using (var reader = new StreamReader(stream))
-        {
-            var result = reader.ReadToEnd();
-            return result;
-        }
+        var resourceName = $"SyneticLib.Graphics.Shaders.{name}";
+        using var stream = assembly.GetManifestResourceStream(resourceName);
+        using var reader = new StreamReader(stream);
+        var result = reader.ReadToEnd();
+        return result;
     }
 
-
-
-
+    public static (string Vert, string Frag) LoadInternalShaderFiles(MaterialShaderType type) => type switch
+    {
+        MaterialShaderType.Default => (MeshVertex, MeshFragment),
+        _ => throw new Exception(),
+    };
 }

@@ -16,7 +16,7 @@ public class Mesh: Ressource
     public Vertex[] Vertices { get; }
     public IndexTriangle[] Indices { get; }
 
-    public Mesh(string path, Vertex[] vertices, IndexTriangle[] indices) : base(path)
+    public Mesh(string name, Vertex[] vertices, IndexTriangle[] indices) : base(name)
     {
         Vertices = vertices;
         Indices = indices;

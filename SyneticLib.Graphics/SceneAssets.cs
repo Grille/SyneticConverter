@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OpenTK.Mathematics;
 using System.Threading.Tasks;
 using SyneticLib.LowLevel;
 
@@ -21,18 +22,9 @@ internal class SceneAssets
         int gridSize = size * 1000_0;
         int uvScale = size;
 
-        byte[] pixels = new byte[2 * 2 * 4];
-        fixed (byte* bptr = pixels)
-        {
-            uint* iptr = (uint*)bptr;
-            iptr[0] = iptr[3] = 0x969696;
-            iptr[1] = iptr[2] = 0xA9A9A9;
-        }
-
-        var texture = new Texture("", TextureFormat.RGBA32, 2, 2, pixels);
-
-        var material = new Material("");
-        material.TexSlot0.Enable(texture);
+        var material = new Material("Checker");
+        material.Diffuse = new Vector3(1, 1, 1);
+        material.TexSlot0.Enable(Textures.Checker);
 
         var indices = new IndexTriangle[2]
         {
@@ -48,9 +40,9 @@ internal class SceneAssets
             new(new(-gridSize, -gridSize, 0), new(0, uvScale)),
         };
 
-        var mesh = new Mesh("", vertices, indices);
+        var mesh = new Mesh("GroundPlane", vertices, indices);
 
-        var plane = new Model("", mesh, material);
+        var plane = new Model("GroundPlane", mesh, material);
 
         return plane;
     }

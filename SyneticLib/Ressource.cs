@@ -20,8 +20,13 @@ public abstract class Ressource {
 
     public Ressource(string name)
     {
-        Name = name;
-
         RessourceID = RessourceIDCounter++;
+        Name = name;
+    }
+
+    public Ressource()
+    {
+        RessourceID = RessourceIDCounter++;
+        Name = $"{GetType().Name}_{RessourceID}";
     }
 }

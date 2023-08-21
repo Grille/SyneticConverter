@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
+using SyneticLib.LowLevel;
 using SyneticLib.LowLevel.Files;
 using SyneticLib.Locations;
 
@@ -14,7 +15,8 @@ public static partial class Imports
 {
     public static Model LoadModelFromMox(string path)
     {
-        var texpath = Path.Combine(path, "textures");
+        var dirpath = Path.GetDirectoryName(path);
+        var texpath = Path.Combine(dirpath, "textures");
         var textures = new TextureDirectory(texpath);
 
         return LoadModelFromMox(path, textures);
@@ -43,7 +45,7 @@ public static partial class Imports
             {
                 var srcMtl = mtl.Materials[i];
                 var dstMat = new Material("");
-                //dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]);
+                dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]).ToNormalizedVector3();
 
                 dstMat.TexSlot0.TryEnableByFile(textures, srcMtl.Tex1Name);
                 //dstMat.TexSlot1.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex2Name);

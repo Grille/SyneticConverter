@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,7 +17,7 @@ public partial class EditTaksForm : Form
     public Pipeline Pipeline { get; }
     public PipelineTask Task { get; private set; }
 
-    Dictionary<string, Type> types;
+    static SortedList<string, Type> types;
     List<Control> inputs;
 
     bool setup = true;
@@ -28,28 +29,12 @@ public partial class EditTaksForm : Form
         if (pipeline == null)
             throw new ArgumentNullException(nameof(pipeline));
 
+        inputs = new List<Control>();
+
         InitializeComponent();
         DisplayParameters();
 
-        inputs= new List<Control>();
-
-        types = new Dictionary<string, Type>()
-        {
-            ["Comment"] = typeof(NopTask),
-            ["< Logic >"] = typeof(NopTask),
-            ["Variable"] = typeof(VariableOperationTask),
-            ["For Each"] = typeof(ForEachTask),
-            ["Call pipeline"] = typeof(ExecutePipelineTask),
-            ["< IO - file >"] = typeof(NopTask),
-            ["Load file"] = typeof(LoadFileTask),
-            ["Copy file/directory"] = typeof(CopyFileOrDirTask),
-            ["Remove file/directory"] = typeof(RemoveFileOrDirTask),
-            ["Clear directory"] = typeof(ClearDirTask),
-            ["Rename files in directory"] = typeof(RenameFilesTask),
-            ["< Tools >"] = typeof(NopTask),
-            ["Convert scenario files"] = typeof(ConvertScnFilesTask),
-            ["Convert MBWR sprites to WR2"] = typeof(FixTreeNormTask),
-        };
+        InitTypes();
 
         comboBoxType.BeginUpdate();
         foreach (var key in types.Keys)
@@ -71,6 +56,34 @@ public partial class EditTaksForm : Form
         DisplayParameters();
 
         setup = false;
+    }
+
+    static void InitTypes()
+    {
+        if (types != null)
+            return;
+
+        types = new SortedList<string, Type>()
+        {
+            ["Comment"] = typeof(NopTask),
+        };
+
+        var asm = Assembly.GetExecutingAssembly();
+        var asmTypes = asm.GetTypes();
+
+        foreach (var type in asmTypes)
+        {
+            var attr = type.GetCustomAttribute<PipelineTaskAttribute>();
+            if (attr == null)
+                continue;
+
+            var name = attr.Name;
+
+            if (name == null)
+                name = type.Name;
+
+            types[name] = type;
+        }
     }
 
     public new DialogResult ShowDialog(IWin32Window owner)
@@ -189,7 +202,7 @@ public partial class EditTaksForm : Form
 
     private void buttonCancel_Click(object sender, EventArgs e)
     {
-        DialogResult= DialogResult.Cancel;
+        DialogResult = DialogResult.Cancel;
         Close();
     }
 

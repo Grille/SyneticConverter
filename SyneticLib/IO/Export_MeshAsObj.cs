@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Numerics;
+using OpenTK.Mathematics;
 
 namespace SyneticLib.IO;
 public static partial class Exports

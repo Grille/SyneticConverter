@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Numerics;
+using OpenTK.Mathematics;
 using GGL.IO;
 using System.Runtime.InteropServices;
 
@@ -28,7 +28,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData
 
         IndicesOffset = br.ReadArray<int>(Head.IndicesOffsetCount);
 
-        int vertexCount = getVertCount();
+        int vertexCount = GetVertexCount();
         assertFileSize(vertexCount, Head.IndicesCount, (int)br.Length);
 
         Vertecis = new Vertex[vertexCount];
@@ -52,7 +52,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData
 
         bw.WriteArray(IndicesOffset, LengthPrefix.None);
 
-        var vertexCount = getVertCount();
+        var vertexCount = this.GetVertexCount();
 
         for (int i = 0; i < vertexCount; i++)
             bw.Write<MVertex>(Vertecis[i]);
@@ -72,13 +72,8 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData
         bw.WriteArray(indices, LengthPrefix.None);
     }
 
-    private int getVertCount()
-    {
-        int vertexCount = 0;
-        for (int i = 0; i < IndicesOffset.Length; i++)
-            vertexCount += IndicesOffset[i];
-        return vertexCount;
-    }
+    public int GetVertexCount() => ((IVertexData)this).GetVertexCount();
+
     private unsafe int getEndPos(int vtxCount, int idxCount)
     {
         int calculatedEndPos = sizeof(MHead) + sizeof(int) * 64 + vtxCount * sizeof(MVertex) + idxCount * sizeof(ushort);
@@ -143,7 +138,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData
             UV0 = a.UV0,
             UV1 = a.UV1,
             RGBABlend = a.Blend,
-            LightColor = a.Color,
+            LightColor = a.Color.ToNormalizedVector3(),
         };
 
         public static implicit operator MVertex(Vertex a) => new MVertex()
@@ -153,7 +148,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData
             UV0 = a.UV0,
             UV1 = a.UV1,
             Blend = a.RGBABlend,
-            Color = a.LightColor,
+            Color = BgraColor.FromNormalizedVector3(a.LightColor),
         };
 
     }

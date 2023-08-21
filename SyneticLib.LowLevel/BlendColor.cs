@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using OpenTK.Mathematics;
 
 namespace SyneticLib.LowLevel;
 public struct BlendColor

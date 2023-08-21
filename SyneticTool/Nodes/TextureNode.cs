@@ -23,6 +23,6 @@ internal class TextureNode : RessourceNode
 
     public override void OnSelect(TreeViewCancelEventArgs e)
     {
-        MainForm.Display.ShowTexture(DataValue);
+        //MainForm.Display.ShowTexture(DataValue);
     }
 }

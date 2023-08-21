@@ -27,6 +27,6 @@ public class CarNode : RessourceNode
 
     public override void OnSelect(TreeViewCancelEventArgs e)
     {
-        MainForm.Display.ShowCar((Car)Ressource);
+        //MainForm.Display.ShowCar((Car)Ressource);
     }
 }

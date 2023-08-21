@@ -8,6 +8,7 @@ using System.IO;
 
 namespace SyneticPipelineTool.Tasks;
 
+[PipelineTask(Name = "Rename files in directory")]
 internal class RenameFilesTask : PipelineTask
 {
     protected override void OnInit()

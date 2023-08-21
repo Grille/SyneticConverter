@@ -48,13 +48,33 @@ public partial class ViewerForm : Form
             var path = dialog.FileName;
             var ext = Path.GetExtension(path);
 
-            if (ext == ".ptx")
+            switch (ext)
             {
-                var texture = Imports.LoadPtxTexture(path);
-                var sprite = new Sprite(texture);
+                case ".ptx":
+                {
+                    var texture = Imports.LoadPtxTexture(path);
+                    break;
+                }
 
-                scene.ClearScene();
-                scene.Sprites.Add(sprite);
+
+                case ".mox":
+                {
+                    var model = Imports.LoadModelFromMox(path);
+
+                    scene.Add(model);
+                    break;
+                }
+
+                case ".idx":
+                case ".vtx":
+                case ".qad":
+                case ".geo":
+                {
+                    var scenario = Imports.LoadScenario(Path.GetDirectoryName(path), "AUSTRALIEN", LowLevel.GameVersion.WR2);
+
+                    scene.Add(scenario.Terrain);
+                    break;
+                }
             }
         }
     }

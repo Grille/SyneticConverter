@@ -18,13 +18,13 @@ public class Pipeline : IViewObject
 
     public PipelineList Owner { get; set; }
 
-    public Dictionary<string, string> Variables { get; }
+    //public Dictionary<string, string> Variables { get; }
 
-    public int TaskPosition { get; set; }
+    //public int TaskPosition { get; set; }
 
     public PipelineTaskList Tasks { get; private set; }
 
-    public Stack<Pipeline> CallStack { get; private set; }
+    //public Stack<Pipeline> CallStack { get; private set; }
 
 
 
@@ -32,9 +32,9 @@ public class Pipeline : IViewObject
     {
         Owner = owner;
         Name = name;
-        Variables = new();
+        //Variables = new();
         Tasks = new(this);
-        TaskPosition = 0;
+        //TaskPosition = 0;
     }
 
     public void ReadFromView(BinaryViewReader br)
@@ -87,9 +87,9 @@ public class Pipeline : IViewObject
         }
     }
 
+    /*
     public void Execute(Stack<Pipeline> callStack)
     {
-
         if (callStack.Contains(this))
             throw new InvalidOperationException($"Pipeline already in call stack.");
 
@@ -113,6 +113,7 @@ public class Pipeline : IViewObject
             CallStack = null;
         }
     }
+    */
 
     public override string ToString()
     {

@@ -32,7 +32,7 @@ public static partial class Imports
         var levels = new TextureLevel[ptx.Head.MipMapLevels];
         for (var i = 0; i < levels.Length; i++)
         {
-            var pixels = ptx.Levels[i].Decoded;
+            var pixels = ptx.Levels[i].Pixels;
 
             int lwidth = width / (i + 1);
             int lheight = height / (i + 1);
