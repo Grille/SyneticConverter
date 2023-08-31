@@ -47,7 +47,7 @@ internal class InvalidTypeTask : PipelineTask
         return clone;
     }
 
-    public override string ToString()
+    public override Token[] ToTokens()
     {
         string name = AssemblyQualifiedName.Split(',', 2)[0];
         var values = new List<string>();
@@ -56,7 +56,9 @@ internal class InvalidTypeTask : PipelineTask
             values.Add(para.Value);
         }
         string args = string.Join(", ", values.ToArray());
-        
-        return $"!{name} ({args})";
+
+        return new Token[] {
+            new Token(TokenType.Error, $"!{name} ({args})"),
+        };
     }
 }

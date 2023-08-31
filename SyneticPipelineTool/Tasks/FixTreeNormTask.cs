@@ -36,8 +36,11 @@ internal class FixTreeNormTask : PipelineTask
         }
     }
 
-    public override string ToString()
+    public override Token[] ToTokens() => new Token[]
     {
-        return $"Fix Sprites {Parameters["Tree List"]} in {Parameters["Dir"]}";
-    }
+        new(TokenType.Text, "Fix Sprites "),
+        new(TokenType.Variable, Parameters["Tree List"]),
+        new(TokenType.Text, " in "),
+        new(TokenType.Variable, Parameters["Dir"]),
+    };
 }

@@ -37,8 +37,8 @@ internal class RemoveFileOrDirTask : PipelineTask
         Console.WriteLine($"Remove dir {path}");
     }
 
-    public override string ToString()
+    public override Token[] ToTokens() => new Token[]
     {
-        return $"Remove {Parameters["Mode"]} {Parameters["Path"]}";
-    }
+        new Token(TokenType.Text, $"Remove {Parameters["Mode"]} {Parameters["Path"]}")
+    };
 }

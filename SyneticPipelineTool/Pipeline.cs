@@ -16,7 +16,7 @@ public class Pipeline : IViewObject
 
     public string Name { get; set; }
 
-    public PipelineList Owner { get; set; }
+    public PipelineList Owner { get; }
 
     //public Dictionary<string, string> Variables { get; }
 
@@ -50,7 +50,8 @@ public class Pipeline : IViewObject
         var types = new List<FileTaskTypeInfo>();
         for (int i = 0; i < typeCount; i++)
         {
-            types.Add(br.ReadIView<FileTaskTypeInfo>());
+            var item = br.ReadIView<FileTaskTypeInfo>();
+            types.Add(item);
         }
 
         Tasks.Clear();

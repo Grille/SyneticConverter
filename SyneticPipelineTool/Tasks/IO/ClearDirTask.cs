@@ -32,8 +32,9 @@ internal class ClearDirTask : PipelineTask
         Console.WriteLine($"Clear dir {path}");
     }
 
-    public override string ToString()
+    public override Token[] ToTokens() => new Token[]
     {
-        return $"Clear dir {Parameters["Dir"]}";
-    }
+        new(TokenType.Text, $"Clear dir "),
+        new(TokenType.Variable, Parameters["Dir"]),
+    };
 }

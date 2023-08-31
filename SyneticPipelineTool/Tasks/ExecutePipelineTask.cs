@@ -28,8 +28,9 @@ internal class ExecutePipelineTask : PipelineTask
         Console.WriteLine($"Return");
     }
 
-    public override string ToString()
+    public override Token[] ToTokens() => new Token[]
     {
-        return $"Call {Parameters["Name"]}";
-    }
+        new(TokenType.Text, "Call "),
+        new(TokenType.Variable, Parameters["Name"]),
+    };
 }

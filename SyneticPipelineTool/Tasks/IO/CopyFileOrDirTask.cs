@@ -52,8 +52,13 @@ internal class CopyFileOrDirTask : PipelineTask
         }
     }
 
-    public override string ToString()
+    public override Token[] ToTokens() => new Token[]
     {
-        return $"Copy {Parameters["Mode"]} {Parameters["Src"]} to {Parameters["Dst"]}";
-    }
+        new(TokenType.Text, "Copy "),
+        new(TokenType.Variable, Parameters["Mode"]),
+        new(TokenType.Text, " "),
+        new(TokenType.Variable, Parameters["Src"]),
+        new(TokenType.Text, " to "),
+        new(TokenType.Variable, Parameters["Dst"]),
+    };
 }

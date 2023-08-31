@@ -21,4 +21,13 @@
     <ProjectReference Include="..\SyneticLib.LowLevel\SyneticLib.LowLevel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="GUI\ListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUI\PipelineTaskListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

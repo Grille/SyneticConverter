@@ -17,102 +17,47 @@ namespace SyneticPipelineTool;
 
 public partial class SynPipelineToolForm : Form
 {
-    AsyncPipelineExecuter executer;
-    PipelineList Piplines;
-    bool timerCleanup = false;
+    readonly AsyncPipelineExecuter Executer;
+    readonly PipelineList Piplines;
 
     public Pipeline SelectedPipeline
     {
-        get => (Pipeline)pipelinesListBox.SelectedItem;
+        get => pipelinesListBox.SelectedItem;
         set => pipelinesListBox.SelectedItem = value;
     }
 
     public PipelineTask SelectedTask
     {
-        get => (PipelineTask)tasksListBox.SelectedItem;
+        get => tasksListBox.SelectedItem;
         set => tasksListBox.SelectedItem = value;
     }
 
     public List<PipelineTask> SelectedTasks
     {
-        get
-        {
-            var list = new List<PipelineTask>();
-            foreach (var item in tasksListBox.SelectedItems)
-            {
-                list.Add((PipelineTask)item);
-            }
-            return list;
-        }
-        set
-        {
-            tasksListBox.ClearSelected();
-            foreach (var task in value)
-            {
-                int idx = tasksListBox.Items.IndexOf(task);
-                tasksListBox.SetSelected(idx, true);
-            }
-        }
+        get => tasksListBox.SelectedTasks;
+        set => tasksListBox.SelectedTasks = value;
     }
 
     public SynPipelineToolForm()
     {
         InitializeComponent();
-        executer = new AsyncPipelineExecuter();
+        Executer = new AsyncPipelineExecuter();
         Piplines = new PipelineList();
-        Piplines.TryLoad();
+        Piplines.Load();
+
         PipelinesChanged();
         if (Piplines.Count > 0)
             SelectedPipeline = Piplines[0];
 
-        refreshTimer.Interval = 100;
+        refreshTimer.Interval = 500;
 
-        pipelinesListBox.DrawMode= DrawMode.OwnerDrawFixed;
-        tasksListBox.DrawMode = DrawMode.OwnerDrawFixed;
+        pipelinesListBox.Executer = Executer;
+        tasksListBox.Executer = Executer;
     }
 
-    public void DisplayPipelines() => DisplayListBox(pipelinesListBox, Piplines);
+    public void DisplayPipelines() => pipelinesListBox.UpdateItems(Piplines);
 
-    public void DisplayTasks(Pipeline pipeline) => DisplayListBox(tasksListBox, pipeline?.Tasks);
-
-    public void DisplayListBox<T>(ListBox box, List<T> list) where T : class
-    {
-        var items = box.Items;
-
-        if (list == null)
-            return;
-
-        box.BeginUpdate();
-
-        var selectet = box.SelectedItem;
-
-        if (items.Count == list.Count)
-        {
-            for (int i = 0; i< list.Count; i++)
-            {
-                if (items[i] != list[i])
-                {
-                    items[i] = list[i];
-                }
-            }
-        }
-        else
-        {
-            items.Clear();
-            foreach (var item in list)
-            {
-                items.Add(item);
-            }
-            box.SelectedItem = selectet;
-        }
-
-        if (selectet != null && box.SelectedItem != selectet)
-            box.SelectedItem = selectet;
-
-        box.Invalidate();
-        box.EndUpdate();
-    }
-
+    public void DisplayTasks() => tasksListBox.UpdateItems(SelectedPipeline?.Tasks);
 
     public void PipelineSelectionChanged()
     {
@@ -157,7 +102,7 @@ public partial class SynPipelineToolForm : Form
 
     public void TasksChanged(bool save = true)
     {
-        DisplayTasks(SelectedPipeline);
+        DisplayTasks();
         TaskSelectionChanged();
 
         if (save)
@@ -170,7 +115,7 @@ public partial class SynPipelineToolForm : Form
 
     private void buttonExecuteP_Click(object sender, EventArgs e)
     {
-        executer.Execute(SelectedPipeline);
+        Executer.Execute(SelectedPipeline);
         PipelineSelectionChanged();
         TaskSelectionChanged();
     }
@@ -217,7 +162,7 @@ public partial class SynPipelineToolForm : Form
 
     private void buttonRemoveP_Click(object sender, EventArgs e)
     {
-        Piplines.Remove((Pipeline)pipelinesListBox.SelectedItem);
+        Piplines.Remove(pipelinesListBox.SelectedItem);
         PipelinesChanged();
     }
 
@@ -316,127 +261,12 @@ public partial class SynPipelineToolForm : Form
         buttonEditP_Click(sender, e);
     }
 
-    private void tasksListBox_DrawItem(object sender, DrawItemEventArgs e)
-    {
-        if (e.Index == -1)
-            return;
-
-        var pipeline = SelectedPipeline;
-        var task = tasksListBox.Items[e.Index];
-
-        e.DrawBackground();
-
-        var g = e.Graphics;
-
-        Brush brushLineBack = Brushes.Gainsboro;
-        Brush brushLine = Brushes.DimGray;
-        Brush brushText;
-
-        if (task is NopTask)
-            brushText = new SolidBrush(Color.Gray);
-        else if (task is InvalidTypeTask)
-            brushText = new SolidBrush(Color.Red);
-        else
-            brushText = new SolidBrush(Color.Black);
-
-        if (e.State.HasFlag(DrawItemState.Selected))
-        {
-            //brushLine = Brushes.White;
-            brushText = Brushes.White;
-        }
-
-        var entry = executer.Runtime.CallStack.FirstOrDefault(a => a.Pipeline == pipeline,null);
-        if (entry != null && entry.Position == e.Index) {
-            brushLineBack = Brushes.LightGreen;
-            brushLine = Brushes.DarkGreen;
-        }
-        
-
-        int lineColumnWidth = 24;
-
-        var boundsLine = (RectangleF)e.Bounds;
-        boundsLine.Width = lineColumnWidth;
-        var boundsText = (RectangleF)e.Bounds;
-        boundsText.Width -= lineColumnWidth;
-        boundsText.X += lineColumnWidth;
-
-        g.FillRectangle(brushLineBack, boundsLine);
-
-        g.DrawString((e.Index + 1).ToString(), e.Font, brushLine, boundsLine);
-
-        g.DrawString(task.ToString(), e.Font, brushText, boundsText);
-
-    }
-
-    private void pipelinesListBox_DrawItem(object sender, DrawItemEventArgs e)
-    {
-        if (e.Index == -1)
-            return;
-
-        var pipeline = Piplines[e.Index];
-
-        e.DrawBackground();
-
-        var g = e.Graphics;
-
-        Brush brushLineBack = Brushes.Gainsboro;
-        Brush brushLine = Brushes.DimGray;
-        Brush brushText;
-
-        brushText = new SolidBrush(Color.Black);
-
-        if (e.State.HasFlag(DrawItemState.Selected))
-        {
-            //brushLine = Brushes.White;
-            brushText = Brushes.White;
-        }
-
-        
-        bool stackContains = executer.Runtime.CallStack.Any(a => a.Pipeline == pipeline);
-
-        if (stackContains)
-        {
-            brushLineBack = Brushes.LightGreen;
-            brushLine = Brushes.DarkGreen;
-        }
-        
-
-        int lineColumnWidth = 24;
-
-        var boundsLine = (RectangleF)e.Bounds;
-        boundsLine.Width = lineColumnWidth;
-        var boundsText = (RectangleF)e.Bounds;
-        boundsText.Width -= lineColumnWidth;
-        boundsText.X += lineColumnWidth;
-
-        g.FillRectangle(brushLineBack, boundsLine);
-
-        
-        if (stackContains)
-        {
-            var list = executer.Runtime.CallStack.ToList();
-            list.Reverse();
-            int stackIdx = list.FindIndex(a => a.Pipeline == pipeline);
-            g.DrawString((stackIdx + 1).ToString(), e.Font, brushLine, boundsLine);
-        }
-        
-
-        g.DrawString(pipeline.ToString(), e.Font, brushText, boundsText);
-    }
-
     private void refreshTimer_Tick(object sender, EventArgs e)
     {
-        if (executer.Running)
+        if (Executer.Running)
         {
             pipelinesListBox.Invalidate();
             tasksListBox.Invalidate();
-            timerCleanup = true;
-        }
-        else if (timerCleanup)
-        {
-            pipelinesListBox.Invalidate();
-            tasksListBox.Invalidate();
-            timerCleanup = false;
         }
     }
 

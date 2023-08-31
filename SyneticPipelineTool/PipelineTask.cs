@@ -106,6 +106,29 @@ public abstract class PipelineTask : IViewObject
         target.Tasks.Add(clone);
     }
 
+    public enum TokenType
+    {
+        Text,
+        Variable,
+        Comment,
+        Error,
+    }
+
+    public record class Token(TokenType Type, string Text);
+
+    public abstract Token[] ToTokens();
+
+    public sealed override string ToString()
+    {
+        var tokens = ToTokens();
+        var sb = new StringBuilder();
+        foreach (var token in tokens)
+        {
+            sb.Append(token.Text.ToString());
+        }
+        return sb.ToString();
+    }
+
     protected string EvalParameter(Parameter parameter)
     {
         return Runtime.EvalParameter(parameter);

@@ -19,9 +19,10 @@ internal class NopTask : PipelineTask
     {
     }
 
-    public override string ToString()
+    public override Token[] ToTokens()
     {
         var value = Parameters["Text"];
-        return value == "" ? "" : $"// {value}";
+        var token = value == "" ? new Token(TokenType.Comment, "") : new Token(TokenType.Comment, $"// {value}");
+        return new Token[] { token };
     }
 }

@@ -38,8 +38,13 @@ internal class ConvertScnFilesTask : PipelineTask
         Console.WriteLine($"Convert files {EvalParameter("SrcVersion")} to {EvalParameter("DstVersion")} {path}");
     }
 
-    public override string ToString()
+    public override Token[] ToTokens() => new Token[]
     {
-        return $"Convert files from {Parameters["SrcVersion"]} to {Parameters["DstVersion"]} {Parameters["Path"]}";
-    }
+        new Token(TokenType.Text, "Convert files from "),
+        new Token(TokenType.Variable, Parameters["SrcVersion"]),
+        new Token(TokenType.Text, " to "),
+        new Token(TokenType.Variable, Parameters["DstVersion"]),
+        new Token(TokenType.Text, " "),
+        new Token(TokenType.Variable, Parameters["Path"]),
+    };
 }

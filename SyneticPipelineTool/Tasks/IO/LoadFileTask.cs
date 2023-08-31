@@ -24,8 +24,8 @@ internal class LoadFileTask : PipelineTask
         Runtime.Variables[var] = File.ReadAllText(src);
     }
 
-    public override string ToString()
+    public override Token[] ToTokens() => new Token[]
     {
-        return $"Load file {Parameters["Src"]} as {Parameters["Variable"]}";
-    }
+        new Token(TokenType.Text, $"Load file {Parameters["Src"]} as {Parameters["Variable"]}")
+    };
 }

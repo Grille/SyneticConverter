@@ -15,13 +15,16 @@ public class PipelineList : List<Pipeline>, IViewObject
 
     public void ReadFromView(BinaryViewReader br)
     {
-        br.LengthPrefix = LengthPrefix.UInt16;
+        br.LengthPrefix = LengthPrefix.UInt16;  
         br.Encoding = Encoding.UTF8;
 
         int count = br.ReadInt32();
         for (int i = 0; i < count; i++)
         {
             string name = br.ReadString();
+            if (string.IsNullOrEmpty(name))
+                throw new InvalidDataException();
+
             var pipeline = CreateUnbound(name);
             Add(pipeline);
             br.ReadToIView(pipeline);
@@ -86,7 +89,6 @@ public class PipelineList : List<Pipeline>, IViewObject
             throw new InvalidOperationException();
 
         var pipeline = new Pipeline(this, name);
-        pipeline.Owner = this;
         return pipeline;
     }
 

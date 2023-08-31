@@ -53,8 +53,12 @@ internal class ForEachTask : PipelineTask
 
     }
 
-    public override string ToString()
+    public override Token[] ToTokens() => new Token[]
     {
-        return $"Foreach {Parameters["Variable"]} in {Parameters["Collection"]}:";
-    }
+        new Token(TokenType.Text, $"Foreach "),
+        new Token(TokenType.Variable, Parameters["Variable"]),
+        new Token(TokenType.Text, $" in "),
+        new Token(TokenType.Variable, Parameters["Collection"]),
+        new Token(TokenType.Text, $":"),
+    };
 }

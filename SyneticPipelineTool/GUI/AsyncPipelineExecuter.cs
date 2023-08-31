@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace SyneticPipelineTool.GUI;
 
-internal class AsyncPipelineExecuter
+public class AsyncPipelineExecuter
 {
     public Runtime Runtime;
 
@@ -17,6 +17,8 @@ internal class AsyncPipelineExecuter
     public Task task;
 
     public bool Running { get; private set; }
+
+    public event EventHandler ExecutionDone;
 
     public AsyncPipelineExecuter()
     {
@@ -51,6 +53,8 @@ internal class AsyncPipelineExecuter
             }
 
             Running = false;
+
+            ExecutionDone?.Invoke(this, EventArgs.Empty);
         });
 
     }

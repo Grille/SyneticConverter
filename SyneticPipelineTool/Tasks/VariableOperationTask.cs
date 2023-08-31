@@ -49,8 +49,12 @@ internal class VariableOperationTask : PipelineTask
         Console.WriteLine($"{name} {op} {value} -> {Runtime.Variables[name]}");
     }
 
-    public override string ToString()
+    public override Token[] ToTokens() => new Token[]
     {
-        return $"{Parameters["Name"]} {Parameters["Operator"]} {Parameters["Value"]}";
-    }
+        new Token(TokenType.Variable, Parameters["Name"]),
+        new Token(TokenType.Text, " "),
+        new Token(TokenType.Variable, Parameters["Operator"]),
+        new Token(TokenType.Text, " "),
+        new Token(TokenType.Variable, Parameters["Value"]),
+    };
 }
