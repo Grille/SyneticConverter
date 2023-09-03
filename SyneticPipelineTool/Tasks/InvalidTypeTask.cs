@@ -55,10 +55,20 @@ internal class InvalidTypeTask : PipelineTask
         {
             values.Add(para.Value);
         }
-        string args = string.Join(", ", values.ToArray());
 
-        return new Token[] {
-            new Token(TokenType.Error, $"!{name} ({args})"),
-        };
+        var tokens = new List<Token>();
+        tokens.Add(new Token(TokenType.Error, $"!{name}"));
+        tokens.Add(new Token(TokenType.Text, $"("));
+        for (int i = 0;i < ParametersCount; i++)
+        {
+            tokens.Add(new Token(TokenType.Variable, values[i]));
+            if (i < ParametersCount - 1)
+            {
+                tokens.Add(new Token(TokenType.Text, ","));
+            }
+        }
+        tokens.Add(new Token(TokenType.Text, $")"));
+
+        return tokens.ToArray();
     }
 }

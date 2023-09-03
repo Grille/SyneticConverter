@@ -25,9 +25,24 @@
     <Compile Update="GUI\ListBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="GUI\PipelineTasksControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="GUI\PipelineTaskListBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

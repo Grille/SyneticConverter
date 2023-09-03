@@ -26,6 +26,9 @@ internal class LoadFileTask : PipelineTask
 
     public override Token[] ToTokens() => new Token[]
     {
-        new Token(TokenType.Text, $"Load file {Parameters["Src"]} as {Parameters["Variable"]}")
+        new(TokenType.Text, "Load file "),
+        new(TokenType.Variable, Parameters["Src"]),
+        new(TokenType.Text, " as "),
+        new(TokenType.Variable, Parameters["Variable"]),
     };
 }

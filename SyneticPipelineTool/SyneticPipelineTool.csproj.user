@@ -7,6 +7,9 @@
     <Compile Update="GUI\EditTaksForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="GUI\PipelinesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="GUI\PipelineListBox.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -27,13 +27,7 @@ public abstract class ListBox<T> : ListBox where T : class
                 return;
             
             _executer = value;
-            _executer.ExecutionDone += _executer_ExecutionDone;
         }
-    }
-
-    private void _executer_ExecutionDone(object sender, EventArgs e)
-    {
-        Invalidate();
     }
 
     public ListBox()
@@ -55,7 +49,14 @@ public abstract class ListBox<T> : ListBox where T : class
         if (e.Index == -1)
             return;
 
-        e.DrawBackground();
+        if (e.State.HasFlag(DrawItemState.Selected))
+        {
+            e.Graphics.FillRectangle(new SolidBrush(Color.LightBlue), e.Bounds);
+        }
+        else
+        {
+            e.Graphics.FillRectangle(new SolidBrush(e.BackColor), e.Bounds);
+        }
 
         var item = (T)Items[e.Index];
 
@@ -73,7 +74,10 @@ public abstract class ListBox<T> : ListBox where T : class
         var items = Items;
 
         if (list == null)
+        {
+            items.Clear();
             return;
+        }
 
         BeginUpdate();
 

@@ -11,6 +11,10 @@ using Variables = Dictionary<string, string>;
 
 public class Runtime
 {
+    //public bool Running { get; private set; }
+
+    private bool cancel;
+
     public class CallStackEntry
     {
         public Pipeline Pipeline { get; }
@@ -62,14 +66,23 @@ public class Runtime
 
     public void Clear()
     {
+        cancel = false;
         CallStack.Clear();
         ScopeStack.Clear();
+    }
+
+    public void Cancel()
+    {
+        cancel = true;
     }
 
     public void Call(Pipeline pipeline)
     {
         if (CallStack.Any(a => a.Pipeline == pipeline))
             throw new InvalidOperationException($"Pipeline already in call stack.");
+
+        if (cancel)
+            return;
 
         CallStack.Push(pipeline);
         IncVariableScope();
@@ -85,7 +98,7 @@ public class Runtime
         var tasks = pipeline.Tasks;
         int count = tasks.Count;
 
-        while (Position < count)
+        while (Position < count && !cancel)
         {
             tasks[Position].Execute(this);
             Position += 1;

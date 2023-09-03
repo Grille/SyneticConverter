@@ -23,13 +23,6 @@ public class PipelineListBox : ListBox<Pipeline>
 
         brushText = new SolidBrush(Color.Black);
 
-        if (e.State.HasFlag(DrawItemState.Selected))
-        {
-            //brushLine = Brushes.White;
-            brushText = Brushes.White;
-        }
-
-
         bool stackContains = Executer.Runtime.CallStack.ToList().Any(a => a.Pipeline == pipeline);
 
         if (stackContains)

@@ -18,6 +18,8 @@ public class AsyncPipelineExecuter
 
     public bool Running { get; private set; }
 
+    bool cancel = false;
+
     public event EventHandler ExecutionDone;
 
     public AsyncPipelineExecuter()
@@ -57,5 +59,10 @@ public class AsyncPipelineExecuter
             ExecutionDone?.Invoke(this, EventArgs.Empty);
         });
 
+    }
+
+    public void Cancel()
+    {
+        Runtime.Cancel();
     }
 }

@@ -55,9 +55,6 @@ public class PipelineTaskListBox : ListBox<PipelineTask>
             brushText = new SolidBrush(Color.Black);
         */
 
-        bool selected = e.State.HasFlag(DrawItemState.Selected);
-
-
         var entry = Executer.Runtime.CallStack.ToList().FirstOrDefault(a => a.Pipeline == pipeline, null);
         if (entry != null && entry.Position == e.Index)
         {
@@ -104,11 +101,6 @@ public class PipelineTaskListBox : ListBox<PipelineTask>
                 PipelineTask.TokenType.Variable => text[0] == '*' || text[0] == '$' ? Color.Blue : Color.DarkRed,
                 _ => Color.Red,
             };
-
-            if (selected)
-            {
-                color = Color.White;
-            }
 
             var brush = new SolidBrush(color);
 

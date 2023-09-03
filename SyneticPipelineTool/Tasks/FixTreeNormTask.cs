@@ -44,3 +44,4 @@ internal class FixTreeNormTask : PipelineTask
         new(TokenType.Variable, Parameters["Dir"]),
     };
 }
+

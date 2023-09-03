@@ -31,269 +31,171 @@ namespace SyneticPipelineTool
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            groupBox1 = new GroupBox();
-            buttonDownP = new Button();
-            buttonUpP = new Button();
-            buttonCopyP = new Button();
-            buttonExecuteP = new Button();
-            buttonRemoveP = new Button();
-            buttonEditP = new Button();
-            buttonNewP = new Button();
-            pipelinesListBox = new PipelineListBox();
-            groupBox2 = new GroupBox();
-            buttonDownT = new Button();
-            buttonUpT = new Button();
-            buttonCopyT = new Button();
-            buttonRemoveT = new Button();
-            buttonEditT = new Button();
-            buttonNewT = new Button();
-            tasksListBox = new PipelineTaskListBox();
-            refreshTimer = new Timer(components);
-            groupBox1.SuspendLayout();
-            groupBox2.SuspendLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SynPipelineToolForm));
+            menuStrip1 = new MenuStrip();
+            fileToolStripMenuItem = new ToolStripMenuItem();
+            newToolStripMenuItem = new ToolStripMenuItem();
+            openToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator2 = new ToolStripSeparator();
+            saveToolStripMenuItem = new ToolStripMenuItem();
+            saveAsToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
+            quitToolStripMenuItem = new ToolStripMenuItem();
+            splitContainer1 = new SplitContainer();
+            PipelinesControl = new PipelinesControl();
+            TasksControl = new PipelineTasksControl();
+            menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
             SuspendLayout();
             // 
-            // groupBox1
+            // menuStrip1
             // 
-            groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            groupBox1.Controls.Add(buttonDownP);
-            groupBox1.Controls.Add(buttonUpP);
-            groupBox1.Controls.Add(buttonCopyP);
-            groupBox1.Controls.Add(buttonExecuteP);
-            groupBox1.Controls.Add(buttonRemoveP);
-            groupBox1.Controls.Add(buttonEditP);
-            groupBox1.Controls.Add(buttonNewP);
-            groupBox1.Controls.Add(pipelinesListBox);
-            groupBox1.Location = new System.Drawing.Point(12, 12);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(248, 443);
-            groupBox1.TabIndex = 0;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Pipelines";
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
+            menuStrip1.Location = new System.Drawing.Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new System.Drawing.Size(795, 24);
+            menuStrip1.TabIndex = 0;
+            menuStrip1.Text = "menuStrip1";
             // 
-            // buttonDownP
+            // fileToolStripMenuItem
             // 
-            buttonDownP.Location = new System.Drawing.Point(6, 109);
-            buttonDownP.Name = "buttonDownP";
-            buttonDownP.Size = new System.Drawing.Size(75, 23);
-            buttonDownP.TabIndex = 7;
-            buttonDownP.Text = "Down";
-            buttonDownP.UseVisualStyleBackColor = true;
-            buttonDownP.Click += buttonDownP_Click;
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem, openToolStripMenuItem, toolStripSeparator2, saveToolStripMenuItem, saveAsToolStripMenuItem, toolStripSeparator1, quitToolStripMenuItem });
+            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            fileToolStripMenuItem.Text = "File";
             // 
-            // buttonUpP
+            // newToolStripMenuItem
             // 
-            buttonUpP.Location = new System.Drawing.Point(6, 80);
-            buttonUpP.Name = "buttonUpP";
-            buttonUpP.Size = new System.Drawing.Size(75, 23);
-            buttonUpP.TabIndex = 6;
-            buttonUpP.Text = "Up";
-            buttonUpP.UseVisualStyleBackColor = true;
-            buttonUpP.Click += buttonUpP_Click;
+            newToolStripMenuItem.Image = Properties.Resources.New;
+            newToolStripMenuItem.Name = "newToolStripMenuItem";
+            newToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
+            newToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            newToolStripMenuItem.Text = "New";
+            newToolStripMenuItem.Click += newToolStripMenuItem_Click;
             // 
-            // buttonCopyP
+            // openToolStripMenuItem
             // 
-            buttonCopyP.Location = new System.Drawing.Point(6, 51);
-            buttonCopyP.Name = "buttonCopyP";
-            buttonCopyP.Size = new System.Drawing.Size(75, 23);
-            buttonCopyP.TabIndex = 5;
-            buttonCopyP.Text = "Copy";
-            buttonCopyP.UseVisualStyleBackColor = true;
-            buttonCopyP.Click += buttonCopyP_Click;
+            openToolStripMenuItem.Image = Properties.Resources.OpenFile;
+            openToolStripMenuItem.Name = "openToolStripMenuItem";
+            openToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.O;
+            openToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            openToolStripMenuItem.Text = "Open";
+            openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
-            // buttonExecuteP
+            // toolStripSeparator2
             // 
-            buttonExecuteP.Location = new System.Drawing.Point(87, 51);
-            buttonExecuteP.Name = "buttonExecuteP";
-            buttonExecuteP.Size = new System.Drawing.Size(156, 23);
-            buttonExecuteP.TabIndex = 4;
-            buttonExecuteP.Text = "Execute";
-            buttonExecuteP.UseVisualStyleBackColor = true;
-            buttonExecuteP.Click += buttonExecuteP_Click;
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new System.Drawing.Size(183, 6);
             // 
-            // buttonRemoveP
+            // saveToolStripMenuItem
             // 
-            buttonRemoveP.Location = new System.Drawing.Point(168, 22);
-            buttonRemoveP.Name = "buttonRemoveP";
-            buttonRemoveP.Size = new System.Drawing.Size(75, 23);
-            buttonRemoveP.TabIndex = 3;
-            buttonRemoveP.Text = "Remove";
-            buttonRemoveP.UseVisualStyleBackColor = true;
-            buttonRemoveP.Click += buttonRemoveP_Click;
+            saveToolStripMenuItem.Image = Properties.Resources.Save;
+            saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            saveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+            saveToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            saveToolStripMenuItem.Text = "Save";
+            saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
-            // buttonEditP
+            // saveAsToolStripMenuItem
             // 
-            buttonEditP.Location = new System.Drawing.Point(87, 22);
-            buttonEditP.Name = "buttonEditP";
-            buttonEditP.Size = new System.Drawing.Size(75, 23);
-            buttonEditP.TabIndex = 2;
-            buttonEditP.Text = "Edit";
-            buttonEditP.UseVisualStyleBackColor = true;
-            buttonEditP.Click += buttonEditP_Click;
+            saveAsToolStripMenuItem.Image = Properties.Resources.SaveAs;
+            saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            saveAsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Shift | Keys.S;
+            saveAsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            saveAsToolStripMenuItem.Text = "Save As";
+            saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
             // 
-            // buttonNewP
+            // toolStripSeparator1
             // 
-            buttonNewP.Location = new System.Drawing.Point(6, 22);
-            buttonNewP.Name = "buttonNewP";
-            buttonNewP.Size = new System.Drawing.Size(75, 23);
-            buttonNewP.TabIndex = 1;
-            buttonNewP.Text = "New";
-            buttonNewP.UseVisualStyleBackColor = true;
-            buttonNewP.Click += buttonNewP_Click;
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new System.Drawing.Size(183, 6);
             // 
-            // pipelinesListBox
+            // quitToolStripMenuItem
             // 
-            pipelinesListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pipelinesListBox.DrawMode = DrawMode.OwnerDrawFixed;
-            pipelinesListBox.Executer = null;
-            pipelinesListBox.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            pipelinesListBox.FormattingEnabled = true;
-            pipelinesListBox.IntegralHeight = false;
-            pipelinesListBox.ItemHeight = 14;
-            pipelinesListBox.Location = new System.Drawing.Point(6, 139);
-            pipelinesListBox.Name = "pipelinesListBox";
-            pipelinesListBox.SelectedItem = null;
-            pipelinesListBox.Size = new System.Drawing.Size(236, 298);
-            pipelinesListBox.TabIndex = 0;
-            pipelinesListBox.SelectedIndexChanged += pipelinesListBox_SelectedIndexChanged;
-            pipelinesListBox.DoubleClick += pipelinesListBox_DoubleClick;
+            quitToolStripMenuItem.Image = Properties.Resources.Exit;
+            quitToolStripMenuItem.Name = "quitToolStripMenuItem";
+            quitToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Q;
+            quitToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            quitToolStripMenuItem.Text = "Exit";
+            quitToolStripMenuItem.Click += quitToolStripMenuItem_Click;
             // 
-            // groupBox2
+            // splitContainer1
             // 
-            groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox2.Controls.Add(buttonDownT);
-            groupBox2.Controls.Add(buttonUpT);
-            groupBox2.Controls.Add(buttonCopyT);
-            groupBox2.Controls.Add(buttonRemoveT);
-            groupBox2.Controls.Add(buttonEditT);
-            groupBox2.Controls.Add(buttonNewT);
-            groupBox2.Controls.Add(tasksListBox);
-            groupBox2.Location = new System.Drawing.Point(266, 12);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(523, 443);
-            groupBox2.TabIndex = 1;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Tasks";
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.FixedPanel = FixedPanel.Panel1;
+            splitContainer1.Location = new System.Drawing.Point(0, 24);
+            splitContainer1.Name = "splitContainer1";
             // 
-            // buttonDownT
+            // splitContainer1.Panel1
             // 
-            buttonDownT.Location = new System.Drawing.Point(411, 22);
-            buttonDownT.Name = "buttonDownT";
-            buttonDownT.Size = new System.Drawing.Size(75, 23);
-            buttonDownT.TabIndex = 8;
-            buttonDownT.Text = "Down";
-            buttonDownT.UseVisualStyleBackColor = true;
-            buttonDownT.Click += buttonDownT_Click;
+            splitContainer1.Panel1.Controls.Add(PipelinesControl);
             // 
-            // buttonUpT
+            // splitContainer1.Panel2
             // 
-            buttonUpT.Location = new System.Drawing.Point(330, 22);
-            buttonUpT.Name = "buttonUpT";
-            buttonUpT.Size = new System.Drawing.Size(75, 23);
-            buttonUpT.TabIndex = 8;
-            buttonUpT.Text = "Up";
-            buttonUpT.UseVisualStyleBackColor = true;
-            buttonUpT.Click += buttonUpT_Click;
+            splitContainer1.Panel2.Controls.Add(TasksControl);
+            splitContainer1.Size = new System.Drawing.Size(795, 435);
+            splitContainer1.SplitterDistance = 337;
+            splitContainer1.SplitterWidth = 2;
+            splitContainer1.TabIndex = 1;
             // 
-            // buttonCopyT
+            // PipelinesControl
             // 
-            buttonCopyT.Location = new System.Drawing.Point(249, 22);
-            buttonCopyT.Name = "buttonCopyT";
-            buttonCopyT.Size = new System.Drawing.Size(75, 23);
-            buttonCopyT.TabIndex = 7;
-            buttonCopyT.Text = "Copy";
-            buttonCopyT.UseVisualStyleBackColor = true;
-            buttonCopyT.Click += buttonCopyT_Click;
+            PipelinesControl.Dock = DockStyle.Fill;
+            PipelinesControl.Location = new System.Drawing.Point(0, 0);
+            PipelinesControl.Name = "PipelinesControl";
+            PipelinesControl.SelectedItem = null;
+            PipelinesControl.Size = new System.Drawing.Size(337, 435);
+            PipelinesControl.TabIndex = 0;
+            PipelinesControl.TasksControl = null;
             // 
-            // buttonRemoveT
+            // TasksControl
             // 
-            buttonRemoveT.Location = new System.Drawing.Point(168, 22);
-            buttonRemoveT.Name = "buttonRemoveT";
-            buttonRemoveT.Size = new System.Drawing.Size(75, 23);
-            buttonRemoveT.TabIndex = 6;
-            buttonRemoveT.Text = "Remove";
-            buttonRemoveT.UseVisualStyleBackColor = true;
-            buttonRemoveT.Click += buttonRemoveT_Click;
-            // 
-            // buttonEditT
-            // 
-            buttonEditT.Location = new System.Drawing.Point(87, 22);
-            buttonEditT.Name = "buttonEditT";
-            buttonEditT.Size = new System.Drawing.Size(75, 23);
-            buttonEditT.TabIndex = 5;
-            buttonEditT.Text = "Edit";
-            buttonEditT.UseVisualStyleBackColor = true;
-            buttonEditT.Click += buttonEditT_Click;
-            // 
-            // buttonNewT
-            // 
-            buttonNewT.Location = new System.Drawing.Point(6, 22);
-            buttonNewT.Name = "buttonNewT";
-            buttonNewT.Size = new System.Drawing.Size(75, 23);
-            buttonNewT.TabIndex = 2;
-            buttonNewT.Text = "New";
-            buttonNewT.UseVisualStyleBackColor = true;
-            buttonNewT.Click += buttonNewT_Click;
-            // 
-            // tasksListBox
-            // 
-            tasksListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            tasksListBox.DrawMode = DrawMode.OwnerDrawFixed;
-            tasksListBox.Executer = null;
-            tasksListBox.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            tasksListBox.FormattingEnabled = true;
-            tasksListBox.IntegralHeight = false;
-            tasksListBox.ItemHeight = 14;
-            tasksListBox.Location = new System.Drawing.Point(6, 51);
-            tasksListBox.Name = "tasksListBox";
-            tasksListBox.SelectedItem = null;
-            tasksListBox.SelectionMode = SelectionMode.MultiExtended;
-            tasksListBox.Size = new System.Drawing.Size(511, 386);
-            tasksListBox.TabIndex = 0;
-            tasksListBox.SelectedIndexChanged += tasksListBox_SelectedIndexChanged;
-            tasksListBox.DoubleClick += tasksListBox_DoubleClick;
-            // 
-            // refreshTimer
-            // 
-            refreshTimer.Enabled = true;
-            refreshTimer.Interval = 500;
-            refreshTimer.Tick += refreshTimer_Tick;
+            TasksControl.Dock = DockStyle.Fill;
+            TasksControl.Location = new System.Drawing.Point(0, 0);
+            TasksControl.Margin = new Padding(0);
+            TasksControl.Name = "TasksControl";
+            TasksControl.Pipeline = null;
+            TasksControl.SelectedItem = null;
+            TasksControl.Size = new System.Drawing.Size(456, 435);
+            TasksControl.TabIndex = 0;
             // 
             // SynPipelineToolForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(801, 467);
-            Controls.Add(groupBox2);
-            Controls.Add(groupBox1);
+            ClientSize = new System.Drawing.Size(795, 459);
+            Controls.Add(splitContainer1);
+            Controls.Add(menuStrip1);
             DoubleBuffered = true;
+            MainMenuStrip = menuStrip1;
             Name = "SynPipelineToolForm";
             Text = "Synetic Pipeline Tool";
-            groupBox1.ResumeLayout(false);
-            groupBox2.ResumeLayout(false);
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private GroupBox groupBox1;
-        private PipelineListBox pipelinesListBox;
-        private GroupBox groupBox2;
-        private PipelineTaskListBox tasksListBox;
-        private Button buttonRemoveP;
-        private Button buttonEditP;
-        private Button buttonNewP;
-        private Button buttonExecuteP;
-        private Button buttonRemoveT;
-        private Button buttonEditT;
-        private Button buttonNewT;
-        private Button buttonCopyP;
-        private Button buttonDownP;
-        private Button buttonUpP;
-        private Button buttonDownT;
-        private Button buttonUpT;
-        private Button buttonCopyT;
-        private Timer refreshTimer;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private SplitContainer splitContainer1;
+        private PipelinesControl PipelinesControl;
+        private PipelineTasksControl TasksControl;
+        private ToolStripMenuItem newToolStripMenuItem;
+        private ToolStripMenuItem openToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem saveAsToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem quitToolStripMenuItem;
     }
 }

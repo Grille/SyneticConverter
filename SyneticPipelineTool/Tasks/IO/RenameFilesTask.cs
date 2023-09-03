@@ -38,6 +38,11 @@ internal class RenameFilesTask : PipelineTask
 
     public override Token[] ToTokens() => new Token[]
     {
-        new Token(TokenType.Text, $"Rename files {Parameters["Old text"]} -> {Parameters["New text"]} in {Parameters["Dir"]}")
+        new(TokenType.Text, "Rename files "),
+        new(TokenType.Variable, Parameters["Old text"]),
+        new(TokenType.Text, " -> "),
+        new(TokenType.Variable, Parameters["New text"]),
+        new(TokenType.Text, " in "),
+        new(TokenType.Variable, Parameters["Dir"]),
     };
 }

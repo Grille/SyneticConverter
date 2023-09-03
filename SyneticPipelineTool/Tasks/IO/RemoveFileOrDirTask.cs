@@ -39,6 +39,9 @@ internal class RemoveFileOrDirTask : PipelineTask
 
     public override Token[] ToTokens() => new Token[]
     {
-        new Token(TokenType.Text, $"Remove {Parameters["Mode"]} {Parameters["Path"]}")
+        new Token(TokenType.Text, $"Remove "),
+        new Token(TokenType.Variable, Parameters["Mode"]),
+        new Token(TokenType.Text, $" "),
+        new Token(TokenType.Variable, Parameters["Path"]),
     };
 }
