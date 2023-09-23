@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace SyneticPipelineTool.Tasks;
+namespace SyneticPipelineTool.Tasks.IO.System;
 
-[PipelineTask(Name = "Rename files in directory")]
-internal class RenameFilesTask : PipelineTask
+[PipelineTask(Key = "IO/Sys/Rename files in directory")]
+internal class RenameFiles : PipelineTask
 {
     protected override void OnInit()
     {

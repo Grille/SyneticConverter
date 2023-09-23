@@ -14,34 +14,36 @@ namespace SyneticPipelineTool;
 
 public partial class EditTaksForm : Form
 {
-    public Pipeline Pipeline { get; }
+    public Pipeline Pipeline { get; private set; }
     public PipelineTask Task { get; private set; }
 
-    static SortedList<string, Type> types;
     List<Control> inputs;
 
     bool setup = true;
 
     bool keepValues = false;
 
-    public EditTaksForm(Pipeline pipeline, PipelineTask task = null)
+    public EditTaksForm()
+    {
+        InitializeComponent();
+
+        inputs = new List<Control>();
+
+        comboBoxType.BeginUpdate();
+        foreach (var entry in AssemblyTaskTypeTable.Types)
+        {
+            comboBoxType.Items.Add(entry);
+        }
+        comboBoxType.EndUpdate();
+    }
+
+    public void Init(Pipeline pipeline, PipelineTask task = null)
     {
         if (pipeline == null)
             throw new ArgumentNullException(nameof(pipeline));
 
-        inputs = new List<Control>();
-
-        InitializeComponent();
-        DisplayParameters();
-
-        InitTypes();
-
-        comboBoxType.BeginUpdate();
-        foreach (var key in types.Keys)
-        {
-            comboBoxType.Items.Add(key);
-        }
-        comboBoxType.EndUpdate();
+        setup = true;
+        keepValues = false;
 
         Pipeline = pipeline;
 
@@ -58,54 +60,36 @@ public partial class EditTaksForm : Form
         setup = false;
     }
 
-    static void InitTypes()
+    public DialogResult ShowDialog(IWin32Window owner, Pipeline pipeline, PipelineTask task = null)
     {
-        if (types != null)
-            return;
-
-        types = new SortedList<string, Type>()
-        {
-            ["Comment"] = typeof(NopTask),
-        };
-
-        var asm = Assembly.GetExecutingAssembly();
-        var asmTypes = asm.GetTypes();
-
-        foreach (var type in asmTypes)
-        {
-            var attr = type.GetCustomAttribute<PipelineTaskAttribute>();
-            if (attr == null)
-                continue;
-
-            var name = attr.Name;
-
-            if (name == null)
-                name = type.Name;
-
-            types[name] = type;
-        }
-    }
-
-    public new DialogResult ShowDialog(IWin32Window owner)
-    {
-        return base.ShowDialog(owner);
+        Init(pipeline, task);
+        return ShowDialog();
     }
 
     public void DisplayType()
     {
         if (Task == null)
-            return;
-
-        foreach (var pair in types)
         {
-            if (pair.Value == Task.GetType())
+            comboBoxType.SelectedItem = null;
+            return;
+        }
+
+        var type = Task.GetType();
+
+        if (type == typeof(InvalidTypeTask))
+        {
+            comboBoxType.SelectedItem = null;
+            return;
+        }
+
+        foreach (var entry in AssemblyTaskTypeTable.Types)
+        {
+            if (entry.Type == type)
             {
-                comboBoxType.SelectedItem = pair.Key;
+                comboBoxType.SelectedItem = entry;
                 return;
             }
         }
-
-        //throw new KeyNotFoundException();
     }
 
     public void DisplayParameters()
@@ -213,7 +197,8 @@ public partial class EditTaksForm : Form
 
         var oldTask = Task;
 
-        var type = types[(string)comboBoxType.SelectedItem];
+        var entry = (AssemblyTaskTypeTable.Entry)comboBoxType.SelectedItem;
+        var type = entry.Type;
         Task = Pipeline.Tasks.CreateUnbound(type);
 
         if (keepValues)
@@ -226,5 +211,15 @@ public partial class EditTaksForm : Form
         }
 
         DisplayParameters();
+    }
+
+    private void textBox_TextChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+
     }
 }

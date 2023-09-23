@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SyneticPipelineTool;
 
-internal class PipelineTaskAttribute : Attribute
+public class PipelineTaskAttribute : Attribute
 {
-    public string Name { get; init; }
+    public string Key { get; set; }
+    public string Description { get; set; }
 }

@@ -40,6 +40,9 @@
             toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             upToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             downToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            leftToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            rightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStrip1 = new System.Windows.Forms.ToolStrip();
             ButtonNew = new System.Windows.Forms.ToolStripButton();
             ButtonEdit = new System.Windows.Forms.ToolStripButton();
@@ -48,6 +51,9 @@
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             ButtonUp = new System.Windows.Forms.ToolStripButton();
             ButtonDown = new System.Windows.Forms.ToolStripButton();
+            toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            ButtonLeft = new System.Windows.Forms.ToolStripButton();
+            ButtonRight = new System.Windows.Forms.ToolStripButton();
             toolStripContainer1.ContentPanel.SuspendLayout();
             toolStripContainer1.TopToolStripPanel.SuspendLayout();
             toolStripContainer1.SuspendLayout();
@@ -93,15 +99,15 @@
             // 
             // contextMenuStrip1
             // 
-            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { newToolStripMenuItem, editToolStripMenuItem, removeToolStripMenuItem, copyToolStripMenuItem, toolStripSeparator2, upToolStripMenuItem, downToolStripMenuItem });
+            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { newToolStripMenuItem, editToolStripMenuItem, removeToolStripMenuItem, copyToolStripMenuItem, toolStripSeparator2, upToolStripMenuItem, downToolStripMenuItem, toolStripSeparator3, leftToolStripMenuItem, rightToolStripMenuItem });
             contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new System.Drawing.Size(181, 164);
+            contextMenuStrip1.Size = new System.Drawing.Size(108, 192);
             // 
             // newToolStripMenuItem
             // 
             newToolStripMenuItem.Image = Properties.Resources.New;
             newToolStripMenuItem.Name = "newToolStripMenuItem";
-            newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            newToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             newToolStripMenuItem.Text = "New";
             newToolStripMenuItem.Click += NewClick;
             // 
@@ -109,7 +115,7 @@
             // 
             editToolStripMenuItem.Image = Properties.Resources.Edit;
             editToolStripMenuItem.Name = "editToolStripMenuItem";
-            editToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            editToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             editToolStripMenuItem.Text = "Edit";
             editToolStripMenuItem.Click += EditClick;
             // 
@@ -117,7 +123,7 @@
             // 
             removeToolStripMenuItem.Image = Properties.Resources.Delete;
             removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            removeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            removeToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             removeToolStripMenuItem.Text = "Delete";
             removeToolStripMenuItem.Click += DeleteClick;
             // 
@@ -125,20 +131,20 @@
             // 
             copyToolStripMenuItem.Image = Properties.Resources.Copy;
             copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            copyToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             copyToolStripMenuItem.Text = "Copy";
             copyToolStripMenuItem.Click += CopyClick;
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            toolStripSeparator2.Size = new System.Drawing.Size(104, 6);
             // 
             // upToolStripMenuItem
             // 
             upToolStripMenuItem.Image = Properties.Resources.MoveUp;
             upToolStripMenuItem.Name = "upToolStripMenuItem";
-            upToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            upToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             upToolStripMenuItem.Text = "Up";
             upToolStripMenuItem.Click += UpClick;
             // 
@@ -146,52 +152,77 @@
             // 
             downToolStripMenuItem.Image = Properties.Resources.MoveDown;
             downToolStripMenuItem.Name = "downToolStripMenuItem";
-            downToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            downToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             downToolStripMenuItem.Text = "Down";
             downToolStripMenuItem.Click += DownClick;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new System.Drawing.Size(104, 6);
+            // 
+            // leftToolStripMenuItem
+            // 
+            leftToolStripMenuItem.Image = Properties.Resources.MoveLeft;
+            leftToolStripMenuItem.Name = "leftToolStripMenuItem";
+            leftToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            leftToolStripMenuItem.Text = "Left";
+            leftToolStripMenuItem.Click += LeftClick;
+            // 
+            // rightToolStripMenuItem
+            // 
+            rightToolStripMenuItem.Image = Properties.Resources.MoveRight;
+            rightToolStripMenuItem.Name = "rightToolStripMenuItem";
+            rightToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            rightToolStripMenuItem.Text = "Right";
+            rightToolStripMenuItem.Click += RightClick;
             // 
             // toolStrip1
             // 
             toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
-            toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ButtonNew, ButtonEdit, ButtonRemove, ButtonCopy, toolStripSeparator1, ButtonUp, ButtonDown });
+            toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ButtonNew, ButtonEdit, ButtonRemove, ButtonCopy, toolStripSeparator1, ButtonUp, ButtonDown, toolStripSeparator4, ButtonLeft, ButtonRight });
             toolStrip1.Location = new System.Drawing.Point(3, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new System.Drawing.Size(277, 25);
+            toolStrip1.Size = new System.Drawing.Size(208, 25);
             toolStrip1.TabIndex = 0;
             // 
             // ButtonNew
             // 
+            ButtonNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             ButtonNew.Image = Properties.Resources.New;
             ButtonNew.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonNew.Name = "ButtonNew";
-            ButtonNew.Size = new System.Drawing.Size(51, 22);
+            ButtonNew.Size = new System.Drawing.Size(23, 22);
             ButtonNew.Text = "New";
             ButtonNew.Click += NewClick;
             // 
             // ButtonEdit
             // 
+            ButtonEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             ButtonEdit.Image = Properties.Resources.Edit;
             ButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonEdit.Name = "ButtonEdit";
-            ButtonEdit.Size = new System.Drawing.Size(47, 22);
+            ButtonEdit.Size = new System.Drawing.Size(23, 22);
             ButtonEdit.Text = "Edit";
             ButtonEdit.Click += EditClick;
             // 
             // ButtonRemove
             // 
+            ButtonRemove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             ButtonRemove.Image = Properties.Resources.Delete;
             ButtonRemove.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonRemove.Name = "ButtonRemove";
-            ButtonRemove.Size = new System.Drawing.Size(60, 22);
+            ButtonRemove.Size = new System.Drawing.Size(23, 22);
             ButtonRemove.Text = "Delete";
             ButtonRemove.Click += DeleteClick;
             // 
             // ButtonCopy
             // 
+            ButtonCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             ButtonCopy.Image = Properties.Resources.Copy;
             ButtonCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonCopy.Name = "ButtonCopy";
-            ButtonCopy.Size = new System.Drawing.Size(55, 22);
+            ButtonCopy.Size = new System.Drawing.Size(23, 22);
             ButtonCopy.Text = "Copy";
             ButtonCopy.Click += CopyClick;
             // 
@@ -207,7 +238,7 @@
             ButtonUp.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonUp.Name = "ButtonUp";
             ButtonUp.Size = new System.Drawing.Size(23, 22);
-            ButtonUp.Text = "toolStripButton5";
+            ButtonUp.Text = "Up";
             ButtonUp.Click += UpClick;
             // 
             // ButtonDown
@@ -217,14 +248,40 @@
             ButtonDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonDown.Name = "ButtonDown";
             ButtonDown.Size = new System.Drawing.Size(23, 22);
-            ButtonDown.Text = "toolStripButton4";
+            ButtonDown.Text = "Down";
             ButtonDown.Click += DownClick;
+            // 
+            // toolStripSeparator4
+            // 
+            toolStripSeparator4.Name = "toolStripSeparator4";
+            toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            // 
+            // ButtonLeft
+            // 
+            ButtonLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            ButtonLeft.Image = Properties.Resources.MoveLeft;
+            ButtonLeft.ImageTransparentColor = System.Drawing.Color.Magenta;
+            ButtonLeft.Name = "ButtonLeft";
+            ButtonLeft.Size = new System.Drawing.Size(23, 22);
+            ButtonLeft.Text = "toolStripButton1";
+            ButtonLeft.Click += LeftClick;
+            // 
+            // ButtonRight
+            // 
+            ButtonRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            ButtonRight.Image = Properties.Resources.MoveRight;
+            ButtonRight.ImageTransparentColor = System.Drawing.Color.Magenta;
+            ButtonRight.Name = "ButtonRight";
+            ButtonRight.Size = new System.Drawing.Size(23, 22);
+            ButtonRight.Text = "toolStripButton2";
+            ButtonRight.Click += RightClick;
             // 
             // PipelineTasksControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(toolStripContainer1);
+            DoubleBuffered = true;
             Name = "PipelineTasksControl";
             Size = new System.Drawing.Size(500, 500);
             toolStripContainer1.ContentPanel.ResumeLayout(false);
@@ -258,5 +315,11 @@
         private System.Windows.Forms.ToolStripButton ButtonCopy;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         public PipelineTaskListBox ListBox;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem leftToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rightToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripButton ButtonLeft;
+        private System.Windows.Forms.ToolStripButton ButtonRight;
     }
 }

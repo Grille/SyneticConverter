@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -16,6 +17,10 @@ public abstract class PipelineTask : IViewObject
     public ParameterGroup Parameters { get; } = new();
 
     protected Runtime Runtime { get; private set; }
+
+    public bool CanParse { get; protected set; }
+
+    public int Scope { get; set; }
 
     protected PipelineTask(bool autoinit)
     {
@@ -73,16 +78,28 @@ public abstract class PipelineTask : IViewObject
 
     public void ReadFromView(BinaryViewReader br)
     {
+        Scope = br.ReadInt32();
         br.ReadToIView(Parameters);
     }
     public void WriteToView(BinaryViewWriter bw)
     {
+        bw.WriteInt32(Scope);
         bw.WriteIView(Parameters);
     }
 
     public virtual void Validate()
     {
 
+    }
+
+    public void Parse(string text)
+    {
+        OnParse(text);
+    }
+
+    protected virtual void OnParse(string text)
+    {
+        throw new NotImplementedException();
     }
 
     public virtual PipelineTask Clone()
@@ -112,6 +129,7 @@ public abstract class PipelineTask : IViewObject
         Variable,
         Comment,
         Error,
+        Flow,
     }
 
     public record class Token(TokenType Type, string Text);

@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace SyneticPipelineTool.Tasks;
+namespace SyneticPipelineTool.Tasks.IO.System;
 
-[PipelineTask(Name = "Copy file/directory")]
-internal class CopyFileOrDirTask : PipelineTask
+[PipelineTask(Key = "IO/Sys/Copy file or directory")]
+internal class CopyFileOrDir : PipelineTask
 {
     protected override void OnInit()
     {

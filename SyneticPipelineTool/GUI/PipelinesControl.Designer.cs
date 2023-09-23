@@ -100,14 +100,14 @@
             // 
             contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { newToolStripMenuItem, editToolStripMenuItem, deleteToolStripMenuItem, copyToolStripMenuItem, toolStripSeparator3, upToolStripMenuItem, downToolStripMenuItem, toolStripSeparator4, runToolStripMenuItem, stopToolStripMenuItem });
             contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new System.Drawing.Size(181, 214);
+            contextMenuStrip1.Size = new System.Drawing.Size(108, 192);
             contextMenuStrip1.Text = "Edit";
             // 
             // newToolStripMenuItem
             // 
             newToolStripMenuItem.Image = Properties.Resources.New;
             newToolStripMenuItem.Name = "newToolStripMenuItem";
-            newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            newToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             newToolStripMenuItem.Text = "New";
             newToolStripMenuItem.Click += NewClick;
             // 
@@ -115,7 +115,7 @@
             // 
             editToolStripMenuItem.Image = Properties.Resources.Edit;
             editToolStripMenuItem.Name = "editToolStripMenuItem";
-            editToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            editToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             editToolStripMenuItem.Text = "Edit";
             editToolStripMenuItem.Click += EditClick;
             // 
@@ -123,7 +123,7 @@
             // 
             deleteToolStripMenuItem.Image = Properties.Resources.Delete;
             deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             deleteToolStripMenuItem.Text = "Delete";
             deleteToolStripMenuItem.Click += DeleteClick;
             // 
@@ -131,20 +131,20 @@
             // 
             copyToolStripMenuItem.Image = Properties.Resources.Copy;
             copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            copyToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             copyToolStripMenuItem.Text = "Copy";
             copyToolStripMenuItem.Click += CopyClick;
             // 
             // toolStripSeparator3
             // 
             toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            toolStripSeparator3.Size = new System.Drawing.Size(104, 6);
             // 
             // upToolStripMenuItem
             // 
             upToolStripMenuItem.Image = Properties.Resources.MoveUp;
             upToolStripMenuItem.Name = "upToolStripMenuItem";
-            upToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            upToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             upToolStripMenuItem.Text = "Up";
             upToolStripMenuItem.Click += UpClick;
             // 
@@ -152,20 +152,20 @@
             // 
             downToolStripMenuItem.Image = Properties.Resources.MoveDown;
             downToolStripMenuItem.Name = "downToolStripMenuItem";
-            downToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            downToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             downToolStripMenuItem.Text = "Down";
             downToolStripMenuItem.Click += DownClick;
             // 
             // toolStripSeparator4
             // 
             toolStripSeparator4.Name = "toolStripSeparator4";
-            toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            toolStripSeparator4.Size = new System.Drawing.Size(104, 6);
             // 
             // runToolStripMenuItem
             // 
             runToolStripMenuItem.Image = Properties.Resources.Run;
             runToolStripMenuItem.Name = "runToolStripMenuItem";
-            runToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            runToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             runToolStripMenuItem.Text = "Run";
             runToolStripMenuItem.Click += RunClick;
             // 
@@ -173,7 +173,7 @@
             // 
             stopToolStripMenuItem.Image = Properties.Resources.Stop;
             stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            stopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            stopToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             stopToolStripMenuItem.Text = "Stop";
             stopToolStripMenuItem.Click += StopClick;
             // 
@@ -183,42 +183,46 @@
             toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ButtonNew, ButtonEdit, ButtonRemove, ButtonCopy, toolStripSeparator1, ButtonUp, ButtonDown, toolStripSeparator2, ButtonRun, ButtonStop });
             toolStrip1.Location = new System.Drawing.Point(3, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new System.Drawing.Size(329, 25);
+            toolStrip1.Size = new System.Drawing.Size(208, 25);
             toolStrip1.TabIndex = 0;
             // 
             // ButtonNew
             // 
+            ButtonNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             ButtonNew.Image = Properties.Resources.New;
             ButtonNew.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonNew.Name = "ButtonNew";
-            ButtonNew.Size = new System.Drawing.Size(51, 22);
+            ButtonNew.Size = new System.Drawing.Size(23, 22);
             ButtonNew.Text = "New";
             ButtonNew.Click += NewClick;
             // 
             // ButtonEdit
             // 
+            ButtonEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             ButtonEdit.Image = Properties.Resources.Edit;
             ButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonEdit.Name = "ButtonEdit";
-            ButtonEdit.Size = new System.Drawing.Size(47, 22);
+            ButtonEdit.Size = new System.Drawing.Size(23, 22);
             ButtonEdit.Text = "Edit";
             ButtonEdit.Click += EditClick;
             // 
             // ButtonRemove
             // 
+            ButtonRemove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             ButtonRemove.Image = Properties.Resources.Delete;
             ButtonRemove.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonRemove.Name = "ButtonRemove";
-            ButtonRemove.Size = new System.Drawing.Size(60, 22);
+            ButtonRemove.Size = new System.Drawing.Size(23, 22);
             ButtonRemove.Text = "Delete";
             ButtonRemove.Click += DeleteClick;
             // 
             // ButtonCopy
             // 
+            ButtonCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             ButtonCopy.Image = Properties.Resources.Copy;
             ButtonCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonCopy.Name = "ButtonCopy";
-            ButtonCopy.Size = new System.Drawing.Size(55, 22);
+            ButtonCopy.Size = new System.Drawing.Size(23, 22);
             ButtonCopy.Text = "Copy";
             ButtonCopy.Click += CopyClick;
             // 
@@ -234,7 +238,7 @@
             ButtonUp.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonUp.Name = "ButtonUp";
             ButtonUp.Size = new System.Drawing.Size(23, 22);
-            ButtonUp.Text = "toolStripButton5";
+            ButtonUp.Text = "Up";
             ButtonUp.Click += UpClick;
             // 
             // ButtonDown
@@ -244,7 +248,7 @@
             ButtonDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonDown.Name = "ButtonDown";
             ButtonDown.Size = new System.Drawing.Size(23, 22);
-            ButtonDown.Text = "toolStripButton4";
+            ButtonDown.Text = "Down";
             ButtonDown.Click += DownClick;
             // 
             // toolStripSeparator2
@@ -259,7 +263,7 @@
             ButtonRun.ImageTransparentColor = System.Drawing.Color.Magenta;
             ButtonRun.Name = "ButtonRun";
             ButtonRun.Size = new System.Drawing.Size(23, 22);
-            ButtonRun.Text = "toolStripButton6";
+            ButtonRun.Text = "Run";
             ButtonRun.Click += RunClick;
             // 
             // ButtonStop
@@ -275,7 +279,6 @@
             // 
             // refreshTimer
             // 
-            refreshTimer.Interval = 500;
             refreshTimer.Tick += TimerTick;
             // 
             // PipelinesControl
@@ -283,6 +286,7 @@
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(toolStripContainer1);
+            DoubleBuffered = true;
             Name = "PipelinesControl";
             Size = new System.Drawing.Size(500, 500);
             Load += ControlLoad;

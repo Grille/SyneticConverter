@@ -75,10 +75,13 @@ public class PipelineTaskListBox : ListBox<PipelineTask>
 
         g.DrawString((e.Index + 1).ToString(), e.Font, brushLine, boundsLine);
 
-        var tokens = task.ToTokens();
-        float position = boundsText.X;
+        float margin = g.MeasureString(" ", e.Font).Width;
+        float charsize = g.MeasureString("O",e.Font).Width - margin;
 
-        float offset = g.MeasureString(" ", e.Font).Width;
+        var tokens = task.ToTokens();
+        float position = boundsText.X + (charsize * task.Scope * 4);
+
+
 
         var format = new StringFormat(StringFormatFlags.MeasureTrailingSpaces);
 
@@ -98,7 +101,8 @@ public class PipelineTaskListBox : ListBox<PipelineTask>
             {
                 PipelineTask.TokenType.Text => Color.Black,
                 PipelineTask.TokenType.Comment => Color.Gray,
-                PipelineTask.TokenType.Variable => text[0] == '*' || text[0] == '$' ? Color.Blue : Color.DarkRed,
+                PipelineTask.TokenType.Variable => text[0] == '*' || text[0] == '$' ? Color.Blue : Color.FromArgb(0,100,100),
+                PipelineTask.TokenType.Flow => Color.DarkMagenta,
                 _ => Color.Red,
             };
 
@@ -107,7 +111,7 @@ public class PipelineTaskListBox : ListBox<PipelineTask>
             //g.DrawRectangle(Pens.Red, drawrect.X,drawrect.Y,drawrect.Width-1,drawrect.Height-1);
             g.DrawString(token.Text, e.Font, brush, drawrect);
 
-            position += size.Width- offset;
+            position += size.Width - margin;
         }
 
         //g.DrawString(task.ToString(), e.Font, Brushes.Magenta, boundsText);

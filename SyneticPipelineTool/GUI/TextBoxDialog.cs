@@ -18,12 +18,16 @@ public partial class TextBoxDialog : Form
         InitializeComponent();
     }
 
-    public DialogResult ShowDialog(Form owner, string title, string defaultText = "")
+    public void Init(string title, string defaultText = "")
     {
         Text = title;
         textBox1.Text = defaultText;
-        StartPosition= FormStartPosition.CenterParent;
-        return base.ShowDialog(owner);
+    }
+
+    public DialogResult ShowDialog(Form owner, string title, string defaultText = "")
+    {
+        Init(title, defaultText);
+        return ShowDialog(owner);
     }
 
     public string TextResult

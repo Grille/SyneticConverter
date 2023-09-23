@@ -25,23 +25,35 @@ namespace SyneticPipelineTool.GUI
 
         public PipelineTasksControl TasksControl { get; set; }
 
+        public TextBoxDialog TextBoxDialog { get; }
+
         public PipelinesControl()
         {
             InitializeComponent();
             Executer = new AsyncPipelineExecuter();
             Pipelines = new PipelineList();
 
+            TextBoxDialog = new TextBoxDialog();
+
+            Executer.Runtime.PositionChanged += Executer_PositionChanged;
+
             Executer.ExecutionDone += Executer_ExecutionDone;
+        }
+
+        bool invalidated = false;
+
+        private void Executer_PositionChanged(object sender, EventArgs e)
+        {
+            invalidated = true;
         }
 
         private void Executer_ExecutionDone(object sender, EventArgs e)
         {
+            invalidated = true;
             // Called from executer task
             Invoke(() =>
             {
                 UpdateEnabledRuntimeActions();
-                ListBox.Invalidate();
-                TasksControl.ListBox.Invalidate();
             });
         }
 
@@ -103,11 +115,10 @@ namespace SyneticPipelineTool.GUI
 
         private void NewClick(object sender, EventArgs e)
         {
-            var dialog = new TextBoxDialog();
-            var result = dialog.ShowDialog(ParentForm, "New Pipeline", "Pipeline");
+            var result = TextBoxDialog.ShowDialog(ParentForm, "New Pipeline", "Pipeline");
             if (result == DialogResult.OK)
             {
-                string newname = dialog.TextResult.Trim();
+                string newname = TextBoxDialog.TextResult.Trim();
                 string uname = Pipelines.GetUniqueName(newname);
                 var pipeline = Pipelines.CreateUnbound(uname);
                 Pipelines.InsertAfter(SelectedItem, pipeline);
@@ -126,11 +137,10 @@ namespace SyneticPipelineTool.GUI
         private void EditClick(object sender, EventArgs e)
         {
             string name = SelectedItem.Name;
-            var dialog = new TextBoxDialog();
-            var result = dialog.ShowDialog(ParentForm, "New Pipeline", name);
+            var result = TextBoxDialog.ShowDialog(ParentForm, "New Pipeline", name);
             if (result == DialogResult.OK)
             {
-                string newname = dialog.TextResult.Trim();
+                string newname = TextBoxDialog.TextResult.Trim();
                 if (newname == name)
                     return;
 
@@ -163,8 +173,9 @@ namespace SyneticPipelineTool.GUI
 
         private void TimerTick(object sender, EventArgs e)
         {
-            if (Executer.Running)
+            if (invalidated)
             {
+                invalidated = false;
                 ListBox.Invalidate();
                 TasksControl.ListBox.Invalidate();
             }

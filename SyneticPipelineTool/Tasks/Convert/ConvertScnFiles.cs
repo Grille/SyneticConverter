@@ -7,10 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using SyneticPipelineTool.Converter;
 
-namespace SyneticPipelineTool.Tasks;
+namespace SyneticPipelineTool.Tasks.Convert;
 
-[PipelineTask(Name = "Convert scenario files")]
-internal class ConvertScnFilesTask : PipelineTask
+[PipelineTask(Key = "Converter/Convert scenario files")]
+internal class ConvertScnFiles : PipelineTask
 {
     protected override void OnInit()
     {
@@ -31,7 +31,7 @@ internal class ConvertScnFilesTask : PipelineTask
         float ambient = float.Parse(EvalParameter("Ambient Light"));
 
         if (verSrc == "WR1")
-        WR1ToWR2Conv.Convert(path, ambient);
+            WR1ToWR2Conv.Convert(path, ambient);
         if (verSrc == "C11")
             C11ToWR2Conv.Convert(path);
 

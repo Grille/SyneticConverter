@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using System.IO;
 using SyneticPipelineTool.Converter;
 
-namespace SyneticPipelineTool.Tasks;
+namespace SyneticPipelineTool.Tasks.Convert;
 
-[PipelineTask(Name = "Convert MBWR sprites to WR2")]
-internal class FixTreeNormTask : PipelineTask
+[PipelineTask(Key = "Converter/Convert MBWR sprites to WR2")]
+internal class FixTreeNorm : PipelineTask
 {
     protected override void OnInit()
     {
@@ -26,7 +26,7 @@ internal class FixTreeNormTask : PipelineTask
         string dirPath = EvalParameter("Dir");
         var files = Parameter.ValueToList(EvalParameter("Tree List"));
         bool ignoreMissing = bool.Parse(EvalParameter("Ignore Missing"));
-        string diffuse = EvalParameter("Diffuse Color"); 
+        string diffuse = EvalParameter("Diffuse Color");
         string ambient = EvalParameter("Ambient Color");
 
         foreach (string file in files)

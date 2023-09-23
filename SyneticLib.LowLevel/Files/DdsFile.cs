@@ -9,14 +9,21 @@ using System.Runtime.InteropServices;
 using SyneticLib.LowLevel.Compression;
 
 namespace SyneticLib.LowLevel.Files;
-public class DdsFile : BinaryFile
+public unsafe class DdsFile : BinaryFile
 {
+    public const uint MagicValue = 0x20534444;
+
     public uint Magic;
     public MHeader Head;
     public Level[] Levels;
     public override void ReadFromView(BinaryViewReader br)
     {
+        Magic = br.ReadUInt32();
+        if (Magic != MagicValue)
+            throw new InvalidDataException();
+
         Head = br.Read<MHeader>();
+        Head.Assert();
     }
 
     public override void WriteToView(BinaryViewWriter bw)
@@ -25,30 +32,56 @@ public class DdsFile : BinaryFile
 
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     public struct MHeader
     {
         public uint Size;
-        public uint Flags;
+        public MHeaderFlags Flags;
         public uint Height;
         public uint Width;
         public uint PitchOrLinearSize;
         public uint Depth;
         public uint MipMapCount;
-        Clear0Type clear0;
+        public fixed uint Reserved1[11];
         public MPixelFormat ddspf;
-        public uint Caps;
+        public MHeaderCaps1 Caps1;
         public uint Caps2;
         public uint Caps3;
         public uint Caps4;
         public uint Reserved2;
 
-        [StructLayout(LayoutKind.Sequential, Size = 44)] struct Clear0Type { }
+        public void Assert()
+        {
+            if (Size != 124)
+                throw new InvalidDataException();
+        }
+    }
+
+    [Flags]
+    public enum MHeaderFlags : uint
+    {
+        Caps = 0x1,
+        Height = 0x2,
+        Width = 0x4,
+        Pitch = 0x8,
+        PixelFormat = 0x1000,
+        MipmapCount = 0x20000,
+        LinearSize = 0x80000,
+        Depth = 0x800000,
+    }
+
+    [Flags]
+    public enum MHeaderCaps1 : uint
+    {
+        Complex = 0x8,
+        Mipmap = 0x400000,
+        Texture = 0x1000,
     }
 
     public struct MPixelFormat
     {
         public uint Size;
-        public EFlags Flags;
+        public MPixelFormatFlags Flags;
         public uint FourCC;
         public uint RGBBitCount;
         public uint RBitMask;
@@ -56,15 +89,18 @@ public class DdsFile : BinaryFile
         public uint BBitMask;
         public uint ABitMask;
 
-        public enum EFlags : uint
-        {
-            AlphaPixels = 0x1,
-            Alpha = 0x2,
-            FourCC = 0x4,
-            RGB = 0x40,
-            YUV = 0x200,
-            Luminance = 0x20000,
-        }
+
+    }
+
+    [Flags]
+    public enum MPixelFormatFlags : uint
+    {
+        AlphaPixels = 0x1,
+        Alpha = 0x2,
+        FourCC = 0x4,
+        RGB = 0x40,
+        YUV = 0x200,
+        Luminance = 0x20000,
     }
 
     public class Level : IViewObject

@@ -56,7 +56,7 @@ namespace SyneticPipelineTool
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
             menuStrip1.Location = new System.Drawing.Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new System.Drawing.Size(795, 24);
+            menuStrip1.Size = new System.Drawing.Size(784, 24);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -136,8 +136,8 @@ namespace SyneticPipelineTool
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(TasksControl);
-            splitContainer1.Size = new System.Drawing.Size(795, 435);
-            splitContainer1.SplitterDistance = 337;
+            splitContainer1.Size = new System.Drawing.Size(784, 537);
+            splitContainer1.SplitterDistance = 300;
             splitContainer1.SplitterWidth = 2;
             splitContainer1.TabIndex = 1;
             // 
@@ -147,7 +147,7 @@ namespace SyneticPipelineTool
             PipelinesControl.Location = new System.Drawing.Point(0, 0);
             PipelinesControl.Name = "PipelinesControl";
             PipelinesControl.SelectedItem = null;
-            PipelinesControl.Size = new System.Drawing.Size(337, 435);
+            PipelinesControl.Size = new System.Drawing.Size(300, 537);
             PipelinesControl.TabIndex = 0;
             PipelinesControl.TasksControl = null;
             // 
@@ -159,14 +159,14 @@ namespace SyneticPipelineTool
             TasksControl.Name = "TasksControl";
             TasksControl.Pipeline = null;
             TasksControl.SelectedItem = null;
-            TasksControl.Size = new System.Drawing.Size(456, 435);
+            TasksControl.Size = new System.Drawing.Size(482, 537);
             TasksControl.TabIndex = 0;
             // 
             // SynPipelineToolForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(795, 459);
+            ClientSize = new System.Drawing.Size(784, 561);
             Controls.Add(splitContainer1);
             Controls.Add(menuStrip1);
             DoubleBuffered = true;

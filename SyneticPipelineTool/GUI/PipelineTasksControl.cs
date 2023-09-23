@@ -27,10 +27,13 @@ namespace SyneticPipelineTool.GUI
             set => ListBox.SelectedTasks = value;
         }
 
+        EditTaksForm EditTaksForm { get; }
+
 
         public PipelineTasksControl()
         {
             InitializeComponent();
+            EditTaksForm = new EditTaksForm();
         }
 
 
@@ -40,7 +43,7 @@ namespace SyneticPipelineTool.GUI
             bool multi = SelectedItems.Count > 1;
             bool invalid = SelectedItem is InvalidTypeTask;
 
-
+            newToolStripMenuItem.Enabled = ButtonNew.Enabled = !multi;
             copyToolStripMenuItem.Enabled = ButtonCopy.Enabled = single && !invalid;
             editToolStripMenuItem.Enabled = ButtonEdit.Enabled = single;
             removeToolStripMenuItem.Enabled = ButtonRemove.Enabled = (single || multi);
@@ -68,27 +71,34 @@ namespace SyneticPipelineTool.GUI
 
         private void NewClick(object sender, EventArgs e)
         {
-            var dialog = new EditTaksForm(Pipeline);
-            var result = dialog.ShowDialog(this);
+            var task = new NopTask() { Pipeline = Pipeline };
+
+            Pipeline.Tasks.InsertAfter(SelectedItem, task);
+            InvalidateItems();
+            SelectedItem = null;
+            SelectedItem = task;
+
+            /*
+            var result = EditTaksForm.ShowDialog(this, Pipeline);
             if (result == DialogResult.OK)
             {
-                Pipeline.Tasks.InsertAfter(SelectedItem, dialog.Task);
+                Pipeline.Tasks.InsertAfter(SelectedItem, EditTaksForm.Task);
                 InvalidateItems();
-                SelectedItem = dialog.Task;
+                SelectedItem = EditTaksForm.Task;
                 SelectedItem.Pipeline = Pipeline;
             }
+            */
         }
 
 
         private void EditClick(object sender, EventArgs e)
         {
-            var dialog = new EditTaksForm(Pipeline, SelectedItem);
-            var result = dialog.ShowDialog(this);
+            var result = EditTaksForm.ShowDialog(this, Pipeline, SelectedItem);
             if (result == DialogResult.OK)
             {
-                dialog.Task.Pipeline = Pipeline;
+                EditTaksForm.Task.Pipeline = Pipeline;
                 int idx = Pipeline.Tasks.IndexOf(SelectedItem);
-                Pipeline.Tasks[idx] = dialog.Task;
+                Pipeline.Tasks[idx] = EditTaksForm.Task;
                 InvalidateItems();
             }
         }
@@ -133,9 +143,35 @@ namespace SyneticPipelineTool.GUI
             SelectedItems = selected;
         }
 
+        private void LeftClick(object sender, EventArgs e)
+        {
+            var selected = SelectedItems;
+            foreach (var task in selected)
+            {
+                if (task.Scope > 0)
+                {
+                    task.Scope -= 1;
+                }
+            }
+            InvalidateItems();
+            SelectedItems = selected;
+        }
+
+        private void RightClick(object sender, EventArgs e)
+        {
+            var selected = SelectedItems;
+            selected.Reverse();
+            foreach (var task in selected)
+            {
+                task.Scope += 1;
+            }
+            InvalidateItems();
+            SelectedItems = selected;
+        }
+
         private void ListBoxDoubleClick(object sender, EventArgs e)
         {
-            if (SelectedItem == null || SelectedItem is InvalidTypeTask)
+            if (SelectedItem == null)
                 return;
             EditClick(sender, e);
         }

@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace SyneticPipelineTool.Tasks;
+namespace SyneticPipelineTool.Tasks.IO.System;
 
-[PipelineTask(Name = "Remove file/directory")]
-internal class RemoveFileOrDirTask : PipelineTask
+[PipelineTask(Key = "IO/Sys/Remove file or directory")]
+internal class RemoveFileOrDir : PipelineTask
 {
     protected override void OnInit()
     {

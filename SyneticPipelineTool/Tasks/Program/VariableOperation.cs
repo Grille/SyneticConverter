@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticPipelineTool.Tasks;
+namespace SyneticPipelineTool.Tasks.Program;
 
-[PipelineTask(Name = "Variable")]
-internal class VariableOperationTask : PipelineTask
+[PipelineTask(Key = "Program/Variable")]
+internal class VariableOperation : PipelineTask
 {
 
     protected override void OnInit()
     {
         Parameters.Def(ParameterTypes.String, "Name", "", "Var");
-        Parameters.Def(ParameterTypes.Enum, "Operator", "", "=",new string[] {"=", "+" });
+        Parameters.Def(ParameterTypes.Enum, "Operator", "", "=", new string[] { "=", "+" });
         Parameters.Def(ParameterTypes.String, "Value", "", "Value");
     }
 
@@ -27,24 +27,24 @@ internal class VariableOperationTask : PipelineTask
         switch (op)
         {
             case "=":
-            {
-                Runtime.Variables[name] = value;
-                break;
-            }
+                {
+                    Runtime.Variables[name] = value;
+                    break;
+                }
             case "+":
-            {
-                Runtime.Variables[name] += value;
-                break;
-            }
+                {
+                    Runtime.Variables[name] += value;
+                    break;
+                }
             case "Replace":
-            {
-                Runtime.Variables[name] += value;
-                break;
-            }
+                {
+                    Runtime.Variables[name] += value;
+                    break;
+                }
             default:
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
         }
         Console.WriteLine($"{name} {op} {value} -> {Runtime.Variables[name]}");
     }

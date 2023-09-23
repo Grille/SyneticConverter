@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Collections.ObjectModel;
 
-namespace SyneticPipelineTool.Tasks;
+namespace SyneticPipelineTool.Tasks.Program;
 
-[PipelineTask(Name = "For Each")]
-internal class ForEachTask : PipelineTask
+[PipelineTask(Key = "Program/For Each")]
+internal class ForEach : PipelineTask
 {
     /*
     public Parameter Mode { get; } = new ParameterEnum("Mode", "", "list", new string[] { "List", "Directorys", "Files" });
@@ -21,7 +21,7 @@ internal class ForEachTask : PipelineTask
     protected override void OnInit()
     {
         Parameters.Add(
-            new ParameterEnum("Mode", "", "List", new string[] { "List", "Directorys", "Files" }),
+            new ParameterEnum("Mode", "", "List", new string[] { "List", "Directories", "Files" }),
             new ParameterString("Collection", "", "1"),
             new ParameterString("Variable", "", "i")
         );
@@ -32,10 +32,6 @@ internal class ForEachTask : PipelineTask
         string mode = EvalParameter("Mode");
         string collection = EvalParameter("Collection");
         string variable = EvalParameter("Variable");
-
-        var next = Pipeline.Tasks[Runtime.Position += 1];
-        if (next == null)
-            throw new NullReferenceException();
 
         string[] items = mode switch
         {
@@ -48,14 +44,14 @@ internal class ForEachTask : PipelineTask
         foreach (var item in items)
         {
             Runtime.Variables[variable] = item.Trim();
-            next.Execute(Runtime);
+            Runtime.ExecuteNextBlock();
         }
-
+        Runtime.SkipNextBlock();
     }
 
     public override Token[] ToTokens() => new Token[]
     {
-        new Token(TokenType.Text, $"Foreach "),
+        new Token(TokenType.Flow, $"ForEach "),
         new Token(TokenType.Variable, Parameters["Variable"]),
         new Token(TokenType.Text, $" in "),
         new Token(TokenType.Variable, Parameters["Collection"]),

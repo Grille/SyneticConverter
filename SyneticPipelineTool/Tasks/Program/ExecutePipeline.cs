@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticPipelineTool.Tasks;
+namespace SyneticPipelineTool.Tasks.Program;
 
-[PipelineTask(Name = "Call pipeline")]
-internal class ExecutePipelineTask : PipelineTask
+[PipelineTask(Key = "Program/Call pipeline")]
+internal class ExecutePipeline : PipelineTask
 {
     protected override void OnInit()
     {

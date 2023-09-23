@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace SyneticPipelineTool.Tasks;
+namespace SyneticPipelineTool.Tasks.IO.System;
 
-[PipelineTask(Name = "Clear directory")]
-internal class ClearDirTask : PipelineTask
+[PipelineTask(Key = "IO/Sys/Clear directory")]
+internal class ClearDir : PipelineTask
 {
     protected override void OnInit()
     {

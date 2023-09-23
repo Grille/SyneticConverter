@@ -34,7 +34,11 @@ public class Runtime
     public int Position
     {
         get => CallStack.Peek().Position;
-        set => CallStack.Peek().Position = value;
+        set
+        {
+            CallStack.Peek().Position = value;
+            InvPosChanged();
+        }
     }
 
     public Stack<CallStackEntry> CallStack { get; }
@@ -42,6 +46,9 @@ public class Runtime
     public Stack<Variables> ScopeStack { get; }
 
     public Variables Variables => ScopeStack.Peek();
+
+    public event EventHandler PositionChanged;
+
 
     public string StackTrace
     {
@@ -64,11 +71,17 @@ public class Runtime
         ScopeStack = new();
     }
 
+    private void InvPosChanged()
+    {
+        PositionChanged?.Invoke(this, EventArgs.Empty);
+    }
+
     public void Clear()
     {
         cancel = false;
         CallStack.Clear();
         ScopeStack.Clear();
+        InvPosChanged();
     }
 
     public void Cancel()
@@ -85,15 +98,17 @@ public class Runtime
             return;
 
         CallStack.Push(pipeline);
+        InvPosChanged();
         IncVariableScope();
 
-        Execute(pipeline);
+        ExecuteTasks(pipeline);
 
         DecVariableScope();
         CallStack.Pop();
+        InvPosChanged();
     }
 
-    public void Execute(Pipeline pipeline)
+    public void ExecuteTasks(Pipeline pipeline)
     {
         var tasks = pipeline.Tasks;
         int count = tasks.Count;
@@ -127,6 +142,78 @@ public class Runtime
     public void DecVariableScope()
     {
         ScopeStack.Pop();
+    }
+
+    public void Output(string name)
+    {
+
+    }
+
+    public void Return()
+    {
+
+    }
+
+    public void Break()
+    {
+
+    }
+
+    public void ExecuteNextBlock()
+    {
+        var tasks = Pipeline.Tasks;
+
+        var caller = Position;
+        int start = Position + 1;
+        int length = NextBlockLength();
+        int end = start + length;
+
+        for ( int i = start; i < end; i++)
+        {
+            Position = i;
+            tasks[Position].Execute(this);
+        }
+
+        Position = caller;
+    }
+
+    public void SkipNextBlock()
+    {
+        int length = NextBlockLength();
+
+        Position += length;
+    }
+
+    public int NextBlockLength()
+    {
+        var tasks = Pipeline.Tasks;
+        int scope = tasks[Position].Scope;
+
+        int start = Position + 1;
+        var next = tasks[start];
+        if (next == null)
+            throw new NullReferenceException();
+
+        if (next.Scope <= scope)
+        {
+            throw new Exception("Increased scope block expected.");
+        }
+
+        int count = 0;
+
+        while (true)
+        {
+            int idx = count + start;
+
+            if (idx >= tasks.Count)
+                return count;
+
+            if (tasks[idx].Scope <= scope) {
+                return count;
+            }
+
+            count += 1;
+        }
     }
 
     public string EvalParameterValue(string value)

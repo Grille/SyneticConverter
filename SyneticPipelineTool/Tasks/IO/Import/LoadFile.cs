@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace SyneticPipelineTool.Tasks;
+namespace SyneticPipelineTool.Tasks.IO.Import;
 
-[PipelineTask(Name = "Load file")]
-internal class LoadFileTask : PipelineTask
+[PipelineTask(Key = "IO/Import/Load file")]
+internal class LoadFile : PipelineTask
 {
     protected override void OnInit()
     {

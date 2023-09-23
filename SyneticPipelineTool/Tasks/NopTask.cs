@@ -12,11 +12,17 @@ internal class NopTask : PipelineTask
 {
     protected override void OnInit()
     {
+        CanParse = true;
         Parameters.Def(ParameterTypes.String, "Text", "", "");
     }
 
     protected override void OnExecute()
     {
+    }
+
+    protected override void OnParse(string text)
+    {
+
     }
 
     public override Token[] ToTokens()

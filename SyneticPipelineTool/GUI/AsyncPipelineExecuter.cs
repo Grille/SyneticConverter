@@ -10,7 +10,7 @@ namespace SyneticPipelineTool.GUI;
 
 public class AsyncPipelineExecuter
 {
-    public Runtime Runtime;
+    public Runtime Runtime { get; }
 
     //public Stack<Pipeline> CallStack;
 
