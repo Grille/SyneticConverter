@@ -91,6 +91,7 @@
             ListBox.Location = new System.Drawing.Point(0, 0);
             ListBox.Name = "ListBox";
             ListBox.SelectedItem = null;
+            ListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             ListBox.Size = new System.Drawing.Size(500, 475);
             ListBox.TabIndex = 0;
             ListBox.SelectedIndexChanged += ListBoxIndexChanged;

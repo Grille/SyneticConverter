@@ -5,11 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class Wheel : SyneticObject
+public interface IGraphicsObject
 {
-    Mesh Mesh;
+    public void Free();
 
-    public Wheel(string name) : base(name)
-    {
-    }
+    public void Create();
 }

@@ -7,7 +7,7 @@ using System.IO;
 
 namespace SyneticLib;
 
-public class Sound : Ressource
+public class Sound : SyneticObject
 {
     public string Type { get; }
 

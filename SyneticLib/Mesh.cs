@@ -11,7 +11,7 @@ using SyneticLib.LowLevel;
 
 namespace SyneticLib;
 
-public class Mesh: Ressource
+public class Mesh: SyneticObject
 {
     public Vertex[] Vertices { get; }
     public IndexTriangle[] Indices { get; }

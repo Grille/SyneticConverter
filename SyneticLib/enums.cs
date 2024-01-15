@@ -7,14 +7,9 @@ using SyneticLib;
 
 namespace SyneticLib;
 
-public enum PointerType
-{
-    Directory,
-    File,
-}
-
 public enum TextureFormat
 {
+    Unknown,
     RGB24,
     RGBA32,
     RGB24Dxt1,

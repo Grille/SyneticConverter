@@ -14,8 +14,8 @@ namespace SyneticTool;
 
 public partial class ProgressForm : Form
 {
-    Ressource target;
-    public ProgressForm(Ressource target)
+    SyneticObject target;
+    public ProgressForm(SyneticObject target)
     {
         InitializeComponent();
         this.target = target;

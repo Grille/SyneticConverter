@@ -89,7 +89,7 @@ public class Runtime
         cancel = true;
     }
 
-    public void Call(Pipeline pipeline)
+    public void Call(Pipeline pipeline) 
     {
         if (CallStack.Any(a => a.Pipeline == pipeline))
             throw new InvalidOperationException($"Pipeline already in call stack.");

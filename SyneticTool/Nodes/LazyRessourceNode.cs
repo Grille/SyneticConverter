@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SyneticTool.Nodes;
 
-public class LazyRessourceNode<T> : BaseNode where T : Ressource
+public class LazyRessourceNode<T> : BaseNode where T : SyneticObject
 {
     public new Lazy<T> Value => (Lazy<T>)base.Value;
 

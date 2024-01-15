@@ -8,7 +8,7 @@ using SyneticLib.Locations;
 
 namespace SyneticLib;
 
-public class ScenarioGroup : Ressource
+public class ScenarioGroup : SyneticObject
 {
     public Scenario[] Variants { get; }
 

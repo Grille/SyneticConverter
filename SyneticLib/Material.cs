@@ -8,7 +8,7 @@ using SyneticLib.Locations;
 
 namespace SyneticLib;
 
-public class Material : Ressource
+public class Material : SyneticObject
 {
     TextureSlot[] TextureSlots { get; }
 

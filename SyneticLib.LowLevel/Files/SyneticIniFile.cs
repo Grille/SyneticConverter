@@ -14,8 +14,8 @@ public abstract class SyneticIniFile
         public string Name;
     }
 
-    protected Section Head = new();
-    protected List<Section> Sections = new();
+    public Section Head = new();
+    public List<Section> Sections = new();
 
     private string _path = "";
     public string Path
@@ -70,21 +70,24 @@ public abstract class SyneticIniFile
 
     public void WriteToFile(StreamWriter w)
     {
-        Head.Clear();
-        Sections.Clear();
+        //Head.Clear();
+        //Sections.Clear();
 
         OnWrite();
 
-        foreach (var pair in Head)
+        if (Head.Count > 0)
         {
-            w.WriteLine($"{pair.Key} {pair.Value}");
+            foreach (var pair in Head)
+            {
+                w.WriteLine($"{pair.Key} {pair.Value}");
+            }
+            w.WriteLine();
         }
-        w.WriteLine();
 
         foreach (var section in Sections)
         {
             w.WriteLine($"# {section.Name}");
-            foreach (var pair in Head)
+            foreach (var pair in section)
             {
                 w.WriteLine($"{pair.Key} {pair.Value}");
             }

@@ -8,7 +8,7 @@ using SyneticLib.Locations;
 
 namespace SyneticTool.Nodes;
 
-public class LazyRessourceDirectoryNode<T> : BaseNode where T : Ressource
+public class LazyRessourceDirectoryNode<T> : BaseNode where T : SyneticObject
 {
     public new LazyRessourceDirectory<T> Value => (LazyRessourceDirectory<T>)base.Value;
 

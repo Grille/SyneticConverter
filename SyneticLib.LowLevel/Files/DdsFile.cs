@@ -43,7 +43,7 @@ public unsafe class DdsFile : BinaryFile
         public uint Depth;
         public uint MipMapCount;
         public fixed uint Reserved1[11];
-        public MPixelFormat ddspf;
+        public MPixelFormat PixelFormat;
         public MHeaderCaps1 Caps1;
         public uint Caps2;
         public uint Caps3;
@@ -88,8 +88,6 @@ public unsafe class DdsFile : BinaryFile
         public uint GBitMask;
         public uint BBitMask;
         public uint ABitMask;
-
-
     }
 
     [Flags]

@@ -10,9 +10,9 @@ namespace SyneticTool.Nodes;
 
 public class RessourceNode : BaseNode
 {
-    public Ressource Ressource => (Ressource)Value;
+    public SyneticObject Ressource => (SyneticObject)Value;
 
-    public RessourceNode(Ressource data) : base(data)
+    public RessourceNode(SyneticObject data) : base(data)
     {
 
     }

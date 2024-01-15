@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SyneticLib.Graphics;
 
-public class GLObjectCache<TKey, TValue> : IReadOnlyCollection<TValue> where TKey : Ressource where TValue : GLObject
+public class GLObjectCache<TKey, TValue> : IReadOnlyCollection<TValue> where TKey : SyneticObject where TValue : GLObject
 {
     readonly Dictionary<int, TValue> pairs;
     readonly Func<TKey, TValue> mapper;

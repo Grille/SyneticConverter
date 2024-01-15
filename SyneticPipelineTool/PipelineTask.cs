@@ -22,6 +22,8 @@ public abstract class PipelineTask : IViewObject
 
     public int Scope { get; set; }
 
+    public bool Enabled { get; set; } = true;
+
     protected PipelineTask(bool autoinit)
     {
         if (autoinit)
@@ -63,6 +65,9 @@ public abstract class PipelineTask : IViewObject
 
     public void Execute(Runtime runtime)
     {
+        if (!Enabled) 
+            return;
+
         Parameters.AssertSealed();
         Runtime = runtime;
         OnExecute();
@@ -78,11 +83,13 @@ public abstract class PipelineTask : IViewObject
 
     public void ReadFromView(BinaryViewReader br)
     {
+        Enabled = br.ReadBoolean();
         Scope = br.ReadInt32();
         br.ReadToIView(Parameters);
     }
     public void WriteToView(BinaryViewWriter bw)
     {
+        bw.WriteBoolean(Enabled);
         bw.WriteInt32(Scope);
         bw.WriteIView(Parameters);
     }

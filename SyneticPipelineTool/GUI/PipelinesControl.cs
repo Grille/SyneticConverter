@@ -23,6 +23,12 @@ namespace SyneticPipelineTool.GUI
             set => ListBox.SelectedItem = value;
         }
 
+        public IReadOnlyList<Pipeline> SelectedItems
+        {
+            get => ListBox.SelectedItems;
+            set => ListBox.SelectedItems = value;
+        }
+
         public PipelineTasksControl TasksControl { get; set; }
 
         public TextBoxDialog TextBoxDialog { get; }
@@ -59,14 +65,16 @@ namespace SyneticPipelineTool.GUI
 
         public void UpdateEnabledActions()
         {
-            bool single = SelectedItem != null;
+            bool single = SelectedItems.Count == 1;
+            bool multi = SelectedItems.Count > 1;
 
+            newToolStripMenuItem.Enabled = ButtonNew.Enabled = !multi;
             copyToolStripMenuItem.Enabled = ButtonCopy.Enabled = single;
             editToolStripMenuItem.Enabled = ButtonEdit.Enabled = single;
-            deleteToolStripMenuItem.Enabled = ButtonRemove.Enabled = single;
+            deleteToolStripMenuItem.Enabled = ButtonRemove.Enabled = (single || multi);
 
-            upToolStripMenuItem.Enabled = ButtonUp.Enabled = single;
-            downToolStripMenuItem.Enabled = ButtonDown.Enabled = single;
+            upToolStripMenuItem.Enabled = ButtonUp.Enabled = (single || multi);
+            downToolStripMenuItem.Enabled = ButtonDown.Enabled = (single || multi);
 
             UpdateEnabledRuntimeActions();
 
@@ -80,7 +88,7 @@ namespace SyneticPipelineTool.GUI
 
         public void UpdateEnabledRuntimeActions()
         {
-            bool single = SelectedItem != null;
+            bool single = SelectedItems.Count == 1;
             bool running = Executer.Running;
 
             runToolStripMenuItem.Enabled = ButtonRun.Enabled = single && !running;

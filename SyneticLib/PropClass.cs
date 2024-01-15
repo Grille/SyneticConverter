@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class PropClass : Ressource
+public class PropClass : SyneticObject
 {
     public string Name;
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace SyneticLib;
-public class RessourceList<T> : IReadOnlyList<T> where T : Ressource
+public class RessourceList<T> : IReadOnlyList<T> where T : SyneticObject
 {
     public readonly List<T> Items;
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SyneticLib.Locations;
 
 namespace SyneticLib;
-public class Car : Ressource
+public class Car : SyneticObject
 {
     public Model Model { get; }
     public TextureDirectory Textures;

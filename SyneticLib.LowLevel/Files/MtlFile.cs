@@ -20,6 +20,7 @@ public class MtlFile : SyneticIniFile
 
     protected override void OnRead()
     {
+        /*
         if (Head.TryGetValue("ColSetInf", out string value))
         {
             ColSetInf = Head["ColSetInf"].Split(' ');
@@ -49,6 +50,7 @@ public class MtlFile : SyneticIniFile
 
             Materials.Add(material);
         }
+        */
     }
 
     protected override void OnWrite()
@@ -74,6 +76,13 @@ public class MtlFile : SyneticIniFile
     static string ParseString(string value)
     {
         return value.Trim('"', ' ');
+    }
+
+    //static int Parse
+
+    static float ParseSingle(string value)
+    {
+        return 0;
     }
 
     static Vector2 ParseVec2(string value)
@@ -105,13 +114,13 @@ public class MtlFile : SyneticIniFile
         public string Name;
         
         public MMatClass MatClass;
-        public uint[] Diffuse;
-        public uint[] Ambient;
-        public uint[] Specular;
-        public uint[] Reflect;
-        public uint[] Specular2;
-        public uint[] XDiffuse;
-        public uint[] XSpecular;
+        public BgraColor[] Diffuse;
+        public BgraColor[] Ambient;
+        public BgraColor[] Specular;
+        public BgraColor[] Reflect;
+        public BgraColor[] Specular2;
+        public BgraColor[] XDiffuse;
+        public BgraColor[] XSpecular;
 
         public float[] Transparency;
         public string Tex1Name;

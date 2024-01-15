@@ -21,10 +21,10 @@ namespace SyneticPipelineTool.GUI
             set => ListBox.SelectedItem = value;
         }
 
-        public List<PipelineTask> SelectedItems
+        public IReadOnlyList<PipelineTask> SelectedItems
         {
-            get => ListBox.SelectedTasks;
-            set => ListBox.SelectedTasks = value;
+            get => ListBox.SelectedItems;
+            set => ListBox.SelectedItems = value;
         }
 
         EditTaksForm EditTaksForm { get; }
@@ -41,15 +41,20 @@ namespace SyneticPipelineTool.GUI
         {
             bool single = SelectedItems.Count == 1;
             bool multi = SelectedItems.Count > 1;
+            bool any = single || multi;
             bool invalid = SelectedItem is InvalidTypeTask;
 
             newToolStripMenuItem.Enabled = ButtonNew.Enabled = !multi;
             copyToolStripMenuItem.Enabled = ButtonCopy.Enabled = single && !invalid;
             editToolStripMenuItem.Enabled = ButtonEdit.Enabled = single;
-            removeToolStripMenuItem.Enabled = ButtonRemove.Enabled = (single || multi);
+            removeToolStripMenuItem.Enabled = ButtonRemove.Enabled = any;
+            enabledToolStripMenuItem.Enabled = ButtonEnabled.Enabled = any;
 
-            upToolStripMenuItem.Enabled = ButtonUp.Enabled = (single || multi);
-            downToolStripMenuItem.Enabled = ButtonDown.Enabled = (single || multi);
+            upToolStripMenuItem.Enabled = ButtonUp.Enabled = any;
+            downToolStripMenuItem.Enabled = ButtonDown.Enabled = any;
+
+            leftToolStripMenuItem.Enabled = ButtonLeft.Enabled = any;
+            rightToolStripMenuItem.Enabled = ButtonRight.Enabled = any;
         }
 
         public void InvalidateItems(bool save = true)
@@ -101,6 +106,15 @@ namespace SyneticPipelineTool.GUI
                 Pipeline.Tasks[idx] = EditTaksForm.Task;
                 InvalidateItems();
             }
+        }
+
+        private void EnabledClick(object sender, EventArgs e)
+        {
+            foreach (var task in SelectedItems)
+            {
+                task.Enabled = !task.Enabled;
+            }
+            InvalidateItems();
         }
 
         private void DeleteClick(object sender, EventArgs e)

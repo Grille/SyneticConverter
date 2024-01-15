@@ -112,73 +112,73 @@ public static class WR1ToWR2Conv
             case 0:
             case 1:
             case 2:
-                {
-                    break;
-                }
+            {
+                break;
+            }
             case 16:
-                {
-                    mat.Matrix1 = Transform.Empety;
-                    break;
-                }
+            {
+                mat.Matrix1 = Transform.Empety;
+                break;
+            }
             case 32:
             case 33:
-                {
-                    break;
-                }
+            {
+                break;
+            }
             case 48:
-                {
-                    mat.Mode = 144;
-                    mat.Matrix1 = Transform.Empety;
-                    mat.Matrix2 = Transform.Empety;
-                    break;
-                }
+            {
+                mat.Mode = 144;
+                mat.Matrix1 = Transform.Empety;
+                mat.Matrix2 = Transform.Empety;
+                break;
+            }
             case 64: // Reflective
-                {
-                    mat.Mode = 112;
-                    break;
-                }
+            {
+                mat.Mode = 112;
+                break;
+            }
             case 80:
-                {
-                    mat.Mode = 144;
-                    mat.Matrix0 = Transform.Empety;
-                    mat.Matrix1 = Transform.Empety;
-                    mat.Matrix2 = Transform.Empety;
-                    break;
-                }
+            {
+                mat.Mode = 144;
+                mat.Matrix0 = Transform.Empety;
+                mat.Matrix1 = Transform.Empety;
+                mat.Matrix2 = Transform.Empety;
+                break;
+            }
             case 96:
-                {
-                    mat.Mode = 176;
-                    mat.Matrix0 = Transform.Empety;
-                    mat.Matrix1 = Transform.Empety;
-                    mat.Matrix2 = Transform.Empety;
-                    break;
-                }
+            {
+                mat.Mode = 176;
+                mat.Matrix0 = Transform.Empety;
+                mat.Matrix1 = Transform.Empety;
+                mat.Matrix2 = Transform.Empety;
+                break;
+            }
             case 112:
-                {
-                    mat.Mode = 160;
-                    break;
-                }
+            {
+                mat.Mode = 160;
+                break;
+            }
             case 208: // Water
-                {
-                    mat.Mode = 224;
-                    mat.MatrixChecksum0 = 61420826;
-                    mat.MatrixChecksum1 = 75580286;
-                    mat.MatrixChecksum2 = 78329526;
-                    break;
-                }
+            {
+                mat.Mode = 224;
+                mat.MatrixChecksum0 = 61420826;
+                mat.MatrixChecksum1 = 75580286;
+                mat.MatrixChecksum2 = 78329526;
+                break;
+            }
             case 224: // Mask
-                {
-                    mat.Mode = 208;
-                    break;
-                }
+            {
+                mat.Mode = 208;
+                break;
+            }
             case 240:
-                {
-                    break;
-                }
+            {
+                break;
+            }
             default:
-                {
-                    throw new InvalidDataException($"Unexpected material mode: '{mat.Mode}'");
-                }
+            {
+                throw new InvalidDataException($"Unexpected material mode: '{mat.Mode}'");
+            }
         }
     }
 
@@ -194,45 +194,45 @@ public static class WR1ToWR2Conv
                 case "kuh":
                 case "kuhl1":
                 case "kuhl2":
-                    {
-                        info.Shape = 4;
-                        info.Weight = 250;
-                        info.HitSound = (String48)"t_kuh";
-                        info.FallSound = (String48)"ko_dirt_l";
-                        break;
-                    }
+                {
+                    info.Shape = 4;
+                    info.Weight = 250;
+                    info.HitSound = (String48)"t_kuh";
+                    info.FallSound = (String48)"ko_dirt_l";
+                    break;
+                }
                 case "pylon":
-                    {
-                        info.Shape = 1;
-                        info.Mode = 0;
-                        info.Weight = 5;
-                        info.HitSound = (String48)"ko_pylon";
-                        info.FallSound = (String48)"ko_pylon";
-                        break;
-                    }
+                {
+                    info.Shape = 1;
+                    info.Mode = 0;
+                    info.Weight = 5;
+                    info.HitSound = (String48)"ko_pylon";
+                    info.FallSound = (String48)"ko_pylon";
+                    break;
+                }
                 case "bake1":
                 case "bake2":
-                    {
-                        info.Shape = 2;
-                        info.Mode = 0;
-                        info.Weight = 50;
-                        info.HitSound = (String48)"ko_barke";
-                        info.FallSound = (String48)"ko_barke";
-                        break;
-                    }
+                {
+                    info.Shape = 2;
+                    info.Mode = 0;
+                    info.Weight = 50;
+                    info.HitSound = (String48)"ko_barke";
+                    info.FallSound = (String48)"ko_barke";
+                    break;
+                }
                 case "tunnlampe":
-                    {
-                        info.Mode = 0;
-                        break;
-                    }
+                {
+                    info.Mode = 0;
+                    break;
+                }
                 case "hfass":
-                    {
-                        info.Shape = 4;
-                        info.Weight = 50;
-                        info.HitSound = (String48)"ko_holz";
-                        info.FallSound = (String48)"ko_dirt_l";
-                        break;
-                    }
+                {
+                    info.Shape = 4;
+                    info.Weight = 50;
+                    info.HitSound = (String48)"ko_holz";
+                    info.FallSound = (String48)"ko_dirt_l";
+                    break;
+                }
                 case "sign1":
                 case "sign2":
                 case "sign3":
@@ -247,24 +247,24 @@ public static class WR1ToWR2Conv
                 case "sign12":
                 case "warns1":
                 case "warns2":
-                    {
-                        info.Shape = 4;
-                        info.Weight = 50;
-                        info.HitSound = (String48)"ko_holz";
-                        info.FallSound = (String48)"ko_dirt_l";
-                        break;
-                    }
+                {
+                    info.Shape = 4;
+                    info.Weight = 50;
+                    info.HitSound = (String48)"ko_holz";
+                    info.FallSound = (String48)"ko_dirt_l";
+                    break;
+                }
                 case "hubi_51":
                 case "hubia51":
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 case "f15":
                 case "b2bomb":
                 case "aurora":
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 case "car1":
                 case "car2":
                 case "car3":
@@ -277,13 +277,13 @@ public static class WR1ToWR2Conv
                 case "gland1":
                 case "gland2":
                 case "trackvan":
-                    {
-                        info.Shape = 3;
-                        info.Weight = 600;
-                        info.HitSound = (String48)"ko_barke2";
-                        info.FallSound = (String48)"ko_dirt_l";
-                        break;
-                    }
+                {
+                    info.Shape = 3;
+                    info.Weight = 600;
+                    info.HitSound = (String48)"ko_barke2";
+                    info.FallSound = (String48)"ko_dirt_l";
+                    break;
+                }
 
             }
         }
@@ -308,26 +308,26 @@ public static class WR1ToWR2Conv
                 case "erdeasph":
                 case "feldweg":
                 case "schmutz":
-                    {
-                        pys.SkidID = 2;
-                        pys.x8 = 2;
-                        break;
-                    }
+                {
+                    pys.SkidID = 2;
+                    pys.x8 = 2;
+                    break;
+                }
                 case "schnee":
-                    {
-                        pys.NoiseID = 1;
-                        pys.SkidID = 2;
-                        pys.x8 = 2;
-                        break;
-                    }
+                {
+                    pys.NoiseID = 1;
+                    pys.SkidID = 2;
+                    pys.x8 = 2;
+                    break;
+                }
                 case "curbs":
                 case "beton":
                 case "strasselstaub":
-                    {
-                        pys.NoiseID = 0;
-                        pys.SkidID = 1;
-                        break;
-                    }
+                {
+                    pys.NoiseID = 0;
+                    pys.SkidID = 1;
+                    break;
+                }
             }
         }
     }
@@ -346,8 +346,8 @@ public static class WR1ToWR2Conv
         mtl.Path = mtlpath;
 
         mtl.Load();
-        //mtl.Materials[0]["Diffuse"] = new[] { diffuse };
-        //mtl.Materials[0]["Ambient"] = new[] { ambient };
+        mtl.Sections[0]["Diffuse"] = diffuse;
+        mtl.Sections[0]["Ambient"] = ambient;
         mtl.Save();
 
 

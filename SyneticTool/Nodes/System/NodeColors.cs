@@ -16,5 +16,5 @@ internal static class NodeColors
     public static readonly Color Changed = Color.Green;
     public static readonly Color Failed = Color.Red;
 
-    public static Color RessourceColor(Ressource file) => Default;
+    public static Color RessourceColor(SyneticObject file) => Default;
 }

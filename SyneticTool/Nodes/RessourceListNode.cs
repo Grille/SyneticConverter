@@ -7,7 +7,7 @@ using SyneticLib;
 
 namespace SyneticTool.Nodes;
 
-public class RessourceListNode<T> : BaseNode where T : Ressource
+public class RessourceListNode<T> : BaseNode where T : SyneticObject
 {
     public new RessourceList<T> Value => (RessourceList<T>)base.Value;
 

@@ -58,11 +58,11 @@ public unsafe class QadFile : BinaryFile
         for (int i = 0; i < Head.PropClassCount; i++)
             PropClassInfo[i] = UseSimpleData ? br.Read<MPropClassSimple>() : br.Read<MPropClass>();
 
-        Chunks = new MChunk[Head.BlocksTotal];
-        for (var i = 0; i < Head.BlocksTotal; i++)
+        Chunks = new MChunk[Head.BlockCount];
+        for (var i = 0; i < Head.BlockCount; i++)
             Chunks[i] = br.Read<MChunk>();
 
-        var blockX16 = Head.BlocksTotal * 16;
+        var blockX16 = Head.BlockCount * 16;
         ChunkDataPtr = new int[blockX16 + 1];
         br.ReadToIList(ChunkDataPtr, 0, blockX16);
         ChunkDataPtr[blockX16] = Head.ColliSize;
@@ -92,7 +92,7 @@ public unsafe class QadFile : BinaryFile
         for (int i = 0; i < Head.LightCount; i++)
             Lights[i] = UseSimpleData ? br.Read<MLightSimple>() : br.Read<MLight>();
 
-        GroundPhysics = br.ReadArray<MGroundPhysics>(Head.GroundPhysicCount);
+        GroundPhysics = br.ReadArray<MGroundPhysics>(Head.GroundPhysicsCount);
         Tex2Ground = br.ReadArray<ushort>(256);
         Sounds = br.ReadArray<MSound>(Head.SoundCount);
     }
@@ -119,12 +119,12 @@ public unsafe class QadFile : BinaryFile
                 bw.Write(PropClassInfo[i]);
         }
 
-        for (var ix = 0; ix < Head.BlocksTotal; ix++)
+        for (var ix = 0; ix < Head.BlockCount; ix++)
         {
             bw.Write(Chunks[ix]);
         }
 
-        var blockx16 = Head.BlocksTotal * 16;
+        var blockx16 = Head.BlockCount * 16;
 
         bw.WriteIList(ChunkDataPtr, 0, blockx16);
         for (var i = 0; i < blockx16; i++)
@@ -240,8 +240,8 @@ public unsafe class QadFile : BinaryFile
 
     private void assertBlockCount()
     {
-        if (Head.BlocksX * Head.BlocksZ != Head.BlocksTotal)
-            throw new InvalidDataException($"Invalid block count ({Head.BlocksX} * {Head.BlocksZ} != {Head.BlocksTotal}");
+        if (Head.BlockCountX * Head.BlockCountZ != Head.BlockCount)
+            throw new InvalidDataException($"Invalid block count ({Head.BlockCountX} * {Head.BlockCountZ} != {Head.BlockCount}");
     }
 
     private void assertFileSize(long length)
@@ -269,7 +269,7 @@ public unsafe class QadFile : BinaryFile
         endPos += (UseSimpleData ? sizeof(MPropClassSimple) : sizeof(MPropClass)) * Head.PropClassCount;
         endPos += (UseSimpleData ? sizeof(MLightSimple) : sizeof(MLight)) * Head.LightCount;
 
-        endPos += sizeof(MChunk) * Head.BlocksTotal;
+        endPos += sizeof(MChunk) * Head.BlockCount;
 
         endPos += Head.ColliSize;
 
@@ -278,7 +278,7 @@ public unsafe class QadFile : BinaryFile
         endPos += sizeof(MPropInstance) * Head.PropInstanceCount;
 
 
-        endPos += sizeof(MGroundPhysics) * Head.GroundPhysicCount;
+        endPos += sizeof(MGroundPhysics) * Head.GroundPhysicsCount;
         endPos += 2 * 256;
         endPos += sizeof(MSound) * Head.SoundCount;
 
@@ -289,9 +289,9 @@ public unsafe class QadFile : BinaryFile
     {
         public String4 Head;
         public int Version;
-        public int WidthX, LengthZ, BlocksX, BlocksZ, BlocksTotal, PolyRegionCount;
+        public int WidthX, LengthZ, BlockCountX, BlockCountZ, BlockCount, PolyRegionCount;
         public ushort TexturesFileCount, BumpTexturesFileCount;
-        public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicCount, ColliSize;
+        public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicsCount, ColliSize;
         public ushort LightCount;
         public byte FlagX1, FlagX2, FlagX3, FlagX4, FlagX5, FlagX6;
         public int SoundCount;

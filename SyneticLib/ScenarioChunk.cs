@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace SyneticLib;
 
-public class ScenarioChunk : Ressource
+public class ScenarioChunk : SyneticObject
 {
     public int VertexIdxOffset;
 

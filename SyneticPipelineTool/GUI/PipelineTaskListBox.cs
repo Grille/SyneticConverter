@@ -14,28 +14,6 @@ namespace SyneticPipelineTool.GUI;
 
 public class PipelineTaskListBox : ListBox<PipelineTask>
 {
-    public List<PipelineTask> SelectedTasks
-    {
-        get
-        {
-            var list = new List<PipelineTask>();
-            foreach (var item in SelectedItems)
-            {
-                list.Add((PipelineTask)item);
-            }
-            return list;
-        }
-        set
-        {
-            ClearSelected();
-            foreach (var task in value)
-            {
-                int idx = Items.IndexOf(task);
-                SetSelected(idx, true);
-            }
-        }
-    }
-
     protected override void OnDrawItem(DrawItemEventArgs e, PipelineTask task)
     {
         var pipeline = task.Pipeline;
@@ -78,13 +56,18 @@ public class PipelineTaskListBox : ListBox<PipelineTask>
         float margin = g.MeasureString(" ", e.Font).Width;
         float charsize = g.MeasureString("O",e.Font).Width - margin;
 
-        var tokens = task.ToTokens();
         float position = boundsText.X + (charsize * task.Scope * 4);
 
+        if (!task.Enabled)
+        {
+            var text = task.ToString();
+            var pos = new PointF(position, boundsText.Y);
+            g.DrawString(text, e.Font, Brushes.Gray, pos);
+            return;
+        }
 
-
+        var tokens = task.ToTokens();
         var format = new StringFormat(StringFormatFlags.MeasureTrailingSpaces);
-
         foreach (var token in tokens)
         {
             var text = token.Text;

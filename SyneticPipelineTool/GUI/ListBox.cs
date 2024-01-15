@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -16,6 +18,45 @@ public abstract class ListBox<T> : ListBox where T : class
     {
         get => (T)base.SelectedItem;
         set => base.SelectedItem = value;
+    }
+
+    class SelectedItemsReadOnlyView : IReadOnlyList<T>
+    {
+        readonly T[] list;
+
+        public SelectedItemsReadOnlyView(SelectedObjectCollection collection)
+        {
+            list = new T[collection.Count];
+            for (int i = 0; i < collection.Count; i++)
+            {
+                list[i] = (T)collection[i];
+            }
+        }
+
+        public T this[int index] => list[index];
+
+        public int Count => list.Length;
+
+        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)list).GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
+    }
+
+    public new IReadOnlyList<T> SelectedItems
+    {
+        get
+        {
+            return new SelectedItemsReadOnlyView(base.SelectedItems);
+        }
+        set
+        {
+            ClearSelected();
+            foreach (var task in value)
+            {
+                int idx = Items.IndexOf(task);
+                SetSelected(idx, true);
+            }
+        }
     }
 
     AsyncPipelineExecuter _executer;

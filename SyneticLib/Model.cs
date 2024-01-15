@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class Model : Ressource
+public class Model : SyneticObject
 {
     public Mesh Mesh { get; }
 

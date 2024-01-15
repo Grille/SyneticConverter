@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 using System.Drawing;
 
 namespace SyneticLib;
-public class Light : Ressource
+public class Light : SyneticObject
 {
     public Vector3 Position { get; }
     public Color Color { get; }

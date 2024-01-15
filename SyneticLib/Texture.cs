@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class Texture : Ressource
+public class Texture : SyneticObject
 {
     public TextureFormat Format { get; }
 

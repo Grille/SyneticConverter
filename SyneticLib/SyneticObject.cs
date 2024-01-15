@@ -10,7 +10,7 @@ namespace SyneticLib;
 /// <summary>
 /// Data of an game resource, mostly immutable.
 /// </summary>
-public abstract class Ressource {
+public abstract class SyneticObject {
 
     private static int RessourceIDCounter;
 
@@ -18,13 +18,13 @@ public abstract class Ressource {
 
     public string Name { get; }
 
-    public Ressource(string name)
+    public SyneticObject(string name)
     {
         RessourceID = RessourceIDCounter++;
         Name = name;
     }
 
-    public Ressource()
+    public SyneticObject()
     {
         RessourceID = RessourceIDCounter++;
         Name = $"{GetType().Name}_{RessourceID}";

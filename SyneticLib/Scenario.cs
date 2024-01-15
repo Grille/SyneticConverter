@@ -9,7 +9,7 @@ using SyneticLib.Locations;
 
 namespace SyneticLib;
 
-public partial class Scenario : Ressource
+public partial class Scenario : SyneticObject
 {
     public int VNumber;
     public int Width, Height;

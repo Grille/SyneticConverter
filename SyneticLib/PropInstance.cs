@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 
 namespace SyneticLib; 
-public class PropInstance : Ressource
+public class PropInstance : SyneticObject
 {
     public PropClass Class;
     public bool InShadow = false;
