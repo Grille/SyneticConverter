@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SyneticPipelineTool.Tasks.Program;
 
-[PipelineTask(Key = "Program/Call pipeline")]
+[PipelineTask("Program/Call pipeline")]
 internal class ExecutePipeline : PipelineTask
 {
     protected override void OnInit()

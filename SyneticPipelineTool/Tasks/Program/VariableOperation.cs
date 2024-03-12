@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SyneticPipelineTool.Tasks.Program;
 
-[PipelineTask(Key = "Program/Variable")]
+[PipelineTask("Program/Variable")]
 internal class VariableOperation : PipelineTask
 {
 

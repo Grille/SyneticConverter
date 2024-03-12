@@ -9,7 +9,7 @@ using SyneticPipelineTool.Converter;
 
 namespace SyneticPipelineTool.Tasks.Convert;
 
-[PipelineTask(Key = "Converter/Convert MBWR sprites to WR2")]
+[PipelineTask("Converter/Convert MBWR sprites to WR2")]
 internal class FixTreeNorm : PipelineTask
 {
     protected override void OnInit()

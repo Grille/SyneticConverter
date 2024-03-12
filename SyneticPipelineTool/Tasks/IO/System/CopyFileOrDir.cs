@@ -8,7 +8,7 @@ using System.IO;
 
 namespace SyneticPipelineTool.Tasks.IO.System;
 
-[PipelineTask(Key = "IO/Sys/Copy file or directory")]
+[PipelineTask("IO/Sys/Copy file or directory")]
 internal class CopyFileOrDir : PipelineTask
 {
     protected override void OnInit()

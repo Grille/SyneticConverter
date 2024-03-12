@@ -8,7 +8,7 @@ using System.IO;
 
 namespace SyneticPipelineTool.Tasks.IO.Import;
 
-[PipelineTask(Key = "IO/Import/Load file")]
+[PipelineTask("IO/Import/Load file")]
 internal class LoadFile : PipelineTask
 {
     protected override void OnInit()

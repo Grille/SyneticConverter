@@ -8,7 +8,7 @@ using System.IO;
 
 namespace SyneticPipelineTool.Tasks.IO.System;
 
-[PipelineTask(Key = "IO/Sys/Clear directory")]
+[PipelineTask("IO/Sys/Clear directory")]
 internal class ClearDir : PipelineTask
 {
     protected override void OnInit()

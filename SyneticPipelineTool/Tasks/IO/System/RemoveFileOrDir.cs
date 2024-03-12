@@ -8,7 +8,7 @@ using System.IO;
 
 namespace SyneticPipelineTool.Tasks.IO.System;
 
-[PipelineTask(Key = "IO/Sys/Remove file or directory")]
+[PipelineTask("IO/Sys/Remove file or directory")]
 internal class RemoveFileOrDir : PipelineTask
 {
     protected override void OnInit()

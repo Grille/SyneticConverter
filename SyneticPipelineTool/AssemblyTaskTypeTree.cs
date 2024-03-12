@@ -8,13 +8,15 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SyneticPipelineTool;
 
-public static class AssemblyTaskTypeTable
+public static class AssemblyTaskTypeTree
 {
-    public class Entry
+    public class TypeInfo
     {
+
         public Type Type { get; }
 
         public string Name { get; }
@@ -25,13 +27,13 @@ public static class AssemblyTaskTypeTable
 
         public string Description { get; }
 
-        public Entry(Type type, string key, string description)
+        public TypeInfo(Type type, string key, string description)
         {
             var split = key.Split('/');
 
             string name = split[split.Length - 1];
 
-            string[] path = new string[split.Length - 1];
+            string[] path = new string[split.Length];
             Array.Copy(split, path, path.Length);
 
             Type = type;
@@ -41,33 +43,45 @@ public static class AssemblyTaskTypeTable
             Description = description;
         }
 
-        public Entry(Type type, string key) :
+        public TypeInfo(Type type, string key) :
             this(type, key, "")
         { }
 
-        public Entry(Type type, PipelineTaskAttribute attribute) :
+        public TypeInfo(Type type, PipelineTaskAttribute attribute) :
             this(type, attribute.Key, attribute.Description)
         { }
 
         public override string ToString() => Key;
+
     }
 
-    static Entry[] types;
+    public class TreeNode
+    {
+        public TypeInfo Value { get; set; }
+        public Dictionary<string, TreeNode> Children { get; set; } = new();
+    }
 
-    public static Entry[] Types
+    public class GroupNode
+    {
+
+    }
+
+    static TreeNode root;
+
+    public static TreeNode Root
     {
         get
         {
-            if (types == null)
+            if (root == null)
                 Init();
 
-            return types;
+            return root;
         }
     }
 
     static void Init()
     {
-        var types = new List<Entry>
+        var types = new List<TypeInfo>
         {
             new(typeof(NopTask), "Comment"),
         };
@@ -81,11 +95,31 @@ public static class AssemblyTaskTypeTable
             if (attr == null)
                 continue;
 
-            types.Add(new Entry(type, attr));
+            types.Add(new TypeInfo(type, attr));
         }
 
         types.Sort((a, b) => a.Key.CompareTo(b.Key));
 
-        AssemblyTaskTypeTable.types = types.ToArray();
+        root = new TreeNode();
+
+        foreach (var obj in types)
+        {
+            string[] pathSegments = obj.Path;
+            TreeNode currentNode = root;
+
+            foreach (string segment in pathSegments)
+            {
+                if (!currentNode.Children.TryGetValue(segment, out TreeNode childNode))
+                {
+                    childNode = new TreeNode();
+                    currentNode.Children.Add(segment, childNode);
+                }
+
+                currentNode = childNode;
+            }
+
+            currentNode.Value = obj;
+        }
+
     }
 }

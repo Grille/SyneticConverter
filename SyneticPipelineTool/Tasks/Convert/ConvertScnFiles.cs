@@ -9,7 +9,7 @@ using SyneticPipelineTool.Converter;
 
 namespace SyneticPipelineTool.Tasks.Convert;
 
-[PipelineTask(Key = "Converter/Convert scenario files")]
+[PipelineTask("Converter/Convert scenario files")]
 internal class ConvertScnFiles : PipelineTask
 {
     protected override void OnInit()

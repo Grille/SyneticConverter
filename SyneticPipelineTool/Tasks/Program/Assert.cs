@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SyneticPipelineTool.Tasks.Program;
 
-[PipelineTask(Key = "Program/Assert")]
+[PipelineTask("Program/Assert")]
 internal class Assert : PipelineTask
 {
     protected override void OnInit()

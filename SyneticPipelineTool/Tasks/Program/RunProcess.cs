@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SyneticPipelineTool.Tasks.Program;
 
-[PipelineTask(Key = "Program/Run Process")]
+[PipelineTask("Program/Run Process")]
 internal class RunProcess : PipelineTask
 {
     protected override void OnInit()

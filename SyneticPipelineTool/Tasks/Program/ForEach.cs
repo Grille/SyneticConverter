@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace SyneticPipelineTool.Tasks.Program;
 
-[PipelineTask(Key = "Program/For Each")]
+[PipelineTask("Program/For Each")]
 internal class ForEach : PipelineTask
 {
     /*

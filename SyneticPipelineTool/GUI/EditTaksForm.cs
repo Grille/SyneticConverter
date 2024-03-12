@@ -1,4 +1,5 @@
-﻿using SyneticPipelineTool.Tasks;
+﻿using SyneticPipelineTool.GUI;
+using SyneticPipelineTool.Tasks;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,11 +31,21 @@ public partial class EditTaksForm : Form
         inputs = new List<Control>();
 
         comboBoxType.BeginUpdate();
-        foreach (var entry in AssemblyTaskTypeTable.Types)
+        foreach (var entry in AssemblyTaskTypeTree.Root.Children)
         {
             comboBoxType.Items.Add(entry);
         }
         comboBoxType.EndUpdate();
+
+        treeViewTypes.BeginUpdate();
+        treeViewTypes.Nodes.Clear();
+
+        foreach (var entry in AssemblyTaskTypeTree.Root.Children)
+        {
+            treeViewTypes.Nodes.Add(new TypeTreeNode(entry.Value));
+        }
+
+        treeViewTypes.EndUpdate();
     }
 
     public void Init(Pipeline pipeline, PipelineTask task = null)
@@ -82,11 +93,11 @@ public partial class EditTaksForm : Form
             return;
         }
 
-        foreach (var entry in AssemblyTaskTypeTable.Types)
+        foreach (var entry in AssemblyTaskTypeTree.Root.Children)
         {
-            if (entry.Type == type)
+            if (entry.Value.Value.Type == type)
             {
-                comboBoxType.SelectedItem = entry;
+                comboBoxType.SelectedItem = entry.Value.Value;
                 return;
             }
         }
@@ -197,7 +208,7 @@ public partial class EditTaksForm : Form
 
         var oldTask = Task;
 
-        var entry = (AssemblyTaskTypeTable.Entry)comboBoxType.SelectedItem;
+        var entry = (AssemblyTaskTypeTree.TypeInfo)comboBoxType.SelectedItem;
         var type = entry.Type;
         Task = Pipeline.Tasks.CreateUnbound(type);
 
@@ -219,6 +230,11 @@ public partial class EditTaksForm : Form
     }
 
     private void button1_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void EditTaksForm_Load(object sender, EventArgs e)
     {
 
     }
