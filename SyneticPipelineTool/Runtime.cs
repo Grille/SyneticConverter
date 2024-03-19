@@ -45,6 +45,8 @@ public class Runtime
 
     public Stack<Variables> ScopeStack { get; }
 
+    public Stack<string> ValueStack { get; }
+
     public Variables Variables => ScopeStack.Peek();
 
     public event EventHandler PositionChanged;
@@ -69,6 +71,7 @@ public class Runtime
     {
         CallStack = new();
         ScopeStack = new();
+        ValueStack = new();
     }
 
     private void InvPosChanged()
@@ -81,6 +84,7 @@ public class Runtime
         cancel = false;
         CallStack.Clear();
         ScopeStack.Clear();
+        ValueStack.Clear();
         InvPosChanged();
     }
 

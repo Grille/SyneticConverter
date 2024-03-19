@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SyneticPipelineTool.Tasks.Program;
 
-[PipelineTask("Program/Assert")]
+[PipelineTask("Program/Assert Input")]
 internal class Assert : PipelineTask
 {
     protected override void OnInit()
@@ -21,7 +21,7 @@ internal class Assert : PipelineTask
         var name = EvalParameter("Name");
 
         if (!Runtime.Variables.ContainsKey(name))
-            throw new Exception();
+            throw new Exception($"Expected variable '{name}' not found.");
     }
 
     public override Token[] ToTokens() => new Token[]

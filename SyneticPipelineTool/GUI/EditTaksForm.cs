@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,6 +18,7 @@ public partial class EditTaksForm : Form
 {
     public Pipeline Pipeline { get; private set; }
     public PipelineTask Task { get; private set; }
+    public PipelineTask OriginalTask { get; private set; }
 
     List<Control> inputs;
 
@@ -27,24 +29,16 @@ public partial class EditTaksForm : Form
     public EditTaksForm()
     {
         InitializeComponent();
+        InitTypeTree();
 
         inputs = new List<Control>();
+    }
 
-        comboBoxType.BeginUpdate();
-        foreach (var entry in AssemblyTaskTypeTree.Root.Children)
-        {
-            comboBoxType.Items.Add(entry);
-        }
-        comboBoxType.EndUpdate();
-
+    private void InitTypeTree()
+    {
         treeViewTypes.BeginUpdate();
         treeViewTypes.Nodes.Clear();
-
-        foreach (var entry in AssemblyTaskTypeTree.Root.Children)
-        {
-            treeViewTypes.Nodes.Add(new TypeTreeNode(entry.Value));
-        }
-
+        AssemblyTaskTypeTree.ApplyTo(treeViewTypes.Nodes);
         treeViewTypes.EndUpdate();
     }
 
@@ -57,6 +51,7 @@ public partial class EditTaksForm : Form
         keepValues = false;
 
         Pipeline = pipeline;
+        OriginalTask = task;
 
         if (task is InvalidTypeTask)
             keepValues = true;
@@ -65,7 +60,7 @@ public partial class EditTaksForm : Form
         else
             Task = new NopTask();
 
-        DisplayType();
+        SelectCurrentType();
         DisplayParameters();
 
         setup = false;
@@ -77,11 +72,11 @@ public partial class EditTaksForm : Form
         return ShowDialog();
     }
 
-    public void DisplayType()
+    public void SelectCurrentType()
     {
         if (Task == null)
         {
-            comboBoxType.SelectedItem = null;
+            treeViewTypes.SelectedNode = null;
             return;
         }
 
@@ -89,18 +84,13 @@ public partial class EditTaksForm : Form
 
         if (type == typeof(InvalidTypeTask))
         {
-            comboBoxType.SelectedItem = null;
+            treeViewTypes.SelectedNode = null;
             return;
         }
 
-        foreach (var entry in AssemblyTaskTypeTree.Root.Children)
-        {
-            if (entry.Value.Value.Type == type)
-            {
-                comboBoxType.SelectedItem = entry.Value.Value;
-                return;
-            }
-        }
+        treeViewTypes.SelectedNode = AssemblyTaskTypeTree.GetTypeInfo(type);
+
+        textBoxType.Text = treeViewTypes.SelectedNode.ToString();
     }
 
     public void DisplayParameters()
@@ -201,15 +191,26 @@ public partial class EditTaksForm : Form
         Close();
     }
 
-    private void comboBoxType_SelectedIndexChanged(object sender, EventArgs e)
+    private void treeViewTypes_AfterSelect(object sender, TreeViewEventArgs e)
     {
         if (setup)
             return;
 
-        var oldTask = Task;
+        var node = treeViewTypes.SelectedNode;
 
-        var entry = (AssemblyTaskTypeTree.TypeInfo)comboBoxType.SelectedItem;
+        if (node is not AssemblyTaskTypeTree.TypeInfo)
+            return;
+
+        var entry = (AssemblyTaskTypeTree.TypeInfo)treeViewTypes.SelectedNode;
+
         var type = entry.Type;
+
+        if (type == Task.GetType())
+            return;
+
+        textBoxType.Text = treeViewTypes.SelectedNode.ToString();
+
+        var oldTask = Task;
         Task = Pipeline.Tasks.CreateUnbound(type);
 
         if (keepValues)
@@ -224,18 +225,13 @@ public partial class EditTaksForm : Form
         DisplayParameters();
     }
 
-    private void textBox_TextChanged(object sender, EventArgs e)
+    private void buttonReload_Click(object sender, EventArgs e)
     {
-
+        Init(Pipeline, OriginalTask);
     }
 
-    private void button1_Click(object sender, EventArgs e)
+    private void treeViewTypes_BeforeSelect(object sender, TreeViewCancelEventArgs e)
     {
-
-    }
-
-    private void EditTaksForm_Load(object sender, EventArgs e)
-    {
-
+        e.Cancel = e.Node is not AssemblyTaskTypeTree.TypeInfo;
     }
 }

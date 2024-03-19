@@ -13,8 +13,8 @@ internal class RunProcess : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParameterTypes.String, "Path");
-        Parameters.Def(ParameterTypes.String, "Args");
+        Parameters.Def(ParameterTypes.String, "Path", "Path to executable.", "_.exe");
+        Parameters.Def(ParameterTypes.String, "Args", "Command line arguments.");
     }
 
     protected override void OnExecute()

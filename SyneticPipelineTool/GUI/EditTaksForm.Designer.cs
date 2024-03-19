@@ -28,19 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Node2");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] { treeNode4 });
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Node1");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Node2");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] { treeNode1 });
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Node1");
             textBox = new System.Windows.Forms.TextBox();
-            comboBoxType = new System.Windows.Forms.ComboBox();
-            label1 = new System.Windows.Forms.Label();
             groupBoxParameters = new System.Windows.Forms.GroupBox();
             panelParameters = new System.Windows.Forms.Panel();
             buttonCancel = new System.Windows.Forms.Button();
             buttonOK = new System.Windows.Forms.Button();
-            button1 = new System.Windows.Forms.Button();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             treeViewTypes = new System.Windows.Forms.TreeView();
+            buttonReload = new System.Windows.Forms.Button();
+            textBoxType = new System.Windows.Forms.TextBox();
             groupBoxParameters.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -56,26 +55,6 @@
             textBox.ReadOnly = true;
             textBox.Size = new System.Drawing.Size(813, 23);
             textBox.TabIndex = 0;
-            textBox.TextChanged += textBox_TextChanged;
-            // 
-            // comboBoxType
-            // 
-            comboBoxType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            comboBoxType.FormattingEnabled = true;
-            comboBoxType.Location = new System.Drawing.Point(68, 4);
-            comboBoxType.Name = "comboBoxType";
-            comboBoxType.Size = new System.Drawing.Size(699, 23);
-            comboBoxType.TabIndex = 1;
-            comboBoxType.SelectedIndexChanged += comboBoxType_SelectedIndexChanged;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(6, 11);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(56, 15);
-            label1.TabIndex = 2;
-            label1.Text = "Task Type";
             // 
             // groupBoxParameters
             // 
@@ -119,17 +98,6 @@
             buttonOK.UseVisualStyleBackColor = true;
             buttonOK.Click += buttonOK_Click;
             // 
-            // button1
-            // 
-            button1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            button1.Location = new System.Drawing.Point(773, 3);
-            button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(46, 23);
-            button1.TabIndex = 6;
-            button1.Text = "...";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
-            // 
             // splitContainer1
             // 
             splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -143,12 +111,11 @@
             // 
             // splitContainer1.Panel2
             // 
+            splitContainer1.Panel2.Controls.Add(textBoxType);
+            splitContainer1.Panel2.Controls.Add(buttonReload);
             splitContainer1.Panel2.Controls.Add(groupBoxParameters);
-            splitContainer1.Panel2.Controls.Add(button1);
             splitContainer1.Panel2.Controls.Add(buttonCancel);
-            splitContainer1.Panel2.Controls.Add(label1);
             splitContainer1.Panel2.Controls.Add(buttonOK);
-            splitContainer1.Panel2.Controls.Add(comboBoxType);
             splitContainer1.Panel2.Controls.Add(textBox);
             splitContainer1.Size = new System.Drawing.Size(1239, 673);
             splitContainer1.SplitterDistance = 413;
@@ -157,17 +124,40 @@
             // treeViewTypes
             // 
             treeViewTypes.Dock = System.Windows.Forms.DockStyle.Fill;
+            treeViewTypes.HideSelection = false;
             treeViewTypes.Location = new System.Drawing.Point(0, 0);
             treeViewTypes.Name = "treeViewTypes";
-            treeNode4.Name = "Node2";
-            treeNode4.Text = "Node2";
-            treeNode5.Name = "Node0";
-            treeNode5.Text = "Node0";
-            treeNode6.Name = "Node1";
-            treeNode6.Text = "Node1";
-            treeViewTypes.Nodes.AddRange(new System.Windows.Forms.TreeNode[] { treeNode5, treeNode6 });
+            treeNode1.Name = "Node2";
+            treeNode1.Text = "Node2";
+            treeNode2.Name = "Node0";
+            treeNode2.Text = "Node0";
+            treeNode3.Name = "Node1";
+            treeNode3.Text = "Node1";
+            treeViewTypes.Nodes.AddRange(new System.Windows.Forms.TreeNode[] { treeNode2, treeNode3 });
             treeViewTypes.Size = new System.Drawing.Size(413, 673);
             treeViewTypes.TabIndex = 0;
+            treeViewTypes.BeforeSelect += treeViewTypes_BeforeSelect;
+            treeViewTypes.AfterSelect += treeViewTypes_AfterSelect;
+            // 
+            // buttonReload
+            // 
+            buttonReload.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            buttonReload.Location = new System.Drawing.Point(582, 647);
+            buttonReload.Name = "buttonReload";
+            buttonReload.Size = new System.Drawing.Size(75, 23);
+            buttonReload.TabIndex = 7;
+            buttonReload.Text = "Reload";
+            buttonReload.UseVisualStyleBackColor = true;
+            buttonReload.Click += buttonReload_Click;
+            // 
+            // textBoxType
+            // 
+            textBoxType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            textBoxType.Location = new System.Drawing.Point(6, 3);
+            textBoxType.Name = "textBoxType";
+            textBoxType.ReadOnly = true;
+            textBoxType.Size = new System.Drawing.Size(813, 23);
+            textBoxType.TabIndex = 8;
             // 
             // EditTaksForm
             // 
@@ -175,10 +165,10 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1239, 673);
             Controls.Add(splitContainer1);
+            DoubleBuffered = true;
             Name = "EditTaksForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "EditTaksForm";
-            Load += EditTaksForm_Load;
             groupBoxParameters.ResumeLayout(false);
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
@@ -191,14 +181,13 @@
         #endregion
 
         private System.Windows.Forms.TextBox textBox;
-        private System.Windows.Forms.ComboBox comboBoxType;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBoxParameters;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Panel panelParameters;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TreeView treeViewTypes;
+        private System.Windows.Forms.Button buttonReload;
+        private System.Windows.Forms.TextBox textBoxType;
     }
 }

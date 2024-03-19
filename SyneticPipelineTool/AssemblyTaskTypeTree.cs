@@ -4,24 +4,23 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace SyneticPipelineTool;
 
 public static class AssemblyTaskTypeTree
 {
-    public class TypeInfo
+    public class TypeInfo: TreeNode
     {
-
         public Type Type { get; }
 
-        public string Name { get; }
-
-        public string[] Path { get; }
+        public string[] NamespacePath { get; }
 
         public string Key { get; }
 
@@ -29,18 +28,22 @@ public static class AssemblyTaskTypeTree
 
         public TypeInfo(Type type, string key, string description)
         {
-            var split = key.Split('/');
-
-            string name = split[split.Length - 1];
-
-            string[] path = new string[split.Length];
-            Array.Copy(split, path, path.Length);
-
             Type = type;
-            Name = string.IsNullOrEmpty(name) ? type.Name : name;
-            Path = path;
             Key = key;
             Description = description;
+
+            var split = key.Split('/');
+            var name = split[split.Length - 1];
+
+            if (split.Length < 1)
+                throw new Exception();
+            var path = new string[split.Length - 1];
+            Array.Copy(split, path, path.Length);
+
+            Name = name;
+            NamespacePath = path;
+
+            Text = Name;
         }
 
         public TypeInfo(Type type, string key) :
@@ -55,20 +58,36 @@ public static class AssemblyTaskTypeTree
 
     }
 
-    public class TreeNode
+    public class Namespace : TreeNode
     {
-        public TypeInfo Value { get; set; }
-        public Dictionary<string, TreeNode> Children { get; set; } = new();
+        public Dictionary<string, TypeInfo> Values { get; set; } = new();
+        public Dictionary<string, Namespace> Groups { get; set; } = new();
+
+        public Namespace(string name)
+        {
+            Name = name;
+            Text = name;
+        }
+
+        public void Init()
+        {
+            foreach (var group in Groups.Values)
+            {
+                Nodes.Add(group);
+
+                group.Init();
+            }
+
+            foreach (var type in Values.Values)
+            {
+                Nodes.Add(type);
+            }
+        }
     }
 
-    public class GroupNode
-    {
+    static Namespace root;
 
-    }
-
-    static TreeNode root;
-
-    public static TreeNode Root
+    public static Namespace Root
     {
         get
         {
@@ -79,9 +98,30 @@ public static class AssemblyTaskTypeTree
         }
     }
 
+    static List<TypeInfo> types;
+
+    static public void ApplyTo(TreeNodeCollection collection)
+    {
+        foreach (var node in Root.Nodes)
+        {
+            collection.Add((TreeNode)node);
+        }
+    }
+
+    public static TypeInfo GetTypeInfo(Type type)
+    {
+        foreach (var typeInfo in types)
+        {
+            if (typeInfo.Type == type) return typeInfo;
+        }
+        throw new NotImplementedException();
+    }
+
     static void Init()
     {
-        var types = new List<TypeInfo>
+        Console.WriteLine("Init type tree...");
+
+        types = new List<TypeInfo>
         {
             new(typeof(NopTask), "Comment"),
         };
@@ -100,26 +140,33 @@ public static class AssemblyTaskTypeTree
 
         types.Sort((a, b) => a.Key.CompareTo(b.Key));
 
-        root = new TreeNode();
+        root = new Namespace("ROOT");
 
-        foreach (var obj in types)
+        foreach (var typeInfo in types)
         {
-            string[] pathSegments = obj.Path;
-            TreeNode currentNode = root;
+            string[] path = typeInfo.NamespacePath;
+            var currentNode = root;
 
-            foreach (string segment in pathSegments)
+            foreach (string segment in path)
             {
-                if (!currentNode.Children.TryGetValue(segment, out TreeNode childNode))
+                if (!currentNode.Groups.TryGetValue(segment, out var childNode))
                 {
-                    childNode = new TreeNode();
-                    currentNode.Children.Add(segment, childNode);
+                    childNode = new Namespace(segment);
+                    currentNode.Groups.Add(segment, childNode);
                 }
 
                 currentNode = childNode;
             }
 
-            currentNode.Value = obj;
+            if (currentNode.Values.ContainsKey(typeInfo.Name))
+            {
+                throw new Exception();
+            }
+            currentNode.Values[typeInfo.Name] = typeInfo;
         }
 
+        root.Init();
+
+        Console.WriteLine($"{types.Count} found.");
     }
 }
