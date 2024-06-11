@@ -13,24 +13,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GGL.BinaryView" Version="2.4.2" />
+    <PackageReference Include="Grille.PipelineTool" Version="0.2.1" />
     <PackageReference Include="OpenTK.Mathematics" Version="4.8.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SyneticLib.LowLevel\SyneticLib.LowLevel.csproj" />
+    <ProjectReference Include="..\SyneticLib.Viewer\SyneticLib.Viewer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="GUI\ListBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUI\PipelineTasksControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="GUI\PipelineTaskListBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

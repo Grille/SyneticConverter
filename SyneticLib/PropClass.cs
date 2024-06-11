@@ -7,14 +7,10 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class PropClass : SyneticObject
 {
-    public string Name;
-
     public int AnimationMode;
     public int ColliShape;
 
-    public Mesh Mesh;
-
-    public ModelDirectory AssignedModels;
+    public Model Model;
 
     public PropClass(string name) : base(name)
     {

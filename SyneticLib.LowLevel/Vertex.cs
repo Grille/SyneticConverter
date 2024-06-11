@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace SyneticLib.LowLevel;
+namespace SyneticLib;
 
 /// <summary>General vertex type, can hold any info needed for all model types.</summary>
 [StructLayout(LayoutKind.Explicit, Size = Layout.Size)]
@@ -53,19 +53,7 @@ public struct Vertex
     [FieldOffset(Layout.Shadow)]
     public float Shadow;
 
-    public Vector3 InvPosition
-    {
-        get => new Vector3(Position.X, Position.Z, Position.Y);
-        set => Position = new Vector3(value.X, value.Z, value.Y);
-    }
-
-    public Vector3 InvNormal
-    {
-        get => new Vector3(Normal.Z, Normal.Y, Normal.X);
-        set => Normal = new Vector3(value.Z, value.Y, value.X);
-    }
-
-    public BgraColor RGBAInvNormal
+    public BgraColor RGBANormal
     {
         get => BgraColor.FromArgb(0, (byte)(Normal.X * 255), (byte)(Normal.Y * 255), (byte)(Normal.Z * 255));
         set => Normal = new Vector3(value.R / 255f, value.G / 255f, value.B / 255f);

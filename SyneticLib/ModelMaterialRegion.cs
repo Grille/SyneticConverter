@@ -8,14 +8,14 @@ namespace SyneticLib;
 
 public class ModelMaterialRegion
 {
-    public int ElementOffset;
+    public int ElementStart;
     public int ElementCount;
     public Material Material;
 
 
     public ModelMaterialRegion(int offset, int count, Material material)
     {
-        ElementOffset = offset;
+        ElementStart = offset;
         ElementCount = count;
         Material = material;
     }   

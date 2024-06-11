@@ -1,12 +1,11 @@
-﻿using SyneticLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static SyneticLib.LowLevel.Files.LvlFile;
-using static SyneticLib.LowLevel.Files.SniFile;
+using static SyneticLib.Files.LvlFile;
+using static SyneticLib.Files.SniFile;
 
 namespace SyneticTool.Nodes;
 

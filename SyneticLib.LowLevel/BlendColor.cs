@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace SyneticLib.LowLevel;
+namespace SyneticLib;
 public struct BlendColor
 {
     public byte B0;

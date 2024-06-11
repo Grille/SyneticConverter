@@ -4,10 +4,12 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>11</LangVersion>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<Nullable>enable</Nullable>
+		<RootNamespace>SyneticLib</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="GGL.BinaryView" Version="2.4.2" />
+		<PackageReference Include="Grille.IO.BinaryView" Version="3.0.0" />
 		<PackageReference Include="OpenTK.Mathematics" Version="4.8.0" />
 	</ItemGroup>
 

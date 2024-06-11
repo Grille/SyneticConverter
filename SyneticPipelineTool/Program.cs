@@ -3,38 +3,24 @@ using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
 
+using Grille.PipelineTool.WinForms.Tree;
+using Grille.PipelineTool;
+using System.Reflection;
+
 namespace SyneticPipelineTool;
 
 internal static class Program
 {
-    /// <summary>
-    ///  The main entry point for the application.
-    /// </summary>
     [STAThread]
     static void Main()
     {
         Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
         Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-        // To customize application configuration such as set high DPI settings or default font,
-        // see https://aka.ms/applicationconfiguration.
+
+        AssemblyTaskTypeTree.LoadAssembly(typeof(Program).Assembly);
+        AssemblyTaskTypeTree.Initialize();
+
         ApplicationConfiguration.Initialize();
         Application.Run(new SynPipelineToolForm());
-
-
-        /*
-        var conv = new WR1ToWR2Conv(@"X:\\Games\\Synetic\\World Racing Scn-Data", @"C://World Racing 2");
-        //conv.CopySounds();
-
-        //conv.Log("Alpen");
-        //conv.Log("MBWR_Alpen");
-
-        conv.ConvertVGroup("MBWR_Alpen");
-        conv.ConvertVGroup("MBWR_Australien");
-        conv.ConvertVGroup("MBWR_Japan");
-        conv.ConvertVGroup("MBWR_Mexiko");
-        conv.ConvertVGroup("MBWR_Nevada");
-        conv.ConvertVGroup("MBWR_Stadt");
-        conv.ConvertVGroup("MBWR_Testcenter");
-        */
     }
 }

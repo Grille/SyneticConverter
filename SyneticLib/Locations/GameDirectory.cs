@@ -8,8 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 using static System.IO.Path;
-
-using SyneticLib.LowLevel;
 using SyneticLib.IO;
 
 namespace SyneticLib.Locations;
@@ -65,7 +63,7 @@ public class GameDirectory : Location
     {
         var path = Combine(Path, "Scenarios", name);
         var n = GetFileName(path);
-        return Imports.LoadScenarioGroup(path, n, Version);
+        return Imports.LoadScenarioGroup(path, n);
     }
 
     public static GameVersion GetDirectoryGameVersion(string path)

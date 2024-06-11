@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GGL.IO;
+using Grille.IO;
 using System.IO;
 
 namespace SyneticLib.LowLevel.Compression;

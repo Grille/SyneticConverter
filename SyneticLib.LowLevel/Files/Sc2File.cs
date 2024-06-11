@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GGL.IO;
+using Grille.IO;
+using SyneticLib.Files.Common;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public class Sc2File : BinaryFile
 {
-    public override void ReadFromView(BinaryViewReader br)
+    public override void Deserialize(BinaryViewReader br)
     {
         throw new NotImplementedException();
     }
 
-    public override void WriteToView(BinaryViewWriter bw)
+    public override void Serialize(BinaryViewWriter bw)
     {
         throw new NotImplementedException();
     }

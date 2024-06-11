@@ -52,8 +52,6 @@ public static class SynCompressor
         int dist = head0 | (head1 & 0xF0) >> 8;
         int leng = (head1 & 0x0F) + 3;
 
-        Console.WriteLine(leng);
-
         dst.Position += leng;
 
         /*

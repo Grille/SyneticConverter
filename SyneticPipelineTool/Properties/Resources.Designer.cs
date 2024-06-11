@@ -103,6 +103,16 @@ namespace SyneticPipelineTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Mesh {
+            get {
+                object obj = ResourceManager.GetObject("Mesh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap MoveDown {
             get {
                 object obj = ResourceManager.GetObject("MoveDown", resourceCulture);
@@ -196,6 +206,16 @@ namespace SyneticPipelineTool.Properties {
         internal static System.Drawing.Bitmap Stop {
             get {
                 object obj = ResourceManager.GetObject("Stop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Terrain {
+            get {
+                object obj = ResourceManager.GetObject("Terrain", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

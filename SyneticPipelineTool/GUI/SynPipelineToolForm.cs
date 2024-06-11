@@ -6,37 +6,45 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.ComponentModel.Design.ObjectSelectorEditor;
 
+using Grille.PipelineTool;
+using Grille.PipelineTool.WinForms;
+using Grille.PipelineTool.IO;
+using SyneticLib.Resources;
+using SyneticLib.Viewer;
+using SyneticLib;
+
 namespace SyneticPipelineTool;
 
 
 public partial class SynPipelineToolForm : Form
 {
+    private PipelinesControl PipelinesControl => PipelineToolControl.PipelinesControl;
+    private PipelineTasksControl TasksControl => PipelineToolControl.TasksControl;
     PipelineList Pipelines => PipelinesControl.Pipelines;
 
     public SynPipelineToolForm()
     {
         InitializeComponent();
 
-        var executer = PipelinesControl.Executer;
+        if (File.Exists(PipelineToolControl.FilePath))
+            PipelineToolControl.LoadFile();
+
         var piplines = PipelinesControl.Pipelines;
-
-        PipelinesControl.TasksControl = TasksControl;
-
-        piplines.TryLoad();
-
         PipelinesControl.InvalidateItems();
         if (piplines.Count > 0)
             PipelinesControl.SelectedItem = piplines[0];
 
-        PipelinesControl.ListBox.Executer = executer;
-        TasksControl.ListBox.Executer = executer;
-
+        Icon = Icon.FromHandle(Icons.SyneticLib.GetHicon());
+        MBWRToolStripMenuItem.Image = Icons.MBWR;
+        WR2ToolStripMenuItem.Image = Icons.WR2;
+        C11ToolStripMenuItem.Image = Icons.C11;
     }
 
     private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -52,40 +60,46 @@ public partial class SynPipelineToolForm : Form
 
     private void openToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        using var dialog = new OpenFileDialog();
-        if (dialog.ShowDialog() == DialogResult.OK)
-        {
-            Pipelines.Path = dialog.FileName;
-            Pipelines.Clear();
-            Catch(Pipelines.Load);
-            PipelinesControl.InvalidateItems();
-        }
+        PipelineToolControl.ShowOpenFileDialog();
     }
 
     private void saveToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        Catch(Pipelines.Save);
+        PipelineToolControl.SaveFile();
     }
 
     private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        using var dialog = new SaveFileDialog();
-        if (dialog.ShowDialog() == DialogResult.OK)
+        PipelineToolControl.ShowSaveFileDialog();
+    }
+
+    private void SynPipelineToolForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        if (PipelineToolControl.ShowSaveExitDialog() == DialogResult.Cancel)
         {
-            Pipelines.Path = dialog.FileName;
-            Catch(Pipelines.Save);
+            e.Cancel = true;
         }
     }
 
-    private void Catch(Action action)
+    private void MBWRToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        try
-        {
-            action();
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show(this, e.Message, e.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+        ShowPreview(GameVersion.WR1);
+    }
+
+    private void WR2ToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        ShowPreview(GameVersion.WR2);
+    }
+
+    private void C11ToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        ShowPreview(GameVersion.C11);
+    }
+
+    void ShowPreview(GameVersion version)
+    {
+        var preview = new ViewerForm();
+        preview.Show();
+        preview.ShowLoadScenarioDialog(version);
     }
 }

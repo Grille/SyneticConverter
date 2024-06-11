@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SyneticLib.LowLevel.Files;
+using SyneticLib.Files;
 
 namespace SyneticLib.IO;
 public static partial class Imports

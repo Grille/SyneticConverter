@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 internal class TobFile
 {
 }

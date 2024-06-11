@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using SyneticLib.LowLevel;
-
 namespace SyneticLib.Locations;
 public class GameDirectoryList : List<GameDirectory>
 {

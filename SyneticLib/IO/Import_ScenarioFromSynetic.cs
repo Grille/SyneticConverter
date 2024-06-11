@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
-using SyneticLib.LowLevel;
-using SyneticLib.LowLevel.Files;
+using SyneticLib.Files;
 using SyneticLib.Locations;
 
 using static System.IO.Path;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SyneticLib.IO;
 public static partial class Imports
 {
-    public static ScenarioGroup LoadScenarioGroup(string path, string name, GameVersion version)
+    public static ScenarioGroup LoadScenarioGroup(string path, string name)
     {
         var dirs = Directory.GetDirectories(path);
 
@@ -25,9 +25,9 @@ public static partial class Imports
         {
             var dirpath = dirs[i];
             string dirname = GetFileName(dirpath);
-            if (dirname.Length == 2 && int.TryParse(dirname.Substring(1, 1), out int id))
+            if (dirname.Length == 2 && int.TryParse(dirname.AsSpan(1, 1), out int id))
             {
-                var scenario = LoadScenario(dirpath, name, version);
+                var scenario = LoadScenario(dirpath, name);
                 variants.Add(scenario);
             }
         }
@@ -36,92 +36,85 @@ public static partial class Imports
         return group;
     }
 
-
-    public static Scenario LoadScenario(string path, string name, GameVersion version)
+    public static Scenario LoadScenario(string filePath)
     {
-        
-        var syn = new SynFile();
-        var geo = new GeoFile();
-        var idx = new IdxFile();
-        var lvl = new LvlFile();
-        var sni = new SniFile();
-        var vtx = new VtxFile();
-        var qad = new QadFile();
-        var sky = new SkyFile();
+        var dirPath = GetDirectoryName(filePath);
+        var fileName = GetFileNameWithoutExtension(filePath);
+        return LoadScenario(dirPath!, fileName);
+    }
 
-        IVertexData ivtx;
-        IIndexData iidx;
+    public static Scenario LoadScenario(string dirPath, string fileName)
+    {
+        var files = new ScenarioFiles();
 
-        var synPath = Combine(path, $"V{0}");
-        syn.Path = synPath + ".syn";
+        files.Deserialize(dirPath, fileName);
 
-        var filePath = Combine(path, name);
-        geo.Path = filePath + ".geo";
-        idx.Path = filePath + ".idx";
-        lvl.Path = filePath + ".lvl";
-        sni.Path = filePath + ".sni";
-        vtx.Path = filePath + ".vtx";
-        qad.Path = filePath + ".qad";
-        sky.Path = filePath + ".sky";
+        var syn = files.Syn;
+        var geo = files.Geo;
+        var idx = files.Idx;
+        var lvl = files.Lvl;
+        var sni = files.Sni;
+        var vtx = files.Vtx;
+        var qad = files.Qad;
+        var sky = files.Sky;
 
-        qad.SetFlagsAccordingToVersion(version);
-        geo.SetFlagsAccordingToVersion(version);
+        var ivtx = files.VertexData;
+        var iidx = files.IndexData;
 
-        if (version >= GameVersion.C11)
+        var terrainTextures = new TextureDirectory(Combine(dirPath, "textures"));
+        var modelTextures = new TextureDirectory(Combine(dirPath, "objects/textures"));
+        var terrainTextureIndex = terrainTextures.CreateIndexedArray(qad.TextureNames);
+
+        var terrainMaterials = GetTerrainMaterials(qad, terrainTextureIndex);
+
+        var offsets = new int[ivtx.IndicesOffset.Length + 1];
+        for (var i = 0; i < offsets.Length - 1; i++)
         {
-            geo.Load();
-            iidx = geo;
-            ivtx = geo;
-        }
-        else
-        {
-            idx.Load();
-            vtx.Load();
-            iidx = idx;
-            ivtx = vtx;
+            offsets[i + 1] = offsets[i] + ivtx.IndicesOffset[i];
         }
 
-        lvl.Load();
-        sni.Load();
-        qad.Load();
+        var matx = new Material();
+        var mesh = new Mesh(ivtx.Vertecis, iidx.Indices);
 
-        if (sky.Exists)
-            sky.Load();
+        var scenario = new Scenario(0);
 
-        //target.Sounds.Load();
+        scenario.Width = qad.Head.BlockCountX;
+        scenario.Height = qad.Head.BlockCountZ;
 
-        var terrainTextures = new TextureDirectory(Combine(path, "textures"));
-        var modelTextures = new TextureDirectory(Combine(path, "objects/textures"));
+        scenario.Chunks = new ScenarioChunk[qad.Head.BlockCountX, qad.Head.BlockCountZ];
 
-        //target.Models.Load();
 
-        // Materials
-        var textureIndex = terrainTextures.CreateIndexedArray(qad.TextureNames);
+        scenario.Terrain = mesh;
 
-        var materials = new List<Material>();
-
-        for (var i = 0; i < qad.MaterialsWR.Length; i++)
+        for (int i = 0; i< qad.Chunks.Length; i++)
         {
-            var matInfo = qad.MaterialsWR[i];
-            var mat = new Material($"Terrain_MAT_{i}");
+            ref var srcChunk = ref qad.Chunks[i];
 
-            if (matInfo.Tex0Id < textureIndex.Length)
-                mat.TexSlot0.Enable(textureIndex[matInfo.Tex0Id]);
+            var chunk = new ScenarioChunk(srcChunk.PosX, srcChunk.PosZ);
+            int offset = offsets[srcChunk.Chunk65k];
 
-            if (matInfo.Tex1Id < textureIndex.Length)
-                mat.TexSlot1.Enable(textureIndex[matInfo.Tex1Id]);
+            var submesh = new MeshSegment(mesh, srcChunk.PolyOffset, srcChunk.PolyCount, offset);
 
-            if (matInfo.Tex2Id < textureIndex.Length)
-                mat.TexSlot2.Enable(textureIndex[matInfo.Tex2Id]);
+            
+            var regions = new ModelMaterialRegion[srcChunk.PolyRegionCount];
+            for (int iy = 0; iy< regions.Length; iy++)
+            {
+                var srcRegion = qad.PolyRegions[iy + srcChunk.PolyRegionOffset];
+                var region = new ModelMaterialRegion(srcRegion.PolyOffset, srcRegion.PolyCount, terrainMaterials[srcRegion.SurfaceId1]);
+                regions[iy] = region;
+            }
+         
 
-            //mat.Mode = (TerrainMaterialType)(ushort)matInfo.Mode;
-            //mat.DataState = DataState.Loaded;
+            var model = new Model(submesh, regions);
 
-            materials.Add(mat);
+            chunk.Terrain = model;
+
+            scenario.Chunks[srcChunk.PosX, srcChunk.PosZ] = chunk;
         }
 
-        // Props
         /*
+        // Props
+        
         for (var i = 0; i < qad.Head.PropClassCount; i++)
         {
             var name = qad.PropClassObjNames[i];
@@ -247,7 +240,86 @@ public static partial class Imports
         target.Chunks.DataState = DataState.Loaded;
         */
 
-        return new Scenario(0);
+        return scenario;
+
+    }
+
+    static Material[] GetTerrainMaterials(QadFile qad, Texture[] textures)
+    {
+        if (qad.UseMaterialTypeCT) { 
+            return GetTerrainMaterialsC11(qad, textures);
+        }
+        else
+        {
+            return GetTerrainMaterialsWR2(qad, textures);
+        }
+    }
+
+    static Material[] GetTerrainMaterialsC11(QadFile qad, Texture[] textures)
+    {
+        var materials = new Material[qad.MaterialsCT.Length];
+
+        for (var i = 0; i < qad.MaterialsCT.Length; i++)
+        {
+            var matInfo = qad.MaterialsCT[i];
+            var mat = new Material();
+
+            mat.GameVersion = qad.GameVersion;
+            mat.U16ShaderType0 = matInfo.L0Mode;
+            mat.U16ShaderType1 = matInfo.L1Mode;
+
+            if (matInfo.L0Tex0Id < textures.Length)
+                mat.TexSlot0.Enable(textures[matInfo.L0Tex0Id]);
+
+            if (matInfo.L0Tex1Id < textures.Length)
+                mat.TexSlot1.Enable(textures[matInfo.L0Tex1Id]);
+
+            if (matInfo.L0Tex2Id < textures.Length)
+                mat.TexSlot2.Enable(textures[matInfo.L0Tex2Id]);
+
+            if (matInfo.L1Tex0Id < textures.Length)
+                mat.TexSlot3.Enable(textures[matInfo.L1Tex0Id]);
+
+            if (matInfo.L1Tex1Id < textures.Length)
+                mat.TexSlot4.Enable(textures[matInfo.L1Tex1Id]);
+
+            if (matInfo.L1Tex2Id < textures.Length)
+                mat.TexSlot5.Enable(textures[matInfo.L1Tex2Id]);
+
+            materials[i] = mat;
+        }
+
+        return materials;
+    }
+
+        static Material[] GetTerrainMaterialsWR2(QadFile qad, Texture[] textures)
+    {
+        var materials = new Material[qad.MaterialsWR.Length];
+
+        for (var i = 0; i < qad.MaterialsWR.Length; i++)
+        {
+            var matInfo = qad.MaterialsWR[i];
+            var mat = new Material();
+
+            mat.GameVersion = qad.GameVersion;
+            mat.U16ShaderType0 = matInfo.Mode;
+
+            if (matInfo.Tex0Id < textures.Length)
+                mat.TexSlot0.Enable(textures[matInfo.Tex0Id]);
+
+            if (matInfo.Tex1Id < textures.Length)
+                mat.TexSlot1.Enable(textures[matInfo.Tex1Id]);
+
+            if (matInfo.Tex2Id < textures.Length)
+                mat.TexSlot2.Enable(textures[matInfo.Tex2Id]);
+
+            materials[i] = mat;
+        }
+        return materials;
+    }
+
+    static void BuildTerrainChunks()
+    {
 
     }
 }

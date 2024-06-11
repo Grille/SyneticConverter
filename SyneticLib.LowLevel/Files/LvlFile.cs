@@ -4,20 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
-using GGL.IO;
+using Grille.IO;
+using SyneticLib.Files.Common;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 
 public class LvlFile : BinaryFile
 {
     public MData Data;
 
-    public override void ReadFromView(BinaryViewReader br)
+    public override void Deserialize(BinaryViewReader br)
     {
         Data = br.Read<MData>();
     }
 
-    public override void WriteToView(BinaryViewWriter bw)
+    public override void Serialize(BinaryViewWriter bw)
     {
         bw.Write(Data);
     }

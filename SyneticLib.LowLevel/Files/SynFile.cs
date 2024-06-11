@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GGL.IO;
+using Grille.IO;
+using SyneticLib.Files.Common;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public class SynFile : BinaryFile
 {
     public MHead Head;
     public MFileEntry[] Entries;
     public byte[][] Data;
 
-    public override void ReadFromView(BinaryViewReader br)
+    public SynFile()
+    {
+        Entries = Array.Empty<MFileEntry>();
+        Data = Array.Empty<byte[]>();
+    }
+
+    public override void Deserialize(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
         br.Position += 52;
@@ -25,7 +32,7 @@ public class SynFile : BinaryFile
             Data[i] = br.ReadArray<byte>(Entries[i].CompressedSize);
     }
 
-    public override void WriteToView(BinaryViewWriter bw)
+    public override void Serialize(BinaryViewWriter bw)
     {
         bw.Write(Head);
         bw.WriteArray(Entries, LengthPrefix.None);

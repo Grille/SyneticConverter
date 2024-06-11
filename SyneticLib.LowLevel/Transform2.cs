@@ -1,4 +1,4 @@
-﻿namespace SyneticLib.LowLevel;
+﻿namespace SyneticLib;
 public struct Transform2
 {
     public float Rotate;

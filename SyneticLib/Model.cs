@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class Model : SyneticObject
 {
-    public Mesh Mesh { get; }
+    public MeshSegment MeshSection { get; }
 
     public Material[] Materials { get; }
 
     public ModelMaterialRegion[] MaterialRegions { get; }
 
-    public Model(string name, Mesh mesh, ModelMaterialRegion[] regions) : base(name)
+    public BoundingBox BoundingBox => MeshSection.BoundingBox;
+
+    public Model(MeshSegment mesh, ModelMaterialRegion[] regions)
     {
-        Mesh = mesh;
+        MeshSection = mesh;
         MaterialRegions = regions;
 
         var materials = new List<Material>();
@@ -31,7 +33,7 @@ public class Model : SyneticObject
         Materials = materials.ToArray();
     }
 
-    public Model(string name, Mesh mesh, Material material) :
-        this(name, mesh, new[] { new ModelMaterialRegion(0, mesh.Indices.Length, material) })
+    public Model(MeshSegment mesh, Material material) :
+        this(mesh, new[] { new ModelMaterialRegion(0, mesh.Length, material) })
     { }
 }

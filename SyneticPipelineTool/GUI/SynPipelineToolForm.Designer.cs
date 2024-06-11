@@ -31,7 +31,6 @@ namespace SyneticPipelineTool
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SynPipelineToolForm));
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             newToolStripMenuItem = new ToolStripMenuItem();
@@ -41,19 +40,18 @@ namespace SyneticPipelineTool
             saveAsToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             quitToolStripMenuItem = new ToolStripMenuItem();
-            splitContainer1 = new SplitContainer();
-            PipelinesControl = new PipelinesControl();
-            TasksControl = new PipelineTasksControl();
+            previewToolStripMenuItem = new ToolStripMenuItem();
+            scenarioToolStripMenuItem = new ToolStripMenuItem();
+            MBWRToolStripMenuItem = new ToolStripMenuItem();
+            WR2ToolStripMenuItem = new ToolStripMenuItem();
+            C11ToolStripMenuItem = new ToolStripMenuItem();
+            PipelineToolControl = new Grille.PipelineTool.WinForms.PipelineToolControl();
             menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
-            splitContainer1.Panel1.SuspendLayout();
-            splitContainer1.Panel2.SuspendLayout();
-            splitContainer1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, previewToolStripMenuItem });
             menuStrip1.Location = new System.Drawing.Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new System.Drawing.Size(784, 24);
@@ -122,63 +120,65 @@ namespace SyneticPipelineTool
             quitToolStripMenuItem.Text = "Exit";
             quitToolStripMenuItem.Click += quitToolStripMenuItem_Click;
             // 
-            // splitContainer1
+            // previewToolStripMenuItem
             // 
-            splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.FixedPanel = FixedPanel.Panel1;
-            splitContainer1.Location = new System.Drawing.Point(0, 24);
-            splitContainer1.Name = "splitContainer1";
+            previewToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { scenarioToolStripMenuItem });
+            previewToolStripMenuItem.Name = "previewToolStripMenuItem";
+            previewToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            previewToolStripMenuItem.Text = "Preview";
             // 
-            // splitContainer1.Panel1
+            // scenarioToolStripMenuItem
             // 
-            splitContainer1.Panel1.Controls.Add(PipelinesControl);
+            scenarioToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { MBWRToolStripMenuItem, WR2ToolStripMenuItem, C11ToolStripMenuItem });
+            scenarioToolStripMenuItem.Image = Properties.Resources.Terrain;
+            scenarioToolStripMenuItem.Name = "scenarioToolStripMenuItem";
+            scenarioToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            scenarioToolStripMenuItem.Text = "Scenario";
             // 
-            // splitContainer1.Panel2
+            // MBWRToolStripMenuItem
             // 
-            splitContainer1.Panel2.Controls.Add(TasksControl);
-            splitContainer1.Size = new System.Drawing.Size(784, 537);
-            splitContainer1.SplitterDistance = 300;
-            splitContainer1.SplitterWidth = 2;
-            splitContainer1.TabIndex = 1;
+            MBWRToolStripMenuItem.Name = "MBWRToolStripMenuItem";
+            MBWRToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            MBWRToolStripMenuItem.Text = "MBWR";
+            MBWRToolStripMenuItem.Click += MBWRToolStripMenuItem_Click;
             // 
-            // PipelinesControl
+            // WR2ToolStripMenuItem
             // 
-            PipelinesControl.Dock = DockStyle.Fill;
-            PipelinesControl.Location = new System.Drawing.Point(0, 0);
-            PipelinesControl.Name = "PipelinesControl";
-            PipelinesControl.SelectedItem = null;
-            PipelinesControl.Size = new System.Drawing.Size(300, 537);
-            PipelinesControl.TabIndex = 0;
-            PipelinesControl.TasksControl = null;
+            WR2ToolStripMenuItem.Name = "WR2ToolStripMenuItem";
+            WR2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            WR2ToolStripMenuItem.Text = "WR2";
+            WR2ToolStripMenuItem.Click += WR2ToolStripMenuItem_Click;
             // 
-            // TasksControl
+            // C11ToolStripMenuItem
             // 
-            TasksControl.Dock = DockStyle.Fill;
-            TasksControl.Location = new System.Drawing.Point(0, 0);
-            TasksControl.Margin = new Padding(0);
-            TasksControl.Name = "TasksControl";
-            TasksControl.Pipeline = null;
-            TasksControl.SelectedItem = null;
-            TasksControl.Size = new System.Drawing.Size(482, 537);
-            TasksControl.TabIndex = 0;
+            C11ToolStripMenuItem.Name = "C11ToolStripMenuItem";
+            C11ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            C11ToolStripMenuItem.Text = "C11";
+            C11ToolStripMenuItem.Click += C11ToolStripMenuItem_Click;
+            // 
+            // PipelineToolControl
+            // 
+            PipelineToolControl.Dock = DockStyle.Fill;
+            PipelineToolControl.FilePath = "pipelines.txt";
+            PipelineToolControl.Location = new System.Drawing.Point(0, 24);
+            PipelineToolControl.Name = "PipelineToolControl";
+            PipelineToolControl.Size = new System.Drawing.Size(784, 537);
+            PipelineToolControl.TabIndex = 1;
             // 
             // SynPipelineToolForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(784, 561);
-            Controls.Add(splitContainer1);
+            Controls.Add(PipelineToolControl);
             Controls.Add(menuStrip1);
             DoubleBuffered = true;
             MainMenuStrip = menuStrip1;
             Name = "SynPipelineToolForm";
             Text = "Synetic Pipeline Tool";
+            FormClosing += SynPipelineToolForm_FormClosing;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
-            splitContainer1.Panel1.ResumeLayout(false);
-            splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
-            splitContainer1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -187,9 +187,6 @@ namespace SyneticPipelineTool
 
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
-        private SplitContainer splitContainer1;
-        private PipelinesControl PipelinesControl;
-        private PipelineTasksControl TasksControl;
         private ToolStripMenuItem newToolStripMenuItem;
         private ToolStripMenuItem openToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator2;
@@ -197,5 +194,11 @@ namespace SyneticPipelineTool
         private ToolStripMenuItem saveAsToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem quitToolStripMenuItem;
+        private Grille.PipelineTool.WinForms.PipelineToolControl PipelineToolControl;
+        private ToolStripMenuItem previewToolStripMenuItem;
+        private ToolStripMenuItem scenarioToolStripMenuItem;
+        private ToolStripMenuItem MBWRToolStripMenuItem;
+        private ToolStripMenuItem WR2ToolStripMenuItem;
+        private ToolStripMenuItem C11ToolStripMenuItem;
     }
 }

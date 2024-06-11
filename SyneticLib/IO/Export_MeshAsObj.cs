@@ -13,6 +13,8 @@ public static partial class Exports
 
     public static void SaveAsObj(this Model model, string path)
     {
+    
+        /*
         var PositionMultiplier = Vector3.One;
 
         var mesh = model.Mesh;

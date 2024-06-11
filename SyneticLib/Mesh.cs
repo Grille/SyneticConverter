@@ -6,17 +6,14 @@ using System.Threading.Tasks;
 using System.Numerics;
 using System.IO;
 
-
-using SyneticLib.LowLevel;
-
 namespace SyneticLib;
 
 public class Mesh: SyneticObject
 {
     public Vertex[] Vertices { get; }
-    public IndexTriangle[] Indices { get; }
+    public IdxTriangleInt32[] Indices { get; }
 
-    public Mesh(string name, Vertex[] vertices, IndexTriangle[] indices) : base(name)
+    public Mesh(Vertex[] vertices, IdxTriangleInt32[] indices) 
     {
         Vertices = vertices;
         Indices = indices;
@@ -36,8 +33,8 @@ public class Mesh: SyneticObject
     }
     */
 
-    public MeshSectionPtr CreateSectionPtr(int offset, int count)
+    public MeshSegment CreateSectionPtr(int offset, int count)
     {
-        return new MeshSectionPtr(this, offset, count);
+        return new MeshSegment(this, offset, count);
     }
 }

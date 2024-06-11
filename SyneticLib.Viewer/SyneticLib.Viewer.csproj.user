@@ -4,8 +4,11 @@
     <_LastSelectedProfileId>C:\Users\Hirch\Documents\GitBewidata_GitLab\SyneticConverter\SyneticLib.Viewer\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="InspectorView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="ViewerControl.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
 </Project>

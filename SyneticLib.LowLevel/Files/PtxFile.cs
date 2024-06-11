@@ -4,16 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using GGL.IO;
+using Grille.IO;
 using SyneticLib.LowLevel.Compression;
+using SyneticLib.Files.Common;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 
 public class PtxFile : BinaryFile
 {
     public MHead Head;
     public Level[] Levels;
-    public override void ReadFromView(BinaryViewReader br)
+
+    public PtxFile()
+    {
+        Levels = Array.Empty<Level>();
+    }
+
+    public override void Deserialize(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
 
@@ -23,16 +30,18 @@ public class PtxFile : BinaryFile
         Levels = new Level[Head.MipMapLevels];
         for (int i = 0; i < Levels.Length; i++)
         {
-            Levels[i] = br.ReadIView<Level>();
+            var level = new Level();
+            level.ReadFromView(br);
+            Levels[i] = level;
         }
     }
 
-    public override void WriteToView(BinaryViewWriter bw)
+    public override void Serialize(BinaryViewWriter bw)
     {
         bw.Write(Head);
         for (int i = 0; i < Levels.Length; i++)
         {
-            bw.WriteIView(Levels[i]);
+            Levels[i].WriteToView(bw);
         }
     }
 
@@ -47,10 +56,15 @@ public class PtxFile : BinaryFile
         public byte R, G, B;
     }
 
-    public class Level : IViewObject
+    public class Level
     {
         public MHead Head;
         public byte[] Pixels;
+
+        public Level()
+        {
+            Pixels = Array.Empty<byte>();
+        }
 
         public void ReadFromView(BinaryViewReader br)
         {

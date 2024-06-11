@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 using SyneticLib.Locations;
-
-using SyneticLib.LowLevel;
+using SyneticLib;
 
 namespace SyneticTool;
 

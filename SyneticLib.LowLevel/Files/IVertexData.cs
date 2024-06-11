@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public interface IVertexData
 {
-    public int[] IndicesOffset { get; set; }
-    public Vertex[] Vertecis { get; set; }
+    public int[] IndicesOffset { get; }
+    public Vertex[] Vertecis { get; }
+}
 
-    public int GetVertexCount()
+public static class IVertexDataExtension
+{
+    public static int GetVertexCount(this IVertexData ivtx )
     {
+        var offsets = ivtx.IndicesOffset;
         int vertexCount = 0;
-        for (int i = 0; i < IndicesOffset.Length; i++)
-            vertexCount += IndicesOffset[i];
+        for (int i = 0; i < offsets.Length; i++)
+            vertexCount += offsets[i];
         return vertexCount;
     }
 }

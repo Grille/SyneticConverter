@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib.LowLevel.Files;
-internal struct SniSpawnW
+namespace SyneticLib.Files;
+public struct SniSpawnW
 {
-    int Density, Speed, Turbulence, TrackID;
+    public int Density, Speed, Turbulence, TrackID;
 }

@@ -9,6 +9,7 @@ using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using SyneticLib.Graphics.Shaders;
 using System.Runtime.CompilerServices;
+using SyneticLib.Graphics.OpenGL;
 
 namespace SyneticLib.Graphics;
 public class Sprite
@@ -37,12 +38,12 @@ public class Sprite
         Size = new Vector2(rectangle.Width, rectangle.Height);
     }
 
-    public class SpriteProgram : GLProgram
+    public class SpriteProgram : ShaderProgram
     {
         public int UScale;
-        public SpriteProgram() : base(null)
+        public SpriteProgram() : base()
         {
-            Compile(GLSLSources.SpriteVertex, GLSLSources.SpriteFragment);
+            //Link(GLSLSources.SpriteVertex, GLSLSources.SpriteFragment);
             UScale = GetUniformLocation("uScale");
         }
     }

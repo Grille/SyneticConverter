@@ -59,20 +59,20 @@
             // 
             detectGamesToolStripMenuItem.Name = "detectGamesToolStripMenuItem";
             detectGamesToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O;
-            detectGamesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            detectGamesToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             detectGamesToolStripMenuItem.Text = "Open";
             detectGamesToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             exitToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q;
-            exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -83,10 +83,15 @@
             // 
             // viewerControl1
             // 
+            viewerControl1.API = OpenTK.Windowing.Common.ContextAPI.OpenGL;
+            viewerControl1.APIVersion = new System.Version(3, 3, 0, 0);
             viewerControl1.BackColor = System.Drawing.Color.Black;
             viewerControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            viewerControl1.Flags = OpenTK.Windowing.Common.ContextFlags.Default;
+            viewerControl1.IsEventDriven = true;
             viewerControl1.Location = new System.Drawing.Point(0, 24);
             viewerControl1.Name = "viewerControl1";
+            viewerControl1.Profile = OpenTK.Windowing.Common.ContextProfile.Core;
             viewerControl1.Size = new System.Drawing.Size(784, 537);
             viewerControl1.TabIndex = 2;
             // 

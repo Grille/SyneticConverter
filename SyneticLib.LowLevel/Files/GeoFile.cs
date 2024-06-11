@@ -5,14 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
-using GGL.IO;
+using Grille.IO;
 using System.Runtime.InteropServices;
+using SyneticLib.Files.Common;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public class GeoFile : BinaryFile, IIndexData, IVertexData
 {
     /// <summary>Used by CT5</summary>
     public bool HasX16VertexBlock = false;
+
+    GameVersion version;
+    GameVersion GameVersion
+    {
+        get => version;
+        set
+        {
+            version = value;
+            SetFlagsAccordingToVersion(version);
+        }
+    }
 
     public MHead Head;
 
@@ -20,9 +32,16 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData
 
     public Vertex[] Vertecis { get; set; }
 
-    public IndexTriangle[] Indices { get; set; }
+    public IdxTriangleInt32[] Indices { get; set; }
 
-    public unsafe override void ReadFromView(BinaryViewReader br)
+    public GeoFile()
+    {
+        IndicesOffset = Array.Empty<int>();
+        Vertecis = Array.Empty<Vertex>();
+        Indices = Array.Empty<IdxTriangleInt32>();
+    }
+
+    public unsafe override void Deserialize(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
 
@@ -40,19 +59,19 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData
 
         var indices = br.ReadArray<ushort>(Head.IndicesCount);
 
-        Indices = new IndexTriangle[indices.Length / 3];
+        Indices = new IdxTriangleInt32[indices.Length / 3];
 
         for (int i = 0; i < Indices.Length; i++)
-            Indices[i] = new IndexTriangle(indices[i * 3 + 0], indices[i * 3 + 2], indices[i * 3 + 1]);
+            Indices[i] = new IdxTriangleInt32(indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2]);
     }
 
-    public override void WriteToView(BinaryViewWriter bw)
+    public override void Serialize(BinaryViewWriter bw)
     {
         bw.Write(Head);
 
         bw.WriteArray(IndicesOffset, LengthPrefix.None);
 
-        var vertexCount = this.GetVertexCount();
+        var vertexCount = GetVertexCount();
 
         for (int i = 0; i < vertexCount; i++)
             bw.Write<MVertex>(Vertecis[i]);
@@ -65,14 +84,14 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData
         for (int i = 0; i < Indices.Length; i++)
         {
             indices[i * 3 + 0] = (ushort)Indices[i].X;
-            indices[i * 3 + 2] = (ushort)Indices[i].Y;
-            indices[i * 3 + 1] = (ushort)Indices[i].Z;
+            indices[i * 3 + 1] = (ushort)Indices[i].Y;
+            indices[i * 3 + 2] = (ushort)Indices[i].Z;
         }
 
         bw.WriteArray(indices, LengthPrefix.None);
     }
 
-    public int GetVertexCount() => ((IVertexData)this).GetVertexCount();
+    public int GetVertexCount() => IVertexDataExtension.GetVertexCount(this);
 
     private unsafe int getEndPos(int vtxCount, int idxCount)
     {
@@ -133,22 +152,22 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData
 
         public static implicit operator Vertex(MVertex a) => new Vertex()
         {
-            InvPosition = a.Position,
-            RGBAInvNormal = a.Normal,
+            Position = a.Position,
+            RGBANormal = a.Normal,
             UV0 = a.UV0,
             UV1 = a.UV1,
             RGBABlend = a.Blend,
-            LightColor = a.Color.ToNormalizedVector3(),
+            LightColor = a.Color.ToNormalizedRgbVector3(),
         };
 
         public static implicit operator MVertex(Vertex a) => new MVertex()
         {
-            Position = a.InvPosition,
-            Normal = a.RGBAInvNormal,
+            Position = a.Position,
+            Normal = a.RGBANormal,
             UV0 = a.UV0,
             UV1 = a.UV1,
             Blend = a.RGBABlend,
-            Color = BgraColor.FromNormalizedVector3(a.LightColor),
+            Color = BgraColor.FromNormalizedRgbVector3(a.LightColor),
         };
 
     }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public class InvalidFileException : IOException
 {
 

@@ -10,9 +10,15 @@ namespace SyneticLib;
 
 public class Material : SyneticObject
 {
-    TextureSlot[] TextureSlots { get; }
+    public TextureSlot[] TextureSlots { get; }
 
     public Vector3 Diffuse;
+    public Vector3 Ambient;
+    public Vector3 Specular;
+    public Vector3 Reflect;
+    public Vector3 Specular2;
+    public Vector3 XDiffuse;
+    public Vector3 XSpecular;
 
     public TextureSlot TexSlot0 => TextureSlots[0];
 
@@ -20,20 +26,36 @@ public class Material : SyneticObject
 
     public TextureSlot TexSlot2 => TextureSlots[2];
 
-    public MaterialShaderType ShaderType { get; }
+    public TextureSlot TexSlot3 => TextureSlots[3];
 
-    public Material(string name) : base(name)
+    public TextureSlot TexSlot4 => TextureSlots[4];
+
+    public TextureSlot TexSlot5 => TextureSlots[5];
+
+    public ushort U16ShaderType0;
+    public ushort U16ShaderType1;
+
+    public GameVersion GameVersion;
+
+    public MaterialShaderType ShaderType;
+
+    public Material()
     {
-        TextureSlots = new TextureSlot[3];
-        TextureSlots[0] = new TextureSlot();
-        TextureSlots[1] = new TextureSlot();
-        TextureSlots[2] = new TextureSlot();
+        Diffuse = Vector3.One;
+
+        TextureSlots = new TextureSlot[6];
+        TextureSlots[0] = new();
+        TextureSlots[1] = new();
+        TextureSlots[2] = new();
+        TextureSlots[3] = new();
+        TextureSlots[4] = new();
+        TextureSlots[5] = new();
     }
 
     public class TextureSlot
     {
         public bool Enabled;
-        public Texture Texture;
+        public Texture? Texture;
         public Matrix4 Transform;
 
         internal TextureSlot() { }
@@ -62,4 +84,6 @@ public class Material : SyneticObject
 public enum MaterialShaderType
 {
     Default,
+    Water,
+    Simple,
 }

@@ -7,43 +7,53 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Drawing;
 using OpenTK.Compute.OpenCL;
+using SyneticLib.Graphics.OpenGL;
+using SyneticLib.Graphics.DrawCalls;
+using SyneticLib.Math3D;
+using static SyneticLib.Files.QadFile;
 
 namespace SyneticLib.Graphics;
-public class Scene
+public class Scene : IDisposable
 {
+
+
     public readonly List<Sprite> Sprites;
-    public readonly List<DrawCallInfo> MeshDrawBuffer;
     public Camera Camera;
 
-    public Context Context { get; }
+    SceneAssets assets;
 
-    readonly SceneAssets assets;
+    Model? model;
+    Scenario? scenario;
 
-    MeshBuffer buffer;
-    MaterialProgram program;
-    TextureBuffer texture;
+    ModelGlHandle? modelHandle;
+    ScenarioGlHandle? scenarioHandle;
+
+    GlObjectCacheGroup cache;
+
+
 
     public unsafe Scene()
     {
         Sprites = new List<Sprite>();
-        MeshDrawBuffer = new List<DrawCallInfo>();
-        Camera = new OrbitCamera();
+        Camera = new FreeCamera();
+
         assets = new SceneAssets();
 
-        Context = new Context();
-
-        buffer = Context.Create(assets.GroundPlane.Mesh);
-        program = Context.Create(assets.GroundPlane.MaterialRegions[0].Material);
-        texture = Context.Create(assets.GroundPlane.MaterialRegions[0].Material.TexSlot0.Texture);
+        cache = new GlObjectCacheGroup();
     }
 
-    public void Add(Model mesh) => Add(mesh, Matrix4.Identity);
-
-    public void Add(Model model, in Matrix4 matrix)
+    public void SubmitScenario(Scenario scenario)
     {
-        buffer = Context.Create(model.Mesh);
-        program = Context.Create(model.MaterialRegions[0].Material);
-        //mesh.MaterialRegion
+        this.scenario = scenario;
+        scenarioHandle?.Dispose();
+        scenarioHandle = new ScenarioGlHandle(scenario);
+    }
+
+    public void SubmitSingleModel(Model model)
+    {
+        this.model = model;
+        modelHandle?.Dispose();
+        modelHandle = new ModelGlHandle(model);
     }
 
     public void ClearScreen()
@@ -54,7 +64,12 @@ public class Scene
 
     public void ClearScene()
     {
-        MeshDrawBuffer.Clear();
+        scenarioHandle?.Dispose();
+        scenarioHandle = null;
+
+        modelHandle?.Dispose();
+        modelHandle = null;
+
         Sprites.Clear();
     }
 
@@ -62,24 +77,71 @@ public class Scene
     {
         GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
         GL.Enable(EnableCap.CullFace);
-        GL.Enable(EnableCap.DepthTest);
+        GL.CullFace(CullFaceMode.Front);
 
-        //texture.Bind();
-        buffer.Bind();
-        program.Bind();
-        program.TextureBinding0.Texture.Bind();
+        var plane = assets.GroundPlane;
+        plane.SubCamera(Camera);
 
-        program.SubCameraMatrix(Camera);
-        program.SubModelMatrix(Matrix4.Identity);
-
+        /*
         foreach (Sprite sprite in Sprites)
         {
-            var texture = Context.Create(sprite.Texture);
+            var texture = GlobalCache.Create(sprite.Texture);
             texture.Bind();
         }
+        */
+        GL.Disable(EnableCap.DepthTest);
+        {
+            plane.DrawModel(Matrix4.Identity);
+        }
 
-        var reg = new MeshBufferRegionInfo(buffer, 0, buffer.ElementCount);
-        reg.DrawElements();
+        GL.Enable(EnableCap.DepthTest);
+
+        if (scenarioHandle != null)
+        {
+            scenarioHandle.SubCamera(Camera);
+            scenarioHandle.DrawScenario();
+        }
+
+        if (modelHandle != null)
+        {
+            modelHandle.SubCamera(Camera);
+            modelHandle.DrawModel();
+        }
+
+        //GL.Disable(EnableCap.DepthTest);
+
+        {
+            var closest = RayCaster.NoHit;
+
+            var ray = Camera.CastMouseRay();
+
+            if (scenario != null)
+            {
+                foreach (var chunk in scenario.EnumerateChunks())
+                {
+                    closest.ApplyIfCloserHit(RayCaster.RayIntersectsModel(ray, chunk.Terrain));
+                }
+            }
+
+            if (modelHandle != null)
+            {
+                closest.ApplyIfCloserHit(RayCaster.RayIntersectsModel(ray, model!));
+            }
+
+            if (!closest.IsHit)
+            {
+                closest = RayCaster.RayIntersectsGround(ray);
+            }
+
+
+
+            var pos = closest.GetIntersection(ray);
+
+            var mat = Matrix4.CreateTranslation(pos);
+
+
+            assets.Compass.DrawModel(mat);
+        }
         //GL.DrawElements(PrimitiveType.Triangles, buffer.ElementCount, DrawElementsType.UnsignedInt, 0 * 3 * 4);
 
         var error = GL.GetError();
@@ -87,9 +149,6 @@ public class Scene
         {
             Console.WriteLine($"{DateTime.Now} {error}");
         }
- 
-
-
 
         //GL.Enable(EnableCap.DepthTest | EnableCap.CullFace);
 
@@ -100,6 +159,14 @@ public class Scene
 
         Graphics.DepthTestEnabled = false;
         */
-     
+
+    }
+
+
+    public void Dispose()
+    {
+        assets.Dispose();
+        cache.Dispose();
+        scenarioHandle?.Dispose();
     }
 }

@@ -4,19 +4,26 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GGL.IO;
+using Grille.IO;
+using SyneticLib.Files.Common;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public class SkyFile : SyneticIniFile
 {
-    List<SkyData> Skies = new List<SkyData>();
+    List<SkyData> Skies { get; }
+
+    public SkyFile()
+    {
+        Skies = new List<SkyData>();
+    }
+
     protected override void OnRead()
     {
         Skies.Clear();
 
         foreach (var section in Sections)
         {
-            var sky = new SkyData() { Name = section.Name };
+            var sky = new SkyData(section.Name);
             Skies.Add(sky);
 
             foreach (var pair in section)
@@ -40,30 +47,44 @@ public class SkyFile : SyneticIniFile
     {
         foreach (var sky in Skies)
         {
-            var sec = new Section() { Name = sky.Name };
+            var sec = new Section(sky.Name);
             Sections.Add(sec);
 
-            sec.Add("SkyTex", sky.SkyTex);
-            sec.Add("FogTab", sky.FogTab);
-            sec.Add("FogCol", sky.FogCol);
-            sec.Add("SunCol", sky.SunCol);
-            sec.Add("AmbCol", sky.AmbCol);
-            sec.Add("WlkAmb", sky.WlkAmb);
-            sec.Add("WlkSun", sky.WlkSun);
-            sec.Add("CarShd", sky.CarShd);
+            void Add(string key, string? value)
+            {
+                if (value != null)
+                {
+                    sec.Add(key, value);
+                }
+            }
+
+            Add("SkyTex", sky.SkyTex);
+            Add("FogTab", sky.FogTab);
+            Add("FogCol", sky.FogCol);
+            Add("SunCol", sky.SunCol);
+            Add("AmbCol", sky.AmbCol);
+            Add("WlkAmb", sky.WlkAmb);
+            Add("WlkSun", sky.WlkSun);
+            Add("CarShd", sky.CarShd);
         }
     }
 
     class SkyData
     {
         public string Name;
-        public string SkyTex;
-        public string FogTab;
-        public string FogCol;
-        public string SunCol;
-        public string AmbCol;
-        public string WlkAmb;
-        public string WlkSun;
-        public string CarShd;
+
+        public string? SkyTex;
+        public string? FogTab;
+        public string? FogCol;
+        public string? SunCol;
+        public string? AmbCol;
+        public string? WlkAmb;
+        public string? WlkSun;
+        public string? CarShd;
+
+        public SkyData(string name)
+        {
+            Name = name;
+        }
     }
 }

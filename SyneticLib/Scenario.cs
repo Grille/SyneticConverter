@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using SyneticLib.Locations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SyneticLib;
 
@@ -14,7 +15,7 @@ public partial class Scenario : SyneticObject
     public int VNumber;
     public int Width, Height;
 
-    public Model Terrain;
+    public Mesh Terrain;
     public LazyRessourceDirectory<Sound> Sounds;
     public TextureDirectory TerrainTextures;
     public ModelDirectory Models;
@@ -22,7 +23,7 @@ public partial class Scenario : SyneticObject
     public RessourceList<PropClass> PropClasses;
     public RessourceList<PropInstance> PropInstances;
     public RessourceList<Light> Lights;
-    public RessourceList<ScenarioChunk> Chunks;
+    public ScenarioChunk[,] Chunks;
 
     public ProgressLogger Progress;
 
@@ -52,6 +53,17 @@ public partial class Scenario : SyneticObject
     public void PeakHead()
     {
 
+    }
+
+    public IEnumerable<ScenarioChunk> EnumerateChunks()
+    {
+        for (int iy = 0; iy < Height; iy++)
+        {
+            for (int ix = 0; ix < Width; ix++)
+            {
+                yield return Chunks[ix, iy];
+            }
+        }
     }
 
     /*

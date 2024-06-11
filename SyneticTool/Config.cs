@@ -7,12 +7,12 @@ using System.IO;
 using System.Text.Json;
 using System.Reflection;
 using System.Xml.Linq;
-using GGL.IO;
+using Grille.IO;
 using SyneticLib.Locations;
 
 namespace SyneticTool;
 
-public class Config : IViewObject
+public class Config
 {
     public GameDirectoryList Games;
     string path;

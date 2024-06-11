@@ -35,7 +35,7 @@ public class Texture : SyneticObject
 
     public static Texture CreatePlaceholder(string name)
     {
-        return new Texture(name,Textures.Error.Format,Textures.Error.Levels);
+        return null;// new Texture(name,Textures.Error.Format,Textures.Error.Levels);
     }
 }
 

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Globalization;
 using OpenTK.Mathematics;
+using SyneticLib.Files.Common;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public class MtlFile : SyneticIniFile
 {
     public string[] ColSetInf;
@@ -15,13 +16,14 @@ public class MtlFile : SyneticIniFile
 
     public MtlFile()
     {
+        ColSetInf = Array.Empty<string>();
         Materials = new();
     }
 
     protected override void OnRead()
     {
-        /*
-        if (Head.TryGetValue("ColSetInf", out string value))
+
+        if (Head.TryGetValue("ColSetInf", out var value))
         {
             ColSetInf = Head["ColSetInf"].Split(' ');
         }
@@ -34,14 +36,13 @@ public class MtlFile : SyneticIniFile
 
         foreach (var section in Sections)
         {
-            var material = new SMaterial();
-            material.Name = section.Name;
+            var material = new SMaterial(section.Name, ColSetInf.Length);
 
             foreach (var pair in section)
             {
                 switch (pair.Key)
                 {
-                    case "Diffuse": material.Diffuse = ParseHexArray(pair.Value); break;
+                    case "Diffuse": ParseHexArray(material.Diffuse, pair.Value); break;
                     case "Tex1Name": material.Tex1Name = ParseString(pair.Value); break;
                     case "Tex2Name": material.Tex2Name = ParseString(pair.Value); break;
                     case "Tex3Name": material.Tex3Name = ParseString(pair.Value); break;
@@ -50,12 +51,17 @@ public class MtlFile : SyneticIniFile
 
             Materials.Add(material);
         }
-        */
+
     }
 
     protected override void OnWrite()
     {
 
+    }
+
+    static void ParseHexArray(BgraColor[] dst, string src)
+    {
+        var colors = ParseHexArray(src);
     }
 
     static uint[] ParseHexArray(string value)
@@ -111,18 +117,19 @@ public class MtlFile : SyneticIniFile
 
     public class SMaterial
     {
-        public string Name;
-        
-        public MMatClass MatClass;
-        public BgraColor[] Diffuse;
-        public BgraColor[] Ambient;
-        public BgraColor[] Specular;
-        public BgraColor[] Reflect;
-        public BgraColor[] Specular2;
-        public BgraColor[] XDiffuse;
-        public BgraColor[] XSpecular;
+        public readonly string Name;
+        public readonly int Length;
 
-        public float[] Transparency;
+        public readonly BgraColor[] Diffuse;
+        public readonly BgraColor[] Ambient;
+        public readonly BgraColor[] Specular;
+        public readonly BgraColor[] Reflect;
+        public readonly BgraColor[] Specular2;
+        public readonly BgraColor[] XDiffuse;
+        public readonly BgraColor[] XSpecular;
+
+        public MMatClass MatClass;
+        public float Transparency;
         public string Tex1Name;
         public string Tex2Name;
         public string Tex3Name;
@@ -139,6 +146,24 @@ public class MtlFile : SyneticIniFile
         public struct MTexFlags
         {
             public byte A, B, C, D;
+        }
+
+        public SMaterial(string name, int length)
+        {
+            Name = name;
+            Length = length;
+
+            Tex1Name = string.Empty;
+            Tex2Name = string.Empty;
+            Tex3Name = string.Empty;
+
+            Diffuse = new BgraColor[length];
+            Ambient = new BgraColor[length];
+            Specular = new BgraColor[length];
+            Reflect = new BgraColor[length];
+            Specular2 = new BgraColor[length];
+            XDiffuse = new BgraColor[length];
+            XSpecular = new BgraColor[length];
         }
     }
 }

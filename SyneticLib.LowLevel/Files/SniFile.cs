@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 
-using GGL.IO;
+using Grille.IO;
 using System.Runtime.InteropServices;
+using SyneticLib.Files.Common;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public class SniFile : BinaryFile
 {
     public MHead Head;
@@ -16,7 +17,13 @@ public class SniFile : BinaryFile
     public MObj[] Objects;
     public MNode[] Nodes;
 
-    public override void ReadFromView(BinaryViewReader br)
+    public SniFile()
+    {
+        Objects = Array.Empty<MObj>();
+        Nodes = Array.Empty<MNode>();
+    }
+
+    public override void Deserialize(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
 
@@ -24,7 +31,7 @@ public class SniFile : BinaryFile
         Nodes = br.ReadArray<MNode>(Head.NodeCount);
     }
 
-    public override void WriteToView(BinaryViewWriter bw)
+    public override void Serialize(BinaryViewWriter bw)
     {
         bw.Write(Head);
 

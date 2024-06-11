@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
-using GGL.IO;
+using Grille.IO;
 using System.Runtime.InteropServices;
+using SyneticLib.Files.Common;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public class MoxFile : BinaryFile, IVertexData, IIndexData
 {
     public const int MBWR = 65536;
@@ -19,11 +20,20 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
 
     public int[] IndicesOffset { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public Vertex[] Vertecis { get; set; }
-    public IndexTriangle[] Indices { get; set; }
+    public IdxTriangleInt32[] Indices { get; set; }
 
     public byte[] Rest;
 
-    public unsafe override void ReadFromView(BinaryViewReader br)
+    public MoxFile()
+    {
+        Textures = Array.Empty<MPaintRegionInt32>();
+        Vertecis = Array.Empty<Vertex>();
+        Indices = Array.Empty<IdxTriangleInt32>();
+        Rest = Array.Empty<byte>();
+
+    }
+
+    public unsafe override void Deserialize(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
 
@@ -36,11 +46,11 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
             Vertecis[i] = (Vertex)br.Read<MVertex>();
         }
 
-        var indices = br.ReadArray<ushort>(Head.PolyCount * 3);
-        Indices = new IndexTriangle[indices.Length / 3];
+        var indicesU16 = br.ReadArray<IdxTriangleUInt16>(Head.PolyCount);
+        Indices = new IdxTriangleInt32[indicesU16.Length];
         for (int i = 0; i < Indices.Length; i++)
         {
-            Indices[i] = new IndexTriangle(indices[i * 3 + 0], indices[i * 3 + 2], indices[i * 3 + 1]);
+            Indices[i] = indicesU16[i];
         }
 
         if (Head.Version == MBWR)
@@ -67,7 +77,7 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
         */
     }
 
-    public override void WriteToView(BinaryViewWriter bw)
+    public override void Serialize(BinaryViewWriter bw)
     {
         bw.Write(Head);
 
@@ -78,9 +88,7 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
 
         for (int i = 0; i < Head.PolyCount; i++)
         {
-            bw.Write((ushort)Indices[i].X);
-            bw.Write((ushort)Indices[i].Z);
-            bw.Write((ushort)Indices[i].Y);
+            bw.Write((IdxTriangleUInt16)Indices[i]);
         }
 
         if (Head.Version == MBWR)
@@ -116,7 +124,7 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
 
         public static explicit operator Vertex(MVertex src) => new Vertex()
         {
-            InvPosition = src.Position,
+            Position = src.Position,
             Normal = src.Normal,
             UV0 = src.UV,
             UV1 = Vector2.Zero,
@@ -124,7 +132,7 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
 
         public static explicit operator MVertex(Vertex src) => new MVertex()
         {
-            Position = src.InvPosition,
+            Position = src.Position,
             Normal = src.Normal,
             UV = src.UV0,
         };

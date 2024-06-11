@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using GGL.IO;
+using Grille.IO;
 using System.Runtime.InteropServices;
 using SyneticLib.LowLevel.Compression;
+using SyneticLib.Files.Common;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public unsafe class DdsFile : BinaryFile
 {
     public const uint MagicValue = 0x20534444;
@@ -16,7 +17,13 @@ public unsafe class DdsFile : BinaryFile
     public uint Magic;
     public MHeader Head;
     public Level[] Levels;
-    public override void ReadFromView(BinaryViewReader br)
+
+    public DdsFile()
+    {
+        Levels = Array.Empty<Level>();
+    }
+
+    public override void Deserialize(BinaryViewReader br)
     {
         Magic = br.ReadUInt32();
         if (Magic != MagicValue)
@@ -26,7 +33,7 @@ public unsafe class DdsFile : BinaryFile
         Head.Assert();
     }
 
-    public override void WriteToView(BinaryViewWriter bw)
+    public override void Serialize(BinaryViewWriter bw)
     {
         bw.Write(Head);
 
@@ -101,10 +108,16 @@ public unsafe class DdsFile : BinaryFile
         Luminance = 0x20000,
     }
 
-    public class Level : IViewObject
+    public class Level
     {
         public MHead Head;
         public byte[] Decoded;
+
+        public Level()
+        {
+            Decoded = Array.Empty<byte>();
+        }
+
         public void ReadFromView(BinaryViewReader br)
         {
             Head = br.Read<MHead>();

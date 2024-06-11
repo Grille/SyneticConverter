@@ -5,8 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib.LowLevel.Files;
+namespace SyneticLib.Files;
 public interface IIndexData
 {
-    public IndexTriangle[] Indices { get; set; }
+    public IdxTriangleInt32[] Indices { get; }
 }

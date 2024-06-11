@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using GGL.IO;
-using SyneticLib.LowLevel.Files;
+using Grille.IO;
+using SyneticLib.Files;
 
 namespace SyneticLib.LowLevel.Compression;
 public class SynArchive
@@ -18,11 +18,13 @@ public class SynArchive
     public SynArchive()
     {
         syn = new SynFile();
+        entries = new();
     }
 
     public SynArchive(SynFile syn)
     {
         this.syn = syn;
+        entries = new();
     }
 
     public void Load()

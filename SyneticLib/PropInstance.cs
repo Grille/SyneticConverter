@@ -14,7 +14,7 @@ public class PropInstance : SyneticObject
     public float Angle;
     public float Scale;
 
-    public PropInstance(PropClass @class) : base("PropInstance")
+    public PropInstance(PropClass @class)
     {
         Class = @class;
     }

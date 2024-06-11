@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-using SyneticLib.LowLevel;
-using SyneticLib.LowLevel.Files;
+using SyneticLib;
+using SyneticLib.Files;
 using SyneticLib.Locations;
 
 namespace SyneticLib.IO;
@@ -17,6 +17,10 @@ public static partial class Imports
     {
         var dirpath = Path.GetDirectoryName(path);
         var texpath = Path.Combine(dirpath, "textures");
+        if (!Directory.Exists(texpath))
+        {
+            texpath = Path.Combine(dirpath, "textures_pc");
+        }
         var textures = new TextureDirectory(texpath);
 
         return LoadModelFromMox(path, textures);
@@ -44,18 +48,19 @@ public static partial class Imports
             else
             {
                 var srcMtl = mtl.Materials[i];
-                var dstMat = new Material("");
-                dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]).ToNormalizedVector3();
+                var dstMat = new Material();
+
+                //dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]).ToNormalizedVector3();
 
                 dstMat.TexSlot0.TryEnableByFile(textures, srcMtl.Tex1Name);
-                //dstMat.TexSlot1.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex2Name);
-                //dstMat.TexSlot2.TryEnableByFile(Target.AssignedTextures, srcMtl.Tex3Name);
+                dstMat.TexSlot1.TryEnableByFile(textures, srcMtl.Tex2Name);
+                dstMat.TexSlot2.TryEnableByFile(textures, srcMtl.Tex3Name);
 
                 materials.Add(dstMat);
             }
         }
 
-        var mesh = new Mesh("", mox.Vertecis, mox.Indices);
+        var mesh = new Mesh(mox.Vertecis, mox.Indices);
 
         var regions = new ModelMaterialRegion[mox.Textures.Length];
         for (var i = 0; i < mox.Textures.Length; i++)
@@ -69,7 +74,9 @@ public static partial class Imports
             regions[i] = new ModelMaterialRegion(src.PolyOffset, src.PolyCount, material);
         }
 
-        return new Model("", mesh, regions);
+        var submesh = new MeshSegment(mesh);
+
+        return new Model(submesh, regions);
     }
 
 }
