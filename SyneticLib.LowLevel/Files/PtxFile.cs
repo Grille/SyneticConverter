@@ -72,6 +72,10 @@ public class PtxFile : BinaryFile
 
             if (Head.SynSize > 0)
             {
+                //br.PeakStream.Seek(Head.SynSize, SeekOrigin.Current);
+                //Pixels = new byte[Head.Size];
+
+                
                 var DecodeStream = new MemoryStream();
                 SynCompressor.Decompress(br.PeakStream, DecodeStream, (int)Head.SynSize);
                 Pixels = DecodeStream.ToArray();
@@ -80,6 +84,7 @@ public class PtxFile : BinaryFile
                 {
                     throw new InvalidDataException($"Invalid size (result:{Pixels.Length} != expected:{Head.Size}) diff:{diff}");
                 }
+                
 
             }
             else

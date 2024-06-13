@@ -4,7 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Grille.IO;
+
+using SyneticLib.Files.Common;
+
 namespace SyneticLib.Files;
-internal class TobFile
+internal class TobFile : BinaryFile
 {
+    public override void Deserialize(BinaryViewReader br)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Serialize(BinaryViewWriter bw)
+    {
+        throw new NotImplementedException();
+    }
 }

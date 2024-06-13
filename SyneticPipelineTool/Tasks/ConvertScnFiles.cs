@@ -32,9 +32,9 @@ internal class ConvertScnFiles : PipelineTask
         float ambient = float.Parse(EvalParameter("Ambient Light"));
 
         if (verSrc == "WR1")
-            WR1ToWR2FileConv.Convert(path, ambient);
+            WR1ToWR2FileConv.Convert(path, name, ambient);
         if (verSrc == "C11")
-            C11ToWR2FileConv.Convert(path);
+            C11ToWR2FileConv.Convert(path, name);
 
         Runtime.Log($"Convert files {EvalParameter("SrcVersion")} to {EvalParameter("DstVersion")} {path}");
     }

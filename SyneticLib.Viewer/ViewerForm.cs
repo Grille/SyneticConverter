@@ -73,6 +73,21 @@ public partial class ViewerForm : Form
         }
         catch (Exception ex)
         {
+            throw;
+            ExceptionBox.Show(this, ex);
+        }
+    }
+
+    public void LoadModelCob(string path)
+    {
+        try
+        {
+            var model = Imports.LoadModelFromCob(path);
+            scene.ClearScene();
+            scene.SubmitSingleModel(model);
+        }
+        catch (Exception ex)
+        {
             ExceptionBox.Show(this, ex);
         }
     }
@@ -104,6 +119,11 @@ public partial class ViewerForm : Form
                 case ".ptx":
                 {
                     var texture = Imports.LoadPtxTexture(path);
+                    break;
+                }
+                case ".cob":
+                {
+                    LoadModelCob(path);
                     break;
                 }
                 case ".mox":

@@ -12,11 +12,19 @@ uniform mat4 uView;
 uniform mat4 uProjection;
 uniform vec3 uColor;
 
+uniform mat2x4 uMat0;
+uniform mat2x4 uMat1;
+uniform mat2x4 uMat2;
+
 out vec3 fPos;
 out vec3 fNorm;
 out vec2 fUV0;
 out vec2 fUV1;
 out vec3 fBlend;
+
+out vec2 fUV0Mat0;
+out vec2 fUV0Mat1;
+out vec2 fUV0Mat2;
 
 out vec4 fLightColor;
 

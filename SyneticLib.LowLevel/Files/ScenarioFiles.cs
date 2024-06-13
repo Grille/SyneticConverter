@@ -72,8 +72,10 @@ public class ScenarioFiles
         }
 
         Lvl.Load();
-        Sni.Load();
         Qad.Load();
+
+        if (Sni.Exists)
+            Sni.Load();
 
         if (Sky.Exists)
             Sky.Load();

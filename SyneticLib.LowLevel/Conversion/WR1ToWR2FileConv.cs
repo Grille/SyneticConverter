@@ -15,19 +15,26 @@ namespace SyneticLib.Conversion;
 
 public static class WR1ToWR2FileConv
 {
-    public static void Convert(string path, float ambientOffset)
+    public static void Convert(string dirPath, string fileName, float ambientOffset)
     {
-        string qadpath = Path.ChangeExtension(path, ".qad");
-        string vtxpath = Path.ChangeExtension(path, ".vtx");
-        string snipath = Path.ChangeExtension(path, ".sni");
+        var filePath = Path.Combine(dirPath, fileName);
+
+        string qadpath = Path.ChangeExtension(filePath, ".qad");
+        string vtxpath = Path.ChangeExtension(filePath, ".vtx");
+        string snipath = Path.ChangeExtension(filePath, ".sni");
 
         ConvertQad(qadpath);
         ConvertVtx(vtxpath, ambientOffset);
         ConvertSni(snipath);
+
+        CreateCobFiles(dirPath);
     }
 
     public static void ConvertSni(string path)
     {
+        if (!File.Exists(path))
+            return;
+
         var sni = new SniFile();
         sni.Load(path);
 
@@ -180,107 +187,158 @@ public static class WR1ToWR2FileConv
     {
         for (int i = 0; i < qad.PropClassInfo.Length; i++)
         {
-            string name = qad.PropClassObjNames[i];
+            string name = qad.PropClassObjNames[i].ToString().ToLower();
             ref var info = ref qad.PropClassInfo[i];
 
-            switch (name.ToLower())
+            var input = GetObjectInfo(name);
+            if (input != null)
             {
-                case "kuh":
-                case "kuhl1":
-                case "kuhl2":
-                    {
-                        info.Shape = 4;
-                        info.Weight = 250;
-                        info.HitSound = (String48)"t_kuh";
-                        info.FallSound = (String48)"ko_dirt_l";
-                        break;
-                    }
-                case "pylon":
-                    {
-                        info.Shape = 1;
-                        info.Mode = 0;
-                        info.Weight = 5;
-                        info.HitSound = (String48)"ko_pylon";
-                        info.FallSound = (String48)"ko_pylon";
-                        break;
-                    }
-                case "bake1":
-                case "bake2":
-                    {
-                        info.Shape = 2;
-                        info.Mode = 0;
-                        info.Weight = 50;
-                        info.HitSound = (String48)"ko_barke";
-                        info.FallSound = (String48)"ko_barke";
-                        break;
-                    }
-                case "tunnlampe":
-                    {
-                        info.Mode = 0;
-                        break;
-                    }
-                case "hfass":
-                    {
-                        info.Shape = 4;
-                        info.Weight = 50;
-                        info.HitSound = (String48)"ko_holz";
-                        info.FallSound = (String48)"ko_dirt_l";
-                        break;
-                    }
-                case "sign1":
-                case "sign2":
-                case "sign3":
-                case "sign4":
-                case "sign5":
-                case "sign6":
-                case "sign7":
-                case "sign8":
-                case "sign9":
-                case "sign10":
-                case "sign11":
-                case "sign12":
-                case "warns1":
-                case "warns2":
-                    {
-                        info.Shape = 4;
-                        info.Weight = 50;
-                        info.HitSound = (String48)"ko_holz";
-                        info.FallSound = (String48)"ko_dirt_l";
-                        break;
-                    }
-                case "hubi_51":
-                case "hubia51":
-                    {
-                        break;
-                    }
-                case "f15":
-                case "b2bomb":
-                case "aurora":
-                    {
-                        break;
-                    }
-                case "car1":
-                case "car2":
-                case "car3":
-                case "car4":
-                case "car5":
-                case "car6":
-                case "car7":
-                case "car8":
-                case "van1":
-                case "gland1":
-                case "gland2":
-                case "trackvan":
-                    {
-                        info.Shape = 3;
-                        info.Weight = 600;
-                        info.HitSound = (String48)"ko_barke2";
-                        info.FallSound = (String48)"ko_dirt_l";
-                        break;
-                    }
-
+                info.Weight = input.Weight;
+                info.HitSound = (String48)input.HitSound;
+                info.FallSound = (String48)input.FallSound;
             }
         }
+    }
+
+    public record ObjectInfo(int Shape, ushort Weight, string HitSound, string FallSound);
+    public static ObjectInfo? GetObjectInfo(string name)
+    {
+        switch (name)
+        {
+            case "kuh":
+            case "kuhl1":
+            case "kuhl2":
+            {
+                return new ObjectInfo(0,250, "t_kuh", "ko_dirt_l");
+            }
+            case "pylon":
+            {
+                return new ObjectInfo(0,5, "ko_pylon", "ko_pylon");
+            }
+            case "bake1":
+            case "bake2":
+            {
+                return new ObjectInfo(0,50, "ko_barke", "ko_barke");
+            }
+            case "kiste1":
+            case "kiste2":
+            case "hfass":
+            {
+                return new ObjectInfo(0,50, "ko_holz", "ko_dirt_l");
+            }
+            case "aleinsign":
+            case "exhigh":
+            {
+                return new ObjectInfo(0,400, "ko_holz", "ko_dirt_l");
+            }
+            case "sign1":
+            case "sign2":
+            case "sign3":
+            case "sign4":
+            case "sign5":
+            case "sign6":
+            case "sign7":
+            case "sign8":
+            case "sign9":
+            case "sign10":
+            case "sign11":
+            case "sign12":
+            case "warns1":
+            case "warns2":
+            {
+                return new ObjectInfo(0, 50, "ko_holz", "ko_dirt_l");
+            }
+            case "boot1":
+            case "boot1a":
+            case "boot1v":
+            case "boot2":
+            case "boot2a":
+            case "boot2os":
+            case "boot3":
+            case "boot4":
+            {
+                return new ObjectInfo(4, 10000, "ko_barke2", "ko_dirt_l");
+            }
+            case "flugz1":
+            case "flugz2":
+            case "flugz3":
+            case "flugz4":
+            case "heli":
+            case "hubi_51":
+            case "hubia51":
+            {
+                return new ObjectInfo(4, 5000, "ko_barke2", "ko_dirt_l");
+            }
+            case "f15":
+            case "b2bomb":
+            case "aurora":
+            {
+                return new ObjectInfo(4, 10000, "ko_barke2", "ko_dirt_l");
+            }
+            case "car1":
+            case "car2":
+            case "car3":
+            case "car4":
+            case "car5":
+            case "car6":
+            case "car7":
+            case "car8":
+            case "van1":
+            case "gland1":
+            case "gland2":
+            case "trackvan":
+            {
+                return new ObjectInfo(4, 600, "ko_barke2", "ko_dirt_l");
+            }
+        }
+        return null;
+    }
+
+    public static void CreateCobFiles(string path)
+    {
+        var objectDir = Path.Combine(path, "Objects");
+        var colliDir = Path.Combine(path, "Colli");
+        Directory.CreateDirectory(colliDir);
+
+        var sbNames = new StringBuilder();
+
+        foreach (var moxFilePath in Directory.EnumerateFiles(objectDir))
+        {
+            if (Path.GetExtension(moxFilePath).ToLower() == ".mox")
+            {
+                var name = Path.GetFileNameWithoutExtension(moxFilePath);
+                var info = GetObjectInfo(name.ToLower());
+                if (info == null)
+                {
+                    continue;
+                }
+
+                var mox = new MoxFile();
+                mox.Load(moxFilePath);
+
+                sbNames.AppendLine(name);
+
+                var cobFileName = Path.ChangeExtension(name, ".cob");
+                var cobFilePath = Path.Combine(colliDir, cobFileName);
+
+                var cob = CreateCobFile(mox);
+                cob.Save(cobFilePath);
+            }
+        }
+
+        var namesFileName = Path.Combine(colliDir, "ColliList.txt");
+        File.WriteAllText(namesFileName, sbNames.ToString());
+    }
+
+    public static CobFile CreateCobFile(MoxFile mox)
+    {
+        var cob = new CobFile();
+        cob.Vertecis = mox.Vertecis;
+        cob.Indices = mox.Indices;
+        cob.Head.VerticeCount = cob.Vertecis.Length;
+        cob.Head.PolyCount = cob.Indices.Length;
+        cob.Head.BoundingBox = new BoundingBox(cob.Vertecis, cob.Indices);
+        return cob;
     }
 
     public static void FixGrounds(QadFile qad)
@@ -295,6 +353,8 @@ public static class WR1ToWR2FileConv
                 case "kiesbett":
                 case "gras":
                 case "grass":
+                case "grass/other":
+                case "gravel":
                 case "sand":
                 case "erde-sand":
                 case "erdemittel":

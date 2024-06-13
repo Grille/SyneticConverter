@@ -1,5 +1,5 @@
 ﻿#version 450 core
-uniform sampler2D texture0 = 0;
+uniform sampler2D texture0;
 
 in vec2 fUV;
 

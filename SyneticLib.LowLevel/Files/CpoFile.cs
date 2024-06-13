@@ -12,8 +12,9 @@ using SyneticLib.Files.Common;
 
 namespace SyneticLib.Files;
 
-public class CobFile : BinaryFile, IVertexData, IIndexData
+public class CpoFile : BinaryFile, IVertexData, IIndexData
 {
+    public const int Magic = 0x43504F21;
     public MHead Head;
 
     public int[] IndicesOffset { get; set; }
@@ -22,7 +23,7 @@ public class CobFile : BinaryFile, IVertexData, IIndexData
 
     public IdxTriangleInt32[] Indices { get; set; }
 
-    public CobFile()
+    public CpoFile()
     {
         IndicesOffset = new int[1] { 0 };
         Vertecis = Array.Empty<Vertex>();

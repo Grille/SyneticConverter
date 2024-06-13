@@ -51,6 +51,11 @@ public class MeshSegment
         BoundingBox = new BoundingBox(Vertices, Indices, offset);
     }
 
+    public void UpdateBoundingBox()
+    {
+        BoundingBox = new BoundingBox(Vertices, Indices, Offset);
+    }
+
     public Mesh ToMesh()
     {
         var vertecies = Vertices.ToArray();

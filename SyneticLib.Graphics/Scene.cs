@@ -22,9 +22,6 @@ public class Scene : IDisposable
 
     SceneAssets assets;
 
-    Model? model;
-    Scenario? scenario;
-
     ModelGlHandle? modelHandle;
     ScenarioGlHandle? scenarioHandle;
 
@@ -44,14 +41,12 @@ public class Scene : IDisposable
 
     public void SubmitScenario(Scenario scenario)
     {
-        this.scenario = scenario;
         scenarioHandle?.Dispose();
         scenarioHandle = new ScenarioGlHandle(scenario);
     }
 
     public void SubmitSingleModel(Model model)
     {
-        this.model = model;
         modelHandle?.Dispose();
         modelHandle = new ModelGlHandle(model);
     }
@@ -99,7 +94,7 @@ public class Scene : IDisposable
         if (scenarioHandle != null)
         {
             scenarioHandle.SubCamera(Camera);
-            scenarioHandle.DrawScenario();
+            scenarioHandle.DrawScenario(Camera.Position, 32);
         }
 
         if (modelHandle != null)
@@ -108,6 +103,7 @@ public class Scene : IDisposable
             modelHandle.DrawModel();
         }
 
+        /*
         //GL.Disable(EnableCap.DepthTest);
 
         {
@@ -142,6 +138,7 @@ public class Scene : IDisposable
 
             assets.Compass.DrawModel(mat);
         }
+        */
         //GL.DrawElements(PrimitiveType.Triangles, buffer.ElementCount, DrawElementsType.UnsignedInt, 0 * 3 * 4);
 
         var error = GL.GetError();

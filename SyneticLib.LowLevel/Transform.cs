@@ -2,19 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
 public struct Transform
 {
-    public Transform3 X;
-    public Transform2 Y;
-    public Transform3 Z;
+    public Transform3 U;
+    public Transform3 V;
 
     public override string ToString()
     {
-        return $"{X.Rotate} {X.Scale} {X.Move} {Y.Rotate} {Y.Scale} {Z.Rotate} {Z.Scale} {Z.Move}";
+        return $"{U} {V}";
     }
 
     public Matrix3 ToMatrix()
@@ -23,15 +23,42 @@ public struct Transform
         return m;
     }
 
+    public static Transform CreateScale(float x, float z)
+    {
+        var mat = new Transform();
+        mat.U.ScaleX = x;
+        mat.V.ScaleZ = z;
+        return mat;
+    }
+
+    public static Transform CreateScale90Deg(float x, float z)
+    {
+        var mate = Matrix2x4.CreateScale(x, z);
+        return Unsafe.As<Matrix2x4, Transform>(ref mate);
+    }
+
+    public static Transform Initial
+    {
+        get
+        {
+            var t = new Transform();
+            t.U.ScaleX = 1;
+            t.U.ScaleY = 1;
+            t.V.ScaleY = 1;
+            t.V.ScaleZ = 1;
+            return t;
+        }
+    }
+
     public static Transform Empety
     {
         get
         {
             var t = new Transform();
-            t.X.Rotate = 1;
-            t.X.Scale = -0;
-            t.Z.Rotate = 1;
-            t.Z.Scale = -4.37114E-08f;
+            t.U.ScaleX = 1;
+            t.U.ScaleY = -0;
+            t.V.ScaleX = 1;
+            t.V.ScaleY = -4.37114E-08f;
             return t;
         }
     }

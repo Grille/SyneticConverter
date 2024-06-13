@@ -12,6 +12,12 @@ public struct BoundingBox
     public Vector3 Start;
     public Vector3 End;
 
+    public BoundingBox(Vector3 start, Vector3 end)
+    {
+        Start = start;
+        End = end;
+    }
+
     public BoundingBox(ReadOnlySpan<Vertex> vertices)
     {
         if (vertices.Length == 0)
@@ -39,8 +45,6 @@ public struct BoundingBox
             Extend(vertices[indices[i].Z + offset].Position);
         }
     }
-
-    public BoundingBox(MeshSegment mesh) : this(mesh.Vertices, mesh.Indices) { }
 
     public void Extend(BoundingBox boundings)
     {

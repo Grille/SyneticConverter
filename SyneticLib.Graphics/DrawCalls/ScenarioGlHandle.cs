@@ -56,36 +56,56 @@ internal class ScenarioGlHandle : IDisposable
         }
     }
 
-    public void DrawScenario(Vector3 position, float radius)
+    public void DrawChunk(int x, int y)
     {
-        DrawScenario(new Vector2(position.X, position.Y), radius);
-    }
-
-    public void DrawScenario(Vector2 position, float radius)
-    {
-        float x = position.X;
-        float y = position.Y;
-
-        int beginX = (int)Math.Floor(x - radius);
-        int beginY = (int)Math.Floor(y - radius);
-
-        int endX = (int)Math.Floor(x + radius);
-        int endY = (int)Math.Floor(y + radius);
-
-        for (int iy = 0; iy < _height; iy++)
+        (int, int) Clamp(int value, int min, int max)
         {
-            for (int ix = 0; ix < _width; ix++)
-            {
-                TerrainDrawCalls[ix, iy].Execute();
-            }
+            if (value < min)
+                return (min, value);
+            if (value >= max)
+                return (max - 1, value - max);
+            return (value, 0);
         }
 
-        return;
-        for (int iy = beginX; iy < endX; iy++)
-        {
-            for (int ix = beginY; ix < endY; ix++)
-            {
+        (int posX, int offsetX) = Clamp(x, 0, _width);
+        (int posY, int offsetY) = Clamp(y, 0, _height);
 
+        var matrix = Matrix4.CreateTranslation(offsetX * 1024, 0, offsetY * 1024);
+
+        TerrainDrawCalls[posX, posY].Execute(matrix);
+    }
+
+    public void DrawScenario(Vector3 position, float radius)
+    {
+        float posX = position.X / 1024f + _width / 2;
+        float posY = position.Z / 1024f + _height / 2;
+
+        Console.WriteLine(posX);
+        Console.WriteLine(posY);
+
+        int beginX = (int)Math.Floor(posX - radius*2);
+        int beginY = (int)Math.Floor(posY - radius*2);
+
+        int endX = (int)Math.Floor(posX + radius*2);
+        int endY = (int)Math.Floor(posY + radius*2);
+
+        Terrain.Bind();
+
+        var rDistSq = radius * radius + radius * radius;
+
+        for (int iy = beginY; iy < endY; iy++)
+        {
+            for (int ix = beginX; ix < endX; ix++)
+            {
+                var distX = MathF.Abs(ix - posX);
+                var distY = MathF.Abs(iy - posY);
+
+                var distSq = distX * distX + distY * distY;
+
+                if (distSq > rDistSq)
+                    continue;
+
+                DrawChunk(ix, iy);
             }
         }
     }
@@ -98,7 +118,7 @@ internal class ScenarioGlHandle : IDisposable
         {
             for (int ix = 0; ix < _width; ix++)
             {
-                TerrainDrawCalls[ix, iy].Execute();
+                DrawChunk(ix, iy);
             }
         }
 
