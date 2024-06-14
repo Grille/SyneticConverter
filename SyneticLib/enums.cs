@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using SyneticLib;
@@ -10,10 +11,20 @@ namespace SyneticLib;
 public enum TextureFormat
 {
     Unknown,
+    R8,
     RGB24,
+    BGRA32,
     RGBA32,
     RGB24Dxt1,
     RGBA32Dxt5,
+}
+
+public static class TextureFormatExtension
+{
+    public static int Stride(this TextureFormat format) => format switch
+    {
+        _ => throw new NotImplementedException(),
+    };
 }
 
 public enum MaterialShadingMode

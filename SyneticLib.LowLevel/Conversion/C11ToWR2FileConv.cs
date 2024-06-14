@@ -30,66 +30,36 @@ public static class C11ToWR2FileConv
 
     public static void Convert(string dirPath, string fileName)
     {
-        var filePath = Path.Combine(dirPath, fileName);
+        var paths = new ScenarioFiles.Paths(dirPath, fileName);
+        var files = new ScenarioFiles();
+        files.Load(paths, GameVersion.C11);
 
-        ConvertGeo(filePath);
-        ConvertQad(filePath);
+        ConvertGeo(files.TerrainMesh.Vertices);
+        ConvertQad(files.Qad);
 
         CreateCobFiles(dirPath);
+
+        files.Save(paths, GameVersion.WR2);
     }
 
-    public static void ConvertGeo(string path)
+    public static void ConvertGeo(Vertex[] vertecis)
     {
-        string qeopath = Path.ChangeExtension(path, "geo");
-        string idxpath = Path.ChangeExtension(path, "idx");
-        string vtxpath = Path.ChangeExtension(path, "vtx");
-
-        var geo = new GeoFile();
-        var idx = new IdxFile();
-        var vtx = new VtxFile();
-
-        geo.Path = qeopath;
-        idx.Path = idxpath;
-        vtx.Path = vtxpath;
-
-        geo.Load();
-
-        idx.Indices = geo.Indices;
-        vtx.Vertecis = geo.Vertecis;
-        vtx.IndicesOffset = geo.IndicesOffset;
-
         var black = new Vector3(0.2f);
 
-        for (int i = 0; i < vtx.Vertecis.Length; i++)
+        for (int i = 0; i < vertecis.Length; i++)
         {
-            ref var vertex = ref vtx.Vertecis[i];
+            ref var vertex = ref vertecis[i];
 
             float f = vertex.LightColor.Length;
 
             var blend = vertex.Blending;
             vertex.Blending = new Vector3(blend.Y, blend.Z, blend.X);
             vertex.LightColor = Vector3.Clamp(vertex.LightColor * f + black * (1 - f), Vector3.Zero, Vector3.One);
-
-            
         }
-
-        idx.Save();
-        vtx.Save();
-
-        File.Delete(qeopath);
     }
 
-    public static void ConvertQad(string path)
+    public static void ConvertQad(QadFile qad)
     {
-        string qadpath = Path.ChangeExtension(path, "qad");
-
-        var qad = new QadFile();
-
-        qad.Path = qadpath;
-
-        qad.SetFlagsAccordingToVersion(GameVersion.C11);
-        qad.Load();
-
         var matrices = new Transform[qad.TextureNames.Length];
         for (int i = 0; i < matrices.Length; i++)
         {
@@ -124,7 +94,6 @@ public static class C11ToWR2FileConv
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.SortMaterials();
         qad.RecalcMaterialChecksum();
-        qad.Save();
     }
 
     public static void ConvertC11ToWR2(ref this QadFile.MMaterialTypeCT src, ref QadFile.MMaterialTypeWR dst, Transform[] matrices)

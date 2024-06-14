@@ -5,22 +5,19 @@ using System.Runtime.CompilerServices;
 
 using SyneticLib.Math3D;
 using SyneticLib.Graphics.Shaders;
+using System.Collections.Generic;
 
 namespace SyneticLib.Graphics.OpenGL;
-public abstract class ShaderProgram : GLObject
+public class ShaderProgram : GLObject
 {
     public int ProgramID { get; }
-
-    protected int UModelMatrix4;
-    protected int UViewMatrix4;
-    protected int UProjectionMatrix4;
 
     public ShaderProgram()
     {
         ProgramID = GL.CreateProgram();
     }
 
-    public void Link(GlslVertexShader vertex, GlslFragmentShader fragment)
+    public void Link(GlslVertexShaderSource vertex, GlslFragmentShaderSource fragment)
     {
         using var shader = new Shader(vertex, fragment);
         Link(shader);
@@ -39,32 +36,34 @@ public abstract class ShaderProgram : GLObject
         GL.LinkProgram(ProgramID);
     }
 
-    protected int GetUniformLocation(string name) => GL.GetUniformLocation(ProgramID, name);
-
-    public void SubMatrix4(int location, in Matrix4 matrix)
+    protected UniformLocation GetUniformLocation(string name, bool throwIfNotFound = false)
     {
-        GL.UniformMatrix4(location, false, ref Unsafe.AsRef(matrix));
+        int uniform = GL.GetUniformLocation(ProgramID, name);
+        if (throwIfNotFound && uniform == -1)
+        {
+            throw new KeyNotFoundException($"Uniform {name} not found.");
+        }
+        return new UniformLocation(uniform);
     }
 
-    public void SubSingle(int location, float vec)
+    public void SubMatrix4(UniformLocation location, in Matrix4 matrix)
     {
-        GL.Uniform1(location, vec);
+        GL.UniformMatrix4(location.Location, false, ref Unsafe.AsRef(matrix));
     }
 
-    public void SubVector3(int location, Vector3 vec)
+    public void SubSingle(UniformLocation location, float vec)
     {
-        GL.Uniform3(location, ref vec);
+        GL.Uniform1(location.Location, vec);
     }
 
-    public void SubCameraMatrix(Camera camera)
+    public void SubVector2(UniformLocation location, Vector2 vec)
     {
-        SubMatrix4(UViewMatrix4, camera.ViewMatrix);
-        SubMatrix4(UProjectionMatrix4, camera.ProjectionMatrix);
+        GL.Uniform2(location.Location, vec);
     }
 
-    public void SubModelMatrix(in Matrix4 matrix)
+    public void SubVector3(UniformLocation location, Vector3 vec)
     {
-        SubMatrix4(UModelMatrix4, matrix);
+        GL.Uniform3(location.Location, vec);
     }
 
     protected sealed override void OnBind()

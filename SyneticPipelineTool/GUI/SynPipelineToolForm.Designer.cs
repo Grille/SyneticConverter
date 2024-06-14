@@ -41,10 +41,6 @@ namespace SyneticPipelineTool
             toolStripSeparator1 = new ToolStripSeparator();
             quitToolStripMenuItem = new ToolStripMenuItem();
             previewToolStripMenuItem = new ToolStripMenuItem();
-            scenarioToolStripMenuItem = new ToolStripMenuItem();
-            MBWRToolStripMenuItem = new ToolStripMenuItem();
-            WR2ToolStripMenuItem = new ToolStripMenuItem();
-            C11ToolStripMenuItem = new ToolStripMenuItem();
             PipelineToolControl = new Grille.PipelineTool.WinForms.PipelineToolControl();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -122,44 +118,14 @@ namespace SyneticPipelineTool
             // 
             // previewToolStripMenuItem
             // 
-            previewToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { scenarioToolStripMenuItem });
             previewToolStripMenuItem.Name = "previewToolStripMenuItem";
             previewToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
             previewToolStripMenuItem.Text = "Preview";
-            // 
-            // scenarioToolStripMenuItem
-            // 
-            scenarioToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { MBWRToolStripMenuItem, WR2ToolStripMenuItem, C11ToolStripMenuItem });
-            scenarioToolStripMenuItem.Image = Properties.Resources.Terrain;
-            scenarioToolStripMenuItem.Name = "scenarioToolStripMenuItem";
-            scenarioToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            scenarioToolStripMenuItem.Text = "Scenario";
-            // 
-            // MBWRToolStripMenuItem
-            // 
-            MBWRToolStripMenuItem.Name = "MBWRToolStripMenuItem";
-            MBWRToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            MBWRToolStripMenuItem.Text = "MBWR";
-            MBWRToolStripMenuItem.Click += MBWRToolStripMenuItem_Click;
-            // 
-            // WR2ToolStripMenuItem
-            // 
-            WR2ToolStripMenuItem.Name = "WR2ToolStripMenuItem";
-            WR2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            WR2ToolStripMenuItem.Text = "WR2";
-            WR2ToolStripMenuItem.Click += WR2ToolStripMenuItem_Click;
-            // 
-            // C11ToolStripMenuItem
-            // 
-            C11ToolStripMenuItem.Name = "C11ToolStripMenuItem";
-            C11ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            C11ToolStripMenuItem.Text = "C11";
-            C11ToolStripMenuItem.Click += C11ToolStripMenuItem_Click;
+            previewToolStripMenuItem.Click += previewToolStripMenuItem_Click;
             // 
             // PipelineToolControl
             // 
             PipelineToolControl.Dock = DockStyle.Fill;
-            PipelineToolControl.FilePath = "pipelines.txt";
             PipelineToolControl.Location = new System.Drawing.Point(0, 24);
             PipelineToolControl.Name = "PipelineToolControl";
             PipelineToolControl.Size = new System.Drawing.Size(784, 537);
@@ -196,9 +162,5 @@ namespace SyneticPipelineTool
         private ToolStripMenuItem quitToolStripMenuItem;
         private Grille.PipelineTool.WinForms.PipelineToolControl PipelineToolControl;
         private ToolStripMenuItem previewToolStripMenuItem;
-        private ToolStripMenuItem scenarioToolStripMenuItem;
-        private ToolStripMenuItem MBWRToolStripMenuItem;
-        private ToolStripMenuItem WR2ToolStripMenuItem;
-        private ToolStripMenuItem C11ToolStripMenuItem;
     }
 }

@@ -47,19 +47,17 @@ public static partial class Imports
     {
         var files = new ScenarioFiles();
 
-        files.Deserialize(dirPath, fileName);
+        files.Load(dirPath, fileName);
 
         var syn = files.Syn;
-        var geo = files.Geo;
-        var idx = files.Idx;
         var lvl = files.Lvl;
         var sni = files.Sni;
-        var vtx = files.Vtx;
         var qad = files.Qad;
         var sky = files.Sky;
 
-        var ivtx = files.VertexData;
-        var iidx = files.IndexData;
+        var vertecis = files.TerrainMesh.Vertices;
+        var indices = files.TerrainMesh.Indices;
+        var iOffsets = files.TerrainMesh.Offsets;
 
         var terrainTextures = new TextureDirectory(Combine(dirPath, "textures"));
         var modelTextures = new TextureDirectory(Combine(dirPath, "objects/textures"));
@@ -67,14 +65,14 @@ public static partial class Imports
 
         var terrainMaterials = GetTerrainMaterials(qad, terrainTextureIndex);
 
-        var offsets = new int[ivtx.IndicesOffset.Length + 1];
+        var offsets = new int[iOffsets.Length + 1];
         for (var i = 0; i < offsets.Length - 1; i++)
         {
-            offsets[i + 1] = offsets[i] + ivtx.IndicesOffset[i];
+            offsets[i + 1] = offsets[i] + iOffsets[i];
         }
 
         var matx = new Material();
-        var mesh = new Mesh(ivtx.Vertecis, iidx.Indices);
+        var mesh = new Mesh(vertecis, indices);
 
         var scenario = new Scenario(0);
 

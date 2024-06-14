@@ -80,9 +80,6 @@ internal class ScenarioGlHandle : IDisposable
         float posX = position.X / 1024f + _width / 2;
         float posY = position.Z / 1024f + _height / 2;
 
-        Console.WriteLine(posX);
-        Console.WriteLine(posY);
-
         int beginX = (int)Math.Floor(posX - radius*2);
         int beginY = (int)Math.Floor(posY - radius*2);
 

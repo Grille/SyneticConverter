@@ -5,18 +5,17 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib.Files;
+namespace SyneticLib.Files.Common;
 public interface IVertexData
 {
-    public int[] IndicesOffset { get; }
     public Vertex[] Vertecis { get; }
 }
 
 public static class IVertexDataExtension
 {
-    public static int GetVertexCount(this IVertexData ivtx )
+    public static int GetVertexCount(this IVertexData ivtx, IIndexDataOffsets iiod)
     {
-        var offsets = ivtx.IndicesOffset;
+        var offsets = iiod.IndicesOffset;
         int vertexCount = 0;
         for (int i = 0; i < offsets.Length; i++)
             vertexCount += offsets[i];

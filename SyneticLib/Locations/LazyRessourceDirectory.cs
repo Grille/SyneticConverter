@@ -58,7 +58,7 @@ public class LazyRessourceDirectory<T> : Location, IReadOnlyCollection<Lazy<T>> 
             result = lazy.Value;
             return true;
         }
-        result = null;
+        result = null!;
         return false;
     }
 

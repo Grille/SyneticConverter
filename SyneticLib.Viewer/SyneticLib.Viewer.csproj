@@ -6,6 +6,7 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<LangVersion>10</LangVersion>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -14,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\SyneticLib.Graphics\SyneticLib.Core.csproj" />
+	  <ProjectReference Include="..\SyneticLib.Graphics\SyneticLib.Graphics.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

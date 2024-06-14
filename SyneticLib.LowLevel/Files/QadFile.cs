@@ -201,12 +201,6 @@ public unsafe class QadFile : BinaryFile
         AssertFileSize(bw.Length);
     }
 
-    public GameVersion FindGameVersion()
-    {
-        AssertPathNotNull();
-        return FindGameVersion(Path);
-    }
-
     public GameVersion FindGameVersion(string path)
     {
         using var reader = new BinaryViewReader(path);

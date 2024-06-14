@@ -13,29 +13,14 @@ public class ScenarioGroup : SyneticObject
     public Scenario[] Variants { get; }
 
     public int VariantCount { get => Variants.Length; }
-    public Scenario V1 { get => Variants.Length > 0 ? Variants[0] : null; } 
-    public Scenario V2 { get => Variants.Length > 1 ? Variants[1] : null; }
-    public Scenario V3 { get => Variants.Length > 2 ? Variants[2] : null; }
-    public Scenario V4 { get => Variants.Length > 3 ? Variants[3] : null; }
+    public Scenario? V1 { get => Variants.Length > 0 ? Variants[0] : null; } 
+    public Scenario? V2 { get => Variants.Length > 1 ? Variants[1] : null; }
+    public Scenario? V3 { get => Variants.Length > 2 ? Variants[2] : null; }
+    public Scenario? V4 { get => Variants.Length > 3 ? Variants[3] : null; }
 
     public ScenarioGroup(string name, Scenario[] variants) : base(name)
     {
         Variants = variants;
-    }
-
-    public void ExecuteOnAll(Action<Scenario> action)
-    {
-        foreach (var variant in Variants)
-        {
-            action(variant);
-        }
-    }
-
-    public void CopyFilesTo(GameDirectory game)
-    {
-        ExecuteOnAll((v) =>
-        {
-        });
     }
 
     /*

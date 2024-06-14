@@ -21,4 +21,6 @@ public enum GameVersion
     CT3,
     CT4,
     CT5,
+
+    MBWR = WR1,
 }

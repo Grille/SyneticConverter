@@ -17,27 +17,21 @@ public static class WR1ToWR2FileConv
 {
     public static void Convert(string dirPath, string fileName, float ambientOffset)
     {
-        var filePath = Path.Combine(dirPath, fileName);
+        var paths = new ScenarioFiles.Paths(dirPath, fileName);
+        var files = new ScenarioFiles();
+        files.Load(paths, GameVersion.WR1);
 
-        string qadpath = Path.ChangeExtension(filePath, ".qad");
-        string vtxpath = Path.ChangeExtension(filePath, ".vtx");
-        string snipath = Path.ChangeExtension(filePath, ".sni");
-
-        ConvertQad(qadpath);
-        ConvertVtx(vtxpath, ambientOffset);
-        ConvertSni(snipath);
+        ConvertQad(files.Qad);
+        ConvertVtx(files.TerrainMesh.Vertices, ambientOffset);
+        ConvertSni(files.Sni);
 
         CreateCobFiles(dirPath);
+
+        files.Save(paths, GameVersion.WR2);
     }
 
-    public static void ConvertSni(string path)
+    public static void ConvertSni(SniFile sni)
     {
-        if (!File.Exists(path))
-            return;
-
-        var sni = new SniFile();
-        sni.Load(path);
-
         for (int i = 0; i < sni.Objects.Length; i++)
         {
             ref var obj = ref sni.Objects[i];
@@ -47,16 +41,10 @@ public static class WR1ToWR2FileConv
             string newfile = $"MBWR_{oldfile}";
             obj.SoundFile = (String32)newfile;
         }
-
-        sni.Save();
     }
 
-    public static void ConvertQad(string path)
+    public static void ConvertQad(QadFile qad)
     {
-        var qad = new QadFile();
-        qad.SetFlagsAccordingToVersion(GameVersion.WR1);
-        qad.Load(path);
-
         for (int i = 0; i < qad.MaterialsWR.Length; i++)
         {
             ConvertWR1ToWR2(ref qad.MaterialsWR[i]);
@@ -77,24 +65,19 @@ public static class WR1ToWR2FileConv
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.Head.FlagX2WR2 = 1;
         qad.Head.FlagX5WR2 = 1;
-        qad.Save();
-
     }
 
-    public static void ConvertVtx(string path, float ambientOffset)
+    public static void ConvertVtx(Vertex[] vertices, float ambientOffset)
     {
-        var vtx = new VtxFile();
-        vtx.Load(path);
-
         float add = ambientOffset;
         float mul = 1f - ambientOffset;
 
         var addvec = new Vector3(add);
         var mulvec = new Vector3(mul);
 
-        for (int i = 0; i < vtx.Vertecis.Length; i++)
+        for (int i = 0; i < vertices.Length; i++)
         {
-            ref var v = ref vtx.Vertecis[i];
+            ref var v = ref vertices[i];
 
             v.LightColor = v.LightColor * mulvec + addvec;
 
@@ -102,8 +85,6 @@ public static class WR1ToWR2FileConv
             v.Blending.X = v.Blending.Y;
             v.Blending.Y = temp;
         }
-
-        vtx.Save(path);
     }
 
     public static void ConvertWR1ToWR2(ref this QadFile.MMaterialTypeWR mat)
@@ -396,21 +377,19 @@ public static class WR1ToWR2FileConv
 
         var mox = new MoxFile();
         var mtl = new MtlFile();
-        mox.Path = moxpath;
-        mtl.Path = mtlpath;
 
-        mtl.Load();
+        mtl.Load(mtlpath);
         mtl.Sections[0]["Diffuse"] = diffuse;
         mtl.Sections[0]["Ambient"] = ambient;
-        mtl.Save();
+        mtl.Save(mtlpath);
 
 
-        mox.Load();
+        mox.Load(moxpath);
         for (int i = 0; i < mox.Head.VertCount; i++)
         {
             mox.Vertecis[i].Normal.Z = -0.25f;
         }
-        mox.Save();
+        mox.Save(moxpath);
 
     }
 

@@ -42,9 +42,6 @@ public partial class SynPipelineToolForm : Form
             PipelinesControl.SelectedItem = piplines[0];
 
         Icon = Icon.FromHandle(Icons.SyneticLib.GetHicon());
-        MBWRToolStripMenuItem.Image = Icons.MBWR;
-        WR2ToolStripMenuItem.Image = Icons.WR2;
-        C11ToolStripMenuItem.Image = Icons.C11;
     }
 
     private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -81,25 +78,10 @@ public partial class SynPipelineToolForm : Form
         }
     }
 
-    private void MBWRToolStripMenuItem_Click(object sender, EventArgs e)
+    private void previewToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        ShowPreview(GameVersion.WR1);
-    }
-
-    private void WR2ToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        ShowPreview(GameVersion.WR2);
-    }
-
-    private void C11ToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        ShowPreview(GameVersion.C11);
-    }
-
-    void ShowPreview(GameVersion version)
-    {
-        var preview = new ViewerForm();
+        var preview = ViewerForm.GlobalInstance;
         preview.Show();
-        preview.ShowLoadScenarioDialog(version);
+        preview.LoadFile();
     }
 }

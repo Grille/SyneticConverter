@@ -13,30 +13,35 @@ namespace SyneticLib.IO;
 
 public static partial class Imports
 {
-    public static Model LoadModelFromMox(string path)
+    public static Model LoadModelFromMox(string filePath)
     {
-        var dirpath = Path.GetDirectoryName(path);
-        var texpath = Path.Combine(dirpath, "textures");
-        if (!Directory.Exists(texpath))
+        var dirPath = Path.GetDirectoryName(filePath);
+        var texPath = Path.Join(dirPath, "textures");
+        if (!Directory.Exists(texPath))
         {
-            texpath = Path.Combine(dirpath, "textures_pc");
+            texPath = Path.Join(dirPath, "textures_pc");
         }
-        var textures = new TextureDirectory(texpath);
+        var textures = new TextureDirectory(texPath);
 
-        return LoadModelFromMox(path, textures);
+        return LoadModelFromMox(filePath, textures);
     }
 
-    public static Model LoadModelFromMox(string path, TextureDirectory textures)
+    public static Model LoadModelFromMox(string filePath, TextureDirectory textures)
     {
         var mox = new MoxFile();
         var mtl = new MtlFile();
 
-        mox.Path = path;
-        mtl.Path = Path.Join(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".mtl");
+        var moxPath = filePath;
+        var mtlPath = Path.ChangeExtension(filePath, ".mtl");
 
-        mox.Load();
-        mtl.Load();
+        mox.Load(moxPath);
+        mtl.Load(mtlPath);
 
+        return LoadModelFromMox(mox, mtl, textures);
+    }
+
+    public static Model LoadModelFromMox(MoxFile mox, MtlFile mtl, TextureDirectory textures)
+    {
         var materials = new List<Material>();
 
         for (var i = 0; i < mox.Head.MatCount; i++)

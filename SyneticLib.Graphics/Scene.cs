@@ -10,18 +10,19 @@ using OpenTK.Compute.OpenCL;
 using SyneticLib.Graphics.OpenGL;
 using SyneticLib.Graphics.DrawCalls;
 using SyneticLib.Math3D;
-using static SyneticLib.Files.QadFile;
+using System.Diagnostics;
 
 namespace SyneticLib.Graphics;
 public class Scene : IDisposable
 {
+    public SpriteBatch Sprites { get; }
 
-
-    public readonly List<Sprite> Sprites;
     public Camera Camera;
 
     SceneAssets assets;
 
+    Vector2 textureSize;
+    TextureBuffer? textureBuffer;
     ModelGlHandle? modelHandle;
     ScenarioGlHandle? scenarioHandle;
 
@@ -31,12 +32,20 @@ public class Scene : IDisposable
 
     public unsafe Scene()
     {
-        Sprites = new List<Sprite>();
+        Sprites = new SpriteBatch();
         Camera = new FreeCamera();
 
         assets = new SceneAssets();
 
         cache = new GlObjectCacheGroup();
+    }
+
+    public void SubmitTexture(Texture texture)
+    {
+        textureBuffer?.Dispose();
+        textureBuffer = new TextureBuffer(texture);
+        var size = texture.Size;
+        textureSize = size / MathF.Max(size.X, size.Y);
     }
 
     public void SubmitScenario(Scenario scenario)
@@ -59,6 +68,9 @@ public class Scene : IDisposable
 
     public void ClearScene()
     {
+        textureBuffer?.Dispose();
+        textureBuffer = null;
+
         scenarioHandle?.Dispose();
         scenarioHandle = null;
 
@@ -90,6 +102,8 @@ public class Scene : IDisposable
         }
 
         GL.Enable(EnableCap.DepthTest);
+
+        var sw = new Stopwatch();
 
         if (scenarioHandle != null)
         {
@@ -141,11 +155,27 @@ public class Scene : IDisposable
         */
         //GL.DrawElements(PrimitiveType.Triangles, buffer.ElementCount, DrawElementsType.UnsignedInt, 0 * 3 * 4);
 
+        var combinedSize = Camera.ScreenSize * textureSize.Yx;
+        var normalizedScreenSize = (combinedSize / MathF.Max(combinedSize.X, combinedSize.Y)).Yx;
+
+
+        if (textureBuffer != null)
+        {
+            var sprite = new Sprite(textureBuffer, new Vector2(0, 0), normalizedScreenSize);
+            Sprites.Clear();
+            Sprites.Add(sprite);
+            Sprites.Draw();
+        }
+
+
         var error = GL.GetError();
         if (error != ErrorCode.NoError)
         {
             Console.WriteLine($"{DateTime.Now} {error}");
         }
+
+        //Console.WriteLine(sw.ElapsedMilliseconds);
+
 
         //GL.Enable(EnableCap.DepthTest | EnableCap.CullFace);
 
@@ -162,8 +192,12 @@ public class Scene : IDisposable
 
     public void Dispose()
     {
+        Sprites.Dispose();
+
         assets.Dispose();
         cache.Dispose();
+        textureBuffer?.Dispose();
+        modelHandle?.Dispose();
         scenarioHandle?.Dispose();
     }
 }

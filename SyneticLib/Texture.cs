@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
+using OpenTK.Mathematics;
+
 namespace SyneticLib;
 public class Texture : SyneticObject
 {
@@ -17,6 +19,11 @@ public class Texture : SyneticObject
     public int Width => Levels[0].Width;
 
     public int Height => Levels[0].Height;
+
+    public Vector2 Size
+    {
+        get => new Vector2(Width, Height);
+    }
 
     public byte[] PixelData { get => Levels[0].Data; }
 
@@ -35,7 +42,7 @@ public class Texture : SyneticObject
 
     public static Texture CreatePlaceholder(string name)
     {
-        return null;// new Texture(name,Textures.Error.Format,Textures.Error.Levels);
+        throw new NotImplementedException();
     }
 }
 
@@ -44,6 +51,10 @@ public unsafe class TextureLevel
     public int Width { get; }
 
     public int Height { get; }
+
+    public int Length => Width * Height;
+
+    public int Stride =>  Data.Length / Length;
 
     public byte[] Data { get; }
 
@@ -93,6 +104,38 @@ public unsafe class TextureLevel
             }
             throw new InvalidOperationException("TextureLevel alredy locked");
         }
+    }
+
+    public void FlipY()
+    {
+        int width = Width;
+        int height = Height;
+        var data = Data;
+        int stride = Stride;
+
+        int halfHeight = Height / 2;
+        int byteWidth = width * stride;
+
+        for (int iy = 0; iy < halfHeight; iy++)
+        {
+            int y0 = iy;
+            int y1 = height - iy - 1;
+
+            int idx0 = y0 * byteWidth;
+            int idx1 = y1 * byteWidth;
+
+            for (int ix = 0; ix < byteWidth; ix++)
+            {
+                var temp = data[idx1 + ix];
+                data[idx1 + ix] = data[idx0 + ix];
+                data[idx0 + ix] = temp;
+            }
+        }
+    }
+
+    public TextureLevel Clone()
+    {
+        return new TextureLevel(Width, Height, (byte[])Data.Clone());
     }
 }
 

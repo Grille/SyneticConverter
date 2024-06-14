@@ -29,7 +29,7 @@ public class SynArchive
 
     public void Load()
     {
-        syn.Load();
+        //syn.Load();
 
         for (int i = 0; i < syn.Entries.Length; i++)
         {
@@ -43,7 +43,7 @@ public class SynArchive
 
     public void Save()
     {
-        syn.Save();
+        //syn.Save();
     }
 
 

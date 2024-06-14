@@ -44,6 +44,11 @@ public sealed class TextureBuffer : GLObject
                     GL.CompressedTexImage2D(TextureTarget.Texture2D, i, InternalFormat.CompressedRgbaS3tcDxt5Ext, width, height, 0, pixelData.Length, pixelData);
                     break;
                 }
+                case TextureFormat.BGRA32:
+                {
+                    GL.TexImage2D(TextureTarget.Texture2D, i, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixelData);
+                    break;
+                }
                 case TextureFormat.RGBA32:
                 {
                     GL.TexImage2D(TextureTarget.Texture2D, i, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelData);
@@ -52,6 +57,11 @@ public sealed class TextureBuffer : GLObject
                 case TextureFormat.RGB24:
                 {
                     GL.TexImage2D(TextureTarget.Texture2D, i, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, pixelData);
+                    break;
+                }
+                case TextureFormat.R8:
+                {
+                    GL.TexImage2D(TextureTarget.Texture2D, i, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Red, PixelType.UnsignedByte, pixelData);
                     break;
                 }
                 default:

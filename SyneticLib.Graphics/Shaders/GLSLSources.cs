@@ -9,24 +9,28 @@ using System.Reflection;
 namespace SyneticLib.Graphics.Shaders;
 internal static class GLSLSources
 {
-    public static GlslVertexShader Mesh;
+    public readonly static GlslVertexShaderSource VSprite;
+    public readonly static GlslVertexShaderSource VMesh;
 
-    public static GlslFragmentShader Terrain;
-    public static GlslFragmentShader TerrainWater;
-    public static GlslFragmentShader DebugTexture0;
+    public readonly static GlslFragmentShaderSource Terrain;
+    public readonly static GlslFragmentShaderSource TerrainWater;
+    public readonly static GlslFragmentShaderSource DebugTexture0;
+    public readonly static GlslFragmentShaderSource Sprite;
 
     static GLSLSources()
     {
-        Mesh = LoadVertexShaderFile("Mesh");
+        VSprite = LoadVertexShaderFile("Sprite");
+        VMesh = LoadVertexShaderFile("Mesh");
 
         Terrain = LoadFragmentShaderFile("Mesh");
         DebugTexture0 = LoadFragmentShaderFile("SimpleColor");
         TerrainWater = LoadFragmentShaderFile("Water");
+        Sprite = LoadFragmentShaderFile("Sprite");
     }
 
-    public static GlslVertexShader LoadVertexShaderFile(string name) => LoadInternalShaderFile($"vert.{name}.vert");
+    public static GlslVertexShaderSource LoadVertexShaderFile(string name) => LoadInternalShaderFile($"vert.{name}.vert");
 
-    public static GlslFragmentShader LoadFragmentShaderFile(string name) => LoadInternalShaderFile($"frag.{name}.frag");
+    public static GlslFragmentShaderSource LoadFragmentShaderFile(string name) => LoadInternalShaderFile($"frag.{name}.frag");
 
     public static string LoadInternalShaderFile(string name)
     {
@@ -41,23 +45,23 @@ internal static class GLSLSources
         return result;
     }
 
-    public static (GlslVertexShader Vert, GlslFragmentShader Frag) LoadInternalShaderFiles(MaterialShaderType type) => type switch
+    public static (GlslVertexShaderSource Vert, GlslFragmentShaderSource Frag) LoadInternalShaderFiles(MaterialShaderType type) => type switch
     {
-        MaterialShaderType.Default => (Mesh, Terrain),
-        MaterialShaderType.Water => (Mesh, TerrainWater),
-        MaterialShaderType.Simple => (Mesh, DebugTexture0),
-        _ => (Mesh, DebugTexture0),
+        MaterialShaderType.Default => (VMesh, Terrain),
+        MaterialShaderType.Water => (VMesh, TerrainWater),
+        MaterialShaderType.Simple => (VMesh, DebugTexture0),
+        _ => (VMesh, DebugTexture0),
     };
 }
 
-public record GlslVertexShader(string Source)
+public record struct GlslVertexShaderSource(string Source)
 {
-    public static implicit operator GlslVertexShader(string value) => new(value);
-    public static implicit operator string(GlslVertexShader value) => value.Source;
+    public static implicit operator GlslVertexShaderSource(string value) => new(value);
+    public static implicit operator string(GlslVertexShaderSource value) => value.Source;
 }
 
-public record GlslFragmentShader(string Source)
+public record struct GlslFragmentShaderSource(string Source)
 {
-    public static implicit operator GlslFragmentShader(string value) => new(value);
-    public static implicit operator string(GlslFragmentShader value) => value.Source;
+    public static implicit operator GlslFragmentShaderSource(string value) => new(value);
+    public static implicit operator string(GlslFragmentShaderSource value) => value.Source;
 }

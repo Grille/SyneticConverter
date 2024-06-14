@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using SyneticLib.Files.Common;
 
 namespace SyneticLib.Files;
-public class GeoFile : BinaryFile, IIndexData, IVertexData
+public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
 {
     /// <summary>Used by CT5</summary>
     public bool HasX16VertexBlock = false;
@@ -91,7 +91,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData
         bw.WriteArray(indices, LengthPrefix.None);
     }
 
-    public int GetVertexCount() => IVertexDataExtension.GetVertexCount(this);
+    public int GetVertexCount() => IVertexDataExtension.GetVertexCount(this, this);
 
     private unsafe int getEndPos(int vtxCount, int idxCount)
     {

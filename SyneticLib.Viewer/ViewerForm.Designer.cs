@@ -36,12 +36,14 @@
             exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             renderTimer = new System.Windows.Forms.Timer(components);
             viewerControl1 = new ViewerControl();
+            sceneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { fileToolStripMenuItem });
+            menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { fileToolStripMenuItem, sceneToolStripMenuItem });
             menuStrip1.Location = new System.Drawing.Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new System.Drawing.Size(784, 24);
@@ -95,6 +97,20 @@
             viewerControl1.Size = new System.Drawing.Size(784, 537);
             viewerControl1.TabIndex = 2;
             // 
+            // sceneToolStripMenuItem
+            // 
+            sceneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { clearToolStripMenuItem });
+            sceneToolStripMenuItem.Name = "sceneToolStripMenuItem";
+            sceneToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            sceneToolStripMenuItem.Text = "Scene";
+            // 
+            // clearToolStripMenuItem
+            // 
+            clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            clearToolStripMenuItem.Text = "Clear";
+            clearToolStripMenuItem.Click += clearToolStripMenuItem_Click;
+            // 
             // ViewerForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -119,5 +135,7 @@
         private System.Windows.Forms.Timer renderTimer;
         private System.Windows.Forms.ToolStripMenuItem detectGamesToolStripMenuItem;
         private ViewerControl viewerControl1;
+        private System.Windows.Forms.ToolStripMenuItem sceneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
     }
 }

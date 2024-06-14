@@ -18,7 +18,6 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
     public MHead Head;
     public MPaintRegionInt32[] Textures;
 
-    public int[] IndicesOffset { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public Vertex[] Vertecis { get; set; }
     public IdxTriangleInt32[] Indices { get; set; }
 

@@ -8,7 +8,7 @@ using Grille.IO;
 using SyneticLib.Files.Common;
 
 namespace SyneticLib.Files;
-public class VtxFile : BinaryFile, IVertexData
+public class VtxFile : BinaryFile, IVertexData, IIndexDataOffsets
 {
     public int[] IndicesOffset { get; set; }
     public Vertex[] Vertecis { get; set; }

@@ -10,7 +10,7 @@ using SyneticLib.Files.Common;
 
 namespace SyneticLib.Files;
 
-public class PtxFile : BinaryFile
+public class PtxFile : BinaryFile, ITextureData<PtxFile.Level>
 {
     public MHead Head;
     public Level[] Levels;
@@ -56,7 +56,7 @@ public class PtxFile : BinaryFile
         public byte R, G, B;
     }
 
-    public class Level
+    public class Level : ITextureDataLevel
     {
         public MHead Head;
         public byte[] Pixels;
@@ -64,6 +64,13 @@ public class PtxFile : BinaryFile
         public Level()
         {
             Pixels = Array.Empty<byte>();
+        }
+
+        public Level(byte[] pixels)
+        {
+            Pixels = pixels;
+            Head.Size = (uint)Pixels.Length;
+            Head.SynSize = 0;
         }
 
         public void ReadFromView(BinaryViewReader br)
@@ -95,9 +102,6 @@ public class PtxFile : BinaryFile
 
         public void WriteToView(BinaryViewWriter bw)
         {
-            Head.Size = (uint)Pixels.Length;
-            Head.SynSize = 0;
-
             bw.Write(Head);
             bw.WriteArray(Pixels, LengthPrefix.None);
         }

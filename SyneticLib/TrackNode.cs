@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib.Files;
-public struct SniSpawnW
+using OpenTK.Mathematics;
+
+namespace SyneticLib;
+public class TrackNode
 {
-    public int Density, Speed, Turbulence, TrackID;
+    public Vector3 Position;
 }

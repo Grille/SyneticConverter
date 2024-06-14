@@ -18,8 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SyneticLib.LowLevel\SyneticLib.LowLevel.csproj" />
+    <ProjectReference Include="..\SyneticLib.LowLevel\SyneticLib.Core.csproj" />
     <ProjectReference Include="..\SyneticLib.Viewer\SyneticLib.Viewer.csproj" />
+    <ProjectReference Include="..\SyneticLib\SyneticLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

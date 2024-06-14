@@ -25,12 +25,12 @@ public class Shader : GLObject
         Compile(files.Vert, files.Frag);
     }
 
-    public Shader(GlslVertexShader vertex, GlslFragmentShader fragment) : this() 
+    public Shader(GlslVertexShaderSource vertex, GlslFragmentShaderSource fragment) : this() 
     {
         Compile(vertex, fragment);
     }
 
-    private void Compile(GlslVertexShader vertex, GlslFragmentShader fragment)
+    private void Compile(GlslVertexShaderSource vertex, GlslFragmentShaderSource fragment)
     {
         Compile(VertexID, vertex);
         Compile(FragmentID, fragment);

@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticTool", "SyneticTool\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticPipelineTool", "SyneticPipelineTool\SyneticPipelineTool.csproj", "{416746E8-D2FA-4645-A55E-9D5C31CC8E14}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.Core", "SyneticLib.Graphics\SyneticLib.Core.csproj", "{7964B0C8-45A9-4436-8A08-C26B92E66BE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.Graphics", "SyneticLib.Graphics\SyneticLib.Graphics.csproj", "{7964B0C8-45A9-4436-8A08-C26B92E66BE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.LowLevel", "SyneticLib.LowLevel\SyneticLib.LowLevel.csproj", "{A5207D1F-7466-4307-A29C-9F226C96960C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.Core", "SyneticLib.LowLevel\SyneticLib.Core.csproj", "{A5207D1F-7466-4307-A29C-9F226C96960C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.Viewer", "SyneticLib.Viewer\SyneticLib.Viewer.csproj", "{A6B862FE-7BA9-4743-B31E-19E5FCA83551}"
 EndProject

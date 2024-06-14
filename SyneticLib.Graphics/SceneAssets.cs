@@ -12,7 +12,10 @@ namespace SyneticLib.Graphics;
 public class SceneAssets : IDisposable
 {
     public ModelGlHandle GroundPlane { get; }
+
     public ModelGlHandle Compass { get; }
+
+    public MeshBuffer SpriteMesh { get; }
 
     //public static MeshBuffer MeshBuffer { get; }
 

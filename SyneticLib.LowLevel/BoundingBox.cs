@@ -12,6 +12,13 @@ public struct BoundingBox
     public Vector3 Start;
     public Vector3 End;
 
+    public Vector3 Size => End - Start;
+
+    public BoundingBox(Vector3 position)
+    {
+        Init(position);
+    }
+
     public BoundingBox(Vector3 start, Vector3 end)
     {
         Start = start;
@@ -23,7 +30,7 @@ public struct BoundingBox
         if (vertices.Length == 0)
             throw new ArgumentException(nameof(vertices));
 
-        Start = End = vertices[0].Position;
+        Init(vertices[0].Position);
 
         for (int i = 0; i < vertices.Length; i++)
         {
@@ -36,7 +43,7 @@ public struct BoundingBox
         if (vertices.Length == 0)
             throw new ArgumentException(null, nameof(vertices));
 
-        Start = End = vertices[indices[0].X].Position;
+        Init(vertices[indices[0].X].Position);
 
         for (int i = 0; i < indices.Length; i++)
         {
@@ -44,6 +51,12 @@ public struct BoundingBox
             Extend(vertices[indices[i].Y + offset].Position);
             Extend(vertices[indices[i].Z + offset].Position);
         }
+    }
+
+    public void Init(Vector3 position)
+    {
+        Start = position;
+        End = position;
     }
 
     public void Extend(BoundingBox boundings)
