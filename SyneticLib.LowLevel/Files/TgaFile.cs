@@ -36,7 +36,8 @@ public class TgaFile : BinaryFile
 
     public override void Serialize(BinaryViewWriter bw)
     {
-        throw new NotImplementedException();
+        bw.Write(Head);
+        bw.WriteArray(Pixels, LengthPrefix.None);
     }
 
     public enum ImageType : byte

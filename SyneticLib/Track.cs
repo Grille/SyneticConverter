@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using OpenTK.Mathematics;
+
 namespace SyneticLib;
 public class Track
 {
@@ -32,6 +34,10 @@ public class Track
         var size = boundings.Size;
 
         float scale = 1 / MathF.Max(size.X, size.Z);
+        var centerOffset = (Vector3.One - (size * scale)) * 0.5f;
+
+        var borderScale = new Vector3(0.8f);
+        var borderOffset = new Vector3(0.1f);
 
         for (int i = 0; i < Nodes.Length; i++)
         {
@@ -39,6 +45,11 @@ public class Track
             position -= offset;
 
             position *= scale;
+
+            position += centerOffset;
+
+            position *= borderScale;
+            position += borderOffset;
         }
     }
 
@@ -48,14 +59,30 @@ public class Track
 
         var pixels = new byte[width * height];
 
+        void IncPixel(int x, int y, byte value)
+        {
+            int idx = (x + y * width);
+            pixels[idx] = Math.Max(pixels[idx], value);
+        }
+
         for (int i = 0; i < Nodes.Length; i++)
         {
             var node = Nodes[i];
-            int x = Math.Clamp((int)(node.Position.X * width), 0, width-1);
-            int y = Math.Clamp((int)(node.Position.Z * height), 0, height-1);
+            int x = (int)(node.Position.X * width);
+            int y = (int)(node.Position.Z * height);
 
-            int idx = (x + y * width);
-            pixels[idx] = 255;
+            int square = 5;
+
+            for (int iy = -square; iy <= square; iy++)
+            {
+                for (int ix = -square; ix <= square; ix++)
+                {
+                    var dist = MathF.Sqrt(MathF.Abs(ix * ix) + MathF.Abs(iy * iy)) * 0.5f - 1.1f;
+                    var factor = (1f - Math.Clamp(dist, 0f, 1f));
+                    var color = (byte)(255 * factor);
+                    IncPixel(x + ix, y + iy, color);
+                }
+            }
         }
 
         var texture = new Texture("track_map", TextureFormat.R8, width, height, pixels);
