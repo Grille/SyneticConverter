@@ -11,6 +11,7 @@ using SyneticLib.Locations;
 
 using static System.IO.Path;
 using System.Security.Cryptography.X509Certificates;
+using System.Runtime;
 
 namespace SyneticLib.IO;
 public static partial class Imports
@@ -244,45 +245,19 @@ public static partial class Imports
 
     static Material[] GetTerrainMaterials(QadFile qad, Texture[] textures)
     {
-        if (qad.UseMaterialTypeCT) { 
-            return GetTerrainMaterialsC11(qad, textures);
-        }
-        else
-        {
-            return GetTerrainMaterialsWR2(qad, textures);
-        }
-    }
+        var materials = new Material[qad.Materials.Length];
 
-    static Material[] GetTerrainMaterialsC11(QadFile qad, Texture[] textures)
-    {
-        var materials = new Material[qad.MaterialsCT.Length];
-
-        for (var i = 0; i < qad.MaterialsCT.Length; i++)
+        for (var i = 0; i < qad.Materials.Length; i++)
         {
-            var matInfo = qad.MaterialsCT[i];
+            var matInfo = qad.Materials[i];
             var mat = new Material();
 
             mat.GameVersion = qad.GameVersion;
-            mat.U16ShaderType0 = matInfo.L0Mode;
-            mat.U16ShaderType1 = matInfo.L1Mode;
+            mat.U16ShaderType0 = matInfo.Layer0.Mode;
+            mat.U16ShaderType1 = matInfo.Layer1.Mode;
 
-            if (matInfo.L0Tex0Id < textures.Length)
-                mat.TexSlot0.Enable(textures[matInfo.L0Tex0Id]);
-
-            if (matInfo.L0Tex1Id < textures.Length)
-                mat.TexSlot1.Enable(textures[matInfo.L0Tex1Id]);
-
-            if (matInfo.L0Tex2Id < textures.Length)
-                mat.TexSlot2.Enable(textures[matInfo.L0Tex2Id]);
-
-            if (matInfo.L1Tex0Id < textures.Length)
-                mat.TexSlot3.Enable(textures[matInfo.L1Tex0Id]);
-
-            if (matInfo.L1Tex1Id < textures.Length)
-                mat.TexSlot4.Enable(textures[matInfo.L1Tex1Id]);
-
-            if (matInfo.L1Tex2Id < textures.Length)
-                mat.TexSlot5.Enable(textures[matInfo.L1Tex2Id]);
+            EnableLayer(mat, 0, ref matInfo.Layer0, textures);
+            EnableLayer(mat, 3, ref matInfo.Layer1, textures);
 
             materials[i] = mat;
         }
@@ -290,30 +265,19 @@ public static partial class Imports
         return materials;
     }
 
-        static Material[] GetTerrainMaterialsWR2(QadFile qad, Texture[] textures)
+    static void EnableLayer(Material material, int slot, ref QadFile.MMaterialLayer layer, Texture[] textures)
     {
-        var materials = new Material[qad.MaterialsWR.Length];
-
-        for (var i = 0; i < qad.MaterialsWR.Length; i++)
+        void EnableSlot(int slot, int textureId)
         {
-            var matInfo = qad.MaterialsWR[i];
-            var mat = new Material();
-
-            mat.GameVersion = qad.GameVersion;
-            mat.U16ShaderType0 = matInfo.Mode;
-
-            if (matInfo.Tex0Id < textures.Length)
-                mat.TexSlot0.Enable(textures[matInfo.Tex0Id]);
-
-            if (matInfo.Tex1Id < textures.Length)
-                mat.TexSlot1.Enable(textures[matInfo.Tex1Id]);
-
-            if (matInfo.Tex2Id < textures.Length)
-                mat.TexSlot2.Enable(textures[matInfo.Tex2Id]);
-
-            materials[i] = mat;
+            if (textureId < textures.Length)
+            {
+                material.TextureSlots[slot].Enable(textures[textureId]);
+            }
         }
-        return materials;
+
+        EnableSlot(slot + 0, layer.Tex0Id);
+        EnableSlot(slot + 1, layer.Tex0Id);
+        EnableSlot(slot + 2, layer.Tex0Id);
     }
 
     static void BuildTerrainChunks()

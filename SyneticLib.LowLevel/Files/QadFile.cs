@@ -39,8 +39,7 @@ public unsafe class QadFile : BinaryFile
     public MChunk[] Chunks;
     public int[] ChunkDataPtr;
     public ushort[][] ChunkData;
-    public MMaterialTypeWR[] MaterialsWR;
-    public MMaterialTypeCT[] MaterialsCT;
+    public AbstractMaterialType[] Materials;
     public MPolyRegion[] PolyRegions;
     public MPropInstance[] PropInstances;
     public MGroundPhysics[] GroundPhysics;
@@ -57,8 +56,7 @@ public unsafe class QadFile : BinaryFile
         Chunks = Array.Empty<MChunk>();
         ChunkDataPtr = Array.Empty<int>();
         ChunkData = Array.Empty<ushort[]>();
-        MaterialsWR = Array.Empty<MMaterialTypeWR>();
-        MaterialsCT = Array.Empty<MMaterialTypeCT>();
+        Materials = Array.Empty<AbstractMaterialType>();
         PolyRegions = Array.Empty<MPolyRegion>();
         PropInstances = Array.Empty<MPropInstance>();
         GroundPhysics = Array.Empty<MGroundPhysics>();
@@ -120,16 +118,25 @@ public unsafe class QadFile : BinaryFile
 
         PolyRegions = br.ReadArray<MPolyRegion>(Head.PolyRegionCount);
 
+        Materials = new AbstractMaterialType[Head.MaterialCount];
         if (UseMaterialTypeCT)
         {
-            MaterialsCT = br.ReadArray<MMaterialTypeCT>(Head.MaterialCount);
+            br.ReadToArray(Materials, (MMaterialTypeCT a) => (AbstractMaterialType)a);
         }
         else
         {
-            MaterialsWR = br.ReadArray<MMaterialTypeWR>(Head.MaterialCount);
+            br.ReadToArray(Materials, (MMaterialTypeWR a) => (AbstractMaterialType)a);
         }
 
-        PropInstances = br.ReadArray<MPropInstance>(Head.PropInstanceCount);
+        PropInstances = new MPropInstance[Head.PropInstanceCount];
+        if (UseExtendedPropInstance)
+        {
+            br.ReadItemBytesToArray(PropInstances, sizeof(MPropInstance));
+        }
+        else
+        {
+            br.ReadItemBytesToArray(PropInstances, sizeof(MPropInstance) - sizeof(Vector3));
+        }
 
         Lights = new MLight[Head.LightCount];
         for (int i = 0; i < Head.LightCount; i++)
@@ -179,14 +186,25 @@ public unsafe class QadFile : BinaryFile
 
         if (UseMaterialTypeCT)
         {
-            bw.WriteArray(MaterialsCT);
+            var materials = BinaryUtils.CastArray(Materials, (a) => (MMaterialTypeCT)a);
+            bw.WriteArray(materials);
         }
         else
         {
-            bw.WriteArray(MaterialsWR);
+            var materials = BinaryUtils.CastArray(Materials, (a) => (MMaterialTypeWR)a);
+            RecalcMaterialMatrixChecksumWR(materials);
+            bw.WriteArray(materials);
         }
 
-        bw.WriteArray(PropInstances);
+        if (UseExtendedPropInstance)
+        {
+            bw.WriteItemBytesFromArray(PropInstances, sizeof(MPropInstance));
+        }
+        else
+        {
+            bw.WriteItemBytesFromArray(PropInstances, sizeof(MPropInstance) - sizeof(Vector3));
+        }
+
         for (int i = 0; i < Lights.Length; i++)
         {
             if (UseSimpleData)
@@ -260,22 +278,14 @@ public unsafe class QadFile : BinaryFile
         throw new InvalidDataException("No matching GameVersion found.");
     }
 
-    public void RecalcMaterialChecksum()
-    {
-        if (UseMaterialTypeCT)
-            RecalcMaterialChecksumCT(MaterialsCT);
-        else
-            RecalcMaterialChecksumWR(MaterialsWR);
-    }
-
-    public void RecalcMaterialChecksumCT(MMaterialTypeCT[] materials)
+    private void RecalcMaterialChecksumCT(MMaterialTypeCT[] materials)
     {
 
     }
 
-    public void RecalcMaterialChecksumWR(MMaterialTypeWR[] materials)
+    private void RecalcMaterialMatrixChecksumWR(MMaterialTypeWR[] materials)
     {
-        var list = new List<Transform>();
+        var list = new List<TextureTransform>();
 
         for (int i = 0; i < materials.Length; i++)
         {
@@ -301,18 +311,12 @@ public unsafe class QadFile : BinaryFile
 
     }
 
-    public void SortMaterials()
-    {
-        if (UseMaterialTypeCT)
-            SortMaterials(MaterialsCT);
-        else
-            SortMaterials(MaterialsWR);
-    }
-
     record class SortContainer<T>(int ID, T Value);
-    public void SortMaterials<T>(T[] materials) where T : IMaterialType
+    public void SortMaterials() 
     {
-        var list = new List<SortContainer<T>>();
+        var materials = Materials;
+
+        var list = new List<SortContainer<AbstractMaterialType>>();
 
         for (int i = 0; i < materials.Length; i++)
             list.Add(new(i, materials[i]));
@@ -383,7 +387,7 @@ public unsafe class QadFile : BinaryFile
 
         endPos += sizeof(MPolyRegion) * Head.PolyRegionCount;
         endPos += (UseMaterialTypeCT ? sizeof(MMaterialTypeCT) : sizeof(MMaterialTypeWR)) * Head.MaterialCount;
-        endPos += (UseExtendedPropInstance ? sizeof(MPropInstance) + sizeof(Vector3) : sizeof(MPropInstance)) * Head.PropInstanceCount;
+        endPos += (UseExtendedPropInstance ? sizeof(MPropInstance) : sizeof(MPropInstance) - sizeof(Vector3)) * Head.PropInstanceCount;
 
 
         endPos += sizeof(MGroundPhysics) * Head.GroundPhysicsCount;
@@ -421,34 +425,73 @@ public unsafe class QadFile : BinaryFile
         public ushort SurfaceId1, SurfaceId2;
     }
 
-    public interface IMaterialType
-    {
-        public int GetSortID(int count);
-    }
-
-    public struct MMaterialTypeWR : IMaterialType
+    public struct MMaterialLayer
     {
         public ushort Tex0Id, Tex1Id, Tex2Id;
         public MMaterialMode Mode;
-        public Transform Matrix0;
-        public Transform Matrix1;
-        public Transform Matrix2;
+
+        public int GetSortID(int count) => Mode * count * count + Tex0Id * count + Tex1Id;
+    }
+
+    public struct MMaterialTypeWR
+    {
+        public MMaterialLayer Layer0;
+        public TextureTransform Matrix0;
+        public TextureTransform Matrix1;
+        public TextureTransform Matrix2;
         public int MatrixChecksum0;
         public int MatrixChecksum1;
         public int MatrixChecksum2;
-        public int GetSortID(int count) => Mode * count * count + Tex0Id * count + Tex1Id;
+
+        public static explicit operator MMaterialTypeWR(AbstractMaterialType material) => new MMaterialTypeWR()
+        {
+            Layer0 = material.Layer0,
+            Matrix0 = material.Matrix0,
+            Matrix1 = material.Matrix1,
+            Matrix2 = material.Matrix2,
+        };
     }
-    public struct MMaterialTypeCT : IMaterialType
+
+    public struct MMaterialTypeCT
     {
-        public ushort L0Tex0Id, L0Tex1Id, L0Tex2Id;
-        public MMaterialMode L0Mode;
-        public ushort L1Tex0Id, L1Tex1Id, L1Tex2Id;
-        public MMaterialMode L1Mode;
-        public Transform Mat1;
+        public MMaterialLayer Layer0;
+        public MMaterialLayer Layer1;
+        public TextureTransform Matrix0;
         public int A;
         public int B;
 
-        public int GetSortID(int count) => 0;
+        public static explicit operator MMaterialTypeCT(AbstractMaterialType material) => new MMaterialTypeCT()
+        {
+            Layer0 = material.Layer0,
+            Layer1 = material.Layer1,
+            Matrix0 = material.Matrix0,
+        };
+    }
+
+    public struct AbstractMaterialType
+    {
+        public MMaterialLayer Layer0;
+        public MMaterialLayer Layer1;
+        public TextureTransform Matrix0;
+        public TextureTransform Matrix1;
+        public TextureTransform Matrix2;
+
+        public static implicit operator AbstractMaterialType(MMaterialTypeWR material) => new AbstractMaterialType()
+        {
+            Layer0 = material.Layer0,
+            Matrix0 = material.Matrix0,
+            Matrix1 = material.Matrix1,
+            Matrix2 = material.Matrix2,
+        };
+
+        public static implicit operator AbstractMaterialType(MMaterialTypeCT material) => new AbstractMaterialType()
+        {
+            Layer0 = material.Layer0,
+            Layer1 = material.Layer1,
+            Matrix0 = material.Matrix0,
+        };
+
+        public int GetSortID(int count) => Layer0.GetSortID(count);
     }
 
     public struct MPropInstance
@@ -460,6 +503,7 @@ public unsafe class QadFile : BinaryFile
         public Matrix3 Matrix;
         public ushort x1, InShadow;
         public float x5;
+        public Vector3 x6;
     }
 
     public struct MGroundPhysics

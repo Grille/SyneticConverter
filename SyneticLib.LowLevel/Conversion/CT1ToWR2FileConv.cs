@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 
 namespace SyneticLib.Conversion;
 
-public static class C11ToWR2FileConv
+public static class CT1ToWR2FileConv
 {
     static readonly TextureTransform MatrixUV;
 
@@ -20,7 +20,7 @@ public static class C11ToWR2FileConv
     static readonly TextureTransform Matrix128;
     static readonly TextureTransform Matrix512;
 
-    static C11ToWR2FileConv()
+    static CT1ToWR2FileConv()
     {
         MatrixUV = TextureTransform.CreateScale90Deg(1, 1);
         Matrix64 = TextureTransform.CreateScale(1f / 64f, 1f / 64f);
@@ -32,7 +32,7 @@ public static class C11ToWR2FileConv
     {
         var paths = new ScenarioFiles.Paths(dirPath, fileName);
         var files = new ScenarioFiles();
-        files.Load(paths, GameVersion.C11);
+        files.Load(paths, GameVersion.CT1);
 
         ConvertGeo(files.TerrainMesh.Vertices);
         ConvertQad(files.Qad);
@@ -88,6 +88,22 @@ public static class C11ToWR2FileConv
                 material.Layer0.Tex0Id = 0;
             }
         }
+        /*
+        qad.Head.PropInstanceCount = 0;
+        qad.PropInstances = Array.Empty<QadFile.MPropInstance>();
+
+        qad.Head.PropClassCount = 0;
+        qad.PropClassInfo = Array.Empty<QadFile.MPropClass>();
+        qad.PropClassObjNames = Array.Empty<String32>();
+        */
+        qad.Head.SoundCount = 0;
+        qad.Sounds = Array.Empty<QadFile.MSound>();
+
+        qad.Head.BumpTexturesFileCount = 0;
+        qad.BumpTexNames = Array.Empty<String32>();
+
+        qad.Head.LightCount = 0;
+        qad.Lights = Array.Empty<QadFile.MLight>();
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.SortMaterials();
@@ -102,7 +118,7 @@ public static class C11ToWR2FileConv
         mat.Matrix0 = MatrixUV;
         mat.Matrix1 = MatrixUV;
         mat.Matrix2 = MatrixUV;
-
+        
         switch (mat.Layer1.Mode)
         {
             case 320:
@@ -166,11 +182,12 @@ public static class C11ToWR2FileConv
             }
             default:
             {
-                throw new NotImplementedException();
+                mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
+                break;
+                //throw new NotImplementedException();
             }
 
         }
-
     }
 
     static TextureTransform MatrixFromName(string name)

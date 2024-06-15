@@ -45,9 +45,9 @@ public static class WR1ToWR2FileConv
 
     public static void ConvertQad(QadFile qad)
     {
-        for (int i = 0; i < qad.MaterialsWR.Length; i++)
+        for (int i = 0; i < qad.Materials.Length; i++)
         {
-            ConvertWR1ToWR2(ref qad.MaterialsWR[i]);
+            ConvertWR1ToWR2(ref qad.Materials[i]);
         }
 
         int idx0 = Array.FindIndex(qad.TextureNames, (a) => a == "Blumen");
@@ -58,9 +58,6 @@ public static class WR1ToWR2FileConv
 
         FixObjects(qad);
         FixGrounds(qad);
-
-        qad.SortMaterials();
-        qad.RecalcMaterialChecksum();
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.Head.FlagX2WR2 = 1;
@@ -87,9 +84,9 @@ public static class WR1ToWR2FileConv
         }
     }
 
-    public static void ConvertWR1ToWR2(ref this QadFile.MMaterialTypeWR mat)
+    public static void ConvertWR1ToWR2(ref this QadFile.AbstractMaterialType mat)
     {
-        switch ((TerrainMaterialTypeMBWR)mat.Mode)
+        switch ((TerrainMaterialTypeMBWR)mat.Layer0.Mode)
         {
             case TerrainMaterialTypeMBWR.Terrain:
             case TerrainMaterialTypeMBWR.Terrain + 1:
@@ -99,7 +96,7 @@ public static class WR1ToWR2FileConv
             }
             case TerrainMaterialTypeMBWR.UVTerrain:
             {
-                mat.Matrix1 = Transform.Empety;
+                mat.Matrix1 = TextureTransform.Empety;
                 break;
             }
             case TerrainMaterialTypeMBWR.UV:
@@ -109,48 +106,45 @@ public static class WR1ToWR2FileConv
             }
             case TerrainMaterialTypeMBWR.Road0:
             {
-                mat.Mode = TerrainMaterialTypeWR2.Road1;
-                mat.Matrix1 = Transform.Empety;
-                mat.Matrix2 = Transform.Empety;
+                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
+                mat.Matrix1 = TextureTransform.Empety;
+                mat.Matrix2 = TextureTransform.Empety;
                 break;
             }
             case TerrainMaterialTypeMBWR.Reflective:
             {
-                mat.Mode = TerrainMaterialTypeWR2.Reflective;
+                mat.Layer0.Mode = TerrainMaterialTypeWR2.Reflective;
                 break;
             }
             case TerrainMaterialTypeMBWR.Road1:
             {
-                mat.Mode = TerrainMaterialTypeWR2.Road1;
-                mat.Matrix0 = Transform.Empety;
-                mat.Matrix1 = Transform.Empety;
-                mat.Matrix2 = Transform.Empety;
+                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
+                mat.Matrix0 = TextureTransform.Empety;
+                mat.Matrix1 = TextureTransform.Empety;
+                mat.Matrix2 = TextureTransform.Empety;
                 break;
             }
             case TerrainMaterialTypeMBWR.Road3:
             {
-                mat.Mode = TerrainMaterialTypeWR2.Road3;
-                mat.Matrix0 = Transform.Empety;
-                mat.Matrix1 = Transform.Empety;
-                mat.Matrix2 = Transform.Empety;
+                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road3;
+                mat.Matrix0 = TextureTransform.Empety;
+                mat.Matrix1 = TextureTransform.Empety;
+                mat.Matrix2 = TextureTransform.Empety;
                 break;
             }
             case TerrainMaterialTypeMBWR.Road2:
             {
-                mat.Mode = TerrainMaterialTypeWR2.Road2;
+                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road2;
                 break;
             }
             case TerrainMaterialTypeMBWR.Water: // Water
             {
-                mat.Mode = TerrainMaterialTypeWR2.Water;
-                mat.MatrixChecksum0 = 61420826;
-                mat.MatrixChecksum1 = 75580286;
-                mat.MatrixChecksum2 = 78329526;
+                mat.Layer0.Mode = TerrainMaterialTypeWR2.Water;
                 break;
             }
             case TerrainMaterialTypeMBWR.AlphaClip: // Mask
             {
-                mat.Mode = TerrainMaterialTypeWR2.AlphaClip;
+                mat.Layer0.Mode = TerrainMaterialTypeWR2.AlphaClip;
                 break;
             }
             case TerrainMaterialTypeMBWR.AlphaBlend:
@@ -159,7 +153,7 @@ public static class WR1ToWR2FileConv
             }
             default:
             {
-                throw new InvalidDataException($"Unexpected material mode: '{mat.Mode}'");
+                throw new InvalidDataException($"Unexpected material mode: '{mat.Layer0.Mode}'");
             }
         }
     }

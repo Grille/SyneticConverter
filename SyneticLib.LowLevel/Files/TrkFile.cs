@@ -35,6 +35,7 @@ public class TrkFile : BinaryFile
     {
         Head = br.Read<MHead>();
         Nodes = br.ReadArray<MNode>(Head.Nodes);
+        return;
         Head2 = br.Read<MHead2>();
         Turns = br.ReadArray<MTurn>(Head2.Turns);
         Arrows = br.ReadArray<MArrow>(Head2.Arrows);
