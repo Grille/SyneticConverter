@@ -41,7 +41,22 @@ public partial class SynPipelineToolForm : Form
         if (piplines.Count > 0)
             PipelinesControl.SelectedItem = piplines[0];
 
+        PipelineToolControl.ItemsChanged += PipelineToolControl_ItemsChanged;
+
+        PipelineToolControl.UnsavedChangesChanged += PipelineToolControl_UnsavedChangesChanged;
+
         Icon = Icon.FromHandle(Icons.SyneticLib.GetHicon());
+    }
+
+    private void PipelineToolControl_UnsavedChangesChanged(object sender, EventArgs e)
+    {
+        const string title = "Synetic Pipeline Tool";
+        Text = PipelineToolControl.UnsavedChanges ? $"{title} (*unsaved)" : title; 
+    }
+
+    private void PipelineToolControl_ItemsChanged(object sender, EventArgs e)
+    {
+        PipelineToolControl.SaveFile("autosave.txt");
     }
 
     private void quitToolStripMenuItem_Click(object sender, EventArgs e)

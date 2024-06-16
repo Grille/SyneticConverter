@@ -27,14 +27,14 @@ internal class ScenarioVariantNode : RessourceNode
         Image = IconList.Terrain;
         Text = variant.Name;
 
-        TerrainNode = new(variant.Terrain);
+        //TerrainNode = new(variant.Terrain);
         TerrainNode.Image = IconList.Terrain;
 
         //TerrainTexturesNode = new(variant.TerrainTextures, "Terrain-Textures");
         //ObjectsNode = new(variant.Models);
         //ObjectTexturesNode = new(variant.ModelTextures, "Object-Textures");
-        LightsNode = new(variant.Lights);
-        PropsNode = new(variant.PropClasses);
+        //LightsNode = new(variant.Lights);
+        //PropsNode = new(variant.PropClasses);
 
         //Nodes.Add(TerrainTexturesNode);
         //Nodes.Add(ObjectTexturesNode);

@@ -20,7 +20,7 @@ public class ViewerControl : GLControl
 {
     DateTime _last;
 
-    public Scene Scene { get; private set; }
+    public GlScene Scene { get; private set; }
     public Camera Camera
     {
         get => Scene.Camera;
@@ -53,7 +53,7 @@ public class ViewerControl : GLControl
         APIVersion = new Version(4, 5, 0, 0);
         Flags = OpenTK.Windowing.Common.ContextFlags.Debug;
 
-        Scene = new Scene();
+        Scene = new GlScene();
     }
 
     public void UpdateLogic()

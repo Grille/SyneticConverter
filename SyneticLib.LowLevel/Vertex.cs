@@ -7,6 +7,7 @@ using OpenTK.Mathematics;
 using System.Runtime.CompilerServices;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SyneticLib;
 
@@ -73,14 +74,38 @@ public struct Vertex
         }
     }
 
-    public Vertex()
-    {
-
-    }
+    public Vertex() { }
 
     public Vertex(Vector3 position, Vector2 uV0)
     {
         Position = position;
         UV0 = uV0;
+    }
+
+    public static bool operator ==(in Vertex left, in Vertex right)
+    {
+        return left.Equals(ref Unsafe.AsRef(right));
+    }
+
+    public static bool operator !=(in Vertex left, in Vertex right)
+    {
+        return !(left == right);
+    }
+
+    public bool Equals(ref Vertex other)
+    {
+        return Position == other.Position && Normal == other.Normal && UV0 == other.UV0 && UV1 == other.UV1 && LightColor == other.LightColor && Shadow == other.Shadow;
+    }
+
+    public override bool Equals([NotNullWhen(true)] object? obj)
+    {
+        if (obj is not Vertex vertex) 
+            return false;
+        return Equals(ref vertex);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 }

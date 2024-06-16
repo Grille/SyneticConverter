@@ -15,30 +15,30 @@ namespace SyneticLib.Files;
 
 public unsafe class QadFile : BinaryFile
 {
-    public bool Has8ByteMagic = false;
-    public bool Has56ByteBlock = false;
+    public bool HasCT2Extension = false;
     public bool UseSimpleData = false;
-    public bool UseMaterialTypeCT = false;
     public bool UseExtendedPropInstance = false;
+    public GameVersion MaterialVersion;
 
-    GameVersion version;
+    GameVersion _version;
     public GameVersion GameVersion
     {
-        get => version;
+        get => _version;
         set
         {
-            version = value;
-            SetFlagsAccordingToVersion(version);
+            SetFlagsAccordingToVersion(_version);
         }
     }
 
+    public MHeadPrefix HeadPrefix;
     public MHead Head;
+    public MHeadExtension HeadExtension;
     public String32[] TextureNames;
     public String32[] BumpTexNames;
     public String32[] PropClassObjNames;
     public MChunk[] Chunks;
     public int[] ChunkDataPtr;
-    public ushort[][] ChunkData;
+    public ushort[] ChunkData;
     public AbstractMaterialType[] Materials;
     public MPolyRegion[] PolyRegions;
     public MPropInstance[] PropInstances;
@@ -50,12 +50,14 @@ public unsafe class QadFile : BinaryFile
 
     public QadFile()
     {
+        _version = GameVersion.WR2;
+
         TextureNames = Array.Empty<String32>();
         BumpTexNames = Array.Empty<String32>();
         PropClassObjNames = Array.Empty<String32>();
         Chunks = Array.Empty<MChunk>();
         ChunkDataPtr = Array.Empty<int>();
-        ChunkData = Array.Empty<ushort[]>();
+        ChunkData = Array.Empty<ushort>();
         Materials = Array.Empty<AbstractMaterialType>();
         PolyRegions = Array.Empty<MPolyRegion>();
         PropInstances = Array.Empty<MPropInstance>();
@@ -68,16 +70,21 @@ public unsafe class QadFile : BinaryFile
 
     unsafe void ReadHead(BinaryViewReader br)
     {
-        fixed (void* ptr = &Head)
+        if (HasCT2Extension)
         {
-            int ptroffset = Has8ByteMagic ? 0 : 8;
-            br.ReadToPtr((byte*)ptr + ptroffset, sizeof(MHead) - ptroffset);
+            HeadPrefix = br.Read<MHeadPrefix>();
+        }
+
+        Head = br.Read<MHead>();
+
+        if (HasCT2Extension)
+        {
+            HeadExtension = br.Read<MHeadExtension>();
         }
     }
 
     public override void Deserialize(BinaryViewReader br)
     {
-
         ReadHead(br);
 
         if (Head.FlagX2WR2 != Head.FlagX5WR2)
@@ -87,9 +94,6 @@ public unsafe class QadFile : BinaryFile
 
         AssertBlockCount();
         AssertFileSize(br.Length);
-
-        if (Has56ByteBlock)
-            br.ReadArray<byte>(56);
 
         TextureNames = br.ReadArray<String32>(Head.TexturesFileCount);
         BumpTexNames = br.ReadArray<String32>(Head.BumpTexturesFileCount);
@@ -104,39 +108,32 @@ public unsafe class QadFile : BinaryFile
             Chunks[i] = br.Read<MChunk>();
 
         var blockX16 = Head.BlockCount * 16;
-        ChunkDataPtr = new int[blockX16 + 1];
-        br.ReadToIList(ChunkDataPtr, 0L, blockX16);
-        ChunkDataPtr[blockX16] = Head.ColliSize;
-
-        ChunkData = new ushort[blockX16][];
-        for (var i = 0; i < blockX16; i++)
-        {
-            var size = (ChunkDataPtr[i + 1] - ChunkDataPtr[i]) / 2;
-            ChunkData[i] = br.ReadArray<ushort>(size);
-        }
-
+        ChunkDataPtr = br.ReadArray<int>(blockX16);
+        ChunkData = br.ReadArray<ushort>((Head.ColliSize - ChunkDataPtr[0]) / 2);
 
         PolyRegions = br.ReadArray<MPolyRegion>(Head.PolyRegionCount);
 
         Materials = new AbstractMaterialType[Head.MaterialCount];
-        if (UseMaterialTypeCT)
-        {
-            br.ReadToArray(Materials, (MMaterialTypeCT a) => (AbstractMaterialType)a);
-        }
-        else
-        {
+        if (MaterialVersion >= GameVersion.CT2)
+            br.ReadToArray(Materials, (MMaterialTypeCT2 a) => (AbstractMaterialType)a);
+        else if (MaterialVersion >= GameVersion.C11)
+            br.ReadToArray(Materials, (MMaterialTypeC11 a) => (AbstractMaterialType)a);
+        else if (MaterialVersion >= GameVersion.WR1)
             br.ReadToArray(Materials, (MMaterialTypeWR a) => (AbstractMaterialType)a);
-        }
+        else
+            throw new InvalidDataException();
+
+        if (HasCT2Extension)
+            br.Position += 224 * sizeof(int);
 
         PropInstances = new MPropInstance[Head.PropInstanceCount];
         if (UseExtendedPropInstance)
-        {
             br.ReadItemBytesToArray(PropInstances, sizeof(MPropInstance));
-        }
         else
-        {
             br.ReadItemBytesToArray(PropInstances, sizeof(MPropInstance) - sizeof(Vector3));
-        }
+
+        if (HasCT2Extension)
+            br.Position += HeadExtension.StringSkip + HeadExtension.StringCount * sizeof(int) * 2;
 
         Lights = new MLight[Head.LightCount];
         for (int i = 0; i < Head.LightCount; i++)
@@ -151,10 +148,17 @@ public unsafe class QadFile : BinaryFile
     {
         bw.LengthPrefix = LengthPrefix.None;
 
-        fixed (void* ptr = &Head)
+        if (HasCT2Extension)
+            throw new InvalidOperationException("CT2+ not supported.");
+
+        if (HasCT2Extension)
         {
-            int ptroffset = Has8ByteMagic ? 0 : 8;
-            bw.WriteFromPtr((byte*)ptr + ptroffset, sizeof(MHead) - ptroffset);
+            bw.Write(HeadPrefix);
+        }
+        bw.Write(Head);
+        if (HasCT2Extension)
+        {
+            bw.Write(HeadExtension);
         }
 
         bw.WriteArray(TextureNames);
@@ -175,26 +179,19 @@ public unsafe class QadFile : BinaryFile
         }
 
         var blockx16 = Head.BlockCount * 16;
-
-        bw.WriteIList(ChunkDataPtr, 0, blockx16);
-        for (var i = 0; i < blockx16; i++)
-        {
-            bw.WriteArray(ChunkData[i]);
-        }
+        bw.WriteArray(ChunkDataPtr);
+        bw.WriteArray(ChunkData);
 
         bw.WriteArray(PolyRegions);
 
-        if (UseMaterialTypeCT)
-        {
-            var materials = BinaryUtils.CastArray(Materials, (a) => (MMaterialTypeCT)a);
-            bw.WriteArray(materials);
-        }
+        if (MaterialVersion >= GameVersion.CT2)
+            bw.WriteArray(Materials, (a) => (MMaterialTypeCT2)a);
+        if (MaterialVersion >= GameVersion.C11)
+            bw.WriteArray(Materials, (a) => (MMaterialTypeC11)a);
+        if (MaterialVersion >= GameVersion.WR1)
+            bw.WriteArray(Materials, (a) => (MMaterialTypeWR)a);
         else
-        {
-            var materials = BinaryUtils.CastArray(Materials, (a) => (MMaterialTypeWR)a);
-            RecalcMaterialMatrixChecksumWR(materials);
-            bw.WriteArray(materials);
-        }
+            throw new InvalidOperationException();
 
         if (UseExtendedPropInstance)
         {
@@ -244,7 +241,7 @@ public unsafe class QadFile : BinaryFile
         }
 
         stream.Seek(0, SeekOrigin.Begin);
-        Has8ByteMagic = false;
+        HasCT2Extension = false;
         ReadHead(br);
 
         if (Check(GameVersion.WR1))
@@ -260,7 +257,7 @@ public unsafe class QadFile : BinaryFile
             return GameVersion.CT1;
 
         stream.Seek(0, SeekOrigin.Begin);
-        Has8ByteMagic = true;
+        HasCT2Extension = true;
         ReadHead(br);
 
         if (Check(GameVersion.CT2))
@@ -278,13 +275,21 @@ public unsafe class QadFile : BinaryFile
         throw new InvalidDataException("No matching GameVersion found.");
     }
 
-    private void RecalcMaterialChecksumCT(MMaterialTypeCT[] materials)
+    public void ForceUniqueChecksums()
     {
-
+        int value = 0;
+        for (int i = 0; i < Materials.Length; i++)
+        {
+            Materials[i].Checksums.Checksum0 = value++;
+            Materials[i].Checksums.Checksum1 = value++;
+            Materials[i].Checksums.Checksum2 = value++;
+        }
     }
 
-    private void RecalcMaterialMatrixChecksumWR(MMaterialTypeWR[] materials)
+    public void RecalcMaterialMatrixChecksum()
     {
+        var materials = Materials;
+
         var list = new List<TextureTransform>();
 
         for (int i = 0; i < materials.Length; i++)
@@ -304,9 +309,9 @@ public unsafe class QadFile : BinaryFile
         {
             ref var mat = ref materials[i];
 
-            mat.MatrixChecksum0 = list.IndexOf(mat.Matrix0);
-            mat.MatrixChecksum1 = list.IndexOf(mat.Matrix1);
-            mat.MatrixChecksum2 = list.IndexOf(mat.Matrix2);
+            mat.Checksums.Checksum0 = list.IndexOf(mat.Matrix0);
+            mat.Checksums.Checksum1 = list.IndexOf(mat.Matrix1);
+            mat.Checksums.Checksum2 = list.IndexOf(mat.Matrix2);
         }
 
     }
@@ -343,10 +348,10 @@ public unsafe class QadFile : BinaryFile
 
     public void SetFlagsAccordingToVersion(GameVersion version)
     {
+        _version = version;
+        MaterialVersion = version;
         UseSimpleData = version <= GameVersion.WR1;
-        Has8ByteMagic = version >= GameVersion.CT2;
-        Has56ByteBlock = version >= GameVersion.CT2;
-        UseMaterialTypeCT = version >= GameVersion.C11;
+        HasCT2Extension = version >= GameVersion.CT2;
         UseExtendedPropInstance = version >= GameVersion.CT1;
     }
 
@@ -369,10 +374,13 @@ public unsafe class QadFile : BinaryFile
     {
         int endPos = 0;
 
-        endPos += sizeof(MHead) - (Has8ByteMagic ? 0 : 8);
+        if (HasCT2Extension)
+            endPos += sizeof(MHeadPrefix);
 
-        if (Has56ByteBlock)
-            endPos += 56;
+        endPos += sizeof(MHead);
+
+        if (HasCT2Extension)
+            endPos += sizeof(MHeadExtension);
 
         endPos += sizeof(String32) * Head.TexturesFileCount;
         endPos += sizeof(String32) * Head.BumpTexturesFileCount;
@@ -386,9 +394,17 @@ public unsafe class QadFile : BinaryFile
         endPos += Head.ColliSize;
 
         endPos += sizeof(MPolyRegion) * Head.PolyRegionCount;
-        endPos += (UseMaterialTypeCT ? sizeof(MMaterialTypeCT) : sizeof(MMaterialTypeWR)) * Head.MaterialCount;
+
+        int materialSize = MaterialVersion >= GameVersion.CT2 ? sizeof(MMaterialTypeCT2) : MaterialVersion >= GameVersion.C11 ? sizeof(MMaterialTypeC11) : sizeof(MMaterialTypeWR);
+        endPos += materialSize * Head.MaterialCount;
+
+        if (HasCT2Extension)
+            endPos += 224 * sizeof(int);
+
         endPos += (UseExtendedPropInstance ? sizeof(MPropInstance) : sizeof(MPropInstance) - sizeof(Vector3)) * Head.PropInstanceCount;
 
+        if (HasCT2Extension)
+            endPos += HeadExtension.StringSkip + HeadExtension.StringCount * sizeof(int) * 2;
 
         endPos += sizeof(MGroundPhysics) * Head.GroundPhysicsCount;
         endPos += 2 * 256;
@@ -397,10 +413,20 @@ public unsafe class QadFile : BinaryFile
         return endPos;
     }
 
-    public struct MHead
+    public enum MFileVersion : uint
+    {
+        None = 0,
+        CT2 = 65536,
+    }
+
+    public struct MHeadPrefix
     {
         public String4 Head;
-        public int Version;
+        public MFileVersion Version;
+    }
+
+    public struct MHead
+    {
         public int WidthX, LengthZ, BlockCountX, BlockCountZ, BlockCount, PolyRegionCount;
         public ushort TexturesFileCount, BumpTexturesFileCount;
         public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicsCount, ColliSize;
@@ -409,13 +435,20 @@ public unsafe class QadFile : BinaryFile
         public int SoundCount;
     }
 
+    public struct MHeadExtension
+    {
+        public int StringSkip;
+        public int StringCount;
+        public fixed int Clear[12];
+    }
+
     public struct MChunk
     {
-        public ushort PosX, PosZ;
-        public int PolyOffset, PolyCount, PolyRegionOffset, PolyRegionCount;
+        public Location2DUInt16 Position;
+        public SectionInt32 Poly, PolyRegion;
         public Vector3 Center;
         public float Radius;
-        public short PropOffset, PropCount, LightOffset, LightCount;
+        public SectionUInt16 Props, Lights;
         public short Chunk65k, x1;
     }
 
@@ -433,15 +466,20 @@ public unsafe class QadFile : BinaryFile
         public int GetSortID(int count) => Mode * count * count + Tex0Id * count + Tex1Id;
     }
 
+    public struct MMaterialChecksums
+    {
+        public int Checksum0;
+        public int Checksum1;
+        public int Checksum2;
+    }
+
     public struct MMaterialTypeWR
     {
         public MMaterialLayer Layer0;
         public TextureTransform Matrix0;
         public TextureTransform Matrix1;
         public TextureTransform Matrix2;
-        public int MatrixChecksum0;
-        public int MatrixChecksum1;
-        public int MatrixChecksum2;
+        public MMaterialChecksums Checksums;
 
         public static explicit operator MMaterialTypeWR(AbstractMaterialType material) => new MMaterialTypeWR()
         {
@@ -449,10 +487,11 @@ public unsafe class QadFile : BinaryFile
             Matrix0 = material.Matrix0,
             Matrix1 = material.Matrix1,
             Matrix2 = material.Matrix2,
+            Checksums = material.Checksums,
         };
     }
 
-    public struct MMaterialTypeCT
+    public struct MMaterialTypeC11
     {
         public MMaterialLayer Layer0;
         public MMaterialLayer Layer1;
@@ -460,7 +499,24 @@ public unsafe class QadFile : BinaryFile
         public int A;
         public int B;
 
-        public static explicit operator MMaterialTypeCT(AbstractMaterialType material) => new MMaterialTypeCT()
+        public static explicit operator MMaterialTypeC11(AbstractMaterialType material) => new MMaterialTypeC11()
+        {
+            Layer0 = material.Layer0,
+            Layer1 = material.Layer1,
+            Matrix0 = material.Matrix0,
+        };
+    }
+
+    public struct MMaterialTypeCT2
+    {
+        public MMaterialLayer Layer0;
+        public MMaterialLayer Layer1;
+        public TextureTransform Matrix0;
+        public float Clear0;
+        public int A;
+        public int B;
+
+        public static explicit operator MMaterialTypeCT2(AbstractMaterialType material) => new MMaterialTypeCT2()
         {
             Layer0 = material.Layer0,
             Layer1 = material.Layer1,
@@ -475,6 +531,7 @@ public unsafe class QadFile : BinaryFile
         public TextureTransform Matrix0;
         public TextureTransform Matrix1;
         public TextureTransform Matrix2;
+        public MMaterialChecksums Checksums;
 
         public static implicit operator AbstractMaterialType(MMaterialTypeWR material) => new AbstractMaterialType()
         {
@@ -482,9 +539,17 @@ public unsafe class QadFile : BinaryFile
             Matrix0 = material.Matrix0,
             Matrix1 = material.Matrix1,
             Matrix2 = material.Matrix2,
+            Checksums = material.Checksums,
         };
 
-        public static implicit operator AbstractMaterialType(MMaterialTypeCT material) => new AbstractMaterialType()
+        public static implicit operator AbstractMaterialType(MMaterialTypeC11 material) => new AbstractMaterialType()
+        {
+            Layer0 = material.Layer0,
+            Layer1 = material.Layer1,
+            Matrix0 = material.Matrix0,
+        };
+
+        public static implicit operator AbstractMaterialType(MMaterialTypeCT2 material) => new AbstractMaterialType()
         {
             Layer0 = material.Layer0,
             Layer1 = material.Layer1,

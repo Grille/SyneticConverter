@@ -6,14 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
 
+using SyneticLib.Files.Extra;
+
 namespace SyneticLib.IO;
 public static partial class Exports
 {
     //public Vector3 PositionMultiplier = Vector3.One;
 
-    public static void SaveAsObj(this Model model, string path)
+    public static void SaveModelAsObj(Model model, WavefrontObjFile objFile, WavefrontMtlFile mtlFile)
     {
-    
         /*
         var PositionMultiplier = Vector3.One;
 

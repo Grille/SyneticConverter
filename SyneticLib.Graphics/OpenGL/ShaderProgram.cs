@@ -68,7 +68,7 @@ public class ShaderProgram : GLObject
 
     protected sealed override void OnBind()
     {
-        GL.UseProgram(ProgramID);
+        GLContext.Bind(this);
     }
 
     protected sealed override void OnDelete()

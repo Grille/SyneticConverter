@@ -91,6 +91,7 @@ public static class C11ToWR2FileConv
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.SortMaterials();
+        qad.RecalcMaterialMatrixChecksum();
     }
 
     public static void ConvertC11ToWR2(ref this QadFile.AbstractMaterialType mat, TextureTransform[] matrices)

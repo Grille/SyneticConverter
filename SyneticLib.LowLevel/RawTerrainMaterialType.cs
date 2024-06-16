@@ -39,5 +39,12 @@ public enum TerrainMaterialTypeMBWR : ushort
 
 public enum TerrainMaterialTypeC11 : ushort
 {
-
+    Terrain = 0,
+    UVTerrain = 16,
+    UV = 32,
+    Road0 = 240,
+    Reflective = 192,
+    AlphaClip = 288,
+    Water = 320,
+    AlphaBlend = 240,
 }

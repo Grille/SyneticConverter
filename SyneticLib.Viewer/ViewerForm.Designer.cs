@@ -34,10 +34,12 @@
             detectGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            renderTimer = new System.Windows.Forms.Timer(components);
-            viewerControl1 = new ViewerControl();
+            exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            asObjToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             sceneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            renderTimer = new System.Windows.Forms.Timer(components);
+            viewerControl1 = new ViewerControl();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -52,7 +54,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { detectGamesToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { detectGamesToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem, exportToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             fileToolStripMenuItem.Text = "File";
@@ -61,22 +63,50 @@
             // 
             detectGamesToolStripMenuItem.Name = "detectGamesToolStripMenuItem";
             detectGamesToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O;
-            detectGamesToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            detectGamesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             detectGamesToolStripMenuItem.Text = "Open";
             detectGamesToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
+            toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             exitToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q;
-            exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
+            // 
+            // exportToolStripMenuItem
+            // 
+            exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { asObjToolStripMenuItem });
+            exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            exportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            exportToolStripMenuItem.Text = "Export";
+            // 
+            // asObjToolStripMenuItem
+            // 
+            asObjToolStripMenuItem.Name = "asObjToolStripMenuItem";
+            asObjToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            asObjToolStripMenuItem.Text = "As Wavefront (.obj)";
+            asObjToolStripMenuItem.Click += asObjToolStripMenuItem_Click;
+            // 
+            // sceneToolStripMenuItem
+            // 
+            sceneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { clearToolStripMenuItem });
+            sceneToolStripMenuItem.Name = "sceneToolStripMenuItem";
+            sceneToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            sceneToolStripMenuItem.Text = "Scene";
+            // 
+            // clearToolStripMenuItem
+            // 
+            clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            clearToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+            clearToolStripMenuItem.Text = "Clear";
+            clearToolStripMenuItem.Click += clearToolStripMenuItem_Click;
             // 
             // renderTimer
             // 
@@ -96,20 +126,6 @@
             viewerControl1.Profile = OpenTK.Windowing.Common.ContextProfile.Core;
             viewerControl1.Size = new System.Drawing.Size(784, 537);
             viewerControl1.TabIndex = 2;
-            // 
-            // sceneToolStripMenuItem
-            // 
-            sceneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { clearToolStripMenuItem });
-            sceneToolStripMenuItem.Name = "sceneToolStripMenuItem";
-            sceneToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
-            sceneToolStripMenuItem.Text = "Scene";
-            // 
-            // clearToolStripMenuItem
-            // 
-            clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            clearToolStripMenuItem.Text = "Clear";
-            clearToolStripMenuItem.Click += clearToolStripMenuItem_Click;
             // 
             // ViewerForm
             // 
@@ -137,5 +153,7 @@
         private ViewerControl viewerControl1;
         private System.Windows.Forms.ToolStripMenuItem sceneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem asObjToolStripMenuItem;
     }
 }

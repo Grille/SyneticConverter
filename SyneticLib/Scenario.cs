@@ -15,14 +15,10 @@ public partial class Scenario : SyneticObject
     public int VNumber;
     public int Width, Height;
 
-    public Mesh Terrain;
-    public LazyRessourceDirectory<Sound> Sounds;
-    public TextureDirectory TerrainTextures;
-    public ModelDirectory Models;
-    public TextureDirectory ModelTextures;
-    public RessourceList<PropClass> PropClasses;
-    public RessourceList<PropInstance> PropInstances;
-    public RessourceList<Light> Lights;
+    public TerrainModel Terrain;
+    public Sound[] Sounds;
+    public PropInstance[] PropInstances;
+    public Light[] Lights;
     public ScenarioChunk[,] Chunks;
 
     public ProgressLogger Progress;

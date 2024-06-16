@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
+using static SyneticLib.Files.QadFile;
 
 namespace SyneticLib.Conversion;
 
@@ -37,24 +38,23 @@ public static class CT1ToWR2FileConv
         ConvertGeo(files.TerrainMesh.Vertices);
         ConvertQad(files.Qad);
 
-        CreateCobFiles(dirPath);
+        //CreateCobFiles(dirPath);
 
         files.Save(paths, GameVersion.WR2);
     }
 
     public static void ConvertGeo(Vertex[] vertecis)
     {
-        var black = new Vector3(0.2f);
+        var factor = new Vector3(0.5f, 0.5f, 0.5f);
+        var offset = new Vector3(0.1f);
 
         for (int i = 0; i < vertecis.Length; i++)
         {
             ref var vertex = ref vertecis[i];
 
-            float f = vertex.LightColor.Length;
-
             var blend = vertex.Blending;
             vertex.Blending = new Vector3(blend.Y, blend.Z, blend.X);
-            vertex.LightColor = Vector3.Clamp(vertex.LightColor * f + black * (1 - f), Vector3.Zero, Vector3.One);
+            vertex.LightColor = Vector3.Clamp(vertex.LightColor * factor + offset, Vector3.Zero, Vector3.One);
         }
     }
 
@@ -66,58 +66,61 @@ public static class CT1ToWR2FileConv
             matrices[i] = MatrixFromName(qad.TextureNames[i]);
         }
 
-        int fels07 = -1;
-
-        for (int i = 0; i < qad.TextureNames.Length; i++)
-        {
-            if (qad.TextureNames[i].ToString().ToLower() == "fels07")
-            {
-                fels07 = i;
-                break;
-            }
-        }
-
         for (int i = 0; i < qad.Head.MaterialCount; i++)
         {
             ref var material = ref qad.Materials[i];
 
             ConvertC11ToWR2(ref material, matrices);
-
-            if (material.Layer0.Mode < 4 && material.Layer0.Tex0Id == fels07)
-            {
-                material.Layer0.Tex0Id = 0;
-            }
         }
-        /*
+        
         qad.Head.PropInstanceCount = 0;
         qad.PropInstances = Array.Empty<QadFile.MPropInstance>();
+        
+        for (int i = 0; i < qad.Chunks.Length; i++)
+        {
+            ref var chunk = ref qad.Chunks[i];
 
+            chunk.Props.Start = 0;
+            chunk.Props.Length = 0;
+
+            chunk.Lights.Start = 0;
+            chunk.Lights.Length = 0;
+        }
+
+        
         qad.Head.PropClassCount = 0;
         qad.PropClassInfo = Array.Empty<QadFile.MPropClass>();
         qad.PropClassObjNames = Array.Empty<String32>();
-        */
+        
+        
         qad.Head.SoundCount = 0;
         qad.Sounds = Array.Empty<QadFile.MSound>();
 
         qad.Head.BumpTexturesFileCount = 0;
         qad.BumpTexNames = Array.Empty<String32>();
 
+        
         qad.Head.LightCount = 0;
         qad.Lights = Array.Empty<QadFile.MLight>();
+       
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.SortMaterials();
+        qad.ForceUniqueChecksums();
     }
 
     public static void ConvertC11ToWR2(ref this QadFile.AbstractMaterialType mat, TextureTransform[] matrices)
     {
         var dmat0 = matrices[mat.Layer0.Tex0Id];
-        var dmat1 = matrices[mat.Layer0.Tex1Id];
-        var dmat2 = matrices[mat.Layer0.Tex2Id];
+        var dmat1 = matrices[mat.Layer0.Tex0Id];
+        var dmat2 = matrices[mat.Layer0.Tex0Id];
 
         mat.Matrix0 = MatrixUV;
         mat.Matrix1 = MatrixUV;
         mat.Matrix2 = MatrixUV;
+
+        mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
+        return;
         
         switch (mat.Layer1.Mode)
         {

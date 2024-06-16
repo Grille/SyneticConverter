@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Grille.IO;
 
 namespace SyneticLib.Files.Common;
-public abstract class SyneticIniFile : BaseFile
+public abstract class SyneticIniFile : TextFile
 {
     public class Section : Dictionary<string, string>
     {
@@ -28,20 +28,7 @@ public abstract class SyneticIniFile : BaseFile
         Sections = new();
     }
 
-
-    public override sealed void Deserialize(Stream stream)
-    {
-        using var br = new StreamReader(stream, leaveOpen: true);
-        Deserialize(br);
-    }
-
-    public override sealed void Serialize(Stream stream)
-    {
-        using var bw = new StreamWriter(stream, leaveOpen: true);
-        Serialize(bw);
-    }
-
-    public void Deserialize(StreamReader r)
+    public override void Deserialize(StreamReader r)
     {
         Head.Clear();
         Sections.Clear();
@@ -79,7 +66,7 @@ public abstract class SyneticIniFile : BaseFile
         OnRead();
     }
 
-    public void Serialize(StreamWriter w)
+    public override void Serialize(StreamWriter w)
     {
         OnWrite();
 

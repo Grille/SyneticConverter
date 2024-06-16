@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 using SyneticLib.Files.Common;
+
+using static SyneticLib.Files.ScenarioFiles;
 
 namespace SyneticLib.Files;
 
@@ -17,13 +20,15 @@ public class ScenarioFiles
     private VtxFile Vtx;
     private IdxFile Idx;
 
-    public TerrainMeshObj TerrainMesh;
+    public readonly TerrainMeshView TerrainMesh;
 
-    public struct TerrainMeshObj
+    public class TerrainMeshView
     {
-        public Vertex[] Vertices;
-        public IdxTriangleInt32[] Indices;
-        public int[] Offsets;
+        [AllowNull] public Vertex[] Vertices;
+        [AllowNull] public IdxTriangleInt32[] Indices;
+        [AllowNull] public int[] Offsets;
+
+        internal TerrainMeshView() { }
     }
 
     public class Paths
@@ -59,7 +64,12 @@ public class ScenarioFiles
         Vtx = new VtxFile();
         Qad = new QadFile();
         Sky = new SkyFile();
+
+        TerrainMesh = new TerrainMeshView();
+        RefreshTerrainMesh(GameVersion.WR2);
     }
+
+
 
     public void Load(string dirPath, string fileName)
     {
@@ -105,18 +115,14 @@ public class ScenarioFiles
         {
             Geo.SetFlagsAccordingToVersion(version);
             Geo.Load(paths.GeoPath);
-            TerrainMesh.Vertices = Geo.Vertecis;
-            TerrainMesh.Indices = Geo.Indices;
-            TerrainMesh.Offsets = Geo.IndicesOffset;
         }
         else
         {
             Idx.Load(paths.IdxPath);
             Vtx.Load(paths.VtxPath);
-            TerrainMesh.Vertices = Vtx.Vertecis;
-            TerrainMesh.Indices = Idx.Indices;
-            TerrainMesh.Offsets = Vtx.IndicesOffset;
         }
+
+        RefreshTerrainMesh(version);
     }
 
     public void SaveTerrainMesh(string dirPath, string fileName, GameVersion version)
@@ -125,21 +131,49 @@ public class ScenarioFiles
         SaveTerrainMesh(paths, version);
     }
 
-    public void SaveTerrainMesh(Paths paths, GameVersion version)
+    private void RefreshTerrainMesh(GameVersion version)
+    {
+        if (version >= GameVersion.C11)
+        {
+            TerrainMesh.Vertices = Geo.Vertecis;
+            TerrainMesh.Indices = Geo.Indices;
+            TerrainMesh.Offsets = Geo.IndicesOffset;
+        }
+        else
+        {
+            TerrainMesh.Vertices = Vtx.Vertecis;
+            TerrainMesh.Indices = Idx.Indices;
+            TerrainMesh.Offsets = Vtx.IndicesOffset;
+        }
+    }
+
+    private void FlushTerrainMesh(GameVersion version)
     {
         if (version >= GameVersion.C11)
         {
             Geo.Vertecis = TerrainMesh.Vertices;
             Geo.IndicesOffset = TerrainMesh.Offsets;
             Geo.Indices = TerrainMesh.Indices;
-            Geo.SetFlagsAccordingToVersion(version);
-            Geo.Save(paths.GeoPath);
         }
         else
         {
             Vtx.Vertecis = TerrainMesh.Vertices;
             Vtx.IndicesOffset = TerrainMesh.Offsets;
             Idx.Indices = TerrainMesh.Indices;
+        }
+    }
+
+    public void SaveTerrainMesh(Paths paths, GameVersion version)
+    {
+        FlushTerrainMesh(version);
+
+        if (version >= GameVersion.C11)
+        {
+            Geo.SetFlagsAccordingToVersion(version);
+            Geo.Save(paths.GeoPath);
+        }
+        else
+        {
             Idx.Save(paths.IdxPath);
             Vtx.Save(paths.VtxPath);
         }

@@ -10,8 +10,6 @@ using SyneticLib.Files;
 using SyneticLib.Locations;
 
 using static System.IO.Path;
-using System.Security.Cryptography.X509Certificates;
-using System.Runtime;
 
 namespace SyneticLib.IO;
 public static partial class Imports
@@ -56,24 +54,8 @@ public static partial class Imports
         var qad = files.Qad;
         var sky = files.Sky;
 
-        var vertecis = files.TerrainMesh.Vertices;
-        var indices = files.TerrainMesh.Indices;
-        var iOffsets = files.TerrainMesh.Offsets;
-
         var terrainTextures = new TextureDirectory(Combine(dirPath, "textures"));
         var modelTextures = new TextureDirectory(Combine(dirPath, "objects/textures"));
-        var terrainTextureIndex = terrainTextures.CreateIndexedArray(qad.TextureNames);
-
-        var terrainMaterials = GetTerrainMaterials(qad, terrainTextureIndex);
-
-        var offsets = new int[iOffsets.Length + 1];
-        for (var i = 0; i < offsets.Length - 1; i++)
-        {
-            offsets[i + 1] = offsets[i] + iOffsets[i];
-        }
-
-        var matx = new Material();
-        var mesh = new Mesh(vertecis, indices);
 
         var scenario = new Scenario(0);
 
@@ -82,33 +64,15 @@ public static partial class Imports
 
         scenario.Chunks = new ScenarioChunk[qad.Head.BlockCountX, qad.Head.BlockCountZ];
 
-
-        scenario.Terrain = mesh;
+        scenario.Terrain = BuildTerrain(files, terrainTextures);
 
         for (int i = 0; i< qad.Chunks.Length; i++)
         {
-            ref var srcChunk = ref qad.Chunks[i];
-
-            var chunk = new ScenarioChunk(srcChunk.PosX, srcChunk.PosZ);
-            int offset = offsets[srcChunk.Chunk65k];
-
-            var submesh = new MeshSegment(mesh, srcChunk.PolyOffset, srcChunk.PolyCount, offset);
-
-            
-            var regions = new ModelMaterialRegion[srcChunk.PolyRegionCount];
-            for (int iy = 0; iy< regions.Length; iy++)
+            var cinfo = new ScenarioChunkCreateInfo(qad.Chunks[i])
             {
-                var srcRegion = qad.PolyRegions[iy + srcChunk.PolyRegionOffset];
-                var region = new ModelMaterialRegion(srcRegion.PolyOffset, srcRegion.PolyCount, terrainMaterials[srcRegion.SurfaceId1]);
-                regions[iy] = region;
-            }
-         
-
-            var model = new Model(submesh, regions);
-
-            chunk.Terrain = model;
-
-            scenario.Chunks[srcChunk.PosX, srcChunk.PosZ] = chunk;
+                Terrain = scenario.Terrain,
+            };
+            scenario.Chunks[cinfo.Position.X, cinfo.Position.Z] = new ScenarioChunk(cinfo);
         }
 
         /*
@@ -241,6 +205,54 @@ public static partial class Imports
 
         return scenario;
 
+    }
+
+    static TerrainModel BuildTerrain(ScenarioFiles files, TextureDirectory terrainTextures)
+    {
+        var syn = files.Syn;
+        var lvl = files.Lvl;
+        var sni = files.Sni;
+        var qad = files.Qad;
+        var sky = files.Sky;
+
+        var vertecis = files.TerrainMesh.Vertices;
+        var indices = files.TerrainMesh.Indices;
+        var iOffsets = files.TerrainMesh.Offsets;
+
+        var terrainTextureIndex = terrainTextures.CreateIndexedArray(qad.TextureNames);
+        var terrainMaterials = GetTerrainMaterials(qad, terrainTextureIndex);
+
+        var offsets = new int[iOffsets.Length + 1];
+        for (var i = 0; i < offsets.Length - 1; i++)
+        {
+            offsets[i + 1] = offsets[i] + iOffsets[i];
+        }
+
+        var mesh = new Mesh(vertecis, indices);
+
+
+        var models = new Model[qad.Head.BlockCountX, qad.Head.BlockCountZ];
+
+        for (int i = 0; i < qad.Chunks.Length; i++)
+        {
+            ref var srcChunk = ref qad.Chunks[i];
+
+            int offset = offsets[srcChunk.Chunk65k];
+            var submesh = new MeshSegment(mesh, srcChunk.Poly.Start, srcChunk.Poly.Length, offset);
+
+            var regions = new ModelMaterialRegion[srcChunk.PolyRegion.Length];
+            for (int iy = 0; iy < regions.Length; iy++)
+            {
+                var srcRegion = qad.PolyRegions[iy + srcChunk.PolyRegion.Start];
+                var region = new ModelMaterialRegion(srcRegion.PolyOffset, srcRegion.PolyCount, terrainMaterials[srcRegion.SurfaceId1]);
+                regions[iy] = region;
+            }
+
+            var model = new Model(submesh, regions);
+            models[srcChunk.Position.X, srcChunk.Position.Z] = model;
+        }
+
+        return new TerrainModel(mesh, models);
     }
 
     static Material[] GetTerrainMaterials(QadFile qad, Texture[] textures)

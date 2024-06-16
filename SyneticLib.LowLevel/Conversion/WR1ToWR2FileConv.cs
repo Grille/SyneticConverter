@@ -62,6 +62,8 @@ public static class WR1ToWR2FileConv
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.Head.FlagX2WR2 = 1;
         qad.Head.FlagX5WR2 = 1;
+        qad.SortMaterials();
+        qad.RecalcMaterialMatrixChecksum();
     }
 
     public static void ConvertVtx(Vertex[] vertices, float ambientOffset)

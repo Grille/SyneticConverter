@@ -16,6 +16,7 @@ using SyneticLib.Graphics;
 
 using SyneticLib.Resources;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using System.Diagnostics;
 
 namespace SyneticLib.Viewer;
 
@@ -34,7 +35,7 @@ public partial class ViewerForm : Form
         }
     }
 
-    Scene scene => viewerControl1.Scene;
+    GlScene scene => viewerControl1.Scene;
 
     public bool HideOnCLose { get; }
 
@@ -129,6 +130,7 @@ public partial class ViewerForm : Form
             }
             catch (Exception ex)
             {
+                throw;
                 ExceptionBox.Show(this, ex);
             }
         }
@@ -189,5 +191,10 @@ public partial class ViewerForm : Form
     private void clearToolStripMenuItem_Click(object sender, EventArgs e)
     {
         scene.ClearScene();
+    }
+
+    private void asObjToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        var dialog = new ExportSceneAsObjDialog();
     }
 }

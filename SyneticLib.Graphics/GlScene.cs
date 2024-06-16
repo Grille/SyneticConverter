@@ -13,7 +13,7 @@ using SyneticLib.Math3D;
 using System.Diagnostics;
 
 namespace SyneticLib.Graphics;
-public class Scene : IDisposable
+public class GlScene : IDisposable
 {
     public SpriteBatch Sprites { get; }
 
@@ -30,7 +30,7 @@ public class Scene : IDisposable
 
 
 
-    public unsafe Scene()
+    public unsafe GlScene()
     {
         Sprites = new SpriteBatch();
         Camera = new FreeCamera();
