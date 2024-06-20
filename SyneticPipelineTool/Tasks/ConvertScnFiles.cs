@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Grille.PipelineTool;
+using Grille.PipelineTool.IO;
 using SyneticLib.Conversion;
 
 namespace SyneticPipelineTool.Tasks;
@@ -44,10 +45,10 @@ internal class ConvertScnFiles : PipelineTask
     public override Token[] ToTokens() => new Token[]
     {
         new Token(TokenType.Text, "Convert files from "),
-        new Token(TokenType.Variable, Parameters["SrcVersion"]),
+        new Token(TokenType.Expression, Parameters["SrcVersion"]),
         new Token(TokenType.Text, " to "),
-        new Token(TokenType.Variable, Parameters["DstVersion"]),
+        new Token(TokenType.Expression, Parameters["DstVersion"]),
         new Token(TokenType.Text, " "),
-        new Token(TokenType.Variable, Parameters["Path"]),
+        new Token(TokenType.Expression, Parameters["Path"]),
     };
 }

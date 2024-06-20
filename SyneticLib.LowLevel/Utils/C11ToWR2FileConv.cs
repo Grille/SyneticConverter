@@ -121,7 +121,7 @@ public static class C11ToWR2FileConv
             case 256:
             case 240:
             {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road3;
+                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
                 break;
             }
             case 224:

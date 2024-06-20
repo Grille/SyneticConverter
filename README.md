@@ -31,12 +31,12 @@ Layer on top of SyneticLib, uses OpenGL4(OpenTK_4.8) for rendering of meshes, sc
 | NICE2 | - | - |
 | MBTR | - | - |
 | WR1 | Yes | - |
-| WR2 | Yes | Partial |
-| C11 | Partial | - | // no materials / terrain mesh only
-| CT1 | Partial | - |
-| CT2 | Partial | - |
-| CT3 | Partial | - |
-| CT4 | Partial | - |
+| WR2 | Yes | Yes |
+| C11 | Yes | Partial | 
+| CT1 | Yes | - |
+| CT2 | Yes | - |
+| CT3 | Yes | - |
+| CT4 | Partial | - | // no materials / terrain mesh only
 | CT5 | Partial | - |
 | FVR | Partial | - |
 
@@ -90,9 +90,9 @@ Layer on top of SyneticLib, uses OpenGL4(OpenTK_4.8) for rendering of meshes, sc
 
 ### Planed | Considered
 - Importer & Exporter for all scenario files from MBWR to CT5, maybe also NICE to MBTR depending on file formats.
-- Seamless interchange format with blender. 
+- Interchange format with blender. 
 - Utils for content creation: like chunk calculation, and may some other things.
-- An simple ray-racer for backed lights.
+- An simple ray-tracer for backed lights. (Planed as part of blender interaction)
 - Some basic edtiting tools, for editing cars and scenarios.
 - Included patches like traffic for MBWR to WR2 conversions.
 

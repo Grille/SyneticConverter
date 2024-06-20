@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 using Grille.PipelineTool;
+using Grille.PipelineTool.IO;
 using SyneticLib.Conversion;
 
 namespace SyneticPipelineTool.Tasks;
@@ -40,9 +41,9 @@ internal class FixTreeNorm : PipelineTask
     public override Token[] ToTokens() => new Token[]
     {
         new(TokenType.Text, "Fix Sprites "),
-        new(TokenType.Variable, Parameters["Tree List"]),
+        new(TokenType.Expression, Parameters["Tree List"]),
         new(TokenType.Text, " in "),
-        new(TokenType.Variable, Parameters["Dir"]),
+        new(TokenType.Expression, Parameters["Dir"]),
     };
 }
 
