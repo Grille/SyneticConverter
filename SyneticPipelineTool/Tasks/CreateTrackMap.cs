@@ -31,9 +31,9 @@ public class CreateTrackMaps : PipelineTask
             var dstName = $"Track{name.AsSpan(0, name.Length - 3)}{name.AsSpan(name.Length - 2, 2)}.tga";
             var dstFile = Path.Combine(dstDir, dstName);
 
-            var track = Imports.LoadTrackFromTrk(srcFile);
+            var track = Serializers.Track.Trk.Load(srcFile);
             var texture = track.CreateTrackMap(512, 512);
-            Exports.TextureAsTga(texture, dstFile);
+            Serializers.Texture.Tga.Save(dstFile, texture);
         }
     }
 

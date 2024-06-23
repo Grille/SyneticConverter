@@ -39,7 +39,7 @@ public class Config
         for (int i = 0; i < Games.Count; i++)
         {
             var game = Games[i];
-            bw.WriteString(game.Path);
+            bw.WriteString(game.DirectoryPath);
             bw.WriteString(game.Version.ToString());
         }
     }

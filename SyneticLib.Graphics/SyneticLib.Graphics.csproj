@@ -10,6 +10,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Shaders\frag\Mesh.frag" />
+		<None Remove="Shaders\frag\Text.frag" />
 		<None Remove="Shaders\Mesh.frag" />
 		<None Remove="Shaders\Mesh.vert" />
 		<None Remove="Shaders\MeshDebug.frag" />
@@ -19,17 +21,21 @@
 		<None Remove="Shaders\Sprite.vert" />
 		<None Remove="Shaders\Terrain.frag" />
 		<None Remove="Shaders\Terrain.vert" />
+		<None Remove="Shaders\vert\Model.vert" />
 		<None Remove="Shaders\Water.frag" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="Shaders\frag\Mesh.frag" />
 		<EmbeddedResource Include="Shaders\frag\SimpleColor.frag" />
+		<EmbeddedResource Include="Shaders\frag\Text.frag" />
 		<EmbeddedResource Include="Shaders\frag\Water.frag" />
 		<EmbeddedResource Include="Shaders\frag\MeshDebug.frag" />
 		<EmbeddedResource Include="Shaders\vert\MeshDebug.vert" />
-		<EmbeddedResource Include="Shaders\frag\Mesh.frag" />
+		<EmbeddedResource Include="Shaders\frag\Model.frag" />
 		<EmbeddedResource Include="Shaders\vert\Mesh.vert" />
 		<EmbeddedResource Include="Shaders\frag\Sprite.frag" />
+		<EmbeddedResource Include="Shaders\vert\Model.vert" />
 		<EmbeddedResource Include="Shaders\vert\Sprite.vert" />
 		<EmbeddedResource Include="Shaders\frag\Terrain.frag" />
 		<EmbeddedResource Include="Shaders\vert\Terrain.vert" />

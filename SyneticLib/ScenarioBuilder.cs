@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class ScenarioBuilder
 {
+    public SunLight? SunLight { get; set; }
+
     public TerrainModel? TerrainModel { get; set; }
 
     public List<Light> Lights { get; }

@@ -19,12 +19,6 @@ public class Shader : GLObject
         FragmentID = GL.CreateShader(ShaderType.FragmentShader);
     }
 
-    public Shader(MaterialShaderType type) : this()
-    {
-        var files = GLSLSources.LoadInternalShaderFiles(type);
-        Compile(files.Vert, files.Frag);
-    }
-
     public Shader(GlslVertexShaderSource vertex, GlslFragmentShaderSource fragment) : this() 
     {
         Compile(vertex, fragment);

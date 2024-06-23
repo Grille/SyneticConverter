@@ -7,12 +7,11 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
-using static System.IO.Path;
 using SyneticLib.IO;
 
 namespace SyneticLib.Locations;
 
-public class GameDirectory : Location
+public class GameDirectory : DirectoryLocation
 {
     public LazyRessourceDirectory<ScenarioGroup> Scenarios { get; private set; }
 
@@ -45,7 +44,7 @@ public class GameDirectory : Location
             (path) => null
         );
 
-        if (!Directory.Exists(Path))
+        if (!Directory.Exists(DirectoryPath))
             return;
 
         Scenarios.Seek();
@@ -59,11 +58,26 @@ public class GameDirectory : Location
 
     internal static GameDirectory Global = new("Global", GameVersion.WR2);
 
+    public DirectoryLocation[] GetScenarios()
+    {
+        var dir = Path.Combine(DirectoryPath, "Scenarios");
+
+        if (!Directory.Exists(dir))
+            return Array.Empty<DirectoryLocation>();
+
+        var paths = Directory.GetDirectories(dir);
+        var result = new DirectoryLocation[paths.Length];
+        for (var i = 0; i < paths.Length; i++) {
+            result[i] = new DirectoryLocation(paths[i]);
+        }
+        return result;
+    }
+
     public ScenarioGroup GetScenario(string name)
     {
-        var path = Combine(Path, "Scenarios", name);
-        var n = GetFileName(path);
-        return Imports.LoadScenarioGroup(path, n);
+        var path = Path.Combine(DirectoryPath, "Scenarios", name);
+        var n = Path.GetFileName(path);
+        return Serializers.ScenarioGroup.Synetic.Load(path, n);
     }
 
     public static GameVersion GetDirectoryGameVersion(string path)
@@ -75,7 +89,7 @@ public class GameDirectory : Location
         var names = new List<string>();
 
         foreach (var file in files)
-            names.Add(GetFileName(file).ToLower());
+            names.Add(Path.GetFileName(file).ToLower());
 
         foreach (var name in names)
         {
@@ -118,9 +132,9 @@ public class GameDirectory : Location
 
     public static GameVersion ParseGameVersion(string version) => version switch
     {
-        "NICE" => GameVersion.NICE1,
+        "NICE1" => GameVersion.NICE1,
         "NICE2" => GameVersion.NICE2,
-        "MBWR" => GameVersion.WR1,
+        "WR1" => GameVersion.WR1,
         "WR2" => GameVersion.WR2,
         "C11" => GameVersion.C11,
         "CT1" => GameVersion.CT1,
@@ -129,6 +143,8 @@ public class GameDirectory : Location
         "CT3" => GameVersion.CT3,
         "CT4" => GameVersion.CT4,
         "CT5" => GameVersion.CT5,
+
+        "WR2CE" => GameVersion.WR2CE,
 
         _ => GameVersion.None,
     };

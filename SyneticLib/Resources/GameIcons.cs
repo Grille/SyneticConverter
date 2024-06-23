@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 namespace SyneticLib.Resources;
 public static class GameIcons
 {
+    public static MemoryStream NICE => new MemoryStream(Properties.Resources.NICE);
+
+    public static MemoryStream NICE2 => new MemoryStream(Properties.Resources.NICE);
+
+    public static MemoryStream MBTR => new MemoryStream(Properties.Resources.MBWR);
+
     public static MemoryStream MBWR => new MemoryStream(Properties.Resources.MBWR);
 
     public static MemoryStream WR2 => new MemoryStream(Properties.Resources.WR2);

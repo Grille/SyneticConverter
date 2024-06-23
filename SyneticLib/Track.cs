@@ -16,7 +16,7 @@ public class Track
         Nodes = nodes;
     }
 
-    public void Normalize()
+    public void NormalizeXZ()
     {
         if (Nodes.Length == 0)
         {
@@ -36,26 +36,34 @@ public class Track
         float scale = 1 / MathF.Max(size.X, size.Z);
         var centerOffset = (Vector3.One - (size * scale)) * 0.5f;
 
-        var borderScale = new Vector3(0.8f);
-        var borderOffset = new Vector3(0.1f);
-
         for (int i = 0; i < Nodes.Length; i++)
         {
             ref var position = ref Nodes[i].Position;
             position -= offset;
-
             position *= scale;
-
             position += centerOffset;
+        }
+    }
 
-            position *= borderScale;
-            position += borderOffset;
+    public void Scale(float scale, float offset = 0)
+    {
+        Scale(new Vector3(scale), new Vector3(offset));
+    }
+
+    public void Scale(Vector3 scale, Vector3 offset)
+    {
+        for (int i = 0; i < Nodes.Length; i++)
+        {
+            ref var position = ref Nodes[i].Position;
+            position *= scale;
+            position += offset;
         }
     }
 
     public Texture CreateTrackMap(int width, int height)
     {
-        Normalize();
+        NormalizeXZ();
+        Scale(0.8f, 0.1f);
 
         var pixels = new byte[width * height];
 

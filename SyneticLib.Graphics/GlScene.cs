@@ -11,11 +11,16 @@ using SyneticLib.Graphics.OpenGL;
 using SyneticLib.Graphics.DrawCalls;
 using SyneticLib.Math3D;
 using System.Diagnostics;
+using SyneticLib.IO;
+using System.IO;
+
+using SyneticLib.Diagnostics;
 
 namespace SyneticLib.Graphics;
 public class GlScene : IDisposable
 {
     public SpriteBatch Sprites { get; }
+    TextBatch Text;
 
     public Camera Camera;
 
@@ -28,16 +33,34 @@ public class GlScene : IDisposable
 
     GlObjectCacheGroup cache;
 
+    Font? font;
 
+    public Profiler Profiler { get; }
 
     public unsafe GlScene()
     {
+        Profiler = new Profiler();
         Sprites = new SpriteBatch();
+        Text = new TextBatch(Sprites);
+
         Camera = new FreeCamera();
 
         assets = new SceneAssets();
 
         cache = new GlObjectCacheGroup();
+
+        const string fontFile = "font.tga";
+        if (File.Exists(fontFile))
+        {
+            var font = Serializers.Texture.Tga.Load(fontFile);
+            SubmitFont(font);
+        }
+    }
+
+    public void SubmitFont(Texture texture)
+    {
+        font?.Dispose();
+        font = new Font(texture);
     }
 
     public void SubmitTexture(Texture texture)
@@ -82,9 +105,13 @@ public class GlScene : IDisposable
 
     public void Render()
     {
+        Profiler.Begin();
+
         GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
         GL.Enable(EnableCap.CullFace);
         GL.CullFace(CullFaceMode.Front);
+
+        Sprites.ScreenSize = Camera.ScreenSize;
 
         var plane = assets.GroundPlane;
         plane.SubCamera(Camera);
@@ -158,14 +185,41 @@ public class GlScene : IDisposable
         var combinedSize = Camera.ScreenSize * textureSize.Yx;
         var normalizedScreenSize = (combinedSize / MathF.Max(combinedSize.X, combinedSize.Y)).Yx;
 
+        Sprites.Bind();
 
         if (textureBuffer != null)
         {
-            var sprite = new Sprite(textureBuffer, new Vector2(0, 0), normalizedScreenSize);
+            var rect = new RectangleF(0, 0, normalizedScreenSize.X, normalizedScreenSize.Y);
+            var sprite = new Sprite(textureBuffer, rect);
             Sprites.Clear();
             Sprites.Add(sprite);
             Sprites.Draw();
         }
+
+        GL.Disable(EnableCap.DepthTest);
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+        void DrawText(string text, Vector2 pos)
+        {
+            Text.UseColor(Color4.Black);
+            Text.Draw(text, pos + new Vector2(2), 20);
+
+            Text.UseColor(Color4.LightGray);
+            Text.Draw(text, pos, 20);
+        }
+
+        Profiler.End();
+
+        if (font != null)
+        {
+            Text.Bind();
+            font.Texture.Bind();
+
+            DrawText(Profiler.ToString(), Vector2.Zero);
+        }
+
+        GL.Disable(EnableCap.Blend);
 
 
         var error = GL.GetError();
@@ -199,5 +253,6 @@ public class GlScene : IDisposable
         textureBuffer?.Dispose();
         modelHandle?.Dispose();
         scenarioHandle?.Dispose();
+        font?.Dispose();
     }
 }

@@ -13,7 +13,7 @@ public class GameDirectoryList : List<GameDirectory>
     public List<GameDirectory> FindByPath(string path)
     {
         var fullpath = Path.GetFullPath(path).ToLower();
-        return FindAll((a) => Path.GetFullPath(a.Path).ToLower() == fullpath);
+        return FindAll((a) => Path.GetFullPath(a.DirectoryPath).ToLower() == fullpath);
     }
 
     public bool PathExists(string path)

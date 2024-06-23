@@ -54,7 +54,7 @@ public class GameDirectoryNode : LocationTreeNode
     {
         base.OnUpdateAppearance();
 
-        Name = $"{GameDirectory.Version} ({GameDirectory.Path})";
+        Name = $"{GameDirectory.Version} ({GameDirectory.DirectoryPath})";
         Text = Name;
 
         SelectedImageIndex = ImageIndex = GameDirectory.Version switch

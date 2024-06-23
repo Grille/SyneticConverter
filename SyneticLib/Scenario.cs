@@ -15,6 +15,8 @@ public partial class Scenario : SyneticObject
     public int VNumber;
     public int Width, Height;
 
+    public SunLight SunLight;
+
     public TerrainModel Terrain;
     public Sound[] Sounds;
     public PropInstance[] PropInstances;

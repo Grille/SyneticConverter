@@ -48,7 +48,7 @@ public partial class AddGameDialog : Form
     public AddGameDialog(GameDirectoryList games, GameDirectory selected) : this(games)
     {
         Games = games;
-        textBoxPath.Text = selected.Path;
+        textBoxPath.Text = selected.DirectoryPath;
         comboBoxVersion.SelectedItem = selected.Version;
     }
 
@@ -102,7 +102,7 @@ public partial class AddGameDialog : Form
 
     public void ApplyToGame()
     {
-        SelectedGame.Path = NewGamePath;
+        SelectedGame.DirectoryPath = NewGamePath;
         SelectedGame.Version = NewGameVersion;
         SelectedGame.Seek();
     }

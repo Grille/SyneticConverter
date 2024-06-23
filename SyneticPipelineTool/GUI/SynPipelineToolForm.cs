@@ -17,8 +17,9 @@ using Grille.PipelineTool;
 using Grille.PipelineTool.WinForms;
 using Grille.PipelineTool.IO;
 using SyneticLib.Resources;
-using SyneticLib.Viewer;
+using SyneticLib.WinForms;
 using SyneticLib;
+using SyneticLib.WinForms.Resources;
 
 namespace SyneticPipelineTool;
 
@@ -45,7 +46,7 @@ public partial class SynPipelineToolForm : Form
 
         PipelineToolControl.UnsavedChangesChanged += PipelineToolControl_UnsavedChangesChanged;
 
-        Icon = Icon.FromHandle(Icons.SyneticLib.GetHicon());
+        Icon = EmbeddedImageList.SyneticLib.Icon;
     }
 
     private void PipelineToolControl_UnsavedChangesChanged(object sender, EventArgs e)

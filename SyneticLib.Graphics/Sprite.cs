@@ -14,24 +14,32 @@ using SyneticLib.Graphics.OpenGL;
 namespace SyneticLib.Graphics;
 public class Sprite
 {
-    public Vector2 Offset { get; }
-    public Vector2 Scale { get; }
+    public readonly RectangleF Dst;
+    public readonly RectangleF Src;
+    public readonly Vector4 Color;
+    public readonly bool IsDstNormalized;
 
     public TextureBuffer Texture { get; }
+
+    public static readonly RectangleF DefaultSrc = new RectangleF(0, 0, 1, 1);
 
     private Sprite(TextureBuffer texture)
     {
         Texture = texture;
     }
 
-    public Sprite(TextureBuffer texture, Vector2 offset, Vector2 size) : this(texture)
+    public Sprite(TextureBuffer texture, RectangleF dst, RectangleF src, Vector4 color, bool normalized = true) : this(texture)
     {
-        Offset = offset;
-        Scale = size;
+        Dst = dst;
+        Src = src;
+        Color = color;
+        IsDstNormalized = normalized;
     }
 
-    public Sprite(TextureBuffer texture, RectangleF rectangle) : this(texture) {
-        Offset = new Vector2(rectangle.X, rectangle.Y);
-        Scale = new Vector2(rectangle.Width, rectangle.Height);
+    public Sprite(TextureBuffer texture, RectangleF dst, bool normalized = true) : this(texture) {
+        Dst = dst;
+        Src = DefaultSrc;
+        Color = Vector4.One;
+        IsDstNormalized = normalized;
     }
 }

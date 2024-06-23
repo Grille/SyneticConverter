@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
+using OpenTK.Mathematics;
+
 using SyneticLib.Graphics.DrawCalls;
 using SyneticLib.Graphics.OpenGL;
+using SyneticLib.Graphics.Shaders;
 
 namespace SyneticLib.Graphics;
 
 public class SpriteBatch : IDisposable
 {
-    MeshBuffer quadBuffer;
-    SpriteProgram spriteProgram;
+    public Vector2 ScreenSize;
+
+    public readonly MeshBuffer QuadBuffer;
+    public readonly SpriteProgram SpriteProgram;
 
     List<Sprite> sprites;
 
@@ -22,8 +29,8 @@ public class SpriteBatch : IDisposable
 
         var mesh = CreateSpriteMesh();
 
-        quadBuffer = new MeshBuffer(mesh);
-        spriteProgram = new SpriteProgram();  
+        QuadBuffer = new MeshBuffer(mesh);
+        SpriteProgram = new SpriteProgram();
     }
 
     public static Mesh CreateSpriteMesh()
@@ -55,25 +62,42 @@ public class SpriteBatch : IDisposable
         sprites.Clear();
     }
 
+    public void Bind()
+    {
+        QuadBuffer.Bind();
+        SpriteProgram.Bind();
+    }
+
+    public RectangleF ScreenToClipSpace(RectangleF rect)
+    {
+        return ScreenToClipSpace(new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height));
+    }
+
+    public RectangleF ScreenToClipSpace(Vector2 position, Vector2 size)
+    {
+        var vec2Size = size / ScreenSize;
+        var pos = (((position) / ScreenSize) * 2) - Vector2.One + vec2Size;
+        var dst = new RectangleF(pos.X, -pos.Y, vec2Size.X, vec2Size.Y);
+        return dst;
+    }
+
     public void Draw()
     {
-        quadBuffer.Bind();
-        spriteProgram.Bind();
+        var drawCall = new DrawElementsInfo(0, 2 * 3);
 
-        var drawCall = new DrawElementsInfo(0, 2*3);
-
-        for (int i = 0; i < sprites.Count; i++) { 
+        for (int i = 0; i < sprites.Count; i++)
+        {
             var sprite = sprites[i];
             sprite.Texture.Bind();
-            spriteProgram.Sub(sprite);
+            SpriteProgram.SubNormalized(sprite);
             drawCall.Excecute();
         }
     }
 
     public void Dispose()
     {
-        quadBuffer.Dispose();
-        spriteProgram.Dispose();
+        QuadBuffer.Dispose();
+        SpriteProgram.Dispose();
         sprites = null!;
     }
 }

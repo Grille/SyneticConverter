@@ -23,12 +23,6 @@ public class ShaderProgram : GLObject
         Link(shader);
     }
 
-    public void Link(MaterialShaderType shaderType)
-    {
-        using var shader = new Shader(shaderType);
-        Link(shader);
-    }
-
     public void Link(Shader shader)
     {
         GL.AttachShader(ProgramID, shader.VertexID);
@@ -44,6 +38,11 @@ public class ShaderProgram : GLObject
             throw new KeyNotFoundException($"Uniform {name} not found.");
         }
         return new UniformLocation(uniform);
+    }
+
+    public void SubMatrix2x4(UniformLocation location, in TextureTransform matrix)
+    {
+        GL.UniformMatrix2x4(location.Location, false, ref Unsafe.As<TextureTransform, Matrix2x4>(ref Unsafe.AsRef(matrix)));
     }
 
     public void SubMatrix4(UniformLocation location, in Matrix4 matrix)
@@ -64,6 +63,11 @@ public class ShaderProgram : GLObject
     public void SubVector3(UniformLocation location, Vector3 vec)
     {
         GL.Uniform3(location.Location, vec);
+    }
+
+    public void SubVector4(UniformLocation location, Vector4 vec)
+    {
+        GL.Uniform4(location.Location, vec);
     }
 
     protected sealed override void OnBind()

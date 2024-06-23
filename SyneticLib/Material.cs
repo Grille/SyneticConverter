@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,57 +9,38 @@ using SyneticLib.Locations;
 
 namespace SyneticLib;
 
-public class Material : SyneticObject
+public abstract class Material : SyneticObject
 {
     public TextureSlot[] TextureSlots { get; }
 
-    public Vector3 Diffuse;
-    public Vector3 Ambient;
-    public Vector3 Specular;
-    public Vector3 Reflect;
-    public Vector3 Specular2;
-    public Vector3 XDiffuse;
-    public Vector3 XSpecular;
+    public GameVersion GameVersion { get; set; }
 
-    public TextureSlot TexSlot0 => TextureSlots[0];
+    public bool IsZBufferEnabled { get; set; }
 
-    public TextureSlot TexSlot1 => TextureSlots[1];
-
-    public TextureSlot TexSlot2 => TextureSlots[2];
-
-    public TextureSlot TexSlot3 => TextureSlots[3];
-
-    public TextureSlot TexSlot4 => TextureSlots[4];
-
-    public TextureSlot TexSlot5 => TextureSlots[5];
-
-    public ushort U16ShaderType0;
-    public ushort U16ShaderType1;
-
-    public GameVersion GameVersion;
-
-    public MaterialShaderType ShaderType;
-
-    public Material()
+    public Material(int textureSlotCount)
     {
-        Diffuse = Vector3.One;
-
-        TextureSlots = new TextureSlot[6];
-        TextureSlots[0] = new();
-        TextureSlots[1] = new();
-        TextureSlots[2] = new();
-        TextureSlots[3] = new();
-        TextureSlots[4] = new();
-        TextureSlots[5] = new();
+        TextureSlots = new TextureSlot[textureSlotCount];
+        for (int i = 0; i < textureSlotCount; i++)
+        {
+            TextureSlots[i] = new TextureSlot();
+        }
+        IsZBufferEnabled = true;
     }
 
     public class TextureSlot
     {
-        public bool Enabled;
-        public Texture? Texture;
-        public Matrix4 Transform;
+        [MemberNotNullWhen(true, nameof(Texture))]
+        public bool Enabled { get; private set; }
+
+        public Texture? Texture { get; private set; }
 
         internal TextureSlot() { }
+
+        public void Disable()
+        {
+            Enabled = false;
+            Texture = null;
+        }
 
         public void Enable(Texture texture)
         {
@@ -69,9 +51,9 @@ public class Material : SyneticObject
             Texture = texture;
         }
 
-        public void TryEnableByFile(TextureDirectory textures, string name)
+        public void TryEnableByFile(TextureDirectory textures, string? name)
         {
-            if (name == "")
+            if (string.IsNullOrEmpty(name))
                 return;
 
             Texture = textures.TryGetByKey(name, out var tex) ? tex : Texture.CreatePlaceholder(name);
@@ -79,11 +61,4 @@ public class Material : SyneticObject
         }
     }
 
-}
-
-public enum MaterialShaderType
-{
-    Default,
-    Water,
-    Simple,
 }

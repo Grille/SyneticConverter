@@ -11,9 +11,9 @@ namespace SyneticTool.Nodes;
 
 public class LocationTreeNode : BaseNode
 {
-    public Location Location => (Location)Value;
+    public DirectoryLocation Location => (DirectoryLocation)Value;
 
-    public LocationTreeNode(Location location) : base(location)
+    public LocationTreeNode(DirectoryLocation location) : base(location)
     {
     }
 }

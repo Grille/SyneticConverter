@@ -17,6 +17,8 @@ public class SceneAssets : IDisposable
 
     public MeshBuffer SpriteMesh { get; }
 
+    public Font Font { get; }
+
     //public static MeshBuffer MeshBuffer { get; }
 
     GlObjectCacheGroup _cache;
@@ -59,10 +61,10 @@ public class SceneAssets : IDisposable
 
         var checker = CreateChecker("Checker", 0xFF969696, 0xFFA9A9A9);
 
-        var material = new Material();
-        material.ShaderType = MaterialShaderType.Water;
+        var material = new ModelMaterial();
+        material.IsZBufferEnabled = false;
         material.Diffuse = color;
-        material.TexSlot0.Enable(checker);
+        material.TextureSlots[0].Enable(checker);
 
         var indices = new IdxTriangleInt32[2]
         {

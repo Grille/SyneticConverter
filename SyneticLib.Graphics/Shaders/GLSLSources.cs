@@ -11,21 +11,31 @@ internal static class GLSLSources
 {
     public readonly static GlslVertexShaderSource VSprite;
     public readonly static GlslVertexShaderSource VMesh;
+    public readonly static GlslVertexShaderSource VModel;
+    public readonly static GlslVertexShaderSource VTerrain;
 
+    public readonly static GlslFragmentShaderSource Mesh;
+    public readonly static GlslFragmentShaderSource Model;
     public readonly static GlslFragmentShaderSource Terrain;
     public readonly static GlslFragmentShaderSource TerrainWater;
     public readonly static GlslFragmentShaderSource DebugTexture0;
     public readonly static GlslFragmentShaderSource Sprite;
+    public readonly static GlslFragmentShaderSource Text;
 
     static GLSLSources()
     {
         VSprite = LoadVertexShaderFile("Sprite");
         VMesh = LoadVertexShaderFile("Mesh");
+        VTerrain = LoadVertexShaderFile("Terrain");
+        VModel = LoadVertexShaderFile("Model");
 
-        Terrain = LoadFragmentShaderFile("Mesh");
+        Terrain = LoadFragmentShaderFile("Terrain");
+        Model = LoadFragmentShaderFile("Model");
+        Mesh = LoadFragmentShaderFile("Mesh");
         DebugTexture0 = LoadFragmentShaderFile("SimpleColor");
         TerrainWater = LoadFragmentShaderFile("Water");
         Sprite = LoadFragmentShaderFile("Sprite");
+        Text = LoadFragmentShaderFile("Text");
     }
 
     public static GlslVertexShaderSource LoadVertexShaderFile(string name) => LoadInternalShaderFile($"vert.{name}.vert");
@@ -45,6 +55,7 @@ internal static class GLSLSources
         return result;
     }
 
+    /*
     public static (GlslVertexShaderSource Vert, GlslFragmentShaderSource Frag) LoadInternalShaderFiles(MaterialShaderType type) => type switch
     {
         MaterialShaderType.Default => (VMesh, Terrain),
@@ -52,6 +63,7 @@ internal static class GLSLSources
         MaterialShaderType.Simple => (VMesh, DebugTexture0),
         _ => (VMesh, DebugTexture0),
     };
+    */
 }
 
 public record struct GlslVertexShaderSource(string Source)

@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<LangVersion>10</LangVersion>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Controls\TreeNodes\Assets\Audio.png" />
+	  <None Remove="Controls\TreeNodes\Assets\Car.png" />
+	  <None Remove="Controls\TreeNodes\Assets\Line.png" />
+	  <None Remove="Controls\TreeNodes\Assets\Mesh.png" />
+	  <None Remove="Controls\TreeNodes\Assets\Misc.png" />
+	  <None Remove="Controls\TreeNodes\Assets\Terrain.png" />
+	  <None Remove="Controls\TreeNodes\Assets\Texture.png" />
+	  <None Remove="Controls\TreeNodes\Assets\World.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Controls\TreeNodes\Assets\Audio.png" />
+	  <EmbeddedResource Include="Controls\TreeNodes\Assets\Car.png" />
+	  <EmbeddedResource Include="Controls\TreeNodes\Assets\Line.png" />
+	  <EmbeddedResource Include="Controls\TreeNodes\Assets\Mesh.png" />
+	  <EmbeddedResource Include="Controls\TreeNodes\Assets\Misc.png" />
+	  <EmbeddedResource Include="Controls\TreeNodes\Assets\Terrain.png" />
+	  <EmbeddedResource Include="Controls\TreeNodes\Assets\Texture.png" />
+	  <EmbeddedResource Include="Controls\TreeNodes\Assets\World.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="OpenTK" Version="4.8.0" />
+		<PackageReference Include="OpenTK.WinForms" Version="4.0.0-pre.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SyneticLib.Graphics\SyneticLib.Graphics.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Forms\ViewerForm.cs">
+			<SubType>Form</SubType>
+		</Compile>
+	</ItemGroup>
+
+</Project>

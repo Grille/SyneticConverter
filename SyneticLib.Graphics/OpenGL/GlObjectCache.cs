@@ -111,10 +111,27 @@ public class GlObjectCacheGroup : IDisposable
 
     public GlObjectCacheGroup()
     {
-        Textures = new((key) => new TextureBuffer(key));
-        Materials = new((key) => new MaterialProgram(key, Textures));
-        Meshes = new((key) => new MeshBuffer(key));
+        Textures = new(Factory);
+        Materials = new(Factory);
+        Meshes = new(Factory);
     }
+
+    TextureBuffer Factory(Texture key)
+    {
+        return new TextureBuffer(key);
+    }
+
+    MeshBuffer Factory(Mesh key)
+    {
+        return new MeshBuffer(key);
+    }
+
+    MaterialProgram Factory(Material key) => key switch
+    {
+        ModelMaterial mMat => new ModelMaterialProgram(mMat, Textures),
+        TerrainMaterial tMat => new TerrainMaterialProgram(tMat, Textures),
+        _ => throw new NotImplementedException(),
+    };
 
     public void Uncouple()
     {

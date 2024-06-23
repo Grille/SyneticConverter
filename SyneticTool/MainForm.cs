@@ -304,7 +304,7 @@ public partial class MainForm : Form
             sb.AppendLine();
             foreach (var game in games)
             {
-                sb.AppendLine($"{game.Version} {game.Path}");
+                sb.AppendLine($"{game.Version} {game.DirectoryPath}");
             }
         }
         var result = MessageBox.Show(this, sb.ToString(), "Find Games", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);

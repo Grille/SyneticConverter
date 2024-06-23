@@ -23,5 +23,5 @@ void main()
 
     vec3 light = sunColor*diff*shadowColor+fLightColor.rgb;
 
-    FragColor = texture(uTexture0, fUV0) * vec4(light,1) * vec4(uColorDiffuse,1);
+    FragColor = vec4(0.6,0.6,0.6,1);// texture(uTexture0, fUV0) * vec4(light,1) * vec4(uColorDiffuse,1);
 } 

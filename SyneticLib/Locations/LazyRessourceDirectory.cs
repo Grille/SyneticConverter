@@ -11,7 +11,7 @@ using static System.IO.Path;
 
 namespace SyneticLib.Locations;
 
-public class LazyRessourceDirectory<T> : Location, IReadOnlyCollection<Lazy<T>> where T : SyneticObject
+public class LazyRessourceDirectory<T> : DirectoryLocation, IReadOnlyCollection<Lazy<T>> where T : SyneticObject
 {
     public static readonly Predicate<string> FileFilter = (path) => File.Exists(path);
     public static readonly Predicate<string> DirectoryFilter = (path) => Directory.Exists(path);
@@ -34,7 +34,10 @@ public class LazyRessourceDirectory<T> : Location, IReadOnlyCollection<Lazy<T>> 
 
     protected override void OnSeek()
     {
-        var entries = Directory.GetFileSystemEntries(Path);
+        if (!Directory.Exists(DirectoryPath))
+            return;
+
+        var entries = Directory.GetFileSystemEntries(DirectoryPath);
 
         dict.Clear();
         foreach (var entry in entries)

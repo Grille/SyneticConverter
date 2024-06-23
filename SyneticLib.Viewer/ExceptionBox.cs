@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SyneticLib.Viewer;
+namespace SyneticLib.WinForms;
 
-internal static class ExceptionBox
+public static class ExceptionBox
 {
     public static DialogResult Show(IWin32Window owner, Exception exception)
     {

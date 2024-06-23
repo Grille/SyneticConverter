@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<LangVersion>10</LangVersion>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Assets\Audio.png" />
+	  <None Remove="Resources\Assets\Car.png" />
+	  <None Remove="Resources\Assets\Line.png" />
+	  <None Remove="Resources\Assets\Mesh.png" />
+	  <None Remove="Resources\Assets\Misc.png" />
+	  <None Remove="Resources\Assets\Terrain.png" />
+	  <None Remove="Resources\Assets\Texture.png" />
+	  <None Remove="Resources\Assets\World.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Assets\Audio.png" />
+	  <EmbeddedResource Include="Resources\Assets\Car.png" />
+	  <EmbeddedResource Include="Resources\Assets\Line.png" />
+	  <EmbeddedResource Include="Resources\Assets\Mesh.png" />
+	  <EmbeddedResource Include="Resources\Assets\Misc.png" />
+	  <EmbeddedResource Include="Resources\Assets\Terrain.png" />
+	  <EmbeddedResource Include="Resources\Assets\Texture.png" />
+	  <EmbeddedResource Include="Resources\Assets\World.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DarkUI.Net5.0" Version="1.0.0" />
+		<PackageReference Include="OpenTK" Version="4.8.0" />
+		<PackageReference Include="OpenTK.WinForms" Version="4.0.0-pre.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SyneticLib.Graphics\SyneticLib.Graphics.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Forms\ViewerForm.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Properties\Resources.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Properties\Resources.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+</Project>

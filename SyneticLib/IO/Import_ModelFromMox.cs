@@ -53,13 +53,13 @@ public static partial class Imports
             else
             {
                 var srcMtl = mtl.Materials[i];
-                var dstMat = new Material();
+                var dstMat = new ModelMaterial();
 
                 //dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]).ToNormalizedVector3();
 
-                dstMat.TexSlot0.TryEnableByFile(textures, srcMtl.Tex1Name);
-                dstMat.TexSlot1.TryEnableByFile(textures, srcMtl.Tex2Name);
-                dstMat.TexSlot2.TryEnableByFile(textures, srcMtl.Tex3Name);
+                dstMat.TextureSlots[0].TryEnableByFile(textures, srcMtl.Tex1Name);
+                dstMat.TextureSlots[1].TryEnableByFile(textures, srcMtl.Tex2Name);
+                dstMat.TextureSlots[2].TryEnableByFile(textures, srcMtl.Tex3Name);
 
                 materials.Add(dstMat);
             }

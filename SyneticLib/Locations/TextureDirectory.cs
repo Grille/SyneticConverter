@@ -14,7 +14,7 @@ public class TextureDirectory : LazyRessourceDirectory<Texture>
 {
     static bool filter(string path) => File.Exists(path) && GetExtension(path).ToLower() == ".ptx";
 
-    static Texture constructor(string path) => Imports.LoadPtxTexture(path);
+    static Texture constructor(string path) => Serializers.Texture.Ptx.Load(path);
 
     public TextureDirectory(string path) :
         base(path, filter, constructor)

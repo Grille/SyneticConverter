@@ -5,9 +5,10 @@ using System.Globalization;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using OpenTK.Mathematics;
+using SyneticLib.WinForms.Forms;
 
 
-namespace SyneticLib.Viewer;
+namespace SyneticLib.WinForms;
 
 internal static class Program
 {
@@ -22,6 +23,6 @@ internal static class Program
         // To customize application configuration such as set high DPI settings or default font,
         // see https://aka.ms/applicationconfiguration.
         ApplicationConfiguration.Initialize();
-        Application.Run(new ViewerForm());
+        Application.Run(new EditorForm());
     }
 }
