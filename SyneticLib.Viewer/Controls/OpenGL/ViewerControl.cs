@@ -18,8 +18,6 @@ namespace SyneticLib.WinForms.Controls.OpenGL;
 
 public class ViewerControl : GLControl
 {
-    public static ViewerControl Instance { get; set; }
-
     DateTime _last;
 
     public GlScene Scene { get; private set; }

@@ -11,15 +11,33 @@ namespace SyneticLib.Graphics.OpenGL;
 
 public static class GLContext
 {
-    static ShaderProgram? _usedProgram;
+    public static ShaderProgram? UsedProgram { get; private set; }
 
     public static void Bind(ShaderProgram program)
     {
-        if (program == _usedProgram)
+        if (program == UsedProgram)
         {
             return;
         }
-        _usedProgram = program;
+        UsedProgram = program;
         GL.UseProgram(program.ProgramID);
+    }
+
+    public static void PrintError()
+    {
+        var error = GL.GetError();
+        if (error != ErrorCode.NoError)
+        {
+            Console.WriteLine($"{DateTime.Now} {error}");
+        }
+    }
+
+    public static void PrintError(string msg)
+    {
+        var error = GL.GetError();
+        if (error != ErrorCode.NoError)
+        {
+            Console.WriteLine($"{DateTime.Now} {msg} {error}");
+        }
     }
 }

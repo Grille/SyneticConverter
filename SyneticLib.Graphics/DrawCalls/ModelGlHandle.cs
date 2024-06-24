@@ -9,6 +9,7 @@ using OpenTK.Mathematics;
 using SyneticLib.Math3D;
 
 using SyneticLib.Graphics.OpenGL;
+using SyneticLib.Graphics.Materials;
 
 namespace SyneticLib.Graphics.DrawCalls;
 
@@ -33,22 +34,6 @@ public class ModelGlHandle : IDisposable
 
         Mesh = cache.Meshes.GetGlObject(model.MeshSection.Mesh);
         DrawCalls = new ModelDrawCalls(model, cache);
-    }
-
-    public void SubCamera(Camera camera)
-    {
-        foreach (var item in _cache.Materials)
-        {
-            item.Bind();
-            item.SubModelMatrix(Matrix4.Identity);
-            item.SubCameraMatrix(camera);
-        }
-    }
-
-    public void DrawModel(Matrix4 modelMatrix)
-    {
-        Mesh.Bind();
-        DrawCalls.Execute(modelMatrix);
     }
 
     public void DrawModel()

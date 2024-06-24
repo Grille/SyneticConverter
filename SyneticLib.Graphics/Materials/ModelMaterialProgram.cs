@@ -8,7 +8,7 @@ using SyneticLib.Graphics.Shaders;
 
 using SyneticLib.Graphics.OpenGL;
 
-namespace SyneticLib.Graphics;
+namespace SyneticLib.Graphics.Materials;
 
 public class ModelMaterialProgram : MaterialProgram
 {
@@ -18,12 +18,15 @@ public class ModelMaterialProgram : MaterialProgram
     public UniformLocation UColorSpec2 { get; protected set; }
     public UniformLocation UColorReflect { get; protected set; }
 
-    public ModelMaterialProgram(ModelMaterial material, GlObjectCache<Texture, TextureBuffer>? textures = null) : base(material, textures, GetShader(material))
+    public ModelMaterialProgram(Shader shader) : base(shader, 10)
     {
         UColorAmbient = GetUniformLocation("uColorAmbient", false);
         UColorDiffuse = GetUniformLocation("uColorDiffuse", false);
+    }
 
-        SubVector3(UColorDiffuse, material.Diffuse);
+    public void ApplyUniforms(ModelMaterialUniforms uniforms)
+    {
+        SubVector3(UColorDiffuse, uniforms.Diffuse);
     }
 
     static Shader GetShader(ModelMaterial material)

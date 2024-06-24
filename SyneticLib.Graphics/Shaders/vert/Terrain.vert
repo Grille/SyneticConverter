@@ -10,7 +10,6 @@ layout (location = 6) in float vShadow;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
-uniform vec3 uColor;
 
 uniform mat2x4 uMat0;
 uniform mat2x4 uMat1;
@@ -22,11 +21,17 @@ out vec2 fUV0;
 out vec2 fUV1;
 out vec3 fBlend;
 
-out vec2 fUV0Mat0;
-out vec2 fUV0Mat1;
-out vec2 fUV0Mat2;
+out vec2 fUVMat0;
+out vec2 fUVMat1;
+out vec2 fUVMat2;
 
 out vec4 fLightColor;
+
+vec2 UVFromMatrix(in mat2x4 matrix, in vec3 position){
+    float u = (position.x * matrix[0].x) + (position.y * matrix[0].y) + (position.z * matrix[0].z) + matrix[0].w;
+    float f = (position.x * matrix[1].x) + (position.y * matrix[1].y) + (position.z * matrix[1].z) + matrix[1].w;
+    return vec2(u, f);
+}
 
 void main()
 {
@@ -35,6 +40,10 @@ void main()
     fUV0 = vUV0;
     fUV1 = vUV1;
     fBlend = vBlend;
+
+    fUVMat0 = UVFromMatrix(uMat0, vPos);
+    fUVMat1 = UVFromMatrix(uMat1, vPos);
+    fUVMat2 = UVFromMatrix(uMat2, vPos);
 
     fLightColor = vec4(vColor, vShadow);
 

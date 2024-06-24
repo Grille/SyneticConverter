@@ -50,6 +50,11 @@ public class ShaderProgram : GLObject
         GL.UniformMatrix4(location.Location, false, ref Unsafe.AsRef(matrix));
     }
 
+    public void SubInt32(UniformLocation location, int vec)
+    {
+        GL.Uniform1(location.Location, vec);
+    }
+
     public void SubSingle(UniformLocation location, float vec)
     {
         GL.Uniform1(location.Location, vec);

@@ -12,17 +12,13 @@ in vec2 fUV0;
 
 in vec4 fLightColor;
 
-out vec4 FragColor;
+layout (location = 0) out vec4 Diffuse;
+layout (location = 1) out vec4 Normal;
+layout (location = 2) out vec4 Light;
 
 void main()
 {
-    vec3 sunLocation = vec3(0.1,0.6,0.3);
-    vec3 sunColor = vec3(0.69,0.61,0.56);
-    float shadowColor = 1;
-
-    float diff = max(0, dot(fNorm, sunLocation)) * 1.8;
-
-    vec3 light = sunColor;//*diff*shadowColor;
-
-    FragColor = texture(uTexture0, fUV0) * vec4(uColorDiffuse,1) * vec4(light,1); // texture(uTexture0, fUV0) * vec4(light,1) * vec4(uColorDiffuse,1);
+    Diffuse = texture(uTexture0, fUV0);// * vec4(uColorDiffuse,1);
+    Normal = vec4(fNorm,1);
+    Light = vec4(1,1,1,1);
 } 

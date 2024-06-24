@@ -15,6 +15,8 @@ using SyneticLib.IO;
 using System.IO;
 
 using SyneticLib.Diagnostics;
+using SyneticLib.Graphics.Materials;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SyneticLib.Graphics;
 public class GlScene : IDisposable
@@ -31,9 +33,14 @@ public class GlScene : IDisposable
     ModelGlHandle? modelHandle;
     ScenarioGlHandle? scenarioHandle;
 
+    MaterialPrograms programs;
+
     GlObjectCacheGroup cache;
 
     Font? font;
+
+    GLFramebuffer? Stage0;
+    GLFramebuffer? Stage1;
 
     public Profiler Profiler { get; }
 
@@ -48,6 +55,8 @@ public class GlScene : IDisposable
         assets = new SceneAssets();
 
         cache = new GlObjectCacheGroup();
+
+        programs = new MaterialPrograms();
 
         const string fontFile = "font.tga";
         if (File.Exists(fontFile))
@@ -103,18 +112,61 @@ public class GlScene : IDisposable
         Sprites.Clear();
     }
 
+    [MemberNotNull(nameof(Stage0), nameof(Stage1))]
+    void AssertFrambuffers(int width, int height)
+    {
+
+
+
+        if (Stage0 == null)
+        {
+            Stage0 = new GLFramebuffer(width, height);
+        }
+
+        if (Stage1 == null)
+        {
+            Stage1 = new GLFramebuffer(width, height);
+        }
+
+        if (Stage0.Width != width || Stage0.Height != height)
+        {
+            Stage0.Dispose();
+            Stage0 = new GLFramebuffer(width, height);
+        }
+
+        if (Stage1.Width != width || Stage1.Height != height)
+        {
+            Stage1.Dispose();
+            Stage1 = new GLFramebuffer(width, height);
+        }
+    }
+
     public void Render()
     {
         Profiler.Begin();
 
-        GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
+        AssertFrambuffers((int)Camera.ScreenSize.X*2, (int)Camera.ScreenSize.Y*2);
+        //GLFramebuffer.BindDefault();
         GL.Enable(EnableCap.CullFace);
         GL.CullFace(CullFaceMode.Front);
 
         Sprites.ScreenSize = Camera.ScreenSize;
 
         var plane = assets.GroundPlane;
-        plane.SubCamera(Camera);
+
+        var modelProgram = programs.DefaultModel;
+        var terrainProgram = programs.DefaultTerrain;
+
+        modelProgram.Bind();
+        modelProgram.SubCameraMatrix(Camera);
+        modelProgram.SubModelMatrix(Matrix4.Identity);
+
+        terrainProgram.Bind();
+        terrainProgram.SubCameraMatrix(Camera);
+        terrainProgram.SubModelMatrix(Matrix4.Identity);
+
+
+        //plane.SubCamera(Camera);
 
         /*
         foreach (Sprite sprite in Sprites)
@@ -123,9 +175,15 @@ public class GlScene : IDisposable
             texture.Bind();
         }
         */
+
+        Stage0.Bind();
+        Stage0.Viewport();
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
+
         GL.Disable(EnableCap.DepthTest);
         {
-            plane.DrawModel(Matrix4.Identity);
+            modelProgram.Bind();
+            plane.DrawModel();
         }
 
         GL.Enable(EnableCap.DepthTest);
@@ -134,15 +192,30 @@ public class GlScene : IDisposable
 
         if (scenarioHandle != null)
         {
-            scenarioHandle.SubCamera(Camera);
-            scenarioHandle.DrawScenario(Camera.Position, 32);
+            //scenarioHandle.SubCamera(Camera);
+            terrainProgram.Bind();
+            scenarioHandle.Terrain.DrawTerrain(Camera.Position, 64);
         }
 
         if (modelHandle != null)
         {
-            modelHandle.SubCamera(Camera);
+            //modelHandle.SubCamera(Camera);
             modelHandle.DrawModel();
         }
+
+        GLFramebuffer.BindDefault();
+
+        GL.Viewport(0, 0, (int)Camera.ScreenSize.X, (int)Camera.ScreenSize.Y);
+
+        Stage0.Color0.Bind(0);
+        Stage0.Color1.Bind(1);
+        Stage0.Color2.Bind(2);
+
+        Sprites.QuadBuffer.Bind();
+        programs.FrameShader.Bind();
+        new DrawElementsInfo(0, 2 * 3).Excecute();
+
+
 
         /*
         //GL.Disable(EnableCap.DepthTest);
@@ -181,6 +254,8 @@ public class GlScene : IDisposable
         }
         */
         //GL.DrawElements(PrimitiveType.Triangles, buffer.ElementCount, DrawElementsType.UnsignedInt, 0 * 3 * 4);
+
+
 
         var combinedSize = Camera.ScreenSize * textureSize.Yx;
         var normalizedScreenSize = (combinedSize / MathF.Max(combinedSize.X, combinedSize.Y)).Yx;
@@ -254,5 +329,7 @@ public class GlScene : IDisposable
         modelHandle?.Dispose();
         scenarioHandle?.Dispose();
         font?.Dispose();
+
+        programs.Dispose();
     }
 }

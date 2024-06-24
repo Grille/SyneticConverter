@@ -13,6 +13,7 @@ internal static class GLSLSources
     public readonly static GlslVertexShaderSource VMesh;
     public readonly static GlslVertexShaderSource VModel;
     public readonly static GlslVertexShaderSource VTerrain;
+    public readonly static GlslVertexShaderSource VFrame;
 
     public readonly static GlslFragmentShaderSource Mesh;
     public readonly static GlslFragmentShaderSource Model;
@@ -21,6 +22,7 @@ internal static class GLSLSources
     public readonly static GlslFragmentShaderSource DebugTexture0;
     public readonly static GlslFragmentShaderSource Sprite;
     public readonly static GlslFragmentShaderSource Text;
+    public readonly static GlslFragmentShaderSource Frame;
 
     static GLSLSources()
     {
@@ -28,6 +30,7 @@ internal static class GLSLSources
         VMesh = LoadVertexShaderFile("Mesh");
         VTerrain = LoadVertexShaderFile("Terrain");
         VModel = LoadVertexShaderFile("Model");
+        VFrame = LoadVertexShaderFile("Frame");
 
         Terrain = LoadFragmentShaderFile("Terrain");
         Model = LoadFragmentShaderFile("Model");
@@ -36,6 +39,7 @@ internal static class GLSLSources
         TerrainWater = LoadFragmentShaderFile("Water");
         Sprite = LoadFragmentShaderFile("Sprite");
         Text = LoadFragmentShaderFile("Text");
+        Frame = LoadFragmentShaderFile("Frame");
     }
 
     public static GlslVertexShaderSource LoadVertexShaderFile(string name) => LoadInternalShaderFile($"vert.{name}.vert");

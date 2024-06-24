@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 
 using SyneticLib.Graphics.DrawCalls;
+using SyneticLib.Graphics.Materials;
 using SyneticLib.Graphics.OpenGL;
 using SyneticLib.Graphics.Shaders;
 

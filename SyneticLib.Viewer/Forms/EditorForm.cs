@@ -8,13 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using DarkUI.Forms;
+
 using SyneticLib.IO;
 using SyneticLib.WinForms.Controls;
 using SyneticLib.WinForms.Resources;
 
 namespace SyneticLib.WinForms.Forms
 {
-    public partial class EditorForm : Form
+    public partial class EditorForm : DarkForm
     {
         static readonly ProjectExplorerTool ProjectExplorerToolInstance = new();
 

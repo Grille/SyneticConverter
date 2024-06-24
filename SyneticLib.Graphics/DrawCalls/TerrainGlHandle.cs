@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using OpenTK.Mathematics;
+
+using SyneticLib.Graphics.Materials;
 using SyneticLib.Graphics.OpenGL;
 using SyneticLib.Math3D;
 
@@ -46,16 +48,6 @@ public class TerrainGlHandle : IDisposable
         _cache.Uncouple();
     }
 
-    public void SubCamera(Camera camera)
-    {
-        foreach (var item in _cache.Materials)
-        {
-            item.Bind();
-            item.SubModelMatrix(Matrix4.Identity);
-            item.SubCameraMatrix(camera);
-        }
-    }
-
     public void DrawTerrainChunk(int x, int y)
     {
         (int, int) Clamp(int value, int min, int max)
@@ -72,7 +64,12 @@ public class TerrainGlHandle : IDisposable
 
         var matrix = Matrix4.CreateTranslation(offsetX * 1024, 0, offsetY * 1024);
 
-        TerrainDrawCalls[posX, posY].Execute(matrix);
+        if (GLContext.UsedProgram is TerrainMaterialProgram tm)
+        {
+            tm.SubModelMatrix(matrix);
+        }
+
+        TerrainDrawCalls[posX, posY].Execute();
     }
 
     public void DrawTerrain(Vector3 position, float radius)

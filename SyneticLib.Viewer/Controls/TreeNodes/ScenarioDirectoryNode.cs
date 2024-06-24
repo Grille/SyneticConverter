@@ -14,7 +14,7 @@ namespace SyneticLib.WinForms.Controls.TreeNodes;
 
 public class ScenarioDirectoryNode : SmartDarkTreeNode<DirectoryLocation>
 {
-    public ArrayNode<string> GroundTextures;
+    public DirectoryNode Files;
     //public ArrayNode<DirectoryLocation> ObjectTextures;
     //public ArrayNode<DirectoryLocation> Objects;
 
@@ -23,9 +23,11 @@ public class ScenarioDirectoryNode : SmartDarkTreeNode<DirectoryLocation>
         Text = obj.Name;
         Icon = EmbeddedImageList.World.Bitmap16;
 
-        GroundTextures = new ArrayNode<string>("GroundTextures", (a) => new FileNode(a));
-
-        Nodes.Add(GroundTextures);
+        Files = new DirectoryNode(Object.DirectoryPath, this)
+        {
+            Name = "Files:"
+        };
+        Nodes.Add(Files);
     }
 
     protected override void OnUpdateContent()
@@ -34,6 +36,6 @@ public class ScenarioDirectoryNode : SmartDarkTreeNode<DirectoryLocation>
 
         var files = Directory.GetFiles(path);
 
-        GroundTextures.SetItems(files);
+        //GroundTextures.SetItems(files);
     }
 }

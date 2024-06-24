@@ -10,13 +10,25 @@ using OpenTK.Mathematics;
 namespace SyneticLib.Graphics.OpenGL;
 public sealed class TextureBuffer : GLObject
 {
-    readonly int textureID;
+    public int TextureID { get; }
+
+    public TextureBuffer(int width, int height, PixelInternalFormat internalfomrat, PixelFormat format, PixelType pixelType)
+    {
+        TextureID = GL.GenTexture();
+
+        GL.BindTexture(TextureTarget.Texture2D, TextureID);
+
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+        GL.TexImage2D(TextureTarget.Texture2D, 0, internalfomrat, width, height, 0, format, pixelType, (IntPtr)null);
+    }
 
     public TextureBuffer(Texture texture)
     {
-        textureID = GL.GenTexture();
+        TextureID = GL.GenTexture();
 
-        GL.BindTexture(TextureTarget.Texture2D, textureID);
+        GL.BindTexture(TextureTarget.Texture2D, TextureID);
 
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
@@ -84,11 +96,11 @@ public sealed class TextureBuffer : GLObject
 
     protected override void OnBind()
     {
-        GL.BindTexture(TextureTarget.Texture2D, textureID);
+        GL.BindTexture(TextureTarget.Texture2D, TextureID);
     }
 
     protected override void OnDelete()
     {
-        GL.DeleteTexture(textureID);
+        GL.DeleteTexture(TextureID);
     }
 }

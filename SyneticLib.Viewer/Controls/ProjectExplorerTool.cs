@@ -28,10 +28,23 @@ public partial class ProjectExplorerTool : DarkToolWindow
             AppSettings.Setup();
         }
 
+        darkTreeView1.MouseScrollHorizontalIfVerticalNotAvailable = false;
+
         foreach (var game in AppSettings.Games)
         {
             var node = new GameDirectoryNode(game);
             darkTreeView1.Nodes.Add(node);
+
+
+
+            darkTreeView1.MouseWheel += DarkTreeView1_MouseWheel;
         }
+    }
+
+    private void DarkTreeView1_MouseWheel(object? sender, MouseEventArgs e)
+    {
+
+        //e.Delta
+        //throw new NotImplementedException();
     }
 }

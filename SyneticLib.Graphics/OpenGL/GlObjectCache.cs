@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Xml.Linq;
+using SyneticLib.Graphics.Materials;
 
 namespace SyneticLib.Graphics.OpenGL;
 
@@ -106,7 +107,7 @@ public class GlObjectCache<TKey, TValue> : IDisposable, IReadOnlyCollection<TVal
 public class GlObjectCacheGroup : IDisposable
 {
     public GlObjectCache<Texture, TextureBuffer> Textures { get; }
-    public GlObjectCache<Material, MaterialProgram> Materials { get; }
+    public GlObjectCache<Material, MaterialUniforms> Materials { get; }
     public GlObjectCache<Mesh, MeshBuffer> Meshes { get; }
 
     public GlObjectCacheGroup()
@@ -126,10 +127,10 @@ public class GlObjectCacheGroup : IDisposable
         return new MeshBuffer(key);
     }
 
-    MaterialProgram Factory(Material key) => key switch
+    MaterialUniforms Factory(Material key) => key switch
     {
-        ModelMaterial mMat => new ModelMaterialProgram(mMat, Textures),
-        TerrainMaterial tMat => new TerrainMaterialProgram(tMat, Textures),
+        ModelMaterial mMat => new ModelMaterialUniforms(mMat, Textures),
+        TerrainMaterial tMat => new TerrainMaterialUniforms(tMat, Textures),
         _ => throw new NotImplementedException(),
     };
 

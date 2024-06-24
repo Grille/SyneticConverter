@@ -243,6 +243,9 @@ public class ScenarioSyneticSerializer
             mat.GameVersion = qad.GameVersion;
             mat.Layer0.Mode = matInfo.Layer0.Mode;
             mat.Layer1.Mode = matInfo.Layer1.Mode;
+            mat.Matrix0 = matInfo.Matrix0;
+            mat.Matrix1 = matInfo.Matrix1;
+            mat.Matrix2 = matInfo.Matrix2;
 
             EnableLayer(mat, 0, ref matInfo.Layer0, textures);
             EnableLayer(mat, 3, ref matInfo.Layer1, textures);
@@ -264,8 +267,8 @@ public class ScenarioSyneticSerializer
         }
 
         EnableSlot(slot + 0, layer.Tex0Id);
-        EnableSlot(slot + 1, layer.Tex0Id);
-        EnableSlot(slot + 2, layer.Tex0Id);
+        EnableSlot(slot + 1, layer.Tex1Id);
+        EnableSlot(slot + 2, layer.Tex2Id);
     }
 
     static void BuildTerrainChunks()

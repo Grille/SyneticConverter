@@ -20,12 +20,19 @@ public class GameDirectoryNode : SmartDarkTreeNode<GameDirectory>
 
     public ArrayNode<DirectoryLocation> ScenariosNode { get; }
 
+    public DirectoryNode Files { get; }
+
     public GameDirectoryNode(GameDirectory game) : base(game)
     {
         UpdateAppearance();
 
         ScenariosNode = new($"Scenarios", (a) => new ScenarioGroupDirectoryNode(a));
+        Files = new DirectoryNode(game.DirectoryPath, this)
+        {
+            Name = "Files:"
+        };
         Nodes.Add(ScenariosNode);
+        Nodes.Add(Files);
     }
 
     protected override void OnUpdateContent()

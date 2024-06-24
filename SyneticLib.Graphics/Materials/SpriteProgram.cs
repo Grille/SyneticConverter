@@ -11,7 +11,7 @@ using OpenTK.Mathematics;
 using System.Runtime.CompilerServices;
 using System.Drawing;
 
-namespace SyneticLib.Graphics;
+namespace SyneticLib.Graphics.Materials;
 
 public class SpriteProgram : ShaderProgram
 {

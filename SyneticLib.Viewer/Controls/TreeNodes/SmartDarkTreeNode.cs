@@ -34,6 +34,8 @@ public abstract class SmartDarkTreeNode<T> : DarkTreeNode
     public void UpdateContent()
     {
         OnUpdateContent();
+
+        ParentTree.Invalidate();
     }
 
     protected abstract void OnUpdateContent();

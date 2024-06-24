@@ -19,11 +19,16 @@ public class FileNode : DarkTreeNode
 
     public string FileExtension => Path.GetExtension(FilePath);
 
-    public FileNode(string path)
+    public FileNode(string filePath)
     {
-        FilePath = path;
+        FilePath = filePath;
         Text = FileName;
 
+        Update();
+    }
+
+    public void Update()
+    {
         switch (FileExtension.ToLower())
         {
             case ".dds":
@@ -31,6 +36,31 @@ public class FileNode : DarkTreeNode
             case ".ptx":
             {
                 Icon = EmbeddedImageList.Texture.Bitmap16;
+                break;
+            }
+            case ".mox":
+            {
+                Icon = EmbeddedImageList.Mesh.Bitmap16;
+                break;
+            }
+            case ".mtl":
+            {
+                Icon = EmbeddedImageList.Misc.Bitmap16;
+                break;
+            }
+            case ".wav":
+            {
+                Icon = EmbeddedImageList.Audio.Bitmap16;
+                break;
+            }
+            case ".lvl":
+            case ".sni":
+            case ".idx":
+            case ".vtx":
+            case ".qad":
+            case ".geo":
+            {
+                Icon = EmbeddedImageList.Terrain.Bitmap16;
                 break;
             }
         }

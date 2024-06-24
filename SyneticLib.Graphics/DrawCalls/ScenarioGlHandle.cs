@@ -32,11 +32,6 @@ internal class ScenarioGlHandle : IDisposable
         _cache.Uncouple();
     }
 
-    public void SubCamera(Camera camera)
-    {
-        Terrain.SubCamera(camera);
-    }
-
     public void DrawScenario(Vector3 position, float radius)
     {
         Terrain.DrawTerrain(position, radius);
