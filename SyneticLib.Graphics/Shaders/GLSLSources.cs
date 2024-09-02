@@ -17,7 +17,7 @@ internal static class GLSLSources
 
     public readonly static GlslFragmentShaderSource Mesh;
     public readonly static GlslFragmentShaderSource Model;
-    public readonly static GlslFragmentShaderSource Terrain;
+    public readonly static GlslFragmentShaderSource TerrainWR2;
     public readonly static GlslFragmentShaderSource TerrainWater;
     public readonly static GlslFragmentShaderSource DebugTexture0;
     public readonly static GlslFragmentShaderSource Sprite;
@@ -32,7 +32,7 @@ internal static class GLSLSources
         VModel = LoadVertexShaderFile("Model");
         VFrame = LoadVertexShaderFile("Frame");
 
-        Terrain = LoadFragmentShaderFile("Terrain");
+        TerrainWR2 = LoadFragmentShaderFile("Terrain");
         Model = LoadFragmentShaderFile("Model");
         Mesh = LoadFragmentShaderFile("Mesh");
         DebugTexture0 = LoadFragmentShaderFile("SimpleColor");

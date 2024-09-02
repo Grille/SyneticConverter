@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 using OpenTK.Mathematics;
 
+using SyneticLib.Utils;
+
 namespace SyneticLib;
 public class Texture : SyneticObject
 {
@@ -25,19 +27,35 @@ public class Texture : SyneticObject
         get => new Vector2(Width, Height);
     }
 
-    public byte[] PixelData { get => Levels[0].Data; }
+    public byte[] MainSurfaceData { get => Levels[0].Data; }
 
-    public Texture(string name, TextureFormat format, TextureLevel[] levels) : base(name)
+    public Texture(TextureFormat format, TextureLevel[] levels) : base()
     {
         Format = format;
-        Levels = levels;
+        Levels = (TextureLevel[])levels.Clone();
 
         if (levels.Length == 0)
-            throw new ArgumentException("", nameof(levels));
+        {
+            throw new ArgumentException("levels.Length == 0", nameof(levels));
+        }
+
+        int width = Levels[0].Width;
+        int height = Levels[0].Height;
+
+        for (int i = 0; i < Levels.Length; i++)
+        {
+            if (Levels[i].Width != width || Levels[i].Height != height)
+            {
+                throw new ArgumentException("Every level must be half the size of its parent.", nameof(levels));
+            }
+
+            width /= 2;
+            height /= 2;
+        }
     }
 
-    public Texture(string name, TextureFormat format, int width, int height, byte[] pixels) :
-        this(name, format, new[] { new TextureLevel(width, height, pixels) })
+    public Texture(TextureFormat format, int width, int height, byte[] pixels) :
+        this(format, new[] { new TextureLevel(width, height, pixels) })
     { }
 
     public static Texture CreatePlaceholder(string name)
@@ -45,97 +63,3 @@ public class Texture : SyneticObject
         throw new NotImplementedException();
     }
 }
-
-public unsafe class TextureLevel
-{
-    public int Width { get; }
-
-    public int Height { get; }
-
-    public int Length => Width * Height;
-
-    public int Stride =>  Data.Length / Length;
-
-    public byte[] Data { get; }
-
-    bool locked = false;
-    GCHandle handle;
-
-    public nint Scan0
-    {
-        get
-        {
-            AssertLock(true);
-
-            return handle.AddrOfPinnedObject();
-        }
-    }
-
-    public TextureLevel(int width, int height, byte[] data)
-    {
-        Width = width; 
-        Height = height;
-        Data = data;
-    }
-
-    public void Lock()
-    {
-        AssertLock(false);
-
-        locked = true;
-        handle = GCHandle.Alloc(Data, GCHandleType.Pinned);
-    }
-
-    public void Unlock()
-    {
-        AssertLock(true);
-
-        handle.Free();
-        locked = false;
-    }
-
-    void AssertLock(bool expected)
-    {
-        if (locked != expected)
-        {
-            if (expected)
-            {
-                throw new InvalidOperationException("TextureLevel needs to be locked");
-            }
-            throw new InvalidOperationException("TextureLevel alredy locked");
-        }
-    }
-
-    public void FlipY()
-    {
-        int width = Width;
-        int height = Height;
-        var data = Data;
-        int stride = Stride;
-
-        int halfHeight = Height / 2;
-        int byteWidth = width * stride;
-
-        for (int iy = 0; iy < halfHeight; iy++)
-        {
-            int y0 = iy;
-            int y1 = height - iy - 1;
-
-            int idx0 = y0 * byteWidth;
-            int idx1 = y1 * byteWidth;
-
-            for (int ix = 0; ix < byteWidth; ix++)
-            {
-                var temp = data[idx1 + ix];
-                data[idx1 + ix] = data[idx0 + ix];
-                data[idx0 + ix] = temp;
-            }
-        }
-    }
-
-    public TextureLevel Clone()
-    {
-        return new TextureLevel(Width, Height, (byte[])Data.Clone());
-    }
-}
-

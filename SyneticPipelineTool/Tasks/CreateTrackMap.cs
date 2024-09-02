@@ -9,37 +9,28 @@ using System.Threading.Tasks;
 using Grille.PipelineTool;
 
 using SyneticLib.IO;
+using SyneticLib.Utils;
 
 namespace SyneticPipelineTool.Tasks;
 
-[PipelineTask("Converter/Create TrackMaps")]
+[PipelineTask("Synetic/Create TrackMap")]
 public class CreateTrackMaps : PipelineTask
 {
-    protected override void OnExecute()
-    {
-        string srcDir = EvalParameter("Src Directory");
-        string dstDir = EvalParameter("Dst Directory");
-
-        Directory.CreateDirectory(dstDir);
-
-        foreach (var srcFile in Directory.GetFiles(srcDir))
-        {
-            if (Path.GetExtension(srcFile).ToLower() != ".trk")
-                continue;
-
-            var name = Path.GetFileNameWithoutExtension(srcFile);
-            var dstName = $"Track{name.AsSpan(0, name.Length - 3)}{name.AsSpan(name.Length - 2, 2)}.tga";
-            var dstFile = Path.Combine(dstDir, dstName);
-
-            var track = Serializers.Track.Trk.Load(srcFile);
-            var texture = track.CreateTrackMap(512, 512);
-            Serializers.Texture.Tga.Save(dstFile, texture);
-        }
-    }
-
     protected override void OnInit()
     {
-        Parameters.Def(ParameterTypes.String, "Src Directory", "", ".trk");
-        Parameters.Def(ParameterTypes.String, "Dst Directory", "", ".tga");
+        Parameters.Def(ParameterTypes.OpenFile, "Src File", "", ".trk");
+        Parameters.Def(ParameterTypes.Integer, "Size", null, "512");
+        Parameters.DefResult("Texture");
+    }
+
+    protected override void OnExecute()
+    {
+        string srcFile = EvalParameter("Src File");
+        string resultname = EvalParameter("Texture");
+
+        var track = Serializers.Track.Trk.Load(srcFile);
+        var texture = TrackMapGenerator.CreateTrackMap(track, 512, 512);
+
+        Runtime.Variables[resultname] = new VariableValue(texture);
     }
 }

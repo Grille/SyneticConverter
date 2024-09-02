@@ -19,6 +19,11 @@ public enum TextureFormat
     RGBA32Dxt5,
 }
 
+public enum SoundFormat
+{
+    Wav
+}
+
 public static class TextureFormatExtension
 {
     public static int Stride(this TextureFormat format) => format switch

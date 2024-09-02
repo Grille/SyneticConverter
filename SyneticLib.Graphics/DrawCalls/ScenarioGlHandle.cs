@@ -34,12 +34,12 @@ internal class ScenarioGlHandle : IDisposable
 
     public void DrawScenario(Vector3 position, float radius)
     {
-        Terrain.DrawTerrain(position, radius);
+        Terrain.Draw(position, radius);
     }
 
     public void DrawScenario()
     {
-        Terrain.DrawTerrain();
+        Terrain.Draw();
     }
 
     public void Dispose()

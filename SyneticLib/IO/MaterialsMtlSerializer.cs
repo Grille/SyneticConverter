@@ -9,7 +9,7 @@ using SyneticLib.Files;
 namespace SyneticLib.IO;
 public class MaterialsMtlSerializer : FileSerializer<MtlFile, ModelMaterial[]>
 {
-    public override ModelMaterial[] OnDeserialize(MtlFile file)
+    protected override ModelMaterial[] OnDeserialize(MtlFile file)
     {
         throw new NotImplementedException();
     }

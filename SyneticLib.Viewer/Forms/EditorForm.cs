@@ -10,13 +10,14 @@ using System.Windows.Forms;
 
 using DarkUI.Forms;
 
+using SyneticLib.Graphics;
 using SyneticLib.IO;
 using SyneticLib.WinForms.Controls;
 using SyneticLib.WinForms.Resources;
 
 namespace SyneticLib.WinForms.Forms
 {
-    public partial class EditorForm : DarkForm
+    public partial class EditorForm : DarkForm, ISceneProvider
     {
         static readonly ProjectExplorerTool ProjectExplorerToolInstance = new();
 
@@ -78,7 +79,17 @@ namespace SyneticLib.WinForms.Forms
             var load = new SceneLoader(doc, doc.ViewerControl.Scene);
             load.LoadFile();
             doc.DockText = load.FileName;
+        }
 
+        public void GetActiveScene()
+        {
+
+        }
+
+        public GlScene GetScene()
+
+        {
+            return null!;
         }
     }
 }

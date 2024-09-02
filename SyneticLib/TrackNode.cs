@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 
 namespace SyneticLib;
-public class TrackNode
+public struct TrackNode
 {
     public Vector3 Position;
 }
+

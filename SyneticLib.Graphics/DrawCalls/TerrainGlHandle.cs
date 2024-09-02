@@ -18,6 +18,8 @@ public class TerrainGlHandle : IDisposable
 
     readonly int _height;
 
+    public float GridSize = 1024f;
+
     public MeshBuffer Terrain { get; }
 
     GlObjectCacheGroup _cache;
@@ -48,7 +50,7 @@ public class TerrainGlHandle : IDisposable
         _cache.Uncouple();
     }
 
-    public void DrawTerrainChunk(int x, int y)
+    public void DrawChunk(int x, int y, bool drawBackground = false)
     {
         (int, int) Clamp(int value, int min, int max)
         {
@@ -62,6 +64,9 @@ public class TerrainGlHandle : IDisposable
         (int posX, int offsetX) = Clamp(x, 0, _width);
         (int posY, int offsetY) = Clamp(y, 0, _height);
 
+        if (!drawBackground && (offsetX != 0 || offsetY != 0))
+            return;
+
         var matrix = Matrix4.CreateTranslation(offsetX * 1024, 0, offsetY * 1024);
 
         if (GLContext.UsedProgram is TerrainMaterialProgram tm)
@@ -72,10 +77,10 @@ public class TerrainGlHandle : IDisposable
         TerrainDrawCalls[posX, posY].Execute();
     }
 
-    public void DrawTerrain(Vector3 position, float radius)
+    public void Draw(Vector3 position, float radius)
     {
-        float posX = position.X / 1024f + _width / 2;
-        float posY = position.Z / 1024f + _height / 2;
+        float posX = position.X / GridSize + _width / 2;
+        float posY = position.Z / GridSize + _height / 2;
 
         int beginX = (int)Math.Floor(posX - radius * 2);
         int beginY = (int)Math.Floor(posY - radius * 2);
@@ -99,12 +104,12 @@ public class TerrainGlHandle : IDisposable
                 if (distSq > rDistSq)
                     continue;
 
-                DrawTerrainChunk(ix, iy);
+                DrawChunk(ix, iy);
             }
         }
     }
 
-    public void DrawTerrain()
+    public void Draw()
     {
         Terrain.Bind();
 
@@ -112,7 +117,7 @@ public class TerrainGlHandle : IDisposable
         {
             for (int ix = 0; ix < _width; ix++)
             {
-                DrawTerrainChunk(ix, iy);
+                DrawChunk(ix, iy);
             }
         }
 

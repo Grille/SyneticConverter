@@ -15,14 +15,14 @@ namespace SyneticLib.Conversion;
 
 public static class WR1ToWR2FileConv
 {
-    public static void Convert(string dirPath, string fileName, float ambientOffset)
+    public static void Convert(string dirPath, string fileName)
     {
         var paths = new ScenarioFiles.Paths(dirPath, fileName);
         var files = new ScenarioFiles();
         files.Load(paths, GameVersion.WR1);
 
         ConvertQad(files.Qad);
-        ConvertVtx(files.TerrainMesh.Vertices, ambientOffset);
+        ConvertVtx(files.TerrainMesh.Vertices, 0.22f);
         ConvertSni(files.Sni);
 
         CreateCobFiles(dirPath);

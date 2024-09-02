@@ -6,18 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SyneticLib.Files;
+using SyneticLib.Utils;
+
+using static SyneticLib.Files.TgaFile;
 
 namespace SyneticLib.IO;
 public class TextureTgaSerializer : FileSerializer<TgaFile, Texture>
 {
-    public override Texture OnDeserialize(TgaFile tga)
+    protected override Texture OnDeserialize(TgaFile tga)
     {
         var format = (tga.Head.ImageType, tga.Head.BitsPerPixel) switch
         {
-            (TgaFile.ImageType.GrayScale, 8) => TextureFormat.R8,
-            (TgaFile.ImageType.TrueColorImage, 8) => TextureFormat.R8,
-            (TgaFile.ImageType.TrueColorImage, 24) => TextureFormat.RGB24,
-            (TgaFile.ImageType.TrueColorImage, 32) => TextureFormat.BGRA32,
+            (ImageType.GrayScale, 8) => TextureFormat.R8,
+            (ImageType.TrueColorImage, 8) => TextureFormat.R8,
+            (ImageType.TrueColorImage, 24) => TextureFormat.RGB24,
+            (ImageType.TrueColorImage, 32) => TextureFormat.BGRA32,
             _ => throw new Exception(),
         };
 
@@ -25,26 +28,47 @@ public class TextureTgaSerializer : FileSerializer<TgaFile, Texture>
         int height = tga.Head.Height;
         var pixels = tga.Pixels;
         var level = new TextureLevel(width, height, pixels);
-        if (tga.Head.ImageDescriptor.HasFlag(TgaFile.ImageDescriptor.ScreenOrigin))
+        if (tga.Head.ImageDescriptor.HasFlag(ImageDescriptor.ScreenOrigin))
         {
             level.FlipY();
         }
         var levels = new[] { level };
 
-        return new Texture("", format, levels);
+        return new Texture(format, levels);
     }
 
     protected override void OnSerialize(TgaFile tga, Texture texture)
     {
-        var format = texture.Format switch
-        {
-            TextureFormat.R8 => (TgaFile.ImageType.GrayScale, 8),
-            TextureFormat.BGRA32 => (TgaFile.ImageType.TrueColorImage, 32),
-            _ => throw new NotImplementedException(),
-        };
+        ImageType type;
+        byte bits;
+        byte[] data;
 
-        tga.Head.ImageType = format.Item1;
-        tga.Head.BitsPerPixel = (byte)format.Item2;
+        switch (texture.Format)
+        {
+            case TextureFormat.R8:
+            {
+                type = ImageType.GrayScale;
+                bits = 8;
+                data = texture.MainSurfaceData;
+                break;
+            }
+            case TextureFormat.BGRA32:
+            {
+                type = ImageType.TrueColorImage;
+                bits = 32;
+                data = texture.MainSurfaceData;
+                break;
+            }
+            default:
+            {
+                type = ImageType.TrueColorImage;
+                bits = 32;
+                data = texture.DataToBgra32(0);
+                break;
+            }
+        }
+        tga.Head.ImageType = type;
+        tga.Head.BitsPerPixel = bits;
         tga.Head.Width = (ushort)texture.Width;
         tga.Head.Height = (ushort)texture.Height;
         tga.Pixels = texture.Levels[0].Data;

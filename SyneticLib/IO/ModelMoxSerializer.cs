@@ -9,7 +9,7 @@ using SyneticLib.Files;
 namespace SyneticLib.IO;
 public class ModelMoxSerializer : FileSerializer<MoxFile, Model>
 {
-    public override Model OnDeserialize(MoxFile file)
+    protected override Model OnDeserialize(MoxFile file)
     {
         throw new NotImplementedException();
     }

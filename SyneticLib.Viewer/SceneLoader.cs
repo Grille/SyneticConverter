@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 using SyneticLib.Graphics;
 using SyneticLib.IO;
+using SyneticLib.Utils;
 using SyneticLib.WinForms.Controls.OpenGL;
 
 namespace SyneticLib.WinForms;
@@ -104,7 +105,7 @@ public class SceneLoader
             case ".trk":
             {
                 var track = Serializers.Track.Trk.Load(path);
-                var texture = track.CreateTrackMap(512, 512);
+                var texture = TrackMapGenerator.CreateTrackMap(track, 512, 512);
                 GLScene.SubmitTexture(texture);
                 break;
             }

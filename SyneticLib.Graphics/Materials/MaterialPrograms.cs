@@ -25,7 +25,7 @@ public class MaterialPrograms : IDisposable
             DefaultModel = new ModelMaterialProgram(shader);
         }
 
-        using (var shader = new Shader(GLSLSources.VTerrain, GLSLSources.Terrain))
+        using (var shader = new Shader(GLSLSources.VTerrain, GLSLSources.TerrainWR2))
         {
             DefaultTerrain = new TerrainMaterialProgram(shader);
         }

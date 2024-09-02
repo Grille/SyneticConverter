@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib.IO;
-public class ScenarioGroupSyneticSerializer
+public class ScenarioGroupSyneticSerializer : DirectorySerializer<ScenarioGroup>
 {
     public ScenarioGroup Load(string path, string name)
     {
@@ -29,4 +29,13 @@ public class ScenarioGroupSyneticSerializer
         return group;
     }
 
+    protected override ScenarioGroup OnLoad(string dirPath)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnSave(string dirPath, ScenarioGroup obj)
+    {
+        throw new NotImplementedException();
+    }
 }

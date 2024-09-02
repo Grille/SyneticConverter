@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using SyneticLib.Files.Common;
 
 namespace SyneticLib.IO;
-public abstract class FileSerializer<TFile, TObj> where TFile : BaseFile, new()
+public abstract class FileSerializer<TFile, TObj> : ISerializer<TObj> where TFile : BaseFile, new()
 {
     public void Save(string filePath, TObj value)
     {
@@ -51,5 +51,5 @@ public abstract class FileSerializer<TFile, TObj> where TFile : BaseFile, new()
         return OnDeserialize(file);
     }
 
-    public abstract TObj OnDeserialize(TFile file);
+    protected abstract TObj OnDeserialize(TFile file);
 }

@@ -18,6 +18,7 @@ using SyneticLib.Resources;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using System.Diagnostics;
 using SyneticLib.WinForms.Resources;
+using SyneticLib.Utils;
 
 namespace SyneticLib.WinForms;
 
@@ -153,7 +154,7 @@ public partial class ViewerForm : Form
             case ".trk":
             {
                 var track = Serializers.Track.Trk.Load(path);
-                var texture = track.CreateTrackMap(512, 512);
+                var texture =  TrackMapGenerator.CreateTrackMap(track, 512, 512);
                 scene.SubmitTexture(texture);
                 break;
             }

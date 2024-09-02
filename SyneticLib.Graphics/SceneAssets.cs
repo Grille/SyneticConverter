@@ -38,7 +38,7 @@ public class SceneAssets : IDisposable
 
     public ShaderProgram Shader { get; }
 
-    static unsafe Texture CreateChecker(string name, uint color1, uint color2)
+    static unsafe Texture CreateChecker(uint color1, uint color2)
     {
         byte[] pixels = new byte[2 * 2 * 4];
         fixed (byte* bptr = pixels)
@@ -47,7 +47,7 @@ public class SceneAssets : IDisposable
             iptr[0] = iptr[3] = color1;
             iptr[1] = iptr[2] = color2;
         }
-        return new Texture(name, TextureFormat.RGBA32, 2, 2, pixels);
+        return new Texture(TextureFormat.RGBA32, 2, 2, pixels);
     }
 
     public static Model CreateCompas()
@@ -59,7 +59,7 @@ public class SceneAssets : IDisposable
     {
         float gridSize = size * 1000_0f;
 
-        var checker = CreateChecker("Checker", 0xFF969696, 0xFFA9A9A9);
+        var checker = CreateChecker(0xFF969696, 0xFFA9A9A9);
 
         var material = new ModelMaterial();
         material.IsZBufferEnabled = false;

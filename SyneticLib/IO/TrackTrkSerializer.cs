@@ -9,7 +9,7 @@ using SyneticLib.Files;
 namespace SyneticLib.IO;
 public class TrackTrkSerializer : FileSerializer<TrkFile, Track>
 {
-    public override Track OnDeserialize(TrkFile trk)
+    protected override Track OnDeserialize(TrkFile trk)
     {
         var nodes = new TrackNode[trk.Head.Nodes];
 

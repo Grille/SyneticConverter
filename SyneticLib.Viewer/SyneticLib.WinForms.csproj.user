@@ -10,6 +10,9 @@
     <Compile Update="Controls\ProjectExplorerTool.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Controls\GdiTextureView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Controls\ViewerDocument.cs">
       <SubType>UserControl</SubType>
     </Compile>

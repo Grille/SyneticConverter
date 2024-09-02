@@ -9,9 +9,14 @@ using SyneticLib.Files;
 using SyneticLib.Locations;
 
 namespace SyneticLib.IO;
-public class ScenarioSyneticSerializer
+public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
 {
-    public Scenario Load(string filePath)
+    protected override void OnSave(string dirPath, Scenario obj)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override Scenario OnLoad(string filePath)
     {
         var dirPath = Path.GetDirectoryName(filePath);
         var fileName = Path.GetFileNameWithoutExtension(filePath);

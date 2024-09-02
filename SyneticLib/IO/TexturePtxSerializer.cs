@@ -10,7 +10,7 @@ using SyneticLib.Files;
 namespace SyneticLib.IO;
 public class TexturePtxSerializer : FileSerializer<PtxFile, Texture>
 {
-    public override Texture OnDeserialize(PtxFile ptx)
+    protected override Texture OnDeserialize(PtxFile ptx)
     {
         var format = (ptx.Head.Compression, ptx.Head.BitPerPixel) switch
         {
@@ -29,13 +29,13 @@ public class TexturePtxSerializer : FileSerializer<PtxFile, Texture>
         {
             var pixels = ptx.Levels[i].Pixels;
 
-            int lwidth = width / (i + 1);
-            int lheight = height / (i + 1);
+            levels[i] = new TextureLevel(width, height, pixels);
 
-            levels[i] = new TextureLevel(lwidth, lheight, pixels);
+            width /= 2;
+            height /= 2;
         }
 
-        return new Texture("", format, levels);
+        return new Texture(format, levels);
     }
 
     protected override void OnSerialize(PtxFile ptx, Texture texture)
@@ -44,6 +44,8 @@ public class TexturePtxSerializer : FileSerializer<PtxFile, Texture>
         {
             TextureFormat.RGB24 => (0, 24),
             TextureFormat.RGBA32 => (0, 32),
+            TextureFormat.RGB24Dxt1 => (1, 24),
+            TextureFormat.RGBA32Dxt5 => (1, 32),
             _ => throw new NotImplementedException(),
         };
 

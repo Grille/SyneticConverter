@@ -9,7 +9,7 @@ using SyneticLib.Files;
 namespace SyneticLib.IO;
 public class MeshCobSerializer : FileSerializer<CobFile, Mesh>
 {
-    public override Mesh OnDeserialize(CobFile cob)
+    protected override Mesh OnDeserialize(CobFile cob)
     {
         return new Mesh(cob.Vertecis, cob.Indices);
     }

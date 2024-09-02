@@ -41,6 +41,6 @@ public class TerrainMaterialProgram : MaterialProgram
 
     static Shader GetShader(TerrainMaterial material)
     {
-        return new Shader(GLSLSources.VTerrain, GLSLSources.Terrain);
+        return new Shader(GLSLSources.VTerrain, GLSLSources.TerrainWR2);
     }
 }

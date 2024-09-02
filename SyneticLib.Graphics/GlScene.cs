@@ -29,6 +29,7 @@ public class GlScene : IDisposable
     SceneAssets assets;
 
     Vector2 textureSize;
+    
     TextureBuffer? textureBuffer;
     ModelGlHandle? modelHandle;
     ScenarioGlHandle? scenarioHandle;
@@ -78,6 +79,11 @@ public class GlScene : IDisposable
         textureBuffer = new TextureBuffer(texture);
         var size = texture.Size;
         textureSize = size / MathF.Max(size.X, size.Y);
+    }
+
+    public void SubmitTerrain(TerrainModel model)
+    {
+
     }
 
     public void SubmitScenario(Scenario scenario)
@@ -192,14 +198,12 @@ public class GlScene : IDisposable
 
         if (scenarioHandle != null)
         {
-            //scenarioHandle.SubCamera(Camera);
             terrainProgram.Bind();
-            scenarioHandle.Terrain.DrawTerrain(Camera.Position, 64);
+            scenarioHandle.Terrain.Draw(Camera.Position, 16);
         }
 
         if (modelHandle != null)
         {
-            //modelHandle.SubCamera(Camera);
             modelHandle.DrawModel();
         }
 
