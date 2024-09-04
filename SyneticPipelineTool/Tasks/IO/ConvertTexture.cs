@@ -36,7 +36,7 @@ internal class ConvertTexture : PipelineTask
 
     public override Token[] ToTokens() => new Token[]
     {
-        new(TokenType.Text, "Texture.Save '"),
+        new(TokenType.Text, "Texture.Convert '"),
         new(TokenType.Expression, Parameters["Src File"]),
         new(TokenType.Text, "'("),
         new(TokenType.Expression, Parameters["Src Type"]),
