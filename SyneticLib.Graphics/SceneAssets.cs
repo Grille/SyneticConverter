@@ -47,7 +47,7 @@ public class SceneAssets : IDisposable
             iptr[0] = iptr[3] = color1;
             iptr[1] = iptr[2] = color2;
         }
-        return new Texture(TextureFormat.RGBA32, 2, 2, pixels);
+        return new Texture(TextureFormat.Rgba32, 2, 2, pixels);
     }
 
     public static Model CreateCompas()

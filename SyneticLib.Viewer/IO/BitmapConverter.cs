@@ -40,23 +40,17 @@ public static class BitmapConverter
 
     public static unsafe Texture ConvertToTexture(BitmapData data)
     {
-        switch (data.PixelFormat)
+        if (data.PixelFormat != PixelFormat.Format32bppArgb)
         {
-            case PixelFormat.Format32bppArgb:
-            {
-                int size = data.Width * data.Height;
-                var bytes = new byte[data.Width * data.Height * 4];
-                var ptr = (byte*)data.Scan0;
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    bytes[i] = ptr[i];
-                }
-                return new Texture(TextureFormat.BGRA32, data.Width, data.Height, bytes);
-            }
-            default:
-            {
-                throw new InvalidDataException($"{data.PixelFormat}");
-            }
+            throw new InvalidDataException($"{data.PixelFormat}");
         }
+        int size = data.Width * data.Height;
+        var bytes = new byte[data.Width * data.Height * 4];
+        var ptr = (byte*)data.Scan0;
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            bytes[i] = ptr[i];
+        }
+        return new Texture(TextureFormat.Bgra32, data.Width, data.Height, bytes);
     }
 }

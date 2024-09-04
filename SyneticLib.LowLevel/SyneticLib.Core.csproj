@@ -13,4 +13,8 @@
 		<PackageReference Include="OpenTK.Mathematics" Version="4.8.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Properties\" />
+	</ItemGroup>
+
 </Project>

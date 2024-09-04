@@ -17,8 +17,14 @@ public class SyneticPipelineToolForm : PipelineToolForm
 {
     static SyneticPipelineToolForm()
     {
-        Serializers.Texture.Registry.Add("png", new TextureBitmapSerializer(ImageFormat.Png));
-        Serializers.Texture.Registry.Add("bmp", new TextureBitmapSerializer(ImageFormat.Bmp));
+        var bmp = new TextureBitmapSerializer(ImageFormat.Bmp);
+        var png = new TextureBitmapSerializer(ImageFormat.Png);
+        var jpg = new TextureBitmapSerializer(ImageFormat.Jpeg);
+
+        Serializers.Texture.Registry.Add("bmp", bmp);
+        Serializers.Texture.Registry.Add("png", png);
+        Serializers.Texture.Registry.Add("jpg", jpg);
+        Serializers.Texture.Registry.Add("jpeg", jpg);
     }
 
     public SyneticPipelineToolForm()

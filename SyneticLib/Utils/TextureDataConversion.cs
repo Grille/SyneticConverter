@@ -24,11 +24,13 @@ public static unsafe class TextureDataConversion
                 for (int i = 0; i < size; i++)
                 {
                     dst[i * 4 + 0] = src[i]; // R
-                    dst[i * 4 + 3] = 255;
+                    dst[i * 4 + 1] = src[i]; // G
+                    dst[i * 4 + 2] = src[i]; // B
+                    dst[i * 4 + 3] = src[i]; // A
                 }
                 break;
             }
-            case TextureFormat.RGB24:
+            case TextureFormat.Rgb24:
             {
                 for (int i = 0; i < size; i++)
                 {
@@ -39,13 +41,13 @@ public static unsafe class TextureDataConversion
                 }
                 return;
             }
-            case TextureFormat.RGBA32:
+            case TextureFormat.Rgba32:
             {
                 int sizex4 = size * 4;
                 new Span<byte>(src, sizex4).CopyTo(new Span<byte>(dst, sizex4));
                 return;
             }
-            case TextureFormat.BGRA32:
+            case TextureFormat.Bgra32:
             {
                 for (int i = 0; i < size; i++)
                 {
@@ -56,12 +58,12 @@ public static unsafe class TextureDataConversion
                 }
                 return;
             }
-            case TextureFormat.RGB24Dxt1:
+            case TextureFormat.Rgb24Dxt1:
             {
                 DdsDecoder.DecodeDxt1ToRgba32(src, dst, width, height);
                 return;
             }
-            case TextureFormat.RGBA32Dxt5:
+            case TextureFormat.Rgba32Dxt5:
             {
                 DdsDecoder.DecodeDxt5ToRgba32(src, dst, width, height);
                 return;

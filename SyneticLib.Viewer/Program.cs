@@ -10,6 +10,7 @@ using SyneticLib.WinForms.Forms;
 
 namespace SyneticLib.WinForms;
 
+/*
 internal static class Program
 {
     /// <summary>
@@ -26,3 +27,4 @@ internal static class Program
         Application.Run(new EditorForm());
     }
 }
+*/

@@ -12,11 +12,12 @@ public enum TextureFormat
 {
     Unknown,
     R8,
-    RGB24,
-    BGRA32,
-    RGBA32,
-    RGB24Dxt1,
-    RGBA32Dxt5,
+    Bgr24,
+    Rgb24,
+    Bgra32,
+    Rgba32,
+    Rgb24Dxt1,
+    Rgba32Dxt5,
 }
 
 public enum SoundFormat
@@ -30,6 +31,18 @@ public static class TextureFormatExtension
     {
         _ => throw new NotImplementedException(),
     };
+
+    public static int BitSize(this TextureFormat format) => format switch
+    {
+        TextureFormat.R8 => 8,
+        TextureFormat.Bgr24 => 24,
+        TextureFormat.Rgb24 => 24,
+        TextureFormat.Bgra32 => 32,
+        TextureFormat.Rgba32 => 32,
+        _ => throw new NotSupportedException(),
+    };
+
+    public static int ByteSize(this TextureFormat format) => BitSize(format) / 8;
 }
 
 public enum MaterialShadingMode

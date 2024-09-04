@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using SyneticLib.Files.Common;
 
 namespace SyneticLib.IO;
-public abstract class FileSerializer<TFile, TObj> : ISerializer<TObj> where TFile : BaseFile, new()
+public abstract class FileSerializer<TFile, TObj> : IFileSerializer<TObj> where TFile : BaseFile, new()
 {
     public void Save(string filePath, TObj value)
     {

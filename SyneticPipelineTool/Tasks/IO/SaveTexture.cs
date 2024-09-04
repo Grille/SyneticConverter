@@ -19,7 +19,7 @@ internal class SaveTexture : PipelineTask
     {
         Parameters.Def(ParameterTypes.SaveFile, "Dst File", "Save texture to file", "./texture.ptx");
         Parameters.Def(ParameterTypes.Enum, "File Type", null, TextureTaskUtils.Default, TextureTaskUtils.FileTypes);
-        Parameters.Def(ParameterTypes.String, "Texture", null, "*Texture", null);
+        Parameters.Def(ParameterTypes.Object, "Texture", null, "*Texture", null);
     }
 
     protected override void OnExecute()

@@ -1,7 +1,4 @@
 ﻿
-using SyneticLib.Files.Extra;
-using SyneticLib.IO;
-
 namespace SyneticLib_Tests;
 
 internal static class DdsTests

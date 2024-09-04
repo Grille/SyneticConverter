@@ -46,27 +46,32 @@ public sealed class TextureBuffer : GLObject
 
             switch (texture.Format)
             {
-                case TextureFormat.RGB24Dxt1:
+                case TextureFormat.Rgb24Dxt1:
                 {
                     GL.CompressedTexImage2D(TextureTarget.Texture2D, i, InternalFormat.CompressedRgbaS3tcDxt1Ext, width, height, 0, pixelData.Length, pixelData);
                     break;
                 }
-                case TextureFormat.RGBA32Dxt5:
+                case TextureFormat.Rgba32Dxt5:
                 {
                     GL.CompressedTexImage2D(TextureTarget.Texture2D, i, InternalFormat.CompressedRgbaS3tcDxt5Ext, width, height, 0, pixelData.Length, pixelData);
                     break;
                 }
-                case TextureFormat.BGRA32:
+                case TextureFormat.Bgr24:
+                {
+                    GL.TexImage2D(TextureTarget.Texture2D, i, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Bgr, PixelType.UnsignedByte, pixelData);
+                    break;
+                }
+                case TextureFormat.Bgra32:
                 {
                     GL.TexImage2D(TextureTarget.Texture2D, i, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixelData);
                     break;
                 }
-                case TextureFormat.RGBA32:
+                case TextureFormat.Rgba32:
                 {
                     GL.TexImage2D(TextureTarget.Texture2D, i, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixelData);
                     break;
                 }
-                case TextureFormat.RGB24:
+                case TextureFormat.Rgb24:
                 {
                     GL.TexImage2D(TextureTarget.Texture2D, i, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, pixelData);
                     break;

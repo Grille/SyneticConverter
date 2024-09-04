@@ -10,6 +10,8 @@ using System.Windows.Forms;
 
 using SyneticLib;
 
+using SyneticPipelineTool.Tasks.IO;
+
 namespace SyneticPipelineTool.GUI;
 
 public partial class TextureViewDialog : Form

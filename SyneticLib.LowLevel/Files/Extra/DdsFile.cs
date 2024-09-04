@@ -8,7 +8,6 @@ using Grille.IO;
 using System.Runtime.InteropServices;
 using SyneticLib.LowLevel.Compression;
 using SyneticLib.Files.Common;
-using static SyneticLib.Files.QadFile;
 
 namespace SyneticLib.Files.Extra;
 public unsafe class DdsFile : BinaryFile, ITextureData<DdsFile.Level>

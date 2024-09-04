@@ -14,14 +14,14 @@ public unsafe static class DdsDecoder
     {
         int blockCountX = (width + 3) / 4;
         int blockCountY = (height + 3) / 4;
-        int blockSize = 16;
+        int blockSize = 8;
 
         for (int y = 0; y < blockCountY; y++)
         {
             for (int x = 0; x < blockCountX; x++)
             {
                 byte* blockSrc = src + (y * blockCountX + x) * blockSize;
-                DecompressBlockDxt5(blockSrc, dst, x * 4, y * 4, width);
+                DecompressBlockDxt1(blockSrc, dst, x * 4, y * 4, width);
             }
         }
     }

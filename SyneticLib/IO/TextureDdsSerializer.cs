@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using SyneticLib.Files.Extra;
 
 using static SyneticLib.Files.Extra.DdsFile;
+using static SyneticLib.IO.Serializers;
 
 namespace SyneticLib.IO;
 public class TextureDdsSerializer : FileSerializer<DdsFile, Texture>
@@ -25,26 +27,39 @@ public class TextureDdsSerializer : FileSerializer<DdsFile, Texture>
             levels[i] = level;
         }
 
-        TextureFormat format;
+        var format = GetFormat(ref head);
+        return new Texture(format, levels);
+    }
 
-        if (head.PixelFormat.FourCC == 0)
+    TextureFormat GetFormat(ref MHeader head)
+    {
+        ref var pFormat = ref head.PixelFormat;
+        if (pFormat.FourCC == 0)
         {
-            throw new NotSupportedException(head.PixelFormat.Size.ToString());
+            bool blueFirst = pFormat.BBitMask == 255;
+            int size = (int)pFormat.Size;
+            return (blueFirst, size) switch
+            {
+                (true, 24) => TextureFormat.Bgr24,
+                (true, 32) => TextureFormat.Bgra32,
+                (false, 24) => TextureFormat.Rgb24,
+                (false, 32) => TextureFormat.Rgba32,
+                (_, 8) => TextureFormat.R8,
+                _ => throw new NotSupportedException(),
+            };
         }
-        else if (head.PixelFormat.FourCC == MFourCharCode.DXT1)
+        else if (pFormat.FourCC == MFourCharCode.DXT1)
         {
-            format = TextureFormat.RGB24Dxt1;
+            return TextureFormat.Rgb24Dxt1;
         }
-        else if (head.PixelFormat.FourCC == MFourCharCode.DXT5)
+        else if (pFormat.FourCC == MFourCharCode.DXT5)
         {
-            format = TextureFormat.RGBA32Dxt5;
+            return TextureFormat.Rgba32Dxt5;
         }
         else
         {
-            throw new NotSupportedException(head.PixelFormat.FourCC.ToString());
+            throw new NotSupportedException(pFormat.FourCC.ToString());
         }
-
-        return new Texture(format, levels);
     }
 
     protected override void OnSerialize(DdsFile dds, Texture texture)
@@ -56,32 +71,14 @@ public class TextureDdsSerializer : FileSerializer<DdsFile, Texture>
         head.Size = 124;
         head.Caps1 = MHeaderCaps1.Complex | MHeaderCaps1.Texture | MHeaderCaps1.Mipmap;
         head.Flags = MHeaderFlags.Width | MHeaderFlags.Height | MHeaderFlags.PixelFormat | MHeaderFlags.MipmapCount | MHeaderFlags.LinearSize;
+
+        SetFormat(ref head, texture.Format);
+
         head.Width = texture.Width;
         head.Height = texture.Height;
-        head.PitchOrLinearSize = texture.Width * texture.Height;
+        head.PitchOrLinearSize = texture.Width * texture.Height * (int)(head.PixelFormat.RGBBitCount / 8);
         head.MipMapCount = texture.Levels.Length;
 
-        switch (texture.Format)
-        {
-            case TextureFormat.RGB24Dxt1:
-            {
-                head.PixelFormat.FourCC = MFourCharCode.DXT1;
-                break;
-            }
-            case TextureFormat.RGBA32Dxt5:
-            {
-                head.PixelFormat.FourCC = MFourCharCode.DXT5;
-                break;
-            }
-            default:
-            {
-                goto case TextureFormat.RGBA32;
-            }
-            case TextureFormat.RGBA32:
-            {
-                throw new InvalidOperationException();
-            }
-        }
 
         var levels = new Level[texture.Levels.Length];
         for (int i = 0; i < texture.Levels.Length; i++)
@@ -90,5 +87,47 @@ public class TextureDdsSerializer : FileSerializer<DdsFile, Texture>
             levels[i] = new Level(src.Data, src.Width, src.Height);
         }
         dds.Levels = levels;
+    }
+
+    void SetFormat(ref MHeader head, TextureFormat format)
+    {
+        ref var pFormat = ref head.PixelFormat;
+        switch (format)
+        {
+            case TextureFormat.Rgb24Dxt1:
+            {
+                pFormat.Flags = MPixelFormatFlags.FourCC;
+                pFormat.FourCC = MFourCharCode.DXT1;
+                break;
+            }
+            case TextureFormat.Rgba32Dxt5:
+            {
+                pFormat.Flags = MPixelFormatFlags.FourCC;
+                pFormat.FourCC = MFourCharCode.DXT5;
+                break;
+            }
+            default:
+            {
+                int size = format.BitSize();
+                pFormat.Size = (uint)size;
+                pFormat.RGBBitCount = (uint)size;
+                pFormat.Flags = MPixelFormatFlags.RGB | MPixelFormatFlags.AlphaPixels;
+
+                if (format == TextureFormat.Bgr24 || format == TextureFormat.Bgra32)
+                {
+                    pFormat.BBitMask = 255u << 00;
+                    pFormat.GBitMask = 255u << 08;
+                    pFormat.RBitMask = 255u << 16;
+                }
+                else
+                {
+                    pFormat.RBitMask = 255u << 00;
+                    pFormat.GBitMask = 255u << 08;
+                    pFormat.BBitMask = 255u << 16;
+                }
+                pFormat.ABitMask = 255u << 24;
+                break;
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ using SyneticLib.Files.Extra;
 using SyneticLib.IO;
 
 namespace SyneticLib.WinForms.IO;
-public class TextureBitmapSerializer : ISerializer<Texture>
+public class TextureBitmapSerializer : IFileSerializer<Texture>
 {
     public ImageFormat Format { get; }
 

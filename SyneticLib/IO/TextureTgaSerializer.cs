@@ -19,8 +19,8 @@ public class TextureTgaSerializer : FileSerializer<TgaFile, Texture>
         {
             (ImageType.GrayScale, 8) => TextureFormat.R8,
             (ImageType.TrueColorImage, 8) => TextureFormat.R8,
-            (ImageType.TrueColorImage, 24) => TextureFormat.RGB24,
-            (ImageType.TrueColorImage, 32) => TextureFormat.BGRA32,
+            (ImageType.TrueColorImage, 24) => TextureFormat.Bgr24,
+            (ImageType.TrueColorImage, 32) => TextureFormat.Bgra32,
             _ => throw new Exception(),
         };
 
@@ -52,7 +52,14 @@ public class TextureTgaSerializer : FileSerializer<TgaFile, Texture>
                 data = texture.MainSurfaceData;
                 break;
             }
-            case TextureFormat.BGRA32:
+            case TextureFormat.Bgr24:
+            {
+                type = ImageType.TrueColorImage;
+                bits = 24;
+                data = texture.MainSurfaceData;
+                break;
+            }
+            case TextureFormat.Bgra32:
             {
                 type = ImageType.TrueColorImage;
                 bits = 32;
@@ -71,6 +78,6 @@ public class TextureTgaSerializer : FileSerializer<TgaFile, Texture>
         tga.Head.BitsPerPixel = bits;
         tga.Head.Width = (ushort)texture.Width;
         tga.Head.Height = (ushort)texture.Height;
-        tga.Pixels = texture.Levels[0].Data;
+        tga.Pixels = data;
     }
 }

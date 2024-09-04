@@ -41,11 +41,12 @@
             GdiTextureView.Dock = System.Windows.Forms.DockStyle.Fill;
             GdiTextureView.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             GdiTextureView.ForeColor = System.Drawing.Color.FromArgb(224, 224, 224);
-            GdiTextureView.Location = new System.Drawing.Point(0, 0);
+            GdiTextureView.Location = new System.Drawing.Point(0, 24);
             GdiTextureView.Name = "GdiTextureView";
-            GdiTextureView.Size = new System.Drawing.Size(800, 450);
+            GdiTextureView.Size = new System.Drawing.Size(800, 426);
             GdiTextureView.TabIndex = 0;
             GdiTextureView.Text = "gdiTextureView1";
+
             // 
             // TextureViewDialog
             // 
@@ -53,9 +54,8 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(800, 450);
             Controls.Add(GdiTextureView);
-            Name = "TextureViewDialog";
-            Text = "TextureViewDialog";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

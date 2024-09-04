@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SyneticLib.Files;
+using SyneticLib.Utils;
+
+using static SyneticLib.IO.Serializers;
 
 namespace SyneticLib.IO;
 public class TexturePtxSerializer : FileSerializer<PtxFile, Texture>
@@ -14,11 +17,11 @@ public class TexturePtxSerializer : FileSerializer<PtxFile, Texture>
     {
         var format = (ptx.Head.Compression, ptx.Head.BitPerPixel) switch
         {
-            (0, 24) => TextureFormat.RGB24,
-            (0, 32) => TextureFormat.RGBA32,
-            (1, 24) => TextureFormat.RGB24Dxt1,
-            (1, 32) => TextureFormat.RGBA32Dxt5,
-            _ => throw new Exception(),
+            (0, 24) => TextureFormat.Bgr24,
+            (0, 32) => TextureFormat.Bgra32,
+            (1, 24) => TextureFormat.Rgb24Dxt1,
+            (1, 32) => TextureFormat.Rgba32Dxt5,
+            _ => throw new InvalidDataException(),
         };
 
         int width = ptx.Head.Width;
@@ -40,24 +43,36 @@ public class TexturePtxSerializer : FileSerializer<PtxFile, Texture>
 
     protected override void OnSerialize(PtxFile ptx, Texture texture)
     {
-        var format = texture.Format switch
+        ref var head = ref ptx.Head;
+
+        bool toBgra = false;
+
+        (int dxtCompression, int bits) = texture.Format switch
         {
-            TextureFormat.RGB24 => (0, 24),
-            TextureFormat.RGBA32 => (0, 32),
-            TextureFormat.RGB24Dxt1 => (1, 24),
-            TextureFormat.RGBA32Dxt5 => (1, 32),
-            _ => throw new NotImplementedException(),
+            TextureFormat.Rgb24Dxt1 => (1, 24),
+            TextureFormat.Rgba32Dxt5 => (1, 32),
+            TextureFormat.Bgr24 => (0, 32),
+            TextureFormat.Bgra32 => (0, 32),
+            _ => (0, 0),
         };
 
-        ptx.Head.Compression = (byte)format.Item1;
-        ptx.Head.BitPerPixel = (byte)format.Item2;
+        if (bits == 0)
+        {
+            toBgra = true;
+            bits = 32;
+        }
+
+        ptx.Head.Compression = (byte)dxtCompression;
+        ptx.Head.BitPerPixel = (byte)bits;
         ptx.Head.Width = texture.Width;
         ptx.Head.Height = texture.Height;
         ptx.Head.MipMapLevels = (byte)texture.Levels.Length;
         ptx.Levels = new PtxFile.Level[ptx.Head.MipMapLevels];
+
         for (int i = 0; i < ptx.Levels.Length; i++)
         {
-            ptx.Levels[i] = new PtxFile.Level(texture.Levels[i].Data);
+            var data = toBgra == true ? texture.DataToBgra32(i) : texture.Levels[i].Data;
+            ptx.Levels[i] = new PtxFile.Level(data);
         }
     }
 }

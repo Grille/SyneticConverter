@@ -17,7 +17,19 @@ static class TextureTaskUtils
 {
     public readonly static string Auto = "Auto";
     public readonly static string Default = Auto;
-    public readonly static string[] FileTypes = new string[] { Auto, ".BMP", ".DDS", ".PNG", ".PTX", ".TGA" };
+    public readonly static string[] FileTypes = new string[] { Auto, ".BMP", ".DDS", ".PNG", ".PTX", ".TGA", ".JPG" };
+
+    public static string GetFilter()
+    {
+        var sb = new StringBuilder();
+        sb.Append("Supported Files|");
+        foreach (var type in FileTypes)
+        {
+            sb.Append(" *");
+            sb.Append(type.ToLower());
+        }
+        return sb.ToString();
+    }
 
     public static void Save(string path, string type, VariableValue value)
     {

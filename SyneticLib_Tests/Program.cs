@@ -10,6 +10,8 @@ internal class Program
     {
         RunAsync = false;
 
+        TextureSerialization.Run();
+
         DdsTests.Run();
 
         RunTests();
