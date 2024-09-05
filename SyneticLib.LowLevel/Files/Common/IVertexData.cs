@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SyneticLib.Files.Common;
 public interface IVertexData
 {
-    public Vertex[] Vertecis { get; }
+    public Vertex[] Vertecis { get; set; }
 }
 
 public static class IVertexDataExtension

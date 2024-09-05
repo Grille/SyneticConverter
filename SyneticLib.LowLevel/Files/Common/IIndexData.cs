@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 namespace SyneticLib.Files.Common;
 public interface IIndexData
 {
-    public IdxTriangleInt32[] Indices { get; }
+    public IdxTriangleInt32[] Indices { get; set; }
 }

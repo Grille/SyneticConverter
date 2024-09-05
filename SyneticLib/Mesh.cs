@@ -19,21 +19,7 @@ public class Mesh: SyneticObject
         Indices = indices;
     }
 
-    /*
-    public virtual void ExportAsObj(string path)
-    {
-        var exp = new MeshExporterObj(this);
-        exp.Save(path);
-    }
-
-    public void ExportAsSbx(string path)
-    {
-        var exp = new MeshExporterSbx(this);
-        exp.Save(path);
-    }
-    */
-
-    public MeshSegment CreateSectionPtr(int offset, int count)
+    public MeshSegment ToSegment(int offset, int count)
     {
         return new MeshSegment(this, offset, count);
     }

@@ -3,39 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 
 using Grille.PipelineTool;
 using Grille.PipelineTool.IO;
 
-using SyneticLib;
 using SyneticLib.IO;
 
 namespace SyneticPipelineTool.Tasks.IO;
 
-[PipelineTask("Synetic/IO/Texture.Save")]
-internal class SaveTexture : PipelineTask
+[PipelineTask("Synetic/IO/Model.Load")]
+internal class LoadModel : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParameterTypes.SaveFile, "Dst File", "Save texture to file", "./texture.ptx");
+        Parameters.Def(ParameterTypes.OpenFile, "Src File", "Load texture from file", "./texture.ptx");
         Parameters.Def(ParameterTypes.Enum, "File Type", null, SerializerTaskUtils.Default, SerializerTaskUtils.TextureFileTypes);
-        Parameters.Def(ParameterTypes.Object, "Texture", null, "*Texture", null);
+        Parameters.DefResult("Model");
     }
 
     protected override void OnExecute()
     {
-        var path = EvalParameter("Dst File");
+        var path = EvalParameter("Src File");
         var type = EvalParameter("File Type");
-        var texture = EvalParameter("Texture");
+        var texturename = EvalParameter("Texture");
 
-        SerializerTaskUtils.SaveTexture(path, type, texture);
+        Runtime.Variables[texturename] = SerializerTaskUtils.LoadTexture(path, type);
     }
 
     public override Token[] ToTokens() => new Token[]
     {
-        new(TokenType.Text, "Texture.Save "),
+        new(TokenType.Text, "Texture.Load "),
+        new(TokenType.Expression, Parameters["Src File"]),
+        new(TokenType.Text, " as "),
         new(TokenType.Expression, Parameters["Texture"]),
-        new(TokenType.Text, " in "),
-        new(TokenType.Expression, Parameters["Dst File"]),
     };
 }

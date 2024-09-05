@@ -27,26 +27,16 @@ public class SerializerRegistry<T> : IEnumerable<ISerializer<T>>
         return lkey[0] == '.' ? lkey.Substring(1) : lkey;
     }
 
-    public T Load(string path)
+    public T Load(string path, string? key = null)
     {
-        var key = Path.GetExtension(path);
-        return Load(path, key);
-    }
-
-    public T Load(string path, string key)
-    {
+        if (key == null) key = Path.GetExtension(path);
         var serializer = this[key];
         return serializer.Load(path);
     }
 
-    public void Save(string path, T obj)
+    public void Save(string path, T obj, string? key = null)
     {
-        var key = Path.GetExtension(path);
-        Save(path, obj, key);
-    }
-
-    public void Save(string path, T obj, string key)
-    {
+        if (key == null) key = Path.GetExtension(path);
         var serializer = this[key];
         serializer.Save(path, obj);
     }

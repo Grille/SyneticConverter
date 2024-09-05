@@ -18,9 +18,9 @@ internal class ConvertTexture : PipelineTask
     protected override void OnInit()
     {
         Parameters.Def(ParameterTypes.OpenFile, "Src File", "Load texture from file", "./texture.ptx");
-        Parameters.Def(ParameterTypes.Enum, "Src Type", null, TextureTaskUtils.Default, TextureTaskUtils.FileTypes);
+        Parameters.Def(ParameterTypes.Enum, "Src Type", null, SerializerTaskUtils.Default, SerializerTaskUtils.TextureFileTypes);
         Parameters.Def(ParameterTypes.SaveFile, "Dst File", "Save texture to file", "./texture.ptx");
-        Parameters.Def(ParameterTypes.Enum, "Dst Type", null, TextureTaskUtils.Default, TextureTaskUtils.FileTypes);
+        Parameters.Def(ParameterTypes.Enum, "Dst Type", null, SerializerTaskUtils.Default, SerializerTaskUtils.TextureFileTypes);
     }
 
     protected override void OnExecute()
@@ -30,8 +30,8 @@ internal class ConvertTexture : PipelineTask
         var dstPath = EvalParameter("Dst File");
         var dstType = EvalParameter("Dst Type");
 
-        var texture = TextureTaskUtils.Load(srcPath, srcType);
-        TextureTaskUtils.Save(dstPath, dstType, texture);
+        var texture = SerializerTaskUtils.LoadTexture(srcPath, srcType);
+        SerializerTaskUtils.SaveTexture(dstPath, dstType, texture);
     }
 
     public override Token[] ToTokens() => new Token[]

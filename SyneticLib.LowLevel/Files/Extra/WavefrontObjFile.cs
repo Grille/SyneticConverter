@@ -17,6 +17,8 @@ public class WavefrontObjFile : TextFile, IVertexData, IIndexData
 
     public IdxTriangleInt32[] Indices { get; set; }
 
+    public Section[]? Sections { get; set; }
+
     public bool IncludeColor = false;
 
     public WavefrontObjFile()
@@ -116,5 +118,12 @@ public class WavefrontObjFile : TextFile, IVertexData, IIndexData
             WriteIndex(index.Z);
             WriteLine();
         }
+    }
+
+    public class Section
+    {
+        public string Name;
+        public int Start;
+        public int Length;
     }
 }

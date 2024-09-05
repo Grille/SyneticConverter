@@ -17,6 +17,8 @@ public class ModelMaterial : Material
     public Vector3 XDiffuse;
     public Vector3 XSpecular;
 
+    public float Transparency;
+
     public ModelMaterial() : base(3)
     {
     }

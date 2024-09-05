@@ -12,29 +12,29 @@ using SyneticLib.IO;
 
 namespace SyneticPipelineTool.Tasks.IO;
 
-[PipelineTask("Synetic/IO/Texture.Save")]
-internal class SaveTexture : PipelineTask
+[PipelineTask("Synetic/IO/Mesh.Save")]
+internal class SaveMesh : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParameterTypes.SaveFile, "Dst File", "Save texture to file", "./texture.ptx");
-        Parameters.Def(ParameterTypes.Enum, "File Type", null, SerializerTaskUtils.Default, SerializerTaskUtils.TextureFileTypes);
-        Parameters.Def(ParameterTypes.Object, "Texture", null, "*Texture", null);
+        Parameters.Def(ParameterTypes.SaveFile, "Dst File", "Save mesh to file", "./mesh.mox");
+        Parameters.Def(ParameterTypes.Enum, "File Type", null, SerializerTaskUtils.Default, SerializerTaskUtils.MeshFileTypes);
+        Parameters.Def(ParameterTypes.Object, "Mesh", null, "*Mesh", null);
     }
 
     protected override void OnExecute()
     {
         var path = EvalParameter("Dst File");
         var type = EvalParameter("File Type");
-        var texture = EvalParameter("Texture");
+        var texture = EvalParameter("Mesh");
 
-        SerializerTaskUtils.SaveTexture(path, type, texture);
+        SerializerTaskUtils.SaveMesh(path, type, texture);
     }
 
     public override Token[] ToTokens() => new Token[]
     {
-        new(TokenType.Text, "Texture.Save "),
-        new(TokenType.Expression, Parameters["Texture"]),
+        new(TokenType.Text, "Mesh.Save "),
+        new(TokenType.Expression, Parameters["Mesh"]),
         new(TokenType.Text, " in "),
         new(TokenType.Expression, Parameters["Dst File"]),
     };

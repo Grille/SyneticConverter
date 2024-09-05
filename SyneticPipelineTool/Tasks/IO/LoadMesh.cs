@@ -12,30 +12,30 @@ using SyneticLib.IO;
 
 namespace SyneticPipelineTool.Tasks.IO;
 
-[PipelineTask("Synetic/IO/Texture.Load")]
-internal class LoadTexture : PipelineTask
+[PipelineTask("Synetic/IO/Mesh.Load")]
+internal class LoadMesh : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParameterTypes.OpenFile, "Src File", "Load texture from file", "./texture.ptx");
-        Parameters.Def(ParameterTypes.Enum, "File Type", null, SerializerTaskUtils.Default, SerializerTaskUtils.TextureFileTypes);
-        Parameters.DefResult("Texture");
+        Parameters.Def(ParameterTypes.OpenFile, "Src File", "Load mesh from file", "./mesh.mox");
+        Parameters.Def(ParameterTypes.Enum, "File Type", null, SerializerTaskUtils.Default, SerializerTaskUtils.MeshFileTypes);
+        Parameters.DefResult("Mesh");
     }
 
     protected override void OnExecute()
     {
         var path = EvalParameter("Src File");
         var type = EvalParameter("File Type");
-        var texturename = EvalParameter("Texture");
+        var texturename = EvalParameter("Mesh");
 
-        Runtime.Variables[texturename] = SerializerTaskUtils.LoadTexture(path, type);
+        Runtime.Variables[texturename] = SerializerTaskUtils.LoadMesh(path, type);
     }
 
     public override Token[] ToTokens() => new Token[]
     {
-        new(TokenType.Text, "Texture.Load "),
+        new(TokenType.Text, "Mesh.Load "),
         new(TokenType.Expression, Parameters["Src File"]),
         new(TokenType.Text, " as "),
-        new(TokenType.Expression, Parameters["Texture"]),
+        new(TokenType.Expression, Parameters["Mesh"]),
     };
 }

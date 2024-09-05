@@ -3,17 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+
+using SyneticLib.Files;
+using SyneticLib.Files.Extra;
 
 namespace SyneticLib.IO;
 public static class Serializers
 {
     public static class Texture
     {
-        public static readonly TextureDdsSerializer Dds = new TextureDdsSerializer();
-        public static readonly TexturePtxSerializer Ptx = new TexturePtxSerializer();
-        public static readonly TextureTgaSerializer Tga = new TextureTgaSerializer();
+        public static readonly TextureDdsSerializer Dds = new();
+        public static readonly TexturePtxSerializer Ptx = new();
+        public static readonly TextureTgaSerializer Tga = new();
 
         public static readonly SerializerRegistry<SyneticLib.Texture> Registry = new()
         {
@@ -25,26 +29,45 @@ public static class Serializers
 
     public static class Track
     {
-        public static readonly TrackTrkSerializer Trk = new TrackTrkSerializer();
+        public static readonly TrackTrkSerializer Trk = new();
     }
 
     public static class Scenario
     {
-        public static readonly ScenarioSyneticSerializer Synetic = new ScenarioSyneticSerializer();
+        public static readonly ScenarioSyneticSerializer Synetic = new();
     }
 
     public static class ScenarioGroup
     {
-        public static readonly ScenarioGroupSyneticSerializer Synetic = new ScenarioGroupSyneticSerializer();
+        public static readonly ScenarioGroupSyneticSerializer Synetic = new();
     }
 
     public static class Model
     {
-        public static readonly ModelMoxSerializer Mox = new ModelMoxSerializer();
+        public static readonly ModelMoxSerializer Mox = new();
+
+        public static readonly ModelObjSerializer Obj = new();
+
+        public static readonly SerializerRegistry<SyneticLib.Model> Registry = new()
+        {
+            { "mox", Mox },
+            { "obj", Obj },
+        };
     }
 
     public static class Mesh
     {
-        public static readonly MeshCobSerializer Cob = new MeshCobSerializer();
+        public static readonly MeshFileSerializer<CpoFile> Cpo = new();
+        public static readonly MeshFileSerializer<CobFile> Cob = new();
+        public static readonly MeshFileSerializer<MoxFile> Mox = new();
+        public static readonly MeshFileSerializer<WavefrontObjFile> Obj = new();
+
+        public static readonly SerializerRegistry<SyneticLib.Mesh> Registry = new()
+        {
+            { "cpo", Cpo },
+            { "cob", Cob },
+            { "mox", Mox },
+            { "obj", Obj },
+        };
     }
 }
