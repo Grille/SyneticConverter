@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib;
+namespace SyneticLib.World;
 public class PropClass : SyneticObject
 {
     public int AnimationMode;
@@ -12,7 +12,7 @@ public class PropClass : SyneticObject
 
     public Model Model;
 
-    public PropClass(string name) : base(name)
+    public PropClass()
     {
 
     }

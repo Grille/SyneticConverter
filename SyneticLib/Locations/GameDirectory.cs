@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 using SyneticLib.IO;
+using SyneticLib.World;
 
 namespace SyneticLib.Locations;
 

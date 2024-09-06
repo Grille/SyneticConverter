@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SyneticLib;
+using SyneticLib.World;
 using SyneticTool.Nodes.System;
 
 namespace SyneticTool.Nodes;

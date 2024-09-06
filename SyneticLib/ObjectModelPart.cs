@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib.Collections;
-public interface IHasKey
+namespace SyneticLib;
+public class ObjectModelPart
 {
-    public string? Key { get; }
 }

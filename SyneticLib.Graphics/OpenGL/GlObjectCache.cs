@@ -7,6 +7,7 @@ using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Xml.Linq;
 using SyneticLib.Graphics.Materials;
+using SyneticLib.World;
 
 namespace SyneticLib.Graphics.OpenGL;
 

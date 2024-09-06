@@ -13,7 +13,7 @@ public class Sound : SyneticObject
 
     public byte[] Buffer { get; }
 
-    public Sound(string name, SoundFormat type, byte[] buffer): base(name)
+    public Sound(SoundFormat type, byte[] buffer)
     {
         Type = type;
         Buffer = buffer;

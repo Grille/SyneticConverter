@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib;
+namespace SyneticLib.World;
 public class TerrainMaterial : Material
 {
     public Layer Layer0 { get; }

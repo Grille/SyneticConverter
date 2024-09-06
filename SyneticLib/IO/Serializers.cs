@@ -44,14 +44,14 @@ public static class Serializers
 
     public static class Model
     {
-        public static readonly ModelMoxSerializer Mox = new();
+        public static readonly ModelSyneticSerializer Synetic = new();
 
-        public static readonly ModelObjSerializer Obj = new();
+        public static readonly ModelWavefrontSerializer Wavefront = new();
 
         public static readonly SerializerRegistry<SyneticLib.Model> Registry = new()
         {
-            { "mox", Mox },
-            { "obj", Obj },
+            { "synetic", Synetic },
+            { "wavefront", Wavefront },
         };
     }
 

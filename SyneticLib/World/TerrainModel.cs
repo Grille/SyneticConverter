@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using OpenTK.Mathematics;
 
-namespace SyneticLib;
+namespace SyneticLib.World;
 public class TerrainModel
 {
     public int Width { get; }
@@ -29,16 +29,16 @@ public class TerrainModel
 
     void FillChunks(Model[,] chunks)
     {
-        for (int iy = 0; iy < Height; iy++)
+        for (var iy = 0; iy < Height; iy++)
         {
-            for (int ix = 0; ix < Width; ix++)
+            for (var ix = 0; ix < Width; ix++)
             {
                 var chunk = _chunks[ix, iy];
                 if (chunk.MeshSection.Mesh != Mesh)
                 {
                     throw new ArgumentException();
                 }
-                _chunks[ix,iy] = chunks[ix, iy];
+                _chunks[ix, iy] = chunks[ix, iy];
             }
         }
     }
@@ -47,8 +47,8 @@ public class TerrainModel
     {
         var boundings = model.BoundingBox;
 
-        Vector3 size = boundings.Size;
-        Vector3 offset = boundings.Start;
+        var size = boundings.Size;
+        var offset = boundings.Start;
 
         return null;
     }

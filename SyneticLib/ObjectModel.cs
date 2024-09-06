@@ -5,11 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-public class Wheel : SyneticObject
+public class ObjectModel : Model
 {
-    Mesh Mesh;
-
-    public Wheel(string name) 
+    public ObjectModel(MeshSegment mesh, ModelMaterialRegion[] regions) : base(mesh, regions)
     {
     }
 }

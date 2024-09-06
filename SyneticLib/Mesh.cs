@@ -19,7 +19,7 @@ public class Mesh: SyneticObject
         Indices = indices;
     }
 
-    public MeshSegment ToSegment(int offset, int count)
+    public MeshSegment AsSegment(int offset, int count)
     {
         return new MeshSegment(this, offset, count);
     }

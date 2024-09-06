@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib;
+namespace SyneticLib.World;
 
 
 public unsafe class TerrainModelGenerator
@@ -20,13 +20,13 @@ public unsafe class TerrainModelGenerator
 
         var triangles = new TrianglePtr[srcIndices.Length];
 
-        int iDst = 0;
-        for (int i = 0; i < model.MaterialRegions.Length; i++)
+        var iDst = 0;
+        for (var i = 0; i < model.MaterialRegions.Length; i++)
         {
             var region = model.MaterialRegions[i];
             var material = model.MaterialRegions[i].Material;
 
-            for (int iSrc = 0; iSrc < region.ElementCount; iSrc++)
+            for (var iSrc = 0; iSrc < region.ElementCount; iSrc++)
             {
                 triangles[iDst++] = new TrianglePtr(srcIndices[iSrc + region.ElementStart], material);
             }

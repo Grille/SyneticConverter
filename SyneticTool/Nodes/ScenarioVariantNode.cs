@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
-
-using SyneticLib;
 using SyneticTool.Nodes.System;
+using SyneticLib.World;
 
 namespace SyneticTool.Nodes;
 

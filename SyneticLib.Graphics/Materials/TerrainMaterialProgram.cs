@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
 using SyneticLib.Graphics.OpenGL;
 using SyneticLib.Graphics.Shaders;
+using SyneticLib.World;
 
 namespace SyneticLib.Graphics.Materials;
 

@@ -28,7 +28,7 @@ public class MeshSegment
         Start = 0;
         Length = mesh.Indices.Length;
 
-        BoundingBox = new BoundingBox(Vertices, Indices, 0);
+        UpdateBoundingBox();
     }
 
     public MeshSegment(Mesh mesh, int start, int length, int offset = 0)
@@ -48,7 +48,7 @@ public class MeshSegment
             throw new ArgumentOutOfRangeException("End must be <= Mesh.Indices.Length", nameof(length));
         }
 
-        BoundingBox = new BoundingBox(Vertices, Indices, offset);
+        UpdateBoundingBox();
     }
 
     public void UpdateBoundingBox()

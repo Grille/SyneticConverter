@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using SyneticLib.Files;
 using SyneticLib.Locations;
+using SyneticLib.World;
 
 namespace SyneticLib.IO;
 public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>

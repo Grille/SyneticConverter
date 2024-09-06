@@ -12,7 +12,7 @@ public class Light : SyneticObject
     public Vector3 Position { get; }
     public Color Color { get; }
 
-    public Light(string name, Vector3 position, Color color) : base(name)
+    public Light(string name, Vector3 position, Color color)
     {
         Position = position;
         Color = color;

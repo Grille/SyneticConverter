@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SyneticLib.Math3D;
+using SyneticLib.World;
 
 namespace SyneticLib.Graphics.DrawCalls;
 

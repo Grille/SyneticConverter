@@ -18,17 +18,11 @@ public abstract class SyneticObject : IHasKey {
 
     public int RessourceID { get; }
 
-    public string Name { get; }
+    public string? Name { get; set; }
 
     public object? Extension { get; set; }
 
-    string IHasKey.Key => Name;
-
-    public SyneticObject(string name)
-    {
-        RessourceID = RessourceIDCounter++;
-        Name = name;
-    }
+    string? IHasKey.Key => Name;
 
     public SyneticObject()
     {

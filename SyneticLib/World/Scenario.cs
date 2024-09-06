@@ -8,7 +8,7 @@ using System.Diagnostics;
 using SyneticLib.Locations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SyneticLib;
+namespace SyneticLib.World;
 
 public partial class Scenario : SyneticObject
 {
@@ -27,7 +27,7 @@ public partial class Scenario : SyneticObject
 
     //public InitState State { get; internal set; }
 
-    public Scenario(int number): base($"V{number}")
+    public Scenario(int number)
     {
         VNumber = number;
 
@@ -55,9 +55,9 @@ public partial class Scenario : SyneticObject
 
     public IEnumerable<ScenarioChunk> EnumerateChunks()
     {
-        for (int iy = 0; iy < Height; iy++)
+        for (var iy = 0; iy < Height; iy++)
         {
-            for (int ix = 0; ix < Width; ix++)
+            for (var ix = 0; ix < Width; ix++)
             {
                 yield return Chunks[ix, iy];
             }

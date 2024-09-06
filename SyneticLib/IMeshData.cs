@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SyneticLib;
-internal class World
+internal class IMeshData
 {
-
 }

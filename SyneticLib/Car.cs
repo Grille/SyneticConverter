@@ -12,7 +12,7 @@ public class Car : SyneticObject
     public TextureDirectory Textures;
     public RessourceList<Wheel> Wheels;
 
-    public Car(string name, Model model) : base(name)
+    public Car(string name, Model model)
     {
         Model = model;
     }

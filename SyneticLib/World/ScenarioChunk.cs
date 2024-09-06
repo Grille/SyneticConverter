@@ -5,10 +5,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
-
 using SyneticLib.Files;
 
-namespace SyneticLib;
+namespace SyneticLib.World;
 
 public class ScenarioChunk : SyneticObject
 {

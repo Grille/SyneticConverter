@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 
-namespace SyneticLib; 
+namespace SyneticLib.World;
 public class PropInstance : SyneticObject
 {
     public PropClass Class;

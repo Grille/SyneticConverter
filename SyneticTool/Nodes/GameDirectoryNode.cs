@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using SyneticLib.Locations;
 using SyneticLib;
 using SyneticTool.Nodes.System;
+using SyneticLib.World;
 
 namespace SyneticTool.Nodes;
 

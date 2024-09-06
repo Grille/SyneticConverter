@@ -19,6 +19,7 @@ static class SerializerTaskUtils
     public readonly static string Default = Auto;
     public readonly static string[] TextureFileTypes = new string[] { Auto, ".BMP", ".DDS", ".PNG", ".PTX", ".TGA", ".JPG" };
     public readonly static string[] MeshFileTypes = new string[] { Auto, ".COB", ".CPO", ".MOX", ".OBJ" };
+    public readonly static string[] ModelTypes = new string[] { "Synetic (Mox/Mtl/Ptx)", "Wavefront (Obj/Mtl/Dds)" };
 
     public static string GetFilter()
     {
@@ -52,6 +53,12 @@ static class SerializerTaskUtils
         Save(Serializers.Mesh.Registry, path, type, value);
     }
 
+    public static void SaveModel(string path, string type, VariableValue value)
+    {
+        var key = type.Split(' ', 2)[0].ToLowerInvariant();
+        Save(Serializers.Model.Registry, path, key, value);
+    }
+
     public static VariableValue Load<T>(SerializerRegistry<T> registry, string path, string type)
     {
         var texture = registry.Load(path, GetKey(type));
@@ -66,5 +73,11 @@ static class SerializerTaskUtils
     public static VariableValue LoadMesh(string path, string type)
     {
         return Load(Serializers.Mesh.Registry, path, type);
+    }
+
+    public static VariableValue LoadModel(string path, string type)
+    {
+        var key = type.Split(' ', 2)[0].ToLowerInvariant();
+        return Load(Serializers.Model.Registry, path, key);
     }
 }

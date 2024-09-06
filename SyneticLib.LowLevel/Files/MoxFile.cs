@@ -21,6 +21,9 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
     public Vertex[] Vertecis { get; set; }
     public IdxTriangleInt32[] Indices { get; set; }
 
+    public MPart[]? Parts;
+    public MLight[]? Lights;
+
     public byte[] Rest;
 
     public MoxFile()
@@ -177,5 +180,15 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
             VertBegin = a.VertBegin,
             VertEnd = a.VertEnd,
         };
+    }
+
+    public struct MPart
+    {
+
+    }
+
+    public struct MLight
+    {
+
     }
 }

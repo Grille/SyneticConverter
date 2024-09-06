@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using OpenTK.Mathematics;
-
 using SyneticLib.Graphics.Materials;
 using SyneticLib.Graphics.OpenGL;
 using SyneticLib.Math3D;
+using SyneticLib.World;
 
 namespace SyneticLib.Graphics.DrawCalls;
 

@@ -17,6 +17,7 @@ using System.IO;
 using SyneticLib.Diagnostics;
 using SyneticLib.Graphics.Materials;
 using System.Diagnostics.CodeAnalysis;
+using SyneticLib.World;
 
 namespace SyneticLib.Graphics;
 public class GlScene : IDisposable
