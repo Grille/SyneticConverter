@@ -19,7 +19,7 @@ internal class ViewTexture : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParameterTypes.String, "Texture", null, "*Texture", null);
+        Parameters.Def(ParameterTypes.Object, "Texture", null, "*Texture", null);
     }
 
     protected override void OnExecute()

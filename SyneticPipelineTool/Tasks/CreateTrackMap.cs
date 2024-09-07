@@ -8,28 +8,35 @@ using System.Threading.Tasks;
 
 using Grille.PipelineTool;
 
+using SyneticLib;
 using SyneticLib.IO;
 using SyneticLib.Utils;
+
+using SyneticPipelineTool.Tasks.IO;
 
 namespace SyneticPipelineTool.Tasks;
 
 [PipelineTask("Synetic/Create TrackMap")]
-public class CreateTrackMaps : PipelineTask
+public class CreateTrackMap : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParameterTypes.OpenFile, "Src File", "", ".trk");
+        Parameters.Def(ParameterTypes.Generic, "Source", "Track file (.trk) or variable. ", "track.trk");
         Parameters.Def(ParameterTypes.Integer, "Size", null, "512");
+        Parameters.Def(ParameterTypes.Integer, "Border", null, "32");
         Parameters.DefResult("Texture");
     }
 
     protected override void OnExecute()
     {
-        string srcFile = EvalParameter("Src File");
-        string resultname = EvalParameter("Texture");
+        var trackSource = EvalParameter("Source");
+        var resultname = EvalParameter("Texture");
 
-        var track = Serializers.Track.Trk.Load(srcFile);
-        var texture = TrackMapGenerator.CreateTrackMap(track, 512, 512);
+        int size = int.Parse(EvalParameter("Size"));
+        int border = int.Parse(EvalParameter("Border"));
+
+        var track = SerializerTaskUtils.GetValue(trackSource, Serializers.Track.Registry);
+        var texture = TrackMapGenerator.CreateTrackMap(track, size, size, border / (float)size);
 
         Runtime.Variables[resultname] = new VariableValue(texture);
     }

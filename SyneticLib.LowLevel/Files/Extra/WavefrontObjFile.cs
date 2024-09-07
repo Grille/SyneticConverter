@@ -20,6 +20,7 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
 
     public Section[]? Sections { get; set; }
 
+
     public bool IncludeColor = false;
 
     public WavefrontObjFile()
@@ -36,10 +37,9 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
         var vn = new List<Vector3>();
         var f = new List<FaceIndices>();
 
-        var sections = new List<Section>
-        {
-            new Section()
-        };
+        var sections = new List<Section>();
+
+        var section = new Section("default", 0);
 
         while (true)
         {
@@ -88,7 +88,8 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
                 }
                 case "l":
                 {
-                    throw new NotSupportedException();
+                    ParsePath(section, split.AsSpan(1), v);
+                    break;
                 }
                 case "f":
                 {
@@ -165,10 +166,33 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
         var split = text.Split('/');
         return new FaceIndices()
         {
-            V = int.Parse(split[0]) - 1,
-            VT = int.Parse(split[1]) - 1,
-            VN = int.Parse(split[2]) - 1,
+            V = ParseIndex(split[0]),
+            VT = ParseIndex(split[1]),
+            VN = ParseIndex(split[2]),
         };
+    }
+
+    private void ParsePath(Section section, ReadOnlySpan<string> span, List<Vector3> v)
+    {
+        if (section.Path != null)
+        {
+            throw new ArgumentException();
+        }
+
+        var path = new Vector3[span.Length];
+
+        for (int i = 0; i <= span.Length; i++)
+        {
+            int idx = ParseIndex(span[i]);
+            path[i] = v[idx];
+        }
+
+        section.Path = path;
+    }
+
+    private int ParseIndex(string text)
+    {
+        return int.Parse(text) - 1;
     }
 
     public override void Serialize(StreamWriter writer)
@@ -225,9 +249,16 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
 
     public class Section
     {
-        public string? Name;
+        public string Name;
+        public Vector3[]? Path;
         public int Start;
         public int Length;
+
+        public Section(string name, int start)
+        {
+            Name = name;
+            Start = start;
+        }
     }
 
     

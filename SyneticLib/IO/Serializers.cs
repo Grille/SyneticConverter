@@ -29,7 +29,14 @@ public static class Serializers
 
     public static class Track
     {
+        public static readonly TrackObjSerializer Obj = new();
         public static readonly TrackTrkSerializer Trk = new();
+
+        public static readonly SerializerRegistry<SyneticLib.Track> Registry = new()
+        {
+            { "obj", Obj },
+            { "trk", Trk },
+        };
     }
 
     public static class Scenario

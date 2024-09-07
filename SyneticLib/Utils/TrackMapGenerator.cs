@@ -11,12 +11,14 @@ using static SyneticLib.Files.QadFile;
 namespace SyneticLib.Utils;
 public static class TrackMapGenerator
 {
-    public static Texture CreateTrackMap(Track track, int width, int height)
+    public static Texture CreateTrackMap(Track track, int width, int height, float border = 0.1f)
     {
-        track.NormalizeXZ();
-        track.Scale(0.8f, 0.1f);
+        var ntrack = track.Clone();
 
-        var nodes = track.Nodes;
+        ntrack.NormalizeXZ();
+        ntrack.Scale(1 - border * 2, border);
+
+        var nodes = ntrack.Nodes;
 
         var pixels = new byte[width * height];
 
@@ -53,29 +55,36 @@ public static class TrackMapGenerator
 
         public void DrawLine(Vector3 pos1, Vector3 pos2, int r)
         {
-            var size = new Vector3(Width, 1, Height);
+            var size = new Vector3(Width, Height, Height);
             static float Lerp(float a, float b, float t) => a + (b - a) * t;
             var dist = (int)Vector3.Distance(pos1 * size, pos2 * size) + 1;
 
-            int x1 = (int)(pos1.X * Width);
-            int y1 = (int)((1f - pos1.Z) * Height);
-            int x2 = (int)(pos2.X * Width);
-            int y2 = (int)((1f - pos2.Z) * Height);
-
-            //FillCircle(x1, y1, 5, 0.3f);
-            //FillCircle(x2, y2, 5, 0.3f);
+            var pl1 = GetPoint(pos1, 0, 0);
+            var pl2 = GetPoint(pos2, 0, 0);
+            var ps1 = GetPoint(pos1, 0, 5);
+            var ps2 = GetPoint(pos2, 0, 5);
 
             for (int i = 0; i < dist; i++)
             {
                 float fac = (float)i / dist;
 
-                int x = (int)Lerp(x1, x2, fac);
-                int y = (int)Lerp(y1, y2, fac);
+                int lx = (int)Lerp(pl1.X, pl2.X, fac);
+                int ly = (int)Lerp(pl1.Y, pl2.Y, fac);
 
-                FillCircle(x, y, r, 1);
-                FillCircle(x, y + 5, r, 0.5f);
+                int sx = (int)Lerp(ps1.X, ps2.X, fac);
+                int sy = (int)Lerp(ps1.Y, ps2.Y, fac);
+
+                FillCircle(lx, ly, r, 1);
+                FillCircle(sx, sy, r, 0.5f);
             }
+        }
 
+        public (int X, int Y) GetPoint(Vector3 position, float yF, int zOffset)
+        {
+            float y = position.Y * yF;
+            int x = (int)(position.X * Width);
+            int z = (int)((1f - position.Z - y) * Height) + zOffset;
+            return new(x, z);
         }
 
         public void FillCircle(Vector3 pos, int rad, float value)
