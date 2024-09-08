@@ -61,6 +61,7 @@ void main()
         break;
     }
 
+    //gl_FragDepth = 0;
     Normal = vec4(fNorm,1);
     Light = fLightColor;
 } 

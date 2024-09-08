@@ -61,6 +61,9 @@ public class MeshSegment
         var vertecies = Vertices.ToArray();
         var indices = Indices.ToArray();
 
-        return new Mesh(vertecies, indices);
+        var mesh = new Mesh(vertecies, indices);
+        mesh.ApplyOffset(Offset);
+
+        return mesh;
     }
 }

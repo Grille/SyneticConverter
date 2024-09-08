@@ -187,6 +187,11 @@ public class GlScene : IDisposable
         Stage0.Viewport();
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 
+        //GL.Disable(EnableCap.DepthTest);
+        //GL.Enable(EnableCap.Blend);
+        //GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+
         GL.Disable(EnableCap.DepthTest);
         {
             modelProgram.Bind();
@@ -200,7 +205,7 @@ public class GlScene : IDisposable
         if (scenarioHandle != null)
         {
             terrainProgram.Bind();
-            scenarioHandle.Terrain.Draw(Camera.Position, 16);
+            scenarioHandle.Terrain.Draw(Camera.Position, 32);
         }
 
         if (modelHandle != null)
