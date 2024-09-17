@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,11 +35,20 @@ public class TrkFile : BinaryFile
     public override void Deserialize(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
+
+        if (Head.U1 != Head.U2)
+        {
+            throw new InvalidDataException();
+        }
+
         Nodes = br.ReadArray<MNode>(Head.Nodes);
-        return;
-        Head2 = br.Read<MHead2>();
-        Turns = br.ReadArray<MTurn>(Head2.Turns);
-        Arrows = br.ReadArray<MArrow>(Head2.Arrows);
+
+        if (Head.U1 == 1)
+        {
+            Head2 = br.Read<MHead2>();
+            Turns = br.ReadArray<MTurn>(Head2.Turns);
+            Arrows = br.ReadArray<MArrow>(Head2.Arrows);
+        }
     }
 
     public override void Serialize(BinaryViewWriter bw)
@@ -50,7 +60,7 @@ public class TrkFile : BinaryFile
     {
         public int Nodes;
         public int Loop;
-        public ushort u1, u2, u3, u4;
+        public ushort U1, U2, u3, u4;
     }
 
     public struct MNode

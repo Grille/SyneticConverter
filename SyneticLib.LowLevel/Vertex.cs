@@ -76,11 +76,18 @@ public struct Vertex
 
     public Vertex() { }
 
+    public Vertex(Vector3 position)
+    {
+        Position = position;
+    }
+
     public Vertex(Vector3 position, Vector2 uV0)
     {
         Position = position;
         UV0 = uV0;
     }
+
+    public static implicit operator Vertex(Vector3 position) => new Vertex(position);
 
     public static bool operator ==(in Vertex left, in Vertex right)
     {

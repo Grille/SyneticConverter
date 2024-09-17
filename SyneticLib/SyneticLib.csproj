@@ -14,11 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\Grille\source\repos\SyneticConverter\SyneticLib\.editorconfig" />
+    <EditorConfigFiles Remove="..\SyneticLib\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="C:\Users\Grille\source\repos\SyneticConverter\SyneticLib\.editorconfig" />
+    <None Include="..\SyneticLib\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>

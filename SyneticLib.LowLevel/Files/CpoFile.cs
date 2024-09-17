@@ -1,124 +1,120 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 using Grille.IO;
+using Grille.IO.Interfaces;
 
 using OpenTK.Mathematics;
 
 using SyneticLib.Files.Common;
+using System.Runtime.InteropServices;
 
 namespace SyneticLib.Files;
 
-public class CpoFile : BinaryFile, IVertexData, IIndexData
+public class CpoFile : BinaryFile
 {
     public const int Magic = 0x43504F21;
     public MHead Head;
-
-    public int[] IndicesOffset { get; set; }
-
-    public Vertex[] Vertecis { get; set; }
-
-    public IdxTriangleInt32[] Indices { get; set; }
+    MCollider[] Collider;
 
     public CpoFile()
     {
-        IndicesOffset = new int[1] { 0 };
-        Vertecis = Array.Empty<Vertex>();
-        Indices = Array.Empty<IdxTriangleInt32>();
+        Collider = Array.Empty<MCollider>();
     }
 
     public override void Deserialize(BinaryViewReader br)
     {
+        int magic = br.ReadInt32();
+        if (magic != Magic) {
+            throw new InvalidDataException();
+        }
         Head = br.Read<MHead>();
 
-        var positions = br.ReadArray<Vector3>(Head.VerticeCount);    
-        var indices = br.ReadArray<IdxTriangleUInt16>(Head.PolyCount);
-        var normals = br.ReadArray<Vector3>(Head.VerticeCount);
+        Collider = new MCollider[Head.Count];
 
-        Vertecis = new Vertex[Head.VerticeCount];
-        for (int i = 0; i < Head.VerticeCount; i++)
+        for (int i = 0; i < Collider.Length; i++)
         {
-            Vertecis[i] = new Vertex()
-            {
-                Position = positions[i],
-                Normal = normals[i],
-            };
-        }
-
-        Indices = new IdxTriangleInt32[Head.PolyCount];
-        for (int i = 0; i < Head.PolyCount; i++){
-            Indices[i] = indices[i];
+            Collider[i] = br.ReadIView<MCollider>();
         }
     }
 
     public override void Serialize(BinaryViewWriter bw)
     {
-        bw.Write(Head);
+        throw new NotImplementedException();
+    }
 
-        for (int i = 0; i < Head.VerticeCount; i++)
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct MBox
+    {
+        Vector3 Scale;
+        Vector3 Position;
+        Matrix3 Matrix;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct MShape
+    {
+        public int VerticeCount;
+        public int PolyCount;
+        public int IndiceSize;
+        public int Clear1;
+        public Vector3[] Vertices;
+        public ushort[] Indices;
+        public Vector3 Position;
+        public Matrix3 Matrix;
+    }
+
+    public enum MFormat : int
+    {
+        None = 0,
+        Box = 2,
+        Shape = 3,
+    }
+
+    public unsafe class MCollider : IBinaryViewObject
+    {
+        public MFormat Format;
+        public MBox Box;
+        public MShape Shape;
+
+        public void ReadFromView(BinaryViewReader br)
         {
-            bw.Write(Vertecis[i].Position);
+            Format = br.Read<MFormat>();
+            if (Format == MFormat.Box)
+            {
+                Box = br.Read<MBox>();
+            }
+            else if (Format == MFormat.Shape)
+            {
+                Shape.VerticeCount = br.ReadInt32();
+                Shape.PolyCount = br.ReadInt32();
+                Shape.IndiceSize = br.ReadInt32();
+                Shape.Clear1 = br.ReadInt32();
+                Shape.Vertices = br.ReadArray<Vector3>(Shape.VerticeCount);
+                Shape.Indices = br.ReadArray<ushort>(Shape.IndiceSize*2);
+                Shape.Position = br.Read<Vector3>();
+                Shape.Matrix = br.Read<Matrix3>();
+            }
+            else
+            {
+                throw new InvalidDataException();
+            }
         }
 
-        for (int i = 0; i < Head.PolyCount; i++)
+        public void WriteToView(BinaryViewWriter bw)
         {
-            bw.Write((IdxTriangleUInt16)Indices[i]);
-        }
-
-        for (int i = 0; i < Head.VerticeCount; i++)
-        {
-            bw.Write(Vertecis[i].Normal);
+            throw new NotImplementedException();
         }
     }
 
     public struct MHead
     {
-        public int VerticeCount;
-        public int PolyCount;
-        public Vector3 Center;
-        public Pair X;
-        public Pair Y;
-        public Pair Z;
-
-        public struct Pair
-        {
-            public float Min;
-            public float Max;
-        }
-
-        public Vector3 Max
-        {
-            get => new Vector3(X.Max, Y.Max, Z.Max);
-            set
-            {
-                X.Max = value.X; 
-                Y.Max = value.Y; 
-                Z.Max = value.Z;
-            }
-        }
-
-        public Vector3 Min
-        {
-            get => new Vector3(X.Min, Y.Min, Z.Min);
-            set
-            {
-                X.Min = value.X;
-                Y.Min = value.Y;
-                Z.Min = value.Z;
-            }
-        }
-
-        public BoundingBox BoundingBox
-        {
-            get => new BoundingBox(Min, Max);
-            set
-            {
-                Min = value.Start; 
-                Max = value.End;
-            }
-        }
+        public int Count;
+        public int U0;
+        public int U1;
     }
 }

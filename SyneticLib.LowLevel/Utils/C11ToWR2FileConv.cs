@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
+using static SyneticLib.Files.CpoFile;
 
 namespace SyneticLib.Conversion;
 
@@ -205,16 +206,28 @@ public static class C11ToWR2FileConv
             {
                 var name = Path.GetFileNameWithoutExtension(moxFilePath);
 
-                var mox = new MoxFile();
-                mox.Load(moxFilePath);
-
-                sbNames.AppendLine(name);
-
                 var cobFileName = Path.ChangeExtension(name, ".cob");
                 var cobFilePath = Path.Combine(colliDir, cobFileName);
 
-                var cob = CreateCobFile(mox);
-                cob.Save(cobFilePath);
+                var cpoFileName = Path.ChangeExtension(name, ".cpo");
+                var cpoFilePath = Path.Combine(colliDir, cpoFileName);
+
+                if (false && File.Exists(cpoFilePath))
+                {
+                    var cpo = new CpoFile();
+                    cpo.Load(cpoFilePath);
+                    var cob = CreateCobFile(cpo);
+                    cob.Save(cobFilePath);
+                }
+                else
+                {
+                    var mox = new MoxFile();
+                    mox.Load(moxFilePath);
+                    var cob = CreateCobFile(mox);
+                    cob.Save(cobFilePath);
+                }
+
+                sbNames.AppendLine(name);
             }
         }
 
@@ -230,6 +243,12 @@ public static class C11ToWR2FileConv
         cob.Head.VerticeCount = cob.Vertecis.Length;
         cob.Head.PolyCount = cob.Indices.Length;
         cob.Head.BoundingBox = new BoundingBox(cob.Vertecis, cob.Indices);
+        return cob;
+    }
+
+    public static CobFile CreateCobFile(CpoFile cpo)
+    {
+        var cob = new CobFile();
         return cob;
     }
 }

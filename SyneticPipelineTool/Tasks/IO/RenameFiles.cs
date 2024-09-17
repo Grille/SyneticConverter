@@ -15,7 +15,7 @@ internal class RenameFiles : PipelineTask
 {
     protected override void OnInit()
     {
-        Parameters.Def(ParameterTypes.Directory, "Path", "Files inside directory or single file.", "Path");
+        Parameters.Def(ParameterTypes.Generic, "Path", "Files inside directory or single file.", "Path");
         Parameters.Def(ParameterTypes.String, "Find", "", "Alps");
         Parameters.Def(ParameterTypes.String, "Replace", "", "MBWR_Alps");
     }

@@ -201,8 +201,8 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
         var indices = files.TerrainMesh.Indices;
         var iOffsets = files.TerrainMesh.Offsets;
 
-        var terrainTextureIndex = terrainTextures.CreateIndexedArray(qad.TextureNames);
-        var terrainMaterials = GetTerrainMaterials(qad, terrainTextureIndex);
+        var indexedTextures = terrainTextures.CreateIndexedArray(qad.TextureNames);
+        var terrainMaterials = GetTerrainMaterials(qad, indexedTextures);
 
         var offsets = new int[iOffsets.Length + 1];
         for (var i = 0; i < offsets.Length - 1; i++)

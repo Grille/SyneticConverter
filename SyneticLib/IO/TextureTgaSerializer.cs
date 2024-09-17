@@ -26,7 +26,7 @@ public class TextureTgaSerializer : FileSerializer<TgaFile, Texture>
 
         int width = tga.Head.Width;
         int height = tga.Head.Height;
-        var pixels = tga.Pixels;
+        var pixels = FlipY(tga.Pixels, width, height);
         var level = new TextureLevel(width, height, pixels);
         if (tga.Head.ImageDescriptor.HasFlag(ImageDescriptor.ScreenOrigin))
         {
@@ -74,10 +74,29 @@ public class TextureTgaSerializer : FileSerializer<TgaFile, Texture>
                 break;
             }
         }
+
         tga.Head.ImageType = type;
         tga.Head.BitsPerPixel = bits;
+        tga.Head.OriginX = 0;
+        tga.Head.OriginY = 0;
         tga.Head.Width = (ushort)texture.Width;
         tga.Head.Height = (ushort)texture.Height;
-        tga.Pixels = data;
+        tga.Pixels = FlipY(data, texture.Width, texture.Height);
+    }
+
+    static byte[] FlipY(byte[] data, int width, int height)
+    {
+        int stride = data.Length / (width * height);
+
+        byte[] reversed = new byte[data.Length];
+
+        var lines = data.Length / stride;
+
+        for (var line = 0; line < lines; line++)
+        {
+            Array.Copy(data, data.Length - ((line + 1) * stride), reversed, line * stride, stride);
+        }
+
+        return reversed;
     }
 }

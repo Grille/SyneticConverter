@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 using OpenTK.Mathematics;
 
-using static SyneticLib.Files.QadFile;
-
 namespace SyneticLib.Utils;
 public static class TrackMapGenerator
 {
@@ -50,74 +48,76 @@ public static class TrackMapGenerator
                 DrawLine(node0.Position, node1.Position, 5);
             }
 
-            DrawLine(nodes[0].Position, nodes[0].Position, 15);
+            DrawLine(nodes[0].Position, nodes[0].Position, 10);
         }
 
         public void DrawLine(Vector3 pos1, Vector3 pos2, int r)
         {
             var size = new Vector3(Width, Height, Height);
-            static float Lerp(float a, float b, float t) => a + (b - a) * t;
             var dist = (int)Vector3.Distance(pos1 * size, pos2 * size) + 1;
 
             var pl1 = GetPoint(pos1, 0, 0);
             var pl2 = GetPoint(pos2, 0, 0);
-            var ps1 = GetPoint(pos1, 0, 5);
-            var ps2 = GetPoint(pos2, 0, 5);
+            var ps1 = GetPoint(pos1, 0, 2);
+            var ps2 = GetPoint(pos2, 0, 2);
 
             for (int i = 0; i < dist; i++)
             {
                 float fac = (float)i / dist;
 
-                int lx = (int)Lerp(pl1.X, pl2.X, fac);
-                int ly = (int)Lerp(pl1.Y, pl2.Y, fac);
+                var pl = Vector2.Lerp(pl1, pl2, fac);
+                var ps = Vector2.Lerp(ps1, ps2, fac);
 
-                int sx = (int)Lerp(ps1.X, ps2.X, fac);
-                int sy = (int)Lerp(ps1.Y, ps2.Y, fac);
-
-                FillCircle(lx, ly, r, 1);
-                FillCircle(sx, sy, r, 0.5f);
+                FillCircle(pl, r, 1);
+                FillCircle(ps, r, 0.5f);
             }
         }
 
-        public (int X, int Y) GetPoint(Vector3 position, float yF, int zOffset)
+        public Vector2 GetPoint(Vector3 position, float yF, int zOffset)
         {
             float y = position.Y * yF;
-            int x = (int)(position.X * Width);
-            int z = (int)((1f - position.Z - y) * Height) + zOffset;
+            float x = position.X * Width;
+            float z = ((1f - position.Z) * Height) + zOffset;
             return new(x, z);
         }
 
-        public void FillCircle(Vector3 pos, int rad, float value)
+        public void FillCircle(Vector3 pos, float rad, float value)
         {
-            int x1 = (int)(pos.X * Width);
-            int y1 = (int)(pos.Z * Height);
-
-            FillCircle(x1, y1, rad, value);
+            FillCircle(new Vector2(pos.X * Width, pos.Z * Height), rad, value);
         }
 
-        public void FillCircle(int cx, int cy, int radius, float value)
+        public void FillCircle(Vector2 center, float radius, float value)
         {
-            int square = radius;
+            int square = (int)radius;
 
-            for (int iy = -square; iy <= square; iy++)
+            int icx = (int)center.X;
+            int icy = (int)center.Y;
+
+            for (float iy = -square; iy <= square; iy++)
             {
-                for (int ix = -square; ix <= square; ix++)
+                for (float ix = -square; ix <= square; ix++)
                 {
-                    var dist = MathF.Sqrt(MathF.Abs(ix * ix) + MathF.Abs(iy * iy)) - radius * 0.5f;
-                    var strength = (1f - Math.Clamp(dist, 0f, 1f)) * value;
-                    IncPixel(cx + ix, cy + iy, strength);
+                    var offset = new Vector2(ix, iy);
+                    var position = center + offset;
+
+                    var rounded = (Vector2i)position;
+
+                    var dist = Vector2.Distance(center, rounded);
+                    float clamped = Math.Clamp(dist - radius + 2.5f, 0f, 2f) * 0.5f;
+                    var strength = (1f - clamped) * value;
+                    IncPixel(rounded, strength);
                 }
             }
         }
 
-        public void IncPixel(int x, int y, float value)
+        public void IncPixel(Vector2i pos, float value)
         {
-            if (x < 0 || x >= Width || y < 0 || y >= Height)
+            if (pos.X < 0 || pos.X >= Width || pos.Y < 0 || pos.Y >= Height)
             {
                 return;
             }
 
-            int idx = x + y * Width;
+            int idx = pos.X + pos.Y * Width;
 
             byte oldvalue = Data[idx];
             byte newvalue = Math.Clamp((byte)(value * 255), oldvalue, byte.MaxValue);

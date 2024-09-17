@@ -64,14 +64,12 @@ public static class Serializers
 
     public static class Mesh
     {
-        public static readonly MeshFileSerializer<CpoFile> Cpo = new();
         public static readonly MeshFileSerializer<CobFile> Cob = new();
         public static readonly MeshFileSerializer<MoxFile> Mox = new();
         public static readonly MeshFileSerializer<WavefrontObjFile> Obj = new();
 
         public static readonly SerializerRegistry<SyneticLib.Mesh> Registry = new()
         {
-            { "cpo", Cpo },
             { "cob", Cob },
             { "mox", Mox },
             { "obj", Obj },

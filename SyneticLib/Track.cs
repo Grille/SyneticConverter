@@ -26,6 +26,23 @@ public class Track
         return new Track(nodes);
     }
 
+    public float GetAbsDistance()
+    {
+        float distance = 0;
+
+        int count = Nodes.Length-1;
+
+        for (int i = 0; i < count; i++)
+        {
+            var thisPos = Nodes[i+0].Position;
+            var nextPos = Nodes[i+1].Position;
+
+            distance += Vector3.Distance(thisPos, nextPos);
+        }
+
+        return distance / count;
+    }
+
     public void NormalizeXZ()
     {
         if (Nodes.Length == 0)

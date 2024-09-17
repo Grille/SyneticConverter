@@ -16,8 +16,8 @@ using SyneticPipelineTool.Tasks.IO;
 
 namespace SyneticPipelineTool.Tasks;
 
-[PipelineTask("Synetic/Create TrackMap")]
-public class CreateTrackMap : PipelineTask
+[PipelineTask("Synetic/Create TrackMap Texture")]
+public class CreateTrackMapTexture : PipelineTask
 {
     protected override void OnInit()
     {

@@ -83,8 +83,8 @@ public class PtxFile : BinaryFile, ITextureData<PtxFile.Level>
                 //Pixels = new byte[Head.Size];
 
                 
-                var DecodeStream = new MemoryStream();
-                SynCompressor.Decompress(br.PeakStream, DecodeStream, (int)Head.SynSize);
+                var DecodeStream = new MemoryStream((int)Head.Size);
+                SynCompressor.Decompress(br.PeakStream, DecodeStream, (int)Head.Size);
                 Pixels = DecodeStream.ToArray();
                 long diff = Pixels.Length - Head.Size;
                 if (diff != 0)
