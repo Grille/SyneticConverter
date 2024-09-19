@@ -11,7 +11,7 @@ using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using static SyneticLib.Files.CpoFile;
 
-namespace SyneticLib.Conversion;
+namespace SyneticLib.Utils;
 
 public static class C11ToWR2FileConv
 {
@@ -38,7 +38,7 @@ public static class C11ToWR2FileConv
         ConvertGeo(files.TerrainMesh.Vertices);
         ConvertQad(files.Qad);
 
-        CreateCobFiles(dirPath);
+        WR2CobFileCreator.CreateCobFiles(dirPath);
 
         files.Save(paths, GameVersion.WR2);
     }
@@ -95,7 +95,7 @@ public static class C11ToWR2FileConv
         qad.RecalcMaterialMatrixChecksum();
     }
 
-    public static void ConvertC11ToWR2(ref this QadFile.AbstractMaterialType mat, TextureTransform[] matrices)
+    public static void ConvertC11ToWR2(ref QadFile.AbstractMaterialType mat, TextureTransform[] matrices)
     {
         var dmat0 = matrices[mat.Layer0.Tex0Id];
         var dmat1 = matrices[mat.Layer0.Tex1Id];
@@ -108,68 +108,68 @@ public static class C11ToWR2FileConv
         switch (mat.Layer1.Mode)
         {
             case 320:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Water;
-                mat.Matrix0 = dmat0;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Water;
+                    mat.Matrix0 = dmat0;
+                    break;
+                }
             case 304:
             case 288:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.AlphaClip;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.AlphaClip;
+                    break;
+                }
             case 256:
             case 240:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
+                    break;
+                }
             case 224:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.UVTerrain;
-                mat.Matrix2 = dmat2;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UVTerrain;
+                    mat.Matrix2 = dmat2;
+                    break;
+                }
             case 192:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Reflective;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Reflective;
+                    break;
+                }
             case 128:
             case 112:
             case 64:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
+                    break;
+                }
             case 32:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
+                    break;
+                }
             case 18:
             case 16:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.UVTerrain;
-                mat.Matrix2 = dmat2;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UVTerrain;
+                    mat.Matrix2 = dmat2;
+                    break;
+                }
             case 3:
             case 2:
             case 1:
             case 0:
-            {
-                mat.Layer0.Mode = mat.Layer1.Mode;
-                mat.Matrix0 = dmat0;
-                mat.Matrix1 = dmat1;
-                mat.Matrix2 = dmat2;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = mat.Layer1.Mode;
+                    mat.Matrix0 = dmat0;
+                    mat.Matrix1 = dmat1;
+                    mat.Matrix2 = dmat2;
+                    break;
+                }
             default:
-            {
-                throw new NotImplementedException();
-            }
+                {
+                    throw new NotImplementedException();
+                }
 
         }
 
@@ -190,65 +190,5 @@ public static class C11ToWR2FileConv
             return Matrix128;
 
         return Matrix64;
-    }
-
-    public static void CreateCobFiles(string path)
-    {
-        var objectDir = Path.Combine(path, "Objects");
-        var colliDir = Path.Combine(path, "Colli");
-        Directory.CreateDirectory(colliDir);
-
-        var sbNames = new StringBuilder();
-
-        foreach (var moxFilePath in Directory.EnumerateFiles(objectDir))
-        {
-            if (Path.GetExtension(moxFilePath).ToLower() == ".mox")
-            {
-                var name = Path.GetFileNameWithoutExtension(moxFilePath);
-
-                var cobFileName = Path.ChangeExtension(name, ".cob");
-                var cobFilePath = Path.Combine(colliDir, cobFileName);
-
-                var cpoFileName = Path.ChangeExtension(name, ".cpo");
-                var cpoFilePath = Path.Combine(colliDir, cpoFileName);
-
-                if (false && File.Exists(cpoFilePath))
-                {
-                    var cpo = new CpoFile();
-                    cpo.Load(cpoFilePath);
-                    var cob = CreateCobFile(cpo);
-                    cob.Save(cobFilePath);
-                }
-                else
-                {
-                    var mox = new MoxFile();
-                    mox.Load(moxFilePath);
-                    var cob = CreateCobFile(mox);
-                    cob.Save(cobFilePath);
-                }
-
-                sbNames.AppendLine(name);
-            }
-        }
-
-        var namesFileName = Path.Combine(colliDir, "ColliList.txt");
-        File.WriteAllText(namesFileName, sbNames.ToString());
-    }
-
-    public static CobFile CreateCobFile(MoxFile mox)
-    {
-        var cob = new CobFile();
-        cob.Vertecis = mox.Vertecis;
-        cob.Indices = mox.Indices;
-        cob.Head.VerticeCount = cob.Vertecis.Length;
-        cob.Head.PolyCount = cob.Indices.Length;
-        cob.Head.BoundingBox = new BoundingBox(cob.Vertecis, cob.Indices);
-        return cob;
-    }
-
-    public static CobFile CreateCobFile(CpoFile cpo)
-    {
-        var cob = new CobFile();
-        return cob;
     }
 }

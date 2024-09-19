@@ -50,11 +50,30 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
 
         for (int i = 0; i < qad.Chunks.Length; i++)
         {
-            var cinfo = new ScenarioChunkCreateInfo(qad.Chunks[i])
+            var src = qad.Chunks[i];
+            var cinfo = new ScenarioChunkCreateInfo(src)
             {
                 Terrain = scenario.Terrain,
             };
             scenario.Chunks[cinfo.Position.X, cinfo.Position.Z] = new ScenarioChunk(cinfo);
+
+            for (int j = 0; j < src.Lights.Length; j++)
+            {
+                var obj = qad.Lights[j + src.Lights.Start];
+            }
+
+            for (int j = 0; j < src.Props.Length; j++)
+            {
+                var obj = qad.PropInstances[j + src.Props.Start];
+            }
+        }
+
+        for (int j = 0; j < qad.PropInstances.Length; j++)
+        {
+            if (!qad.PropClassObjNames.Contains(qad.PropInstances[j].Name))
+            {
+                throw new InvalidDataException();
+            }
         }
 
         /*
@@ -219,7 +238,7 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
         {
             ref var srcChunk = ref qad.Chunks[i];
 
-            int offset = offsets[srcChunk.Chunk65k];
+            int offset = offsets[srcChunk.MeshOffsetIndex];
             var submesh = new MeshSegment(mesh, srcChunk.Poly.Start, srcChunk.Poly.Length, offset);
 
             var regions = new ModelMaterialRegion[srcChunk.PolyRegion.Length];

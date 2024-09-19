@@ -11,7 +11,7 @@ using SyneticLib.Files;
 
 
 
-namespace SyneticLib.Conversion;
+namespace SyneticLib.Utils;
 
 public static class WR1ToWR2FileConv
 {
@@ -47,7 +47,7 @@ public static class WR1ToWR2FileConv
     {
         for (int i = 0; i < qad.Materials.Length; i++)
         {
-            ConvertWR1ToWR2(ref qad.Materials[i]);
+            qad.Materials[i].ConvertWR1ToWR2();
         }
 
         int idx0 = Array.FindIndex(qad.TextureNames, (a) => a == "Blumen");
@@ -93,70 +93,70 @@ public static class WR1ToWR2FileConv
             case TerrainMaterialTypeMBWR.Terrain:
             case TerrainMaterialTypeMBWR.Terrain + 1:
             case TerrainMaterialTypeMBWR.Terrain + 2:
-            {
-                break;
-            }
+                {
+                    break;
+                }
             case TerrainMaterialTypeMBWR.UVTerrain:
-            {
-                mat.Matrix1 = TextureTransform.Empety;
-                break;
-            }
+                {
+                    mat.Matrix1 = TextureTransform.Initial90;
+                    break;
+                }
             case TerrainMaterialTypeMBWR.UV:
             case TerrainMaterialTypeMBWR.UV + 1:
-            {
-                break;
-            }
+                {
+                    break;
+                }
             case TerrainMaterialTypeMBWR.Road0:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
-                mat.Matrix1 = TextureTransform.Empety;
-                mat.Matrix2 = TextureTransform.Empety;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
+                    mat.Matrix1 = TextureTransform.Initial90;
+                    mat.Matrix2 = TextureTransform.Initial90;
+                    break;
+                }
             case TerrainMaterialTypeMBWR.Reflective:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Reflective;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Reflective;
+                    break;
+                }
             case TerrainMaterialTypeMBWR.Road1:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
-                mat.Matrix0 = TextureTransform.Empety;
-                mat.Matrix1 = TextureTransform.Empety;
-                mat.Matrix2 = TextureTransform.Empety;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
+                    mat.Matrix0 = TextureTransform.Initial90;
+                    mat.Matrix1 = TextureTransform.Initial90;
+                    mat.Matrix2 = TextureTransform.Initial90;
+                    break;
+                }
             case TerrainMaterialTypeMBWR.Road3:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road3;
-                mat.Matrix0 = TextureTransform.Empety;
-                mat.Matrix1 = TextureTransform.Empety;
-                mat.Matrix2 = TextureTransform.Empety;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road3;
+                    mat.Matrix0 = TextureTransform.Initial90;
+                    mat.Matrix1 = TextureTransform.Initial90;
+                    mat.Matrix2 = TextureTransform.Initial90;
+                    break;
+                }
             case TerrainMaterialTypeMBWR.Road2:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road2;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road2;
+                    break;
+                }
             case TerrainMaterialTypeMBWR.Water: // Water
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Water;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Water;
+                    break;
+                }
             case TerrainMaterialTypeMBWR.AlphaClip: // Mask
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.AlphaClip;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.AlphaClip;
+                    break;
+                }
             case TerrainMaterialTypeMBWR.AlphaBlend:
-            {
-                break;
-            }
+                {
+                    break;
+                }
             default:
-            {
-                throw new InvalidDataException($"Unexpected material mode: '{mat.Layer0.Mode}'");
-            }
+                {
+                    throw new InvalidDataException($"Unexpected material mode: '{mat.Layer0.Mode}'");
+                }
         }
     }
 
@@ -185,29 +185,29 @@ public static class WR1ToWR2FileConv
             case "kuh":
             case "kuhl1":
             case "kuhl2":
-            {
-                return new ObjectInfo(0,250, "t_kuh", "ko_dirt_l");
-            }
+                {
+                    return new ObjectInfo(0, 250, "t_kuh", "ko_dirt_l");
+                }
             case "pylon":
-            {
-                return new ObjectInfo(0,5, "ko_pylon", "ko_pylon");
-            }
+                {
+                    return new ObjectInfo(0, 5, "ko_pylon", "ko_pylon");
+                }
             case "bake1":
             case "bake2":
-            {
-                return new ObjectInfo(0,50, "ko_barke", "ko_barke");
-            }
+                {
+                    return new ObjectInfo(0, 50, "ko_barke", "ko_barke");
+                }
             case "kiste1":
             case "kiste2":
             case "hfass":
-            {
-                return new ObjectInfo(0,50, "ko_holz", "ko_dirt_l");
-            }
+                {
+                    return new ObjectInfo(0, 50, "ko_holz", "ko_dirt_l");
+                }
             case "aleinsign":
             case "exhigh":
-            {
-                return new ObjectInfo(0,400, "ko_holz", "ko_dirt_l");
-            }
+                {
+                    return new ObjectInfo(0, 400, "ko_holz", "ko_dirt_l");
+                }
             case "sign1":
             case "sign2":
             case "sign3":
@@ -222,9 +222,9 @@ public static class WR1ToWR2FileConv
             case "sign12":
             case "warns1":
             case "warns2":
-            {
-                return new ObjectInfo(0, 50, "ko_holz", "ko_dirt_l");
-            }
+                {
+                    return new ObjectInfo(0, 50, "ko_holz", "ko_dirt_l");
+                }
             case "boot1":
             case "boot1a":
             case "boot1v":
@@ -233,9 +233,9 @@ public static class WR1ToWR2FileConv
             case "boot2os":
             case "boot3":
             case "boot4":
-            {
-                return new ObjectInfo(4, 10000, "ko_barke2", "ko_dirt_l");
-            }
+                {
+                    return new ObjectInfo(4, 10000, "ko_barke2", "ko_dirt_l");
+                }
             case "flugz1":
             case "flugz2":
             case "flugz3":
@@ -243,15 +243,15 @@ public static class WR1ToWR2FileConv
             case "heli":
             case "hubi_51":
             case "hubia51":
-            {
-                return new ObjectInfo(4, 5000, "ko_barke2", "ko_dirt_l");
-            }
+                {
+                    return new ObjectInfo(4, 5000, "ko_barke2", "ko_dirt_l");
+                }
             case "f15":
             case "b2bomb":
             case "aurora":
-            {
-                return new ObjectInfo(4, 10000, "ko_barke2", "ko_dirt_l");
-            }
+                {
+                    return new ObjectInfo(4, 10000, "ko_barke2", "ko_dirt_l");
+                }
             case "car1":
             case "car2":
             case "car3":
@@ -264,9 +264,9 @@ public static class WR1ToWR2FileConv
             case "gland1":
             case "gland2":
             case "trackvan":
-            {
-                return new ObjectInfo(4, 600, "ko_barke2", "ko_dirt_l");
-            }
+                {
+                    return new ObjectInfo(4, 600, "ko_barke2", "ko_dirt_l");
+                }
         }
         return null;
     }

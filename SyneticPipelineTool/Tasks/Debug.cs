@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Grille.PipelineTool;
 
 using SyneticLib.Files;
+using SyneticLib.IO;
 
 namespace SyneticPipelineTool.Tasks;
 
@@ -22,7 +23,6 @@ public class Debug : PipelineTask
     {
         var arg0 = EvalParameter("Arg0");
 
-        var file = new TrkFile();
-        file.Load(arg0);
+        Serializers.Scenario.Synetic.Load(arg0);
     }
 }

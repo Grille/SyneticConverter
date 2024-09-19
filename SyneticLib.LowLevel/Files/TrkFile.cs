@@ -36,14 +36,9 @@ public class TrkFile : BinaryFile
     {
         Head = br.Read<MHead>();
 
-        if (Head.U1 != Head.U2)
-        {
-            throw new InvalidDataException();
-        }
-
         Nodes = br.ReadArray<MNode>(Head.Nodes);
 
-        if (Head.U1 == 1)
+        if (Head.ArrowExtensionEnabled)
         {
             Head2 = br.Read<MHead2>();
             Turns = br.ReadArray<MTurn>(Head2.Turns);
@@ -60,7 +55,7 @@ public class TrkFile : BinaryFile
     {
         public int Nodes;
         public int Loop;
-        public ushort U1, U2, u3, u4;
+        public U16Bool ArrowExtensionEnabled, U2, u3, u4;
     }
 
     public struct MNode

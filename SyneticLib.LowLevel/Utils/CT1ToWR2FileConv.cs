@@ -11,7 +11,7 @@ using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using static SyneticLib.Files.QadFile;
 
-namespace SyneticLib.Conversion;
+namespace SyneticLib.Utils;
 
 public static class CT1ToWR2FileConv
 {
@@ -37,8 +37,6 @@ public static class CT1ToWR2FileConv
 
         ConvertGeo(files.TerrainMesh.Vertices);
         ConvertQad(files.Qad);
-
-        //CreateCobFiles(dirPath);
 
         files.Save(paths, GameVersion.WR2);
     }
@@ -72,44 +70,40 @@ public static class CT1ToWR2FileConv
 
             ConvertC11ToWR2(ref material, matrices);
         }
-        
+
+        qad.Head.BumpTexturesFileCount = 1;
+        qad.BumpTexNames = new String32[] { qad.BumpTexNames[0] };
+
         qad.Head.PropInstanceCount = 0;
-        qad.PropInstances = Array.Empty<QadFile.MPropInstance>();
-        
+        qad.PropInstances = Array.Empty<MPropInstance>();
+
         for (int i = 0; i < qad.Chunks.Length; i++)
         {
             ref var chunk = ref qad.Chunks[i];
-
+            
             chunk.Props.Start = 0;
             chunk.Props.Length = 0;
-
+            
             chunk.Lights.Start = 0;
             chunk.Lights.Length = 0;
         }
 
-        
         qad.Head.PropClassCount = 0;
-        qad.PropClassInfo = Array.Empty<QadFile.MPropClass>();
         qad.PropClassObjNames = Array.Empty<String32>();
-        
-        
+        qad.PropClassInfo = Array.Empty<MPropClass>();
+
         qad.Head.SoundCount = 0;
-        qad.Sounds = Array.Empty<QadFile.MSound>();
+        qad.Sounds = Array.Empty<MSound>();
 
-        qad.Head.BumpTexturesFileCount = 0;
-        qad.BumpTexNames = Array.Empty<String32>();
-
-        
         qad.Head.LightCount = 0;
-        qad.Lights = Array.Empty<QadFile.MLight>();
-       
+        qad.Lights = Array.Empty<MLight>();
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.SortMaterials();
         qad.ForceUniqueChecksums();
     }
 
-    public static void ConvertC11ToWR2(ref this QadFile.AbstractMaterialType mat, TextureTransform[] matrices)
+    public static void ConvertC11ToWR2(ref AbstractMaterialType mat, TextureTransform[] matrices)
     {
         var dmat0 = matrices[mat.Layer0.Tex0Id];
         var dmat1 = matrices[mat.Layer0.Tex0Id];
@@ -121,74 +115,74 @@ public static class CT1ToWR2FileConv
 
         mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
         return;
-        
+
         switch (mat.Layer1.Mode)
         {
             case 320:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Water;
-                mat.Matrix0 = dmat0;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Water;
+                    mat.Matrix0 = dmat0;
+                    break;
+                }
             case 304:
             case 288:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.AlphaClip;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.AlphaClip;
+                    break;
+                }
             case 256:
             case 240:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Road3;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road3;
+                    break;
+                }
             case 224:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.UVTerrain;
-                mat.Matrix2 = dmat2;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UVTerrain;
+                    mat.Matrix2 = dmat2;
+                    break;
+                }
             case 192:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.Reflective;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Reflective;
+                    break;
+                }
             case 128:
             case 112:
             case 64:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
+                    break;
+                }
             case 32:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
+                    break;
+                }
             case 18:
             case 16:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.UVTerrain;
-                mat.Matrix2 = dmat2;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UVTerrain;
+                    mat.Matrix2 = dmat2;
+                    break;
+                }
             case 3:
             case 2:
             case 1:
             case 0:
-            {
-                mat.Layer0.Mode = mat.Layer1.Mode;
-                mat.Matrix0 = dmat0;
-                mat.Matrix1 = dmat1;
-                mat.Matrix2 = dmat2;
-                break;
-            }
+                {
+                    mat.Layer0.Mode = mat.Layer1.Mode;
+                    mat.Matrix0 = dmat0;
+                    mat.Matrix1 = dmat1;
+                    mat.Matrix2 = dmat2;
+                    break;
+                }
             default:
-            {
-                mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
-                break;
-                //throw new NotImplementedException();
-            }
+                {
+                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
+                    break;
+                    //throw new NotImplementedException();
+                }
 
         }
     }

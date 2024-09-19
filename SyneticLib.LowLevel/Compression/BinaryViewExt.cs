@@ -15,7 +15,7 @@ public static class BinaryViewSyneticUtils
         var src = br.PeakStream;
         br.StreamStack.Create();
         var dst = br.PeakStream;
-        SynCompressor.Decompress(src, dst, (int)length);
+        //SynCompressor.Decompress(src, dst, (int)length);
         dst.Seek(0, SeekOrigin.Begin);
     }
 

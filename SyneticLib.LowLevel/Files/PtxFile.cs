@@ -25,7 +25,9 @@ public class PtxFile : BinaryFile, ITextureData<PtxFile.Level>
         Head = br.Read<MHead>();
 
         if (Head.Clear0 != 0)
+        {
             throw new InvalidDataException();
+        }
 
         Levels = new Level[Head.MipMapLevels];
         for (int i = 0; i < Levels.Length; i++)
@@ -33,6 +35,11 @@ public class PtxFile : BinaryFile, ITextureData<PtxFile.Level>
             var level = new Level();
             level.ReadFromView(br);
             Levels[i] = level;
+        }
+
+        if (br.PeakStream.Position != br.PeakStream.Length)
+        {
+            throw new InvalidDataException();
         }
     }
 
@@ -79,20 +86,12 @@ public class PtxFile : BinaryFile, ITextureData<PtxFile.Level>
 
             if (Head.SynSize > 0)
             {
-                //br.PeakStream.Seek(Head.SynSize, SeekOrigin.Current);
-                //Pixels = new byte[Head.Size];
+                var src = br.ReadArray<byte>(Head.SynSize);
+                var dst = new byte[Head.Size];
 
-                
-                var DecodeStream = new MemoryStream((int)Head.Size);
-                SynCompressor.Decompress(br.PeakStream, DecodeStream, (int)Head.Size);
-                Pixels = DecodeStream.ToArray();
-                long diff = Pixels.Length - Head.Size;
-                if (diff != 0)
-                {
-                    throw new InvalidDataException($"Invalid size (result:{Pixels.Length} != expected:{Head.Size}) diff:{diff}");
-                }
-                
+                    SynCompressor.Decompress(src, dst);
 
+                Pixels = dst;
             }
             else
             {

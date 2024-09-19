@@ -25,6 +25,7 @@ public struct TextureTransform
     public Transform4 U;
     public Transform4 V;
 
+    public readonly static TextureTransform Initial90;
     public readonly static TextureTransform Initial;
     public readonly static TextureTransform Empety;
 
@@ -36,6 +37,8 @@ public struct TextureTransform
         t.V.ScaleX = 1;
         t.V.ScaleY = -4.37114E-08f;
         Empety =  t;
+
+        Initial90 = CreateScale90Deg(1, 1);
 
         Initial = CreateScale(1, 1);
     }

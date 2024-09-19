@@ -69,7 +69,15 @@ public class ScenarioFiles
         RefreshTerrainMesh(GameVersion.WR2);
     }
 
+    public ScenarioFiles(string dirPath, string fileName) : this()
+    {
+        Load(dirPath, fileName);
+    }
 
+    public ScenarioFiles(string dirPath, string fileName, GameVersion version) : this()
+    {
+        Load(dirPath, fileName, version);
+    }
 
     public void Load(string dirPath, string fileName)
     {

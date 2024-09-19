@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib.Collections;
-
-internal class KeyedCollection
+namespace SyneticLib;
+public class AssemblerMesh
 {
+    AssemblerTriangle Triangles;
 }

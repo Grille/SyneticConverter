@@ -37,8 +37,6 @@ public unsafe class QadFile : BinaryFile
     public String32[] BumpTexNames;
     public String32[] PropClassObjNames;
     public MChunk[] Chunks;
-    public int[] ChunkDataPtr;
-    public ushort[] ChunkData;
     public AbstractMaterialType[] Materials;
     public MPolyRegion[] PolyRegions;
     public MPropInstance[] PropInstances;
@@ -48,6 +46,8 @@ public unsafe class QadFile : BinaryFile
     public MPropClass[] PropClassInfo;
     public MLight[] Lights;
 
+    public byte[] CollisionDataBuffer;
+
     public QadFile()
     {
         _version = GameVersion.WR2;
@@ -56,8 +56,6 @@ public unsafe class QadFile : BinaryFile
         BumpTexNames = Array.Empty<String32>();
         PropClassObjNames = Array.Empty<String32>();
         Chunks = Array.Empty<MChunk>();
-        ChunkDataPtr = Array.Empty<int>();
-        ChunkData = Array.Empty<ushort>();
         Materials = Array.Empty<AbstractMaterialType>();
         PolyRegions = Array.Empty<MPolyRegion>();
         PropInstances = Array.Empty<MPropInstance>();
@@ -66,6 +64,7 @@ public unsafe class QadFile : BinaryFile
         Sounds = Array.Empty<MSound>();
         PropClassInfo = Array.Empty<MPropClass>();
         Lights = Array.Empty<MLight>();
+        CollisionDataBuffer = Array.Empty<byte>();
     }
 
     unsafe void ReadHead(BinaryViewReader br)
@@ -107,9 +106,7 @@ public unsafe class QadFile : BinaryFile
         for (var i = 0; i < Head.BlockCount; i++)
             Chunks[i] = br.Read<MChunk>();
 
-        var blockX16 = Head.BlockCount * 16;
-        ChunkDataPtr = br.ReadArray<int>(blockX16);
-        ChunkData = br.ReadArray<ushort>((Head.ColliSize - ChunkDataPtr[0]) / 2);
+        CollisionDataBuffer = br.ReadArray<byte>(Head.CollisionBufferSize);
 
         PolyRegions = br.ReadArray<MPolyRegion>(Head.PolyRegionCount);
 
@@ -179,8 +176,7 @@ public unsafe class QadFile : BinaryFile
         }
 
         var blockx16 = Head.BlockCount * 16;
-        bw.WriteArray(ChunkDataPtr);
-        bw.WriteArray(ChunkData);
+        bw.WriteArray(CollisionDataBuffer);
 
         bw.WriteArray(PolyRegions);
 
@@ -391,7 +387,7 @@ public unsafe class QadFile : BinaryFile
 
         endPos += sizeof(MChunk) * Head.BlockCount;
 
-        endPos += Head.ColliSize;
+        endPos += Head.CollisionBufferSize;
 
         endPos += sizeof(MPolyRegion) * Head.PolyRegionCount;
 
@@ -429,7 +425,7 @@ public unsafe class QadFile : BinaryFile
     {
         public int WidthX, LengthZ, BlockCountX, BlockCountZ, BlockCount, PolyRegionCount;
         public ushort TexturesFileCount, BumpTexturesFileCount;
-        public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicsCount, ColliSize;
+        public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicsCount, CollisionBufferSize;
         public ushort LightCount;
         public byte FlagX1, FlagX2WR2, FlagX3, FlagX4, FlagX5WR2, FlagX6;
         public int SoundCount;
@@ -449,7 +445,7 @@ public unsafe class QadFile : BinaryFile
         public Vector3 Center;
         public float Radius;
         public SectionUInt16 Props, Lights;
-        public short Chunk65k, x1;
+        public short MeshOffsetIndex, x1;
     }
 
     public struct MPolyRegion
@@ -557,6 +553,14 @@ public unsafe class QadFile : BinaryFile
         };
 
         public int GetSortID(int count) => Layer0.GetSortID(count);
+    }
+
+    public struct MCollisionMeshPtr
+    {
+        public int Start;
+        public int End;
+
+        public int Length => End - Start;
     }
 
     public struct MPropInstance

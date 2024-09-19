@@ -7,7 +7,7 @@ using System.IO;
 
 using Grille.PipelineTool;
 using Grille.PipelineTool.IO;
-using SyneticLib.Conversion;
+using SyneticLib.Utils;
 
 namespace SyneticPipelineTool.Tasks;
 

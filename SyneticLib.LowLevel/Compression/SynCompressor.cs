@@ -8,75 +8,79 @@ using System.IO;
 namespace SyneticLib.LowLevel.Compression;
 public static class SynCompressor
 {
-    public static void Decompress(Stream src, Stream dst, int size)
+    public static void Decompress(byte[] src, byte[] dst)
     {
-        long endpos = src.Position + size;
-        if (endpos > src.Length)
-            throw new ArgumentOutOfRangeException();
+        byte[] d = src;
+        byte[] c = dst;
 
-        while (src.Position < endpos)
+        int ci = 0;
+        int curChr = 0; // current byte
+        int addv = 0;
+        int[] flag = new int[8];
+
+        do
         {
-            byte flagByte = (byte)src.ReadByte();
+
+            // Ensure ci + 1 is within the bounds of the array
+            if (ci + 1 >= d.Length)
+            {
+                Console.WriteLine("Attempted to read beyond the end of the data array.");
+                break; // Exit the loop or handle the situation appropriately
+            }
+
+            byte x = d[ci];
+            ci++;
+            if (x >= 128) { x -= 128; flag[7] = 1; } else flag[7] = 2;  // 2 means 0
+            if (x >= 64) { x -= 64; flag[6] = 1; } else flag[6] = 2;    // 1 - Take that
+            if (x >= 32) { x -= 32; flag[5] = 1; } else flag[5] = 2;    // 2 - Take from behind
+            if (x >= 16) { x -= 16; flag[4] = 1; } else flag[4] = 2;
+            if (x >= 8) { x -= 8; flag[3] = 1; } else flag[3] = 2;
+            if (x >= 4) { x -= 4; flag[2] = 1; } else flag[2] = 2;
+            if (x >= 2) { x -= 2; flag[1] = 1; } else flag[1] = 2;
+            if (x >= 1) { /* x -= 1; */ flag[0] = 1; } else flag[0] = 2;
 
             for (int i = 0; i < 8; i++)
             {
-                // false: Take from behind; true: Take that
-                bool flag = (byte)(flagByte >> i & 1) == 1;
-
-                if (flag)
+                if (flag[i] == 1)
                 {
-                    dst.WriteByte((byte)src.ReadByte());
+                    c[curChr] = d[ci];
+                    curChr++;
+                    ci++;
                 }
                 else
                 {
-                    DecompressBlock(src, dst);
+                    if (ci + 1 >= src.Length)
+                        break;
+
+                    int dist = d[ci] + ((d[ci + 1] & 0xF0) * 16); // 1 byte + 4 bits from 2nd byte
+                    int leng = (d[ci + 1] & 0x0F) + 3;
+
+                    if (curChr > (18 + addv + 4096))
+                        addv += 4096;
+
+                    for (int k = 0; k < leng; k++)
+                    {
+                        if (dist >= (curChr - addv))
+                        {
+                            if ((18 + k + dist + addv - 4096) <= 0)
+                                c[curChr + k] = (byte)' '; // If overlap backward
+                            else
+                                c[curChr + k] = c[18 + k + dist + addv - 4096];
+                        }
+                        else
+                        {
+                            if ((18 + k + dist + addv) > (curChr + k))
+                                c[curChr + k] = c[18 + k + dist + addv - 4096];
+                            else
+                                c[curChr + k] = c[18 + k + dist + addv];
+                        }
+                    }
+
+                    curChr += leng;
+                    ci += 2;
                 }
-
             }
         }
-
-        long diff = src.Position - endpos;
-
-        if (diff != 0)
-        {
-            throw new InvalidDataException($"Invalid position (result:{src.Position} != expected:{endpos}) diff:{diff}");
-        }
+        while (ci < src.Length);
     }
-
-    static void DecompressBlock(Stream src, Stream dst)
-    {
-        //1byte + 4bits from 2nd byte  Length is only last 4bits+3
-        byte head0 = (byte)src.ReadByte();
-        byte head1 = (byte)src.ReadByte();
-
-        int dist = head0 | (head1 & 0xF0) >> 8;
-        int leng = (head1 & 0x0F) + 3;
-
-        dst.Position += leng;
-
-        /*
-        if (idst > (18 + addv + 4096))
-            addv += 4096;
-
-        for (int i = 0; i < leng; i++)
-        {
-            if (dist >= (idst - addv))
-            {
-                if ((18 + i + dist + addv - 4096) <= 0)
-                    dst[idst + i] = 32;
-                else
-                    dst[idst + i] = dst[18 + i + dist + addv - 4096];
-            }
-            else
-            {
-                if ((18 + i + dist + addv) > (idst + i))
-                    dst[idst + i] = dst[18 + i + dist + addv - 4096];
-                else
-                    dst[idst + i] = dst[18 + i + dist + addv];
-            }
-        }
-        */
-    }
-
-
 }
