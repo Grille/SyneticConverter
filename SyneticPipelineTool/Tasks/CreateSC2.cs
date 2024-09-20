@@ -7,8 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Grille.PipelineTool;
-
-using SyneticLib.Files;
+using SyneticLib.Files.Krom;
 using SyneticLib.IO;
 using SyneticLib.Utils;
 

@@ -9,7 +9,7 @@ using SyneticLib.Files.Common;
 using Grille.IO.Interfaces;
 using Microsoft.VisualBasic;
 
-namespace SyneticLib.Files;
+namespace SyneticLib.Files.Krom;
 public class Sc2File : BinaryFile
 {
     public const uint Magic = 20075095;
@@ -106,7 +106,7 @@ public class Sc2File : BinaryFile
         public ushort TypeId;
         public ushort Sections;
         public ushort Order;
-         
+
         public string Name;
         public string MapImage;
 

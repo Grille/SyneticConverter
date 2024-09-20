@@ -89,7 +89,7 @@ public class PtxFile : BinaryFile, ITextureData<PtxFile.Level>
                 var src = br.ReadArray<byte>(Head.SynSize);
                 var dst = new byte[Head.Size];
 
-                    SynCompressor.Decompress(src, dst);
+                    SynDecompressor.Decompress(src, dst);
 
                 Pixels = dst;
             }

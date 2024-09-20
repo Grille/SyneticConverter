@@ -12,32 +12,25 @@ public unsafe static class DdsDecoder
 {
     public static void DecodeDxt1ToRgba32(byte* src, byte* dst, int width, int height)
     {
-        int blockCountX = (width + 3) / 4;
-        int blockCountY = (height + 3) / 4;
-        int blockSize = 8;
-
-        for (int y = 0; y < blockCountY; y++)
-        {
-            for (int x = 0; x < blockCountX; x++)
-            {
-                byte* blockSrc = src + (y * blockCountX + x) * blockSize;
-                DecompressBlockDxt1(blockSrc, dst, x * 4, y * 4, width);
-            }
-        }
+        DecodeDxtXToRgba32(src, dst, width, height, 8, &DecompressBlockDxt1);
     }
 
     public static void DecodeDxt5ToRgba32(byte* src, byte* dst, int width, int height)
     {
+        DecodeDxtXToRgba32(src, dst, width, height, 16, &DecompressBlockDxt5);
+    }
+
+    public static void DecodeDxtXToRgba32(byte* src, byte* dst, int width, int height, int blockSize, delegate*<byte*, byte*, int, int, int, void> decoder)
+    {
         int blockCountX = (width + 3) / 4;
         int blockCountY = (height + 3) / 4;
-        int blockSize = 16;
 
         for (int y = 0; y < blockCountY; y++)
         {
             for (int x = 0; x < blockCountX; x++)
             {
                 byte* blockSrc = src + (y * blockCountX + x) * blockSize;
-                DecompressBlockDxt5(blockSrc, dst, x * 4, y * 4, width);
+                decoder(blockSrc, dst, x * 4, y * 4, width);
             }
         }
     }

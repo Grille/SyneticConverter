@@ -10,14 +10,14 @@ using SyneticLib.Files;
 
 namespace SyneticPipelineTool.Tasks;
 
-[PipelineTask("Synetic/Decompress Syn Files")]
-public class DecompressSynFiles : PipelineTask
+[PipelineTask("Synetic/Extract Syn Files")]
+public class ExtractSynFiles : PipelineTask
 {
     protected override void OnInit()
     {
         Parameters.Def(ParameterTypes.Directory, "Directory Path", null, null, null);
-        Parameters.Def(ParameterTypes.Boolean, "Recursive", null, "false", null);
-        Parameters.Def(ParameterTypes.Boolean, "Remove Syn Files", null, "false", null);
+        Parameters.Def(ParameterTypes.Boolean, "Recursive", "Extract .syn files in subfolders recursively.", "false", null);
+        Parameters.Def(ParameterTypes.Boolean, "Remove Syn Files", "Delete .syn files after extraction.", "false", null);
 
     }
 
@@ -27,6 +27,6 @@ public class DecompressSynFiles : PipelineTask
         var arg1 = EvalParameter("Recursive") == "true";
         var arg2 = EvalParameter("Remove Syn Files") == "true";
 
-        SynFile.DecompressDirectory(arg0, arg1, arg2);
+        SynFile.ExtractFilesInDirectory(arg0, arg1, arg2);
     }
 }

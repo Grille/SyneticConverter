@@ -39,19 +39,19 @@ public class SynFile : BinaryFile
             var src = Data[i];
             var dst = new byte[head.TotalSize];
 
-            SynCompressor.Decompress(src, dst);
+            SynDecompressor.Decompress(src, dst);
             var dstPath = Path.Combine(dstDirectoryName, head.FileName);
             File.WriteAllBytes(dstPath, dst);
         }
     }
 
-    public static void DecompressDirectory(string path, bool recursive, bool removeSynFiles)
+    public static void ExtractFilesInDirectory(string dirPath, bool recursive, bool removeSynFiles)
     {
-        foreach (var file in Directory.GetFiles(path))
+        foreach (var file in Directory.GetFiles(dirPath))
         {
             if (Path.GetExtension(file).ToLower() == ".syn")
             {
-                ExtractToDirectory(file, path);
+                ExtractToDirectory(file, dirPath);
 
                 if (removeSynFiles)
                 {
@@ -62,9 +62,9 @@ public class SynFile : BinaryFile
 
         if (recursive)
         {
-            foreach (var dir in Directory.GetDirectories(path))
+            foreach (var dir in Directory.GetDirectories(dirPath))
             {
-                DecompressDirectory(dir, recursive, removeSynFiles);
+                ExtractFilesInDirectory(dir, recursive, removeSynFiles);
             }
         }
     }
