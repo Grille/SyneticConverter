@@ -7,163 +7,110 @@ using System.IO;
 using System.Globalization;
 using OpenTK.Mathematics;
 using SyneticLib.Files.Common;
+using System.Runtime.CompilerServices;
+using System.Reflection;
 
 namespace SyneticLib.Files;
-public class MtlFile : SyneticIniFile
+public class MtlFile : SyneticIniFile<MtlFile.MtlMaterial>
 {
-    public string[] ColSetInf;
-    public List<SMaterial> Materials;
+    public class MtlColor
+    {
+        public int Ambient;
+        public int Diffuse;
+        public int Reflect;
+        public int Specular;
+        public int Specular2;
+        public int XDiffuse;
+        public int XSpecular;
+    }
+
+    public class MtlMaterial : Dictionary<string, string>
+    {
+        public SyneticIniFileProperty Ambient { get; }
+        public SyneticIniFileProperty Diffuse { get; }
+        public SyneticIniFileProperty Reflect { get; }
+        public SyneticIniFileProperty Specular { get; }
+        public SyneticIniFileProperty Specular2 { get; }
+        public SyneticIniFileProperty XDiffuse { get; }
+        public SyneticIniFileProperty XSpecular { get; }
+
+        public MtlColor[] Colors
+        {
+            get
+            {
+                var ambient = Ambient.Hex24Array;
+                var diffuse = Diffuse.Hex24Array;
+                var reflect = Reflect.Hex24Array;
+                var specular = Specular.Hex24Array;
+                var specular2 = Specular2.Hex24Array;
+                var xDiffuse = XDiffuse.Hex24Array;
+                var xSpecular = XSpecular.Hex24Array;
+
+                var colors = new MtlColor[ambient.Length];
+
+                for (int i = 0; i < ambient.Length; i++)
+                {
+                    colors[i] = new MtlColor()
+                    {
+                        Ambient = ambient[i],
+                        Diffuse = diffuse[i],
+                        Reflect = reflect[i],
+                        Specular = specular[i],
+                        Specular2 = specular2[i],
+                        XDiffuse = xDiffuse[i],
+                        XSpecular = xSpecular[i]
+                    };
+                }
+
+                return colors;
+            }
+            set
+            {
+                var ambient = new int[value.Length];
+                var diffuse = new int[value.Length];
+                var reflect = new int[value.Length];
+                var specular = new int[value.Length];
+                var specular2 = new int[value.Length];
+                var xDiffuse = new int[value.Length];
+                var xSpecular = new int[value.Length];
+
+                for (int i = 0; i < value.Length; i++)
+                {
+                    ambient[i] = value[i].Ambient;
+                    diffuse[i] = value[i].Diffuse;
+                    reflect[i] = value[i].Reflect;
+                    specular[i] = value[i].Specular;
+                    specular2[i] = value[i].Specular2;
+                    xDiffuse[i] = value[i].XDiffuse;
+                    xSpecular[i] = value[i].XSpecular;
+                }
+
+                Ambient.Hex24Array = ambient;
+                Diffuse.Hex24Array = diffuse;
+                Specular.Hex24Array = reflect;
+                Specular.Hex24Array = specular;
+                Specular2.Hex24Array = specular2;
+                XDiffuse.Hex24Array = xDiffuse;
+                XSpecular.Hex24Array = xSpecular;
+            }
+        }
+
+        public MtlMaterial()
+        {
+            Ambient = new(this, "Ambient");
+            Diffuse = new(this, "Diffuse");
+            Reflect = new(this, "Reflect");
+            Specular = new(this, "Specular");
+            Specular2 = new(this, "Specular2");
+            XDiffuse = new(this, "XDiffuse");
+            XSpecular = new(this, "XSpecular");
+        }
+    }
+
+    public SyneticIniFileProperty ColSetInf { get; }
 
     public MtlFile()
     {
-        ColSetInf = Array.Empty<string>();
-        Materials = new();
-    }
-
-    protected override void OnRead()
-    {
-
-        if (Head.TryGetValue("ColSetInf", out var value))
-        {
-            ColSetInf = Head["ColSetInf"].Split(' ');
-        }
-        else
-        {
-            ColSetInf = new[] { "_default_" };
-        }
-
-        Materials.Clear();
-
-        foreach (var section in Sections)
-        {
-            var material = new SMaterial(section.Name, ColSetInf.Length);
-
-            foreach (var pair in section)
-            {
-                switch (pair.Key)
-                {
-                    case "Diffuse": ParseHexArray(material.Diffuse, pair.Value); break;
-                    case "Tex1Name": material.Tex1Name = ParseString(pair.Value); break;
-                    case "Tex2Name": material.Tex2Name = ParseString(pair.Value); break;
-                    case "Tex3Name": material.Tex3Name = ParseString(pair.Value); break;
-                }
-            }
-
-            Materials.Add(material);
-        }
-
-    }
-
-    protected override void OnWrite()
-    {
-
-    }
-
-    static void ParseHexArray(BgraColor[] dst, string src)
-    {
-        var colors = ParseHexArray(src);
-    }
-
-    static uint[] ParseHexArray(string value)
-    {
-        var split = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        uint[] result = new uint[split.Length];
-
-        for (int i = 0; i < split.Length; i++)
-        {
-            string nrstring = split[i].Substring(2, split[i].Length - 2);
-            result[i] = uint.Parse(nrstring, NumberStyles.HexNumber);
-        }
-
-        return result;
-    }
-
-    static string ParseString(string value)
-    {
-        return value.Trim('"', ' ');
-    }
-
-    //static int Parse
-
-    static float ParseSingle(string value)
-    {
-        return 0;
-    }
-
-    static Vector2 ParseVec2(string value)
-    {
-        var split = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        float x = float.Parse(split[0]);
-        float y = float.Parse(split[1]);
-
-        return new Vector2(x, y);
-    }
-
-    /*
-    uint[] ReadHexArray(Section section, string key, int size)
-    {
-        var split = section[key].Split(' ');
-
-
-        for (int i = 0;i< split.Length;i++)
-        {
-
-        }
-    }
-    */
-
-
-    public class SMaterial
-    {
-        public readonly string Name;
-        public readonly int Length;
-
-        public readonly BgraColor[] Diffuse;
-        public readonly BgraColor[] Ambient;
-        public readonly BgraColor[] Specular;
-        public readonly BgraColor[] Reflect;
-        public readonly BgraColor[] Specular2;
-        public readonly BgraColor[] XDiffuse;
-        public readonly BgraColor[] XSpecular;
-
-        public MMatClass MatClass;
-        public float Transparency;
-        public string Tex1Name;
-        public string Tex2Name;
-        public string Tex3Name;
-        public MTexFlags TexFlags;
-        public Vector2 TexOffset;
-        public Vector2 TexScale;
-        public float TexAngle;
-
-        public struct MMatClass
-        {
-            public byte A, B, C, D;
-        }
-
-        public struct MTexFlags
-        {
-            public byte A, B, C, D;
-        }
-
-        public SMaterial(string name, int length)
-        {
-            Name = name;
-            Length = length;
-
-            Tex1Name = string.Empty;
-            Tex2Name = string.Empty;
-            Tex3Name = string.Empty;
-
-            Diffuse = new BgraColor[length];
-            Ambient = new BgraColor[length];
-            Specular = new BgraColor[length];
-            Reflect = new BgraColor[length];
-            Specular2 = new BgraColor[length];
-            XDiffuse = new BgraColor[length];
-            XSpecular = new BgraColor[length];
-        }
+        ColSetInf = new(Head, "ColSetInf");
     }
 }

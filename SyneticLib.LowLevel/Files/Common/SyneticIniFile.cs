@@ -1,30 +1,23 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Grille.IO;
+using System.Runtime.CompilerServices;
 
 namespace SyneticLib.Files.Common;
-public abstract class SyneticIniFile : TextFile
+public abstract class SyneticIniFile<T> : TextFile where T : Dictionary<string, string>, new()
 {
-    public class Section : Dictionary<string, string>
-    {
-        public string Name;
-
-        public Section(string name)
-        {
-            Name = name;
-        }
-    }
-
-    public Section Head;
-    public List<Section> Sections;
+    public T Head { get; }
+    public Dictionary<string, T> Sections { get; }
 
     public SyneticIniFile()
     {
-        Head = new("Head");
+        Head = new();
         Sections = new();
     }
 
@@ -33,7 +26,7 @@ public abstract class SyneticIniFile : TextFile
         Head.Clear();
         Sections.Clear();
 
-        Section section = Head;
+        var section = Head;
         while (!r.EndOfStream)
         {
             var line = r.ReadLine();
@@ -50,26 +43,22 @@ public abstract class SyneticIniFile : TextFile
             switch (key)
             {
                 case "#":
-                    {
-                        section = new Section(value);
-                        Sections.Add(section);
-                        break;
-                    }
+                {
+                    section = new T();
+                    Sections[value] = section;
+                    break;
+                }
                 default:
-                    {
-                        section.Add(key, value);
-                        break;
-                    }
+                {
+                    section[key] = value;
+                    break;
+                }
             }
         }
-
-        OnRead();
     }
 
     public override void Serialize(StreamWriter w)
     {
-        OnWrite();
-
         if (Head.Count > 0)
         {
             foreach (var pair in Head)
@@ -81,16 +70,12 @@ public abstract class SyneticIniFile : TextFile
 
         foreach (var section in Sections)
         {
-            w.WriteLine($"# {section.Name}");
-            foreach (var pair in section)
+            w.WriteLine($"# {section.Key}");
+            foreach (var entry in section.Value)
             {
-                w.WriteLine($"{pair.Key} {pair.Value}");
+                w.WriteLine($"{entry.Key} {entry.Value}");
             }
             w.WriteLine();
         }
     }
-
-    protected abstract void OnRead();
-
-    protected abstract void OnWrite();
 }

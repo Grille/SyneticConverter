@@ -6,10 +6,10 @@ using OpenTK.Mathematics;
 namespace SyneticLib;
 public struct BgraColor
 {
-    public byte B;
-    public byte G;
-    public byte R;
     public byte A;
+    public byte R;
+    public byte G;
+    public byte B;
 
     public override string ToString()
     {

@@ -8,14 +8,21 @@ using Grille.IO;
 using SyneticLib.Files.Common;
 
 namespace SyneticLib.Files;
-public class SkyFile : SyneticIniFile
+public class SkyFile : SyneticIniFile<SkyFile.SkyItem>
 {
-    List<SkyData> Skies { get; }
+    public class SkyItem : Dictionary<string, string>
+    {
+
+    }
+
+    //List<SkyData> Skies { get; }
 
     public SkyFile()
     {
-        Skies = new List<SkyData>();
+        //Skies = new List<SkyData>();
     }
+
+    /*
 
     protected override void OnRead()
     {
@@ -87,4 +94,5 @@ public class SkyFile : SyneticIniFile
             Name = name;
         }
     }
+    */
 }

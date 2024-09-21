@@ -28,7 +28,7 @@ public static class AppSettings
     public static void Save(string filePath = DefaultFileName)
     {
         var iniFile = new AppSettingsFile();
-        iniFile.Games = Games;
+        //iniFile.Games = Games;
         iniFile.Save(filePath);
     }
 
@@ -45,7 +45,7 @@ public static class AppSettings
         var iniFile = new AppSettingsFile();
         iniFile.Load(filePath);
 
-        Games = iniFile.Games;
+        //Games = iniFile.Games;
 
         if (Games == null)
         {

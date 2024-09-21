@@ -375,8 +375,11 @@ public static class WR1ToWR2FileConv
         var mtl = new MtlFile();
 
         mtl.Load(mtlpath);
-        mtl.Sections[0]["Diffuse"] = diffuse;
-        mtl.Sections[0]["Ambient"] = ambient;
+        foreach (var material in mtl.Sections.Values)
+        {
+            material.Ambient.Value = ambient;
+            material.Diffuse.Value = diffuse;
+        }
         mtl.Save(mtlpath);
 
 

@@ -46,20 +46,20 @@ public static partial class Imports
 
         for (var i = 0; i < mox.Head.MatCount; i++)
         {
-            if (i >= mtl.Materials.Count)
+            if (i >= mtl.Sections.Count)
             {
                 //Target.Materials.Add(dstMat);
             }
             else
             {
-                var srcMtl = mtl.Materials[i];
+                //var srcMtl = mtl.Sections[i];
                 var dstMat = new ModelMaterial();
 
                 //dstMat.Diffuse = BgraColor.FromInt(srcMtl.Diffuse[0]).ToNormalizedVector3();
 
-                dstMat.TextureSlots[0].TryEnableByFile(textures, srcMtl.Tex1Name);
-                dstMat.TextureSlots[1].TryEnableByFile(textures, srcMtl.Tex2Name);
-                dstMat.TextureSlots[2].TryEnableByFile(textures, srcMtl.Tex3Name);
+                //dstMat.TextureSlots[0].TryEnableByFile(textures, srcMtl.Tex1Name);
+                //dstMat.TextureSlots[1].TryEnableByFile(textures, srcMtl.Tex2Name);
+                //dstMat.TextureSlots[2].TryEnableByFile(textures, srcMtl.Tex3Name);
 
                 materials.Add(dstMat);
             }
