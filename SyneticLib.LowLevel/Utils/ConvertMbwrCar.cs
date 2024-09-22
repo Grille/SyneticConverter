@@ -150,8 +150,15 @@ public static class ConvertMbwrCar
             _ => 0.8f,
         };
 
-        specular2 *= 0.75f;
-        diffuse = diffuse * df;
+        float sf = index switch
+        {
+            5 => 0.5f,
+            9 => 0.5f,
+            _ => 0.75f,
+        };
+
+        diffuse *= df;
+        specular2 *= sf;
 
         color.Diffuse = ((Color4)diffuse).ToArgb();
         color.Specular = ((Color4)specular).ToArgb();

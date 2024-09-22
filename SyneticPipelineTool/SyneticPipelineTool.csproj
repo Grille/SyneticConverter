@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grille.PipelineTool" Version="0.3.7" />
+    <PackageReference Include="Grille.PipelineTool" Version="0.3.8" />
     <PackageReference Include="OpenTK.Mathematics" Version="4.8.2" />
   </ItemGroup>
 
