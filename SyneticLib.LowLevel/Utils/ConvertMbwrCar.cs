@@ -9,10 +9,37 @@ using SyneticLib.Files;
 using System.Drawing;
 using OpenTK.Mathematics;
 
+using WR1IDX = SyneticLib.Files.MtlFile.WR1ColorIndex;
+using WR2IDX = SyneticLib.Files.MtlFile.WR2ColorIndex;
+
 namespace SyneticLib.Utils;
 
 public static class ConvertMbwrCar
 {
+    public static IReadOnlyDictionary<int, int> ColorSwapDict;
+
+    static ConvertMbwrCar()
+    {
+        ColorSwapDict = new Dictionary<int, int>(15)
+        {
+            {WR1IDX.Schwarz, WR2IDX.Schwarz },
+            {WR1IDX.Rot, WR2IDX.Rot1 },
+            {WR1IDX.DunkelRot, WR2IDX.Rot2 },
+            {WR1IDX.Gelb, WR2IDX.Gelb1 },
+            {WR1IDX.Gold, WR2IDX.DunkelRot },
+            {WR1IDX.Weiss, WR2IDX.Weiss },
+            {WR1IDX.Anthrazit, WR2IDX.Anthrazit },
+            {WR1IDX.DunkelGruen, WR2IDX.DunkelGruen1 },
+            {WR1IDX.Blau, WR2IDX.Blau1 },
+            {WR1IDX.HellBlau, WR2IDX.Blau2 },
+            {WR1IDX.QuarzBlau, WR2IDX.QuarzBlau },
+            {WR1IDX.Gruen, WR2IDX.DunkelGruen2 },
+            {WR1IDX.Silber, WR2IDX.Silber1 },
+            {WR1IDX.Heliodor, WR2IDX.Gelb2 },
+            {WR1IDX.Tuerkis, WR2IDX.Silber2 },
+        };
+    }
+
     public static void Convert(string dirPath, string fileName)
     {
         var driverDirPath = Path.Combine(dirPath, "driver");
@@ -105,25 +132,19 @@ public static class ConvertMbwrCar
             return;
         }
 
+        if (srcColors.Length != 15)
+        {
+            throw new InvalidDataException();
+        }
+
         var dstColors = new MtlFile.MtlColor[srcColors.Length];
 
-        dstColors[0] = srcColors[0]; //b
-        dstColors[1] = srcColors[1]; //r0
-        dstColors[2] = srcColors[2]; //r1
-        dstColors[3] = srcColors[4]; //y->go
-        dstColors[4] = srcColors[3]; //go->y
-        dstColors[5] = srcColors[13]; //w->hg
-        dstColors[6] = srcColors[5]; //gray->white
-        dstColors[7] = srcColors[6]; //dgreen->gray
-        dstColors[8] = srcColors[7]; //dblue->dgreen
-        dstColors[9] = srcColors[11]; //blue->green
-        dstColors[10] = srcColors[9]; //lblue -> blue
-        dstColors[11] = srcColors[10]; //green -> lblue
-        dstColors[12] = srcColors[8]; //v->dblue
-        dstColors[13] = srcColors[12]; //hg->silver
-        dstColors[14] = srcColors[14];
+        for (int isrc = 0; isrc < 15; isrc++)
+        {
+            dstColors[ColorSwapDict[isrc]] = srcColors[isrc];
+        }
 
-        for (int i = 0; i < dstColors.Length; i++)
+        for (int i = 0; i < 15; i++)
         {
             var color = dstColors[i];
             Material(color, i);
@@ -142,18 +163,22 @@ public static class ConvertMbwrCar
 
         float df = index switch
         {
-            3 => 0.5f, // gold
-            5 => 0.5f, // h-green
-            6 => 0.9f,
-            9 => 0.5f, // green
-            14 => 0.5f,
+            WR2IDX.Blau2 => 0.5f,
+            WR2IDX.DunkelRot => 0.5f, // gold
+            WR2IDX.Gelb1 => 0.9f,
+            WR2IDX.Gelb2 => 0.5f, // h-green
+            WR2IDX.Weiss => 0.9f,
+            WR2IDX.DunkelGruen2 => 0.5f, // green
+            WR2IDX.Silber2 => 0.5f,
             _ => 0.8f,
         };
 
         float sf = index switch
         {
-            5 => 0.5f,
-            9 => 0.5f,
+            WR2IDX.Gelb1 => 0.9f,
+            WR2IDX.Weiss => 0.9f,
+            WR2IDX.Gelb2 => 0.5f,
+            WR2IDX.DunkelGruen2 => 0.5f,
             _ => 0.75f,
         };
 

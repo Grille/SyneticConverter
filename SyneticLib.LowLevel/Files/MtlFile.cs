@@ -13,6 +13,44 @@ using System.Reflection;
 namespace SyneticLib.Files;
 public class MtlFile : SyneticIniFile<MtlFile.MtlMaterial>
 {
+    public static class WR1ColorIndex
+    {
+        public const int Schwarz = 0;
+        public const int Rot = 1;
+        public const int DunkelRot = 2;
+        public const int Gelb = 3;
+        public const int Gold = 4;
+        public const int Weiss = 5;
+        public const int Anthrazit = 6;
+        public const int DunkelGruen = 7;
+        public const int Blau = 8;
+        public const int HellBlau = 9;
+        public const int QuarzBlau = 10;
+        public const int Gruen = 11;
+        public const int Silber = 12;
+        public const int Heliodor = 13;
+        public const int Tuerkis = 14;
+    }
+
+    public static class WR2ColorIndex
+    {
+        public const int Schwarz = 0;
+        public const int Rot1 = 1;
+        public const int Rot2 = 2;
+        public const int DunkelRot = 3;
+        public const int Gelb1 = 4;
+        public const int Gelb2 = 5;
+        public const int Weiss = 6;
+        public const int Anthrazit = 7;
+        public const int DunkelGruen1 = 8;
+        public const int DunkelGruen2 = 9;
+        public const int Blau1 = 10;
+        public const int QuarzBlau = 11;
+        public const int Blau2 = 12;
+        public const int Silber1 = 13;
+        public const int Silber2 = 14;
+    }
+
     public class MtlColor
     {
         public int Ambient;
