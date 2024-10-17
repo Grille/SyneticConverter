@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Reflection;
 
 namespace SyneticLib.Files;
-public class MtlFile : SyneticIniFile<MtlFile.MtlMaterial>
+public class MtlFile : SyneticCfgFile<MtlFile.MtlMaterial>
 {
     public static class WR1ColorIndex
     {
@@ -51,93 +51,88 @@ public class MtlFile : SyneticIniFile<MtlFile.MtlMaterial>
         public const int Silber2 = 14;
     }
 
-    public class MtlColor
+    public static class PropertySerializer
     {
-        public int Ambient;
-        public int Diffuse;
-        public int Reflect;
-        public int Specular;
-        public int Specular2;
-        public int XDiffuse;
-        public int XSpecular;
+        public static int DeserializeHexNumber(string value)
+        {
+            return int.Parse(value.Substring(2), NumberStyles.HexNumber);
+        }
+
+        public static string SerializeHexNumber(int value)
+        {
+            return $"{value & 0x00ffffff:x6}";
+        }
+
+        public static float DeserializePercentage(string value)
+        {
+            return int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture) / 100f;
+        }
+
+        public static string SerializePercentage(float value)
+        {
+            return $"{(int)(value * 100):3}";
+        }
+
+        public static float DeserializeSingle(string value)
+        {
+            return float.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
+        }
+
+        public static string SerializeSingle(float value)
+        {
+            return $"{value:0.000000}";
+        }
+    }
+
+    public class HexArrayProperty : SyneticCfgFileArrayProperty<int>
+    {
+        public HexArrayProperty(Dictionary<string, string> dict, string key) : base(dict, key) { }
+
+        protected override int DeserializeItem(string value) => PropertySerializer.DeserializeHexNumber(value);
+
+        protected override string SerializeItem(int value) => PropertySerializer.SerializeHexNumber(value);
+    }
+
+    public class SingleProperty : SyneticCfgFileProperty<float>
+    {
+        public SingleProperty(Dictionary<string, string> dict, string key) : base(dict, key) { }
+
+        protected override float Deserialize(string value) => PropertySerializer.DeserializeSingle(value);
+
+        protected override string Serialize(float value) => PropertySerializer.SerializeSingle(value);
+    }
+
+    public class PercentageProperty : SyneticCfgFileProperty<float>
+    {
+        public PercentageProperty(Dictionary<string, string> dict, string key) : base(dict, key) { }
+
+        protected override float Deserialize(string value) => PropertySerializer.DeserializePercentage(value);
+
+        protected override string Serialize(float value) => PropertySerializer.SerializePercentage(value);
     }
 
     public class MtlMaterial : Dictionary<string, string>
     {
-        public SyneticIniFileProperty Ambient { get; }
-        public SyneticIniFileProperty Diffuse { get; }
-        public SyneticIniFileProperty Reflect { get; }
-        public SyneticIniFileProperty Specular { get; }
-        public SyneticIniFileProperty Specular2 { get; }
-        public SyneticIniFileProperty XDiffuse { get; }
-        public SyneticIniFileProperty XSpecular { get; }
-
-        public MtlColor[] Colors
-        {
-            get
-            {
-                var ambient = Ambient.Hex24Array;
-                var diffuse = Diffuse.Hex24Array;
-                var reflect = Reflect.Hex24Array;
-                var specular = Specular.Hex24Array;
-                var specular2 = Specular2.Hex24Array;
-                var xDiffuse = XDiffuse.Hex24Array;
-                var xSpecular = XSpecular.Hex24Array;
-
-                var colors = new MtlColor[ambient.Length];
-
-                for (int i = 0; i < ambient.Length; i++)
-                {
-                    colors[i] = new MtlColor()
-                    {
-                        Ambient = ambient[i],
-                        Diffuse = diffuse[i],
-                        Reflect = reflect[i],
-                        Specular = specular[i],
-                        Specular2 = specular2[i],
-                        XDiffuse = xDiffuse[i],
-                        XSpecular = xSpecular[i]
-                    };
-                }
-
-                return colors;
-            }
-            set
-            {
-                var ambient = new int[value.Length];
-                var diffuse = new int[value.Length];
-                var reflect = new int[value.Length];
-                var specular = new int[value.Length];
-                var specular2 = new int[value.Length];
-                var xDiffuse = new int[value.Length];
-                var xSpecular = new int[value.Length];
-
-                for (int i = 0; i < value.Length; i++)
-                {
-                    ambient[i] = value[i].Ambient;
-                    diffuse[i] = value[i].Diffuse;
-                    reflect[i] = value[i].Reflect;
-                    specular[i] = value[i].Specular;
-                    specular2[i] = value[i].Specular2;
-                    xDiffuse[i] = value[i].XDiffuse;
-                    xSpecular[i] = value[i].XSpecular;
-                }
-
-                Ambient.Hex24Array = ambient;
-                Diffuse.Hex24Array = diffuse;
-                Specular.Hex24Array = reflect;
-                Specular.Hex24Array = specular;
-                Specular2.Hex24Array = specular2;
-                XDiffuse.Hex24Array = xDiffuse;
-                XSpecular.Hex24Array = xSpecular;
-            }
-        }
+        public PercentageProperty Alpha { get; }
+        public SingleProperty Transparency { get; }
+        public HexArrayProperty Ambient { get; }
+        public HexArrayProperty Diffuse { get; }
+        public HexArrayProperty Reflect { get; }
+        public HexArrayProperty Reflect2 { get; }
+        public HexArrayProperty Specular { get; }
+        public HexArrayProperty Specular2 { get; }
+        public HexArrayProperty XDiffuse { get; }
+        public HexArrayProperty XSpecular { get; }
 
         public MtlMaterial()
         {
+            Alpha = new(this, "Alpha");
+            Transparency = new(this, "Transparency");
+
             Ambient = new(this, "Ambient");
             Diffuse = new(this, "Diffuse");
             Reflect = new(this, "Reflect");
+            Reflect2 = new(this, "Reflect2");
             Specular = new(this, "Specular");
             Specular2 = new(this, "Specular2");
             XDiffuse = new(this, "XDiffuse");
@@ -145,7 +140,7 @@ public class MtlFile : SyneticIniFile<MtlFile.MtlMaterial>
         }
     }
 
-    public SyneticIniFileProperty ColSetInf { get; }
+    public SyneticCfgFileProperty ColSetInf { get; }
 
     public MtlFile()
     {

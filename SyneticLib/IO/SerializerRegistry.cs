@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +11,8 @@ namespace SyneticLib.IO;
 public class SerializerRegistry<T> : IEnumerable<ISerializer<T>>
 {
     private readonly Dictionary<string, ISerializer<T>> _dict = new();
+
+    public Dictionary<string, ISerializer<T>>.KeyCollection Keys => _dict.Keys;
 
     public void Add(string key, ISerializer<T> obj)
     {

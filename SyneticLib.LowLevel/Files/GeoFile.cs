@@ -140,7 +140,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
         public int Clear0, Clear1, Clear2;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct MVertex
     {
         public Vector3 Position;
@@ -148,7 +148,8 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
         public Vector2 UV0;
         public Vector2 UV1;
         public BlendColor Blend;
-        public BgraColor Color;
+        public RgbColor Color;
+        public byte Unknown0;
 
         public static implicit operator Vertex(MVertex a) => new Vertex()
         {
@@ -158,6 +159,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
             UV1 = a.UV1,
             RGBABlend = a.Blend,
             LightColor = a.Color.ToNormalizedRgbVector3(),
+            Unknown0 = a.Unknown0,
         };
 
         public static implicit operator MVertex(Vertex a) => new MVertex()
@@ -167,7 +169,8 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
             UV0 = a.UV0,
             UV1 = a.UV1,
             Blend = a.RGBABlend,
-            Color = BgraColor.FromNormalizedRgbVector3(a.LightColor),
+            Color = RgbColor.FromNormalizedRgbVector3(a.LightColor),
+            Unknown0 = (byte)a.Unknown0,
         };
 
     }

@@ -114,13 +114,21 @@ public static class ConvertMbwrCar
 
     static void Material(MtlFile.MtlMaterial mat)
     {
-        var srcColors = mat.Colors;
+        var diffuseArray = mat.Diffuse.GetObject();
+        var specular2Array = mat.Specular2.GetObject();
 
-        var diffuse = srcColors[0].Diffuse;
-        bool equal = true;
-        for (int i = 1; i < srcColors.Length; i++)
+        int length = diffuseArray.Length;
+
+        if (length != 15)
         {
-            if (srcColors[i].Diffuse != diffuse)
+            throw new InvalidDataException();
+        }
+
+        var diffuse = diffuseArray[0];
+        bool equal = true;
+        for (int i = 1; i < length; i++)
+        {
+            if (diffuseArray[i] != diffuse)
             {
                 equal = false;
                 break;
@@ -132,34 +140,34 @@ public static class ConvertMbwrCar
             return;
         }
 
-        if (srcColors.Length != 15)
+        var diffuseArrayDst = new int[length];
+        var specular2ArrayDst = new int[length];
+
+        for (int isrc = 0; isrc < length; isrc++)
         {
-            throw new InvalidDataException();
+            int idst = ColorSwapDict[isrc];
+            diffuseArrayDst[idst] = diffuseArray[isrc];
+            specular2Array[idst] = specular2Array[isrc];
         }
 
-        var dstColors = new MtlFile.MtlColor[srcColors.Length];
+        mat.Diffuse.Object = diffuseArrayDst;
+        mat.Specular2.Object = specular2ArrayDst;
 
-        for (int isrc = 0; isrc < 15; isrc++)
+        for (int i = 0; i < length; i++)
         {
-            dstColors[ColorSwapDict[isrc]] = srcColors[isrc];
+            Material(mat, i);
         }
 
-        for (int i = 0; i < 15; i++)
-        {
-            var color = dstColors[i];
-            Material(color, i);
-        }
-
-        mat.Colors = dstColors;
+        mat.Diffuse.Flush();
+        mat.Specular2.Flush();
     }
 
-    static void Material(MtlFile.MtlColor color, int index)
+    static void Material(MtlFile.MtlMaterial material, int index)
     {
         static Vector4 Input(int value) => (Vector4)(Color4)Color.FromArgb(value);
 
-        var diffuse = Input(color.Diffuse);
-        var specular = Input(color.Specular);
-        var specular2 = Input(color.Specular2);
+        var diffuse = Input(material.Diffuse.Object![index]);
+        var specular2 = Input(material.Specular2.Object![index]);
 
         float df = index switch
         {
@@ -185,8 +193,7 @@ public static class ConvertMbwrCar
         diffuse *= df;
         specular2 *= sf;
 
-        color.Diffuse = ((Color4)diffuse).ToArgb();
-        color.Specular = ((Color4)specular).ToArgb();
-        color.Specular2 = ((Color4)specular2).ToArgb();
+        material.Diffuse.Object![index] = ((Color4)diffuse).ToArgb();
+        material.Specular2.Object![index] = ((Color4)specular2).ToArgb();
     }
 }

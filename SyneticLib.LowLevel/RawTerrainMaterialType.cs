@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace SyneticLib;
 
-public enum TerrainMaterialTypeWR2 : ushort
+public enum OldTerrainMaterialTypeWR2 : ushort
 {
     Terrain = 0,
-    UVTerrain = 16,
-    UV = 32,
-    Reflective = 112,
-    Road0 = 128,
+    Road = 16,//1
+    UV = 32,//2
+    Reflective = 112,//7
+    Road0 = 128,//8
     Road1 = 144,
     Road2 = 160,
     Road3 = 176,
@@ -21,6 +21,23 @@ public enum TerrainMaterialTypeWR2 : ushort
     Water = 224,
     AlphaBlend = 240,
 }
+
+/*
+ * public enum TerrainMaterialTypeWR2 : ushort
+{
+    Terrain = 0,
+    Road = 16,//1
+    UV = 32,//2
+    Reflective = 112,//7
+    Road0 = 128,//8
+    Road1 = 144,
+    Road2 = 160,
+    Road3 = 176,
+    AlphaClip = 208,
+    Water = 224,
+    AlphaBlend = 240,
+}
+*/
 
 public enum TerrainMaterialTypeMBWR : ushort
 {
@@ -37,60 +54,59 @@ public enum TerrainMaterialTypeMBWR : ushort
     AlphaBlend = 240,
 }
 
-public enum TerrainMaterialTypeC11 : ushort
+public enum OldTerrainMaterialTypeC11 : ushort
 {
     Terrain = 0,
-    UVTerrain = 16,
-    UV = 32,
-    Road0 = 240,
-    Reflective = 192,
-    AlphaClip = 288,
-    Water = 320,
-    AlphaBlend = 240,
+    UVTerrain = 16,//L1Diff
+    UV = 32,//L1Refl
+    Road0 = 240,//L3ReflDiffDiff 15
+    Reflective = 192,//L2ReflDiffWin12 12
+    AlphaClip = 288,//L2DiffDiff12ColKey1
+    Water = 320,//L2Water
+    AlphaBlend = 240,//L3ReflReflDiff
 }
 
-public enum _TerrainMaterialTypeWR2 : ushort
+public enum TerrainMaterialTypeWR2 : ushort
 {
     Terrain,
     Road,
-    _1Layer_refl,
-    _2Layer_refl1,
-    _2Layer_refl2,
-    _2Layer_refl_ovl_t,
-    _2Layer_refl_ovl,
+    L1Refl,
+    L2Refl1,
+    L2Refl2,
+    L2ReflOvlT,
+    L2ReflOvl,
     Windows,
-    _1Layer_spec,
-    _2Layer_spec_faded,
-    _2Layer_spec_overlay_t,
-    _2Layer_spec_overlay,
-    None0,
+    L1Spec,
+    L2SpecFaded,
+    L2SpecOverlayT,
+    L2SpecOverlay,
+    Unused0,
     Colorkey,
     Water,
     Alpha,
 }
-/*
-public enum _TerrainMaterialTypeC11 : ushort
+
+public enum TerrainMaterialTypeC11 : ushort
 {
-    _4L_diff L 1,2,3,4
-    _1L_diff
-    _1L_refl
-    _1L_metal
-    _1L_spec
-    _2L_diff diff L 1,2
-    _2L_diff diff L 1,3
-    _2L_refl diff L 1,2
-    _2L_refl diff L 1,3
-    _2L_metal diff L 1,2
-    _2L_spec spec L 1,2
-    _2L_spec diff L 1,3
-    _2L_refl diff win L 1,2
-    _3L_diff diff diff
-    _3L_refl diff diff
-    _3L_refl refl diff
-    _3L_spec spec diff
-    _3L_spec diff diff
-    _2L_diff diff L 1,2 ColKey L 1
-    _2L_refl diff L 1,2 ColKey L 1,2
-    _2L_Water
+    L4Diff1234,
+    L1Diff,
+    L1Refl,
+    L1metal,
+    L1Spec,
+    L2DiffDiff12,
+    L2DiffDiff13,
+    L2ReflDiff12,
+    L2ReflDiff13,
+    L2MetalDiff12,
+    L2SpecSpec12,
+    L2SpecDiff13,
+    L2ReflDiffWin12,
+    L3DiffDiffDiff,
+    L3ReflDiffDiff,
+    L3ReflReflDiff,
+    L3SpecSpecDiff,
+    L3SpecDiffDiff,
+    L2DiffDiff12ColKey1,
+    L2ReflDiff12ColKey12,
+    L2Water
 }
-*/

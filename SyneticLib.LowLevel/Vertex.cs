@@ -28,7 +28,8 @@ public struct Vertex
         public const int Blending = UV1 + size2;
         public const int LightColor = Blending + size3;
         public const int Shadow = LightColor + size3;
-        public const int Size = Shadow + size1;
+        public const int Unknown0 = Shadow + size1;
+        public const int Size = Unknown0 + size1;
     }
 
 
@@ -54,10 +55,13 @@ public struct Vertex
     [FieldOffset(Layout.Shadow)]
     public float Shadow;
 
+    [FieldOffset(Layout.Unknown0)]
+    public float Unknown0;
+
     public BgraColor RGBANormal
     {
-        get => BgraColor.FromArgb(0, (byte)(Normal.X * 255), (byte)(Normal.Y * 255), (byte)(Normal.Z * 255));
-        set => Normal = new Vector3(value.R / 255f, value.G / 255f, value.B / 255f);
+        get => BgraColor.FromArgb((byte)(Normal.X * 255), (byte)(Normal.Y * 255), (byte)(Normal.Z * 255),0);
+        set => Normal = new Vector3(value.A / 255f, value.R / 255f, value.G / 255f);
     }
 
     public BlendColor RGBABlend

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 using Grille.IO;
 using SyneticLib.Files.Common;
+using System.Runtime.InteropServices;
 
 namespace SyneticLib.Files;
 public class VtxFile : BinaryFile, IVertexData, IIndexDataOffsets
@@ -44,13 +45,15 @@ public class VtxFile : BinaryFile, IVertexData, IIndexDataOffsets
             bw.Write<MVertex>(Vertecis[i]);
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct MVertex
     {
         public Vector3 Position;
         public BgraColor Normal;
         public Vector2 UV;
         public BlendColor Blend;
-        public BgraColor Color;
+        public RgbColor Color;
+        public byte Unknown0;
 
         public static implicit operator Vertex(MVertex a) => new Vertex()
         {
@@ -60,6 +63,7 @@ public class VtxFile : BinaryFile, IVertexData, IIndexDataOffsets
             UV1 = Vector2.Zero,
             RGBABlend = a.Blend,
             LightColor = a.Color.ToNormalizedRgbVector3(),
+            Unknown0 = a.Unknown0,
         };
 
         public static implicit operator MVertex(Vertex a) => new MVertex()
@@ -68,7 +72,8 @@ public class VtxFile : BinaryFile, IVertexData, IIndexDataOffsets
             Normal = a.RGBANormal,
             UV = a.UV0,
             Blend = a.RGBABlend,
-            Color = BgraColor.FromNormalizedRgbVector3(a.LightColor),
+            Color = RgbColor.FromNormalizedRgbVector3(a.LightColor),
+            Unknown0 = (byte)a.Unknown0,
         };
     }
 }

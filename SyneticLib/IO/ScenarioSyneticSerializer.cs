@@ -28,7 +28,7 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
     {
         var files = new ScenarioFiles();
 
-        files.Load(dirPath, fileName);
+        files.Load(dirPath, fileName, GameVersion.WR2);
 
         var syn = files.Syn;
         var lvl = files.Lvl;

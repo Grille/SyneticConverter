@@ -5,8 +5,8 @@ public static unsafe class TextureSerialization
     public static void Run()
     {
         Section("Texture Serialization");
-        Test("R8", R8);
-        Test("Rgb32", Rgb32);
+        R8();
+        Rgb32();
     }
 
     static void R8()
@@ -38,18 +38,22 @@ public static unsafe class TextureSerialization
     static void TextureSerializer(Texture texture, Texture? excpected = null)
     {
         if (excpected == null) excpected = texture;
-        var serializers = new IFileSerializer<Texture>[] 
+
+        foreach (var key in Serializers.Texture.Registry.Keys)
         {
-            Serializers.Texture.Dds, Serializers.Texture.Tga, Serializers.Texture.Ptx
-        };
-        foreach (var serializer in serializers)
-        {
-            var result = TextureSerializer(texture, serializer);
-            AssertTextureDataEqual(result, excpected);
+            var serializer = Serializers.Texture.Registry[key];
+            if (serializer is IFileSerializer<Texture> fserializer)
+            {
+                Test($"{texture.Format} {key}", () =>
+                {
+                    var result = TextureSerializer(texture, fserializer);
+                    AssertTextureDataEqual(excpected, result);
+                });
+            }
         }
     }
 
-    static Texture? TextureSerializer(Texture texture, IFileSerializer<Texture> serializer)
+    static Texture TextureSerializer(Texture texture, IFileSerializer<Texture> serializer)
     {
         var name = serializer.GetType().Name;
         using var stream = new MemoryStream();
@@ -72,8 +76,12 @@ public static unsafe class TextureSerialization
         }
     }
 
-    static void AssertTextureDataEqual(Texture? a, Texture? b)
+    static void AssertTextureDataEqual(Texture a, Texture b)
     {
+        if (a.Format != b.Format)
+        {
+            Warn($"Format changed from {a.Format} to {b.Format}");
+        }
         Assert.IsEqual(a.Levels.Length, b.Levels.Length);
 
         for (int i = 0; i < a.Levels.Length; i++)

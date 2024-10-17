@@ -10,12 +10,12 @@ using Grille.IO;
 using System.Runtime.CompilerServices;
 
 namespace SyneticLib.Files.Common;
-public abstract class SyneticIniFile<T> : TextFile where T : Dictionary<string, string>, new()
+public abstract class SyneticCfgFile<T> : TextFile where T : Dictionary<string, string>, new()
 {
     public T Head { get; }
     public Dictionary<string, T> Sections { get; }
 
-    public SyneticIniFile()
+    public SyneticCfgFile()
     {
         Head = new();
         Sections = new();

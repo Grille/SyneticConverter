@@ -9,7 +9,7 @@ using SyneticLib.Files;
 
 namespace SyneticLib.Utils;
 
-internal class WR2CobFileCreator
+public class WR2CobFileCreator
 {
     public static void CreateCobFiles(string path)
     {

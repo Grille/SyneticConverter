@@ -10,6 +10,8 @@ using OpenTK.Mathematics;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using static SyneticLib.Files.CpoFile;
+using System.Drawing;
+using System.Reflection;
 
 namespace SyneticLib.Utils;
 
@@ -19,6 +21,7 @@ public static class C11ToWR2FileConv
 
     static readonly TextureTransform Matrix64;
     static readonly TextureTransform Matrix128;
+    static readonly TextureTransform Matrix256;
     static readonly TextureTransform Matrix512;
 
     static C11ToWR2FileConv()
@@ -26,6 +29,7 @@ public static class C11ToWR2FileConv
         MatrixUV = TextureTransform.CreateScale90Deg(1, 1);
         Matrix64 = TextureTransform.CreateScale(1f / 64f, 1f / 64f);
         Matrix128 = TextureTransform.CreateScale(1f / 128f, 1f / 128f);
+        Matrix256 = TextureTransform.CreateScale(1f / 256f, 1f / 256f);
         Matrix512 = TextureTransform.CreateScale(1f / 512f, 1f / 512f);
     }
 
@@ -39,6 +43,8 @@ public static class C11ToWR2FileConv
         ConvertQad(files.Qad);
 
         WR2CobFileCreator.CreateCobFiles(dirPath);
+
+        ConvertObjectMaterials(Path.Combine(dirPath, "Objects"));
 
         files.Save(paths, GameVersion.WR2);
     }
@@ -56,6 +62,13 @@ public static class C11ToWR2FileConv
             var blend = vertex.Blending;
             vertex.Blending = new Vector3(blend.Y, blend.Z, blend.X);
             vertex.LightColor = Vector3.Clamp(vertex.LightColor * f + black * (1 - f), Vector3.Zero, Vector3.One);
+            float min = MathF.Min(MathF.Min(vertex.LightColor.X, vertex.LightColor.Y), vertex.LightColor.Z);
+            var minvec = new Vector3(min + 0.1f);
+            vertex.LightColor = Vector3.ComponentMin(vertex.LightColor, minvec);
+            if (min > 0.6)
+            {
+                vertex.LightColor = vertex.LightColor * 0.25f + new Vector3(0.45f);
+            }
         }
     }
 
@@ -82,7 +95,7 @@ public static class C11ToWR2FileConv
         {
             ref var material = ref qad.Materials[i];
 
-            ConvertC11ToWR2(ref material, matrices);
+            TerrainMaterialMapper.ConvertC11ToWR2(ref material, matrices);
 
             if (material.Layer0.Mode < 4 && material.Layer0.Tex0Id == fels07)
             {
@@ -95,100 +108,61 @@ public static class C11ToWR2FileConv
         qad.RecalcMaterialMatrixChecksum();
     }
 
-    public static void ConvertC11ToWR2(ref QadFile.AbstractMaterialType mat, TextureTransform[] matrices)
-    {
-        var dmat0 = matrices[mat.Layer0.Tex0Id];
-        var dmat1 = matrices[mat.Layer0.Tex1Id];
-        var dmat2 = matrices[mat.Layer0.Tex2Id];
-
-        mat.Matrix0 = MatrixUV;
-        mat.Matrix1 = MatrixUV;
-        mat.Matrix2 = MatrixUV;
-
-        switch (mat.Layer1.Mode)
-        {
-            case 320:
-                {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Water;
-                    mat.Matrix0 = dmat0;
-                    break;
-                }
-            case 304:
-            case 288:
-                {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.AlphaClip;
-                    break;
-                }
-            case 256:
-            case 240:
-                {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
-                    break;
-                }
-            case 224:
-                {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UVTerrain;
-                    mat.Matrix2 = dmat2;
-                    break;
-                }
-            case 192:
-                {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Reflective;
-                    break;
-                }
-            case 128:
-            case 112:
-            case 64:
-                {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
-                    break;
-                }
-            case 32:
-                {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UV;
-                    break;
-                }
-            case 18:
-            case 16:
-                {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.UVTerrain;
-                    mat.Matrix2 = dmat2;
-                    break;
-                }
-            case 3:
-            case 2:
-            case 1:
-            case 0:
-                {
-                    mat.Layer0.Mode = mat.Layer1.Mode;
-                    mat.Matrix0 = dmat0;
-                    mat.Matrix1 = dmat1;
-                    mat.Matrix2 = dmat2;
-                    break;
-                }
-            default:
-                {
-                    throw new NotImplementedException();
-                }
-
-        }
-
-    }
-
     static TextureTransform MatrixFromName(string name)
     {
         var lname = name.ToLower();
+
+        if (lname == "03gras")
+            return Matrix512;
 
         if (name.Contains("_S"))
             return Matrix512;
 
         if (lname.Contains("fels"))
-            return Matrix128;
+            return Matrix256;
         if (lname == "wasserbump")
-            return Matrix128;
+            return Matrix256;
         if (lname.Contains("acker") || lname.Contains("feld"))
             return Matrix128;
 
         return Matrix64;
+    }
+
+    static void ConvertObjectMaterials(string path)
+    {
+        foreach (var file in Directory.EnumerateFiles(path))
+        {
+            var extension = Path.GetExtension(file).ToLower();
+            if (extension == ".mtl")
+            {
+                var mtl = new MtlFile();
+                mtl.Load(file);
+                foreach (var material in mtl.Sections.Values)
+                {
+                    ConvertObjectMaterial(material);
+                }
+                mtl.Save(file);
+            }
+        }
+    }
+
+    static void ConvertObjectMaterial(MtlFile.MtlMaterial material)
+    {
+        if (material.Alpha.TryGetObject(out var alpha))
+        {
+            material.Transparency.Object = alpha;
+            material.Alpha.Exists = false;
+        }
+
+        material.Reflect.Value = material.Reflect2.Value;
+
+        static Vector4 Input(int value) => (Vector4)(Color4)Color.FromArgb(value);
+
+        var ambient = Input(material.Ambient.Object![0]);
+
+        ambient *= 0.1f;
+
+        material.Ambient.Object![0] = ((Color4)ambient).ToArgb();
+        material.Ambient.Flush();
     }
 }

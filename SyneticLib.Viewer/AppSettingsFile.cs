@@ -9,7 +9,7 @@ using SyneticLib.Locations;
 
 namespace SyneticLib.WinForms;
 
-public class AppSettingsFile : SyneticIniFile<AppSettingsFile.Section>
+public class AppSettingsFile : SyneticCfgFile<AppSettingsFile.Section>
 {
     public class Section : Dictionary<string, string>
     {

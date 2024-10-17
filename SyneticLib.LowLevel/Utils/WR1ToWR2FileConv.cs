@@ -108,19 +108,19 @@ public static class WR1ToWR2FileConv
                 }
             case TerrainMaterialTypeMBWR.Road0:
                 {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
+                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Road1;
                     mat.Matrix1 = TextureTransform.Initial90;
                     mat.Matrix2 = TextureTransform.Initial90;
                     break;
                 }
             case TerrainMaterialTypeMBWR.Reflective:
                 {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Reflective;
+                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Reflective;
                     break;
                 }
             case TerrainMaterialTypeMBWR.Road1:
                 {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road1;
+                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Road1;
                     mat.Matrix0 = TextureTransform.Initial90;
                     mat.Matrix1 = TextureTransform.Initial90;
                     mat.Matrix2 = TextureTransform.Initial90;
@@ -128,7 +128,7 @@ public static class WR1ToWR2FileConv
                 }
             case TerrainMaterialTypeMBWR.Road3:
                 {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road3;
+                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Road3;
                     mat.Matrix0 = TextureTransform.Initial90;
                     mat.Matrix1 = TextureTransform.Initial90;
                     mat.Matrix2 = TextureTransform.Initial90;
@@ -136,17 +136,17 @@ public static class WR1ToWR2FileConv
                 }
             case TerrainMaterialTypeMBWR.Road2:
                 {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Road2;
+                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Road2;
                     break;
                 }
             case TerrainMaterialTypeMBWR.Water: // Water
                 {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.Water;
+                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Water;
                     break;
                 }
             case TerrainMaterialTypeMBWR.AlphaClip: // Mask
                 {
-                    mat.Layer0.Mode = TerrainMaterialTypeWR2.AlphaClip;
+                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.AlphaClip;
                     break;
                 }
             case TerrainMaterialTypeMBWR.AlphaBlend:

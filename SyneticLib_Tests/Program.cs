@@ -14,6 +14,8 @@ internal class Program
 
         DdsTests.Run();
 
+        ColorTests.Run();
+
         RunTests();
     }
 }

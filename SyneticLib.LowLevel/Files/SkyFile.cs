@@ -8,7 +8,7 @@ using Grille.IO;
 using SyneticLib.Files.Common;
 
 namespace SyneticLib.Files;
-public class SkyFile : SyneticIniFile<SkyFile.SkyItem>
+public class SkyFile : SyneticCfgFile<SkyFile.SkyItem>
 {
     public class SkyItem : Dictionary<string, string>
     {
