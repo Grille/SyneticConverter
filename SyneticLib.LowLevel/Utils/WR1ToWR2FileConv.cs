@@ -25,7 +25,7 @@ public static class WR1ToWR2FileConv
         ConvertVtx(files.TerrainMesh.Vertices, 0.22f);
         ConvertSni(files.Sni);
 
-        CreateCobFiles(dirPath);
+        WR2CobFileCreator.CreateCobFiles(dirPath, (name) => GetObjectInfo(name.ToLower()) != null);
 
         files.Save(paths, GameVersion.WR2);
     }
@@ -85,81 +85,6 @@ public static class WR1ToWR2FileConv
             v.Blending.Y = temp;
         }
     }
-
-    public static void ConvertWR1ToWR2(ref this QadFile.AbstractMaterialType mat)
-    {
-        switch ((TerrainMaterialTypeMBWR)mat.Layer0.Mode)
-        {
-            case TerrainMaterialTypeMBWR.Terrain:
-            case TerrainMaterialTypeMBWR.Terrain + 1:
-            case TerrainMaterialTypeMBWR.Terrain + 2:
-                {
-                    break;
-                }
-            case TerrainMaterialTypeMBWR.UVTerrain:
-                {
-                    mat.Matrix1 = TextureTransform.Initial90;
-                    break;
-                }
-            case TerrainMaterialTypeMBWR.UV:
-            case TerrainMaterialTypeMBWR.UV + 1:
-                {
-                    break;
-                }
-            case TerrainMaterialTypeMBWR.Road0:
-                {
-                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Road1;
-                    mat.Matrix1 = TextureTransform.Initial90;
-                    mat.Matrix2 = TextureTransform.Initial90;
-                    break;
-                }
-            case TerrainMaterialTypeMBWR.Reflective:
-                {
-                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Reflective;
-                    break;
-                }
-            case TerrainMaterialTypeMBWR.Road1:
-                {
-                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Road1;
-                    mat.Matrix0 = TextureTransform.Initial90;
-                    mat.Matrix1 = TextureTransform.Initial90;
-                    mat.Matrix2 = TextureTransform.Initial90;
-                    break;
-                }
-            case TerrainMaterialTypeMBWR.Road3:
-                {
-                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Road3;
-                    mat.Matrix0 = TextureTransform.Initial90;
-                    mat.Matrix1 = TextureTransform.Initial90;
-                    mat.Matrix2 = TextureTransform.Initial90;
-                    break;
-                }
-            case TerrainMaterialTypeMBWR.Road2:
-                {
-                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Road2;
-                    break;
-                }
-            case TerrainMaterialTypeMBWR.Water: // Water
-                {
-                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.Water;
-                    break;
-                }
-            case TerrainMaterialTypeMBWR.AlphaClip: // Mask
-                {
-                    mat.Layer0.Mode = OldTerrainMaterialTypeWR2.AlphaClip;
-                    break;
-                }
-            case TerrainMaterialTypeMBWR.AlphaBlend:
-                {
-                    break;
-                }
-            default:
-                {
-                    throw new InvalidDataException($"Unexpected material mode: '{mat.Layer0.Mode}'");
-                }
-        }
-    }
-
     public static void FixObjects(QadFile qad)
     {
         for (int i = 0; i < qad.PropClassInfo.Length; i++)
@@ -208,6 +133,15 @@ public static class WR1ToWR2FileConv
                 {
                     return new ObjectInfo(0, 400, "ko_holz", "ko_dirt_l");
                 }
+            case "schirm":
+            case "schirm1":
+            case "schirm2":
+            case "schirm3":
+            case "schirm4":
+            case "schirm5":
+            {
+                return new ObjectInfo(0, 50, "ko_holz", "ko_dirt_l");
+            }
             case "sign1":
             case "sign2":
             case "sign3":
@@ -269,53 +203,6 @@ public static class WR1ToWR2FileConv
                 }
         }
         return null;
-    }
-
-    public static void CreateCobFiles(string path)
-    {
-        var objectDir = Path.Combine(path, "Objects");
-        var colliDir = Path.Combine(path, "Colli");
-        Directory.CreateDirectory(colliDir);
-
-        var sbNames = new StringBuilder();
-
-        foreach (var moxFilePath in Directory.EnumerateFiles(objectDir))
-        {
-            if (Path.GetExtension(moxFilePath).ToLower() == ".mox")
-            {
-                var name = Path.GetFileNameWithoutExtension(moxFilePath);
-                var info = GetObjectInfo(name.ToLower());
-                if (info == null)
-                {
-                    continue;
-                }
-
-                var mox = new MoxFile();
-                mox.Load(moxFilePath);
-
-                sbNames.AppendLine(name);
-
-                var cobFileName = Path.ChangeExtension(name, ".cob");
-                var cobFilePath = Path.Combine(colliDir, cobFileName);
-
-                var cob = CreateCobFile(mox);
-                cob.Save(cobFilePath);
-            }
-        }
-
-        var namesFileName = Path.Combine(colliDir, "ColliList.txt");
-        File.WriteAllText(namesFileName, sbNames.ToString());
-    }
-
-    public static CobFile CreateCobFile(MoxFile mox)
-    {
-        var cob = new CobFile();
-        cob.Vertecis = mox.Vertecis;
-        cob.Indices = mox.Indices;
-        cob.Head.VerticeCount = cob.Vertecis.Length;
-        cob.Head.PolyCount = cob.Indices.Length;
-        cob.Head.BoundingBox = new BoundingBox(cob.Vertecis, cob.Indices);
-        return cob;
     }
 
     public static void FixGrounds(QadFile qad)

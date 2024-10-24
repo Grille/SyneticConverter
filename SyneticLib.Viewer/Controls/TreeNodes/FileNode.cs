@@ -63,6 +63,11 @@ public class FileNode : DarkTreeNode
                 Icon = EmbeddedImageList.Terrain.Bitmap16;
                 break;
             }
+            default:
+            {
+                Icon = EmbeddedImageList.File.Bitmap16;
+                break;
+            };
         }
     }
 }

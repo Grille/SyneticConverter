@@ -6,12 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SyneticLib.Files;
+using SyneticLib.Files.Common;
+using SyneticLib.Files.Extra;
 
 namespace SyneticLib.Utils;
 
 public class WR2CobFileCreator
 {
     public static void CreateCobFiles(string path)
+    {
+        CreateCobFiles(path, null);
+    }
+
+    public static void CreateCobFiles(string path, Predicate<string>? filter)
     {
         var objectDir = Path.Combine(path, "Objects");
         var colliDir = Path.Combine(path, "Colli");
@@ -25,13 +32,29 @@ public class WR2CobFileCreator
             {
                 var name = Path.GetFileNameWithoutExtension(moxFilePath);
 
+                if (filter != null && !filter(name))
+                {
+                    continue;
+                }
+
                 var cobFileName = Path.ChangeExtension(name, ".cob");
                 var cobFilePath = Path.Combine(colliDir, cobFileName);
 
                 var cpoFileName = Path.ChangeExtension(name, ".cpo");
                 var cpoFilePath = Path.Combine(colliDir, cpoFileName);
 
-                if (false && File.Exists(cpoFilePath))
+                var objFileName = Path.ChangeExtension(name, ".obj");
+                var objFilePath = Path.Combine(colliDir, objFileName);
+
+                if (File.Exists(objFilePath))
+                {
+                    var obj = new WavefrontObjFile();
+                    obj.Load(objFilePath);
+                    var cob = CreateCobFile(obj, obj);
+                    cob.Save(cobFilePath);
+                    File.Delete(objFilePath);
+                }
+                else if (false && File.Exists(cpoFilePath))
                 {
                     var cpo = new CpoFile();
                     cpo.Load(cpoFilePath);
@@ -56,9 +79,14 @@ public class WR2CobFileCreator
 
     public static CobFile CreateCobFile(MoxFile mox)
     {
+        return CreateCobFile(mox, mox);
+    }
+
+    public static CobFile CreateCobFile(IVertexData vtx, IIndexData idx)
+    {
         var cob = new CobFile();
-        cob.Vertecis = mox.Vertecis;
-        cob.Indices = mox.Indices;
+        cob.Vertecis = vtx.Vertecis;
+        cob.Indices = idx.Indices;
         cob.Head.VerticeCount = cob.Vertecis.Length;
         cob.Head.PolyCount = cob.Indices.Length;
         cob.Head.BoundingBox = new BoundingBox(cob.Vertecis, cob.Indices);

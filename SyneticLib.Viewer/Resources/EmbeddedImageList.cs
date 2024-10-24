@@ -21,6 +21,9 @@ public static class EmbeddedImageList
     public readonly static ImageHandle Mesh;
     public readonly static ImageHandle Misc;
 
+    public readonly static ImageHandle File;
+    public readonly static ImageHandle Folder;
+
     public readonly static ImageHandle NICE;
     public readonly static ImageHandle NICE2;
     public readonly static ImageHandle MBTR;
@@ -50,6 +53,9 @@ public static class EmbeddedImageList
         Texture = LoadImage("Texture");
         Mesh = LoadImage("Mesh");
         Misc = LoadImage("Misc");
+
+        File = LoadImage("File");
+        Folder = LoadImage("Folder");
 
         NICE = LoadImage(GameIcons.NICE);
         NICE2 = LoadImage(GameIcons.NICE2);

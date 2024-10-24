@@ -31,7 +31,7 @@ public class DirectoryNode : DarkTreeNode
         Name = DirectoryName;
         Text = Name;
 
-        Icon = EmbeddedImageList.Default.Bitmap16;
+        Icon = EmbeddedImageList.Folder.Bitmap16;
 
         Owner.NodeExpanded += Owner_NodeExpanded;
     }

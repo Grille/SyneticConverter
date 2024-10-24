@@ -81,8 +81,8 @@ public static class CT1ToWR2FileConv
         }
 
         
-        //qad.Head.BumpTexturesFileCount = 1;
-        //qad.BumpTexNames = new String32[] { qad.BumpTexNames[0] };
+        qad.Head.BumpTexturesFileCount = 0;
+        qad.BumpTexNames = Array.Empty<String32>();
 
         qad.Head.PropInstanceCount = 0;
         qad.PropInstances = Array.Empty<MPropInstance>();
@@ -90,37 +90,38 @@ public static class CT1ToWR2FileConv
         for (int i = 0; i < qad.Chunks.Length; i++)
         {
             ref var chunk = ref qad.Chunks[i];
-            
+
             chunk.Props.Start = 0;
             chunk.Props.Length = 0;
             
-            //chunk.Lights.Start = 0;
-            //chunk.Lights.Length = 0;
+            chunk.Lights.Start = 0;
+            chunk.Lights.Length = 0;
         }
-        /*
+        
         qad.Head.PropClassCount = 0;
         qad.PropClassObjNames = Array.Empty<String32>();
         qad.PropClassInfo = Array.Empty<MPropClass>();
-        */
+        
 
-        /*
+        
         for (int i = 0; i< qad.PropInstances.Length; i++)
         {
              ref var instance = ref qad.PropInstances[i];
             instance.InShadow = 0;
         }
-        */
+        
 
         qad.Head.SoundCount = 0;
         qad.Sounds = Array.Empty<MSound>();
 
-        //qad.Head.LightCount = 0;
-        //qad.Lights = Array.Empty<MLight>();
-        
+        qad.Head.LightCount = 0;
+        qad.Lights = Array.Empty<MLight>();
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.SortMaterials();
         qad.ForceUniqueChecksums();
+
+        qad.Validate();
     }
 
     static TextureTransform MatrixFromName(string name)

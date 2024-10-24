@@ -114,8 +114,8 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
                 var vertex = new Vertex()
                 {
                     Position = v[faceidx.V],
-                    Normal = vn[faceidx.V],
-                    UV0 = vt[faceidx.V],
+                    Normal = vn[faceidx.VN],
+                    UV0 = vt[faceidx.VT],
                 };
 
                 if (vtxdict.TryGetValue(vertex, out int index))

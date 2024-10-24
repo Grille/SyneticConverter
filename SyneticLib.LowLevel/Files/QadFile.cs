@@ -635,14 +635,6 @@ public unsafe class QadFile : BinaryFile
         public ushort Value;
         public static implicit operator ushort(MMaterialMode value) => value.Value;
         public static implicit operator MMaterialMode(ushort value) => Unsafe.As<ushort, MMaterialMode>(ref value);
-
-        public static implicit operator TerrainMaterialTypeMBWR(MMaterialMode value) => (TerrainMaterialTypeMBWR)(ushort)value;
-        public static implicit operator OldTerrainMaterialTypeWR2(MMaterialMode value) => (OldTerrainMaterialTypeWR2)(ushort)value;
-        public static implicit operator OldTerrainMaterialTypeC11(MMaterialMode value) => (OldTerrainMaterialTypeC11)(ushort)value;
-
-        public static implicit operator MMaterialMode(TerrainMaterialTypeMBWR value) => (ushort)value;
-        public static implicit operator MMaterialMode(OldTerrainMaterialTypeWR2 value) => (ushort)value;
-        public static implicit operator MMaterialMode(OldTerrainMaterialTypeC11 value) => (ushort)value;
     }
 
     public struct MLight
