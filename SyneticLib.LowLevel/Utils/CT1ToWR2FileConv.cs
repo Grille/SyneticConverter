@@ -55,13 +55,15 @@ public static class CT1ToWR2FileConv
         var factor = new Vector3(0.5f, 0.5f, 0.5f);
         var offset = new Vector3(0.1f);
 
+        var black = new Vector3(0.2f);
+
         for (int i = 0; i < vertecis.Length; i++)
         {
             ref var vertex = ref vertecis[i];
-
+            float f = vertex.LightColor.Length;
             var blend = vertex.Blending;
             vertex.Blending = new Vector3(blend.Y, blend.Z, blend.X);
-            //vertex.LightColor = Vector3.Clamp(vertex.LightColor * factor + offset, Vector3.Zero, Vector3.One);
+            vertex.LightColor = Vector3.Clamp(vertex.LightColor * f + black * (1 - f), Vector3.Zero, Vector3.One);
         }
     }
 
@@ -84,23 +86,23 @@ public static class CT1ToWR2FileConv
         qad.Head.BumpTexturesFileCount = 0;
         qad.BumpTexNames = Array.Empty<String32>();
 
-        qad.Head.PropInstanceCount = 0;
-        qad.PropInstances = Array.Empty<MPropInstance>();
+        //qad.Head.PropInstanceCount = 0;
+        //qad.PropInstances = Array.Empty<MPropInstance>();
 
         for (int i = 0; i < qad.Chunks.Length; i++)
         {
             ref var chunk = ref qad.Chunks[i];
 
-            chunk.Props.Start = 0;
-            chunk.Props.Length = 0;
+            //chunk.Props.Start = 0;
+            //chunk.Props.Length = 0;
             
-            chunk.Lights.Start = 0;
-            chunk.Lights.Length = 0;
+            //chunk.Lights.Start = 0;
+            //chunk.Lights.Length = 0;
         }
         
-        qad.Head.PropClassCount = 0;
-        qad.PropClassObjNames = Array.Empty<String32>();
-        qad.PropClassInfo = Array.Empty<MPropClass>();
+        //qad.Head.PropClassCount = 0;
+        //qad.PropClassObjNames = Array.Empty<String32>();
+        //qad.PropClassInfo = Array.Empty<MPropClass>();
         
 
         
@@ -111,11 +113,11 @@ public static class CT1ToWR2FileConv
         }
         
 
-        qad.Head.SoundCount = 0;
-        qad.Sounds = Array.Empty<MSound>();
+        //qad.Head.SoundCount = 0;
+        //qad.Sounds = Array.Empty<MSound>();
 
-        qad.Head.LightCount = 0;
-        qad.Lights = Array.Empty<MLight>();
+        //qad.Head.LightCount = 0;
+        //qad.Lights = Array.Empty<MLight>();
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.SortMaterials();

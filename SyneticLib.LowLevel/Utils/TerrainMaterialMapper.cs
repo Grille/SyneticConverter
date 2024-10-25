@@ -130,6 +130,12 @@ public static class TerrainMaterialMapper
                 mat.Matrix0 = dmat0;
                 break;
             }
+            case C11Type.L1metal:
+            {
+                result = WR2Type.L1Refl;
+                mat.Matrix0 = dmat0;
+                break;
+            }
             case C11Type.L2ReflDiff12ColKey12:
             case C11Type.L2DiffDiff12ColKey1:
             {
@@ -187,6 +193,12 @@ public static class TerrainMaterialMapper
                 mat.Matrix0 = dmat0;
                 mat.Matrix1 = dmat1;
                 mat.Matrix2 = dmat2;
+                break;
+            }
+            case C11Type.L2MetalDiff12:
+            case C11Type.L2DiffDiff13:
+            {
+                result = WR2Type.L1Refl;
                 break;
             }
             default:

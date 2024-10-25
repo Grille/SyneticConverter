@@ -112,7 +112,7 @@ public static class C11ToWR2FileConv
     {
         var lname = name.ToLower();
 
-        if (lname == "03gras")
+        if (lname == "03gras" || lname == "nk03gras" || lname == "gras13" || lname == "gras14")
             return Matrix512;
 
         if (name.Contains("_S"))
