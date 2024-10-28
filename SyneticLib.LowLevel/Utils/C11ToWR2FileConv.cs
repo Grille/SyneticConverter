@@ -128,7 +128,7 @@ public static class C11ToWR2FileConv
         return Matrix64;
     }
 
-    static void ConvertObjectMaterials(string path)
+    public static void ConvertObjectMaterials(string path)
     {
         foreach (var file in Directory.EnumerateFiles(path))
         {

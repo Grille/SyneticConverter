@@ -29,22 +29,22 @@ public enum TerrainMaterialTypeWR1 : int
 
 public enum TerrainMaterialTypeWR2 : int
 {
-    Terrain,
-    Road,
+    L3Terrain,
+    L2Road,
     L1Refl,
     L2Refl1,
     L2Refl2,
     L2ReflOvlT,
     L2ReflOvl,
-    Windows,
+    L1Windows,
     L1Spec,
     L2SpecFaded,
     L2SpecOverlayT,
     L2SpecOverlay,
     Unknown12,
-    Colorkey,
-    Water,
-    Alpha,
+    L1ColorKey,
+    L1Water,
+    L1Alpha,
 }
 
 public enum TerrainMaterialTypeC11 : int
@@ -67,7 +67,7 @@ public enum TerrainMaterialTypeC11 : int
     L3ReflReflDiff,
     L3SpecSpecDiff,
     L3SpecDiffDiff,
-    L2DiffDiff12ColKey1,
-    L2ReflDiff12ColKey12,
+    L2DiffDiff12ColorKey1,
+    L2ReflDiff12ColorKey12,
     L2Water
 }

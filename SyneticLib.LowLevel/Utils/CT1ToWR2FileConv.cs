@@ -11,24 +11,12 @@ using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using static SyneticLib.Files.QadFile;
 
+using WR2Type = SyneticLib.TerrainMaterialTypeWR2;
+
 namespace SyneticLib.Utils;
 
 public static class CT1ToWR2FileConv
 {
-    static readonly TextureTransform MatrixUV;
-
-    static readonly TextureTransform Matrix64;
-    static readonly TextureTransform Matrix128;
-    static readonly TextureTransform Matrix512;
-
-    static CT1ToWR2FileConv()
-    {
-        MatrixUV = TextureTransform.CreateScale90Deg(1, 1);
-        Matrix64 = TextureTransform.CreateScale(1f / 64f, 1f / 64f);
-        Matrix128 = TextureTransform.CreateScale(1f / 128f, 1f / 128f);
-        Matrix512 = TextureTransform.CreateScale(1f / 512f, 1f / 512f);
-    }
-
     public static void Convert(string dirPath, string fileName)
     {
         var paths = new ScenarioFiles.Paths(dirPath, fileName);
@@ -47,77 +35,107 @@ public static class CT1ToWR2FileConv
             }
         }
 
+        ConvertRo0(files.Ro1);
+        ConvertRo0(files.Ro2);
+        ConvertRo0(files.Ro3);
+        ConvertRo0(files.Ro4);
+
+        WR2CobFileCreator.CreateCobFiles(dirPath);
+        C11ToWR2FileConv.ConvertObjectMaterials(Path.Combine(dirPath, "Objects"));
+        TrxToMoxConverter.Convert(Path.Combine(dirPath, "Objects"));
+
         files.Save(paths, GameVersion.WR2);
+    }
+
+    public static void ConvertRo0(Ro0File ro0)
+    {
+        ro0.Head.X1 = 0;
+
+        for (int i = 0; i < ro0.Grass.Length; i++)
+        {
+            ref var gras = ref ro0.Grass[i];
+
+            gras.Color0 = (gras.Color0 + gras.Color1) / 2f;
+        }
     }
 
     public static void ConvertGeo(Vertex[] vertecis)
     {
-        var factor = new Vector3(0.5f, 0.5f, 0.5f);
-        var offset = new Vector3(0.1f);
-
-        var black = new Vector3(0.2f);
+        var mul = new Vector3(0.6f, 0.5f, 0.5f);
+        var offset = new Vector3(-0.1f);
 
         for (int i = 0; i < vertecis.Length; i++)
         {
             ref var vertex = ref vertecis[i];
-            float f = vertex.LightColor.Length;
+
             var blend = vertex.Blending;
             vertex.Blending = new Vector3(blend.Y, blend.Z, blend.X);
-            vertex.LightColor = Vector3.Clamp(vertex.LightColor * f + black * (1 - f), Vector3.Zero, Vector3.One);
+            vertex.LightColor = Vector3.Clamp((vertex.LightColor + offset) * mul, Vector3.Zero, Vector3.One);
+
+            VertexColorCorrector.ClampToMax(ref vertex.LightColor, -0.25f);
         }
     }
 
-    public static void ConvertQad(QadFile qad)
+
+    public unsafe static void ConvertQad(QadFile qad)
     {
+        qad.Head.BumpTexturesFileCount = 0;
+        qad.BumpTexNames = Array.Empty<String32>();
+
         var matrices = new TextureTransform[qad.TextureNames.Length];
         for (int i = 0; i < matrices.Length; i++)
         {
             matrices[i] = MatrixFromName(qad.TextureNames[i]);
         }
 
+        ushort GetTexId(string name)
+        {
+            int idx = Array.FindIndex(qad.TextureNames, (a) => a == name);
+            return idx > 0 ? (ushort)idx : throw new IndexOutOfRangeException();
+        }
+
+        ushort idxZebra = GetTexId("ASPH01_zebra");
+        ushort idxRichtung = GetTexId("ASPH01_richtungen");
+        ushort idxRand032 = GetTexId("Rand03_2");
+
         for (int i = 0; i < qad.Head.MaterialCount; i++)
         {
             ref var material = ref qad.Materials[i];
 
             TerrainMaterialMapper.ConvertC11ToWR2(ref material, matrices);
+
+            ref var layer = ref material.Layer0;
+            (var zOffset, var type) = layer.Mode.Decode<WR2Type>();
+            if (type == WR2Type.L2SpecFaded)
+            {
+                if (layer.Tex2Id == idxZebra || layer.Tex2Id == idxRichtung)
+                {
+                    layer.Mode.Encode(zOffset, WR2Type.L2SpecOverlay);
+                    layer.Tex1Id = layer.Tex2Id;
+                }
+                if (layer.Tex2Id == idxRand032)
+                {
+                    layer.Mode.Encode(zOffset, WR2Type.L2Road);
+                    material.Matrix2 = TerrainMaterialMapper.Matrix64;
+                }
+            }
         }
 
-        
-        qad.Head.BumpTexturesFileCount = 0;
-        qad.BumpTexNames = Array.Empty<String32>();
-
-        //qad.Head.PropInstanceCount = 0;
-        //qad.PropInstances = Array.Empty<MPropInstance>();
-
-        for (int i = 0; i < qad.Chunks.Length; i++)
+        for (int i = 0; i < qad.PropInstances.Length; i++)
         {
-            ref var chunk = ref qad.Chunks[i];
+            ref var instance = ref qad.PropInstances[i];
+            var ct = Unsafe.As<MPropInstanceWR2, MPropInstanceCT1>(ref instance);
 
-            //chunk.Props.Start = 0;
-            //chunk.Props.Length = 0;
-            
-            //chunk.Lights.Start = 0;
-            //chunk.Lights.Length = 0;
+            instance.Matrix = ct.Matrix;
+
+            var q = ct.Rotation;
+            float angle = -2 * MathF.Atan2(q.Y, q.W);
+            instance.Angl = angle;
+            instance.Size = ct.Scale;
+            instance.InShadow = ct.InShadow;
         }
-        
-        //qad.Head.PropClassCount = 0;
-        //qad.PropClassObjNames = Array.Empty<String32>();
-        //qad.PropClassInfo = Array.Empty<MPropClass>();
-        
 
-        
-        for (int i = 0; i< qad.PropInstances.Length; i++)
-        {
-             ref var instance = ref qad.PropInstances[i];
-            instance.InShadow = 0;
-        }
-        
-
-        //qad.Head.SoundCount = 0;
-        //qad.Sounds = Array.Empty<MSound>();
-
-        //qad.Head.LightCount = 0;
-        //qad.Lights = Array.Empty<MLight>();
+        ConvertXTreeReferences(qad);
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
         qad.SortMaterials();
@@ -126,62 +144,52 @@ public static class CT1ToWR2FileConv
         qad.Validate();
     }
 
+    public static void ConvertXTreeReferences(QadFile qad)
+    {
+        for (int i = 0; i < qad.PropClassObjNames.Length; i++)
+        {
+            string name = qad.PropClassObjNames[i];
+            if (name.StartsWith("X\\"))
+            {
+                qad.PropClassObjNames[i] = (String32)name.Substring(2);
+                qad.PropClassInfo[i].Mode = 3;
+            }
+        }
+
+        for (int i = 0; i < qad.PropInstances.Length; i++)
+        {
+            ref var instance = ref qad.PropInstances[i];
+            string name = instance.Name;
+            if (name.StartsWith("X\\"))
+            {
+                instance.Name = (String32)name.Substring(2);
+            }
+        }
+    }
+
     static TextureTransform MatrixFromName(string name)
     {
         var lname = name.ToLower();
 
+        if (lname == "03gras" || lname == "nk03gras" || lname == "gras13" || lname == "gras14" || lname == "schmu05")
+            return TerrainMaterialMapper.Matrix512;
+
+        if (lname == "sandgrube")
+            return TerrainMaterialMapper.Matrix256;
+
+        if (lname == "erde1" || lname == "steine1" || lname == "02_gras_1" || lname == "02gras_1")
+            return TerrainMaterialMapper.Matrix128;
+
         if (name.Contains("_S"))
-            return Matrix512;
+            return TerrainMaterialMapper.Matrix512;
 
         if (lname.Contains("fels"))
-            return Matrix128;
+            return TerrainMaterialMapper.Matrix256;
         if (lname == "wasserbump")
-            return Matrix128;
+            return TerrainMaterialMapper.Matrix256;
         if (lname.Contains("acker") || lname.Contains("feld"))
-            return Matrix128;
+            return TerrainMaterialMapper.Matrix128;
 
-        return Matrix64;
-    }
-
-    public static void CreateCobFiles(string path)
-    {
-        var objectDir = Path.Combine(path, "Objects");
-        var colliDir = Path.Combine(path, "Colli");
-        Directory.CreateDirectory(colliDir);
-
-        var sbNames = new StringBuilder();
-
-        foreach (var moxFilePath in Directory.EnumerateFiles(objectDir))
-        {
-            if (Path.GetExtension(moxFilePath).ToLower() == ".mox")
-            {
-                var name = Path.GetFileNameWithoutExtension(moxFilePath);
-
-                var mox = new MoxFile();
-                mox.Load(moxFilePath);
-
-                sbNames.AppendLine(name);
-
-                var cobFileName = Path.ChangeExtension(name, ".cob");
-                var cobFilePath = Path.Combine(colliDir, cobFileName);
-
-                var cob = CreateCobFile(mox);
-                cob.Save(cobFilePath);
-            }
-        }
-
-        var namesFileName = Path.Combine(colliDir, "ColliList.txt");
-        File.WriteAllText(namesFileName, sbNames.ToString());
-    }
-
-    public static CobFile CreateCobFile(MoxFile mox)
-    {
-        var cob = new CobFile();
-        cob.Vertecis = mox.Vertecis;
-        cob.Indices = mox.Indices;
-        cob.Head.VerticeCount = cob.Vertecis.Length;
-        cob.Head.PolyCount = cob.Indices.Length;
-        cob.Head.BoundingBox = new BoundingBox(cob.Vertecis, cob.Indices);
-        return cob;
+        return TerrainMaterialMapper.Matrix64;
     }
 }

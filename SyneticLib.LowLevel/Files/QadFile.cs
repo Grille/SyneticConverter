@@ -19,6 +19,7 @@ public unsafe class QadFile : BinaryFile
     public bool UseSimpleData = false;
     public bool UseExtendedPropInstance = false;
     public GameVersion MaterialVersion;
+    public GameVersion PropInstanceVersion;
 
     GameVersion _version;
     public GameVersion GameVersion
@@ -39,7 +40,7 @@ public unsafe class QadFile : BinaryFile
     public MChunk[] Chunks;
     public AbstractMaterialType[] Materials;
     public MPolyRegion[] PolyRegions;
-    public MPropInstance[] PropInstances;
+    public MPropInstanceWR2[] PropInstances;
     public MGroundPhysics[] GroundPhysics;
     public ushort[] Tex2Ground;
     public MSound[] Sounds;
@@ -58,7 +59,7 @@ public unsafe class QadFile : BinaryFile
         Chunks = Array.Empty<MChunk>();
         Materials = Array.Empty<AbstractMaterialType>();
         PolyRegions = Array.Empty<MPolyRegion>();
-        PropInstances = Array.Empty<MPropInstance>();
+        PropInstances = Array.Empty<MPropInstanceWR2>();
         GroundPhysics = Array.Empty<MGroundPhysics>();
         Tex2Ground = Array.Empty<ushort>();
         Sounds = Array.Empty<MSound>();
@@ -116,18 +117,18 @@ public unsafe class QadFile : BinaryFile
         else if (MaterialVersion >= GameVersion.C11)
             br.ReadToArray(Materials, (MMaterialTypeC11 a) => (AbstractMaterialType)a);
         else if (MaterialVersion >= GameVersion.WR1)
-            br.ReadToArray(Materials, (MMaterialTypeWR a) => (AbstractMaterialType)a);
+            br.ReadToArray(Materials, (MMaterialTypeWR1 a) => (AbstractMaterialType)a);
         else
             throw new InvalidDataException();
 
         if (HasCT2Extension)
             br.Position += 224 * sizeof(int);
 
-        PropInstances = new MPropInstance[Head.PropInstanceCount];
+        PropInstances = new MPropInstanceWR2[Head.PropInstanceCount];
         if (UseExtendedPropInstance)
-            br.ReadItemBytesToArray(PropInstances, sizeof(MPropInstance));
+            br.ReadItemBytesToArray(PropInstances, sizeof(MPropInstanceWR2));
         else
-            br.ReadItemBytesToArray(PropInstances, sizeof(MPropInstance) - sizeof(Vector3));
+            br.ReadItemBytesToArray(PropInstances, sizeof(MPropInstanceWR2) - sizeof(Vector3));
 
         if (HasCT2Extension)
             br.Position += HeadExtension.StringSkip + HeadExtension.StringCount * sizeof(int) * 2;
@@ -185,17 +186,17 @@ public unsafe class QadFile : BinaryFile
         if (MaterialVersion >= GameVersion.C11)
             bw.WriteArray(Materials, (a) => (MMaterialTypeC11)a);
         if (MaterialVersion >= GameVersion.WR1)
-            bw.WriteArray(Materials, (a) => (MMaterialTypeWR)a);
+            bw.WriteArray(Materials, (a) => (MMaterialTypeWR1)a);
         else
             throw new InvalidOperationException();
 
         if (UseExtendedPropInstance)
         {
-            bw.WriteItemBytesFromArray(PropInstances, sizeof(MPropInstance));
+            bw.WriteItemBytesFromArray(PropInstances, sizeof(MPropInstanceWR2));
         }
         else
         {
-            bw.WriteItemBytesFromArray(PropInstances, sizeof(MPropInstance) - sizeof(Vector3));
+            bw.WriteItemBytesFromArray(PropInstances, sizeof(MPropInstanceWR2) - sizeof(Vector3));
         }
 
         for (int i = 0; i < Lights.Length; i++)
@@ -346,6 +347,7 @@ public unsafe class QadFile : BinaryFile
     {
         _version = version;
         MaterialVersion = version;
+        PropInstanceVersion = version;
         UseSimpleData = version <= GameVersion.WR1;
         HasCT2Extension = version >= GameVersion.CT2;
         UseExtendedPropInstance = version >= GameVersion.CT1;
@@ -391,13 +393,13 @@ public unsafe class QadFile : BinaryFile
 
         endPos += sizeof(MPolyRegion) * Head.PolyRegionCount;
 
-        int materialSize = MaterialVersion >= GameVersion.CT2 ? sizeof(MMaterialTypeCT2) : MaterialVersion >= GameVersion.C11 ? sizeof(MMaterialTypeC11) : sizeof(MMaterialTypeWR);
+        int materialSize = MaterialVersion >= GameVersion.CT2 ? sizeof(MMaterialTypeCT2) : MaterialVersion >= GameVersion.C11 ? sizeof(MMaterialTypeC11) : sizeof(MMaterialTypeWR1);
         endPos += materialSize * Head.MaterialCount;
 
         if (HasCT2Extension)
             endPos += 224 * sizeof(int);
 
-        endPos += (UseExtendedPropInstance ? sizeof(MPropInstance) : sizeof(MPropInstance) - sizeof(Vector3)) * Head.PropInstanceCount;
+        endPos += (UseExtendedPropInstance ? sizeof(MPropInstanceWR2) : sizeof(MPropInstanceWR2) - sizeof(Vector3)) * Head.PropInstanceCount;
 
         if (HasCT2Extension)
             endPos += HeadExtension.StringSkip + HeadExtension.StringCount * sizeof(int) * 2;
@@ -405,7 +407,6 @@ public unsafe class QadFile : BinaryFile
         endPos += sizeof(MGroundPhysics) * Head.GroundPhysicsCount;
         endPos += 2 * 256;
         endPos += sizeof(MSound) * Head.SoundCount;
-
         return endPos;
     }
 
@@ -469,7 +470,7 @@ public unsafe class QadFile : BinaryFile
         public int Checksum2;
     }
 
-    public struct MMaterialTypeWR
+    public struct MMaterialTypeWR1
     {
         public MMaterialLayer Layer0;
         public TextureTransform Matrix0;
@@ -477,7 +478,7 @@ public unsafe class QadFile : BinaryFile
         public TextureTransform Matrix2;
         public MMaterialChecksums Checksums;
 
-        public static explicit operator MMaterialTypeWR(AbstractMaterialType material) => new MMaterialTypeWR()
+        public static explicit operator MMaterialTypeWR1(AbstractMaterialType material) => new MMaterialTypeWR1()
         {
             Layer0 = material.Layer0,
             Matrix0 = material.Matrix0,
@@ -529,7 +530,7 @@ public unsafe class QadFile : BinaryFile
         public TextureTransform Matrix2;
         public MMaterialChecksums Checksums;
 
-        public static implicit operator AbstractMaterialType(MMaterialTypeWR material) => new AbstractMaterialType()
+        public static implicit operator AbstractMaterialType(MMaterialTypeWR1 material) => new AbstractMaterialType()
         {
             Layer0 = material.Layer0,
             Matrix0 = material.Matrix0,
@@ -563,7 +564,7 @@ public unsafe class QadFile : BinaryFile
         public int Length => End - Start;
     }
 
-    public struct MPropInstance
+    public struct MPropInstanceWR2
     {
         public String32 Name;
         public int ClassId;
@@ -573,6 +574,18 @@ public unsafe class QadFile : BinaryFile
         public ushort x1, InShadow;
         public float x5;
         public Vector3 x6;
+    }
+    
+    public struct MPropInstanceCT1
+    {
+        public String32 Name;
+        public int ClassId;
+        public Vector3 Position;
+        public Quaternion Rotation;
+        public float Scale;
+        public Matrix3 Matrix;
+        public ushort X1, InShadow;
+        public int X2;
     }
 
     public struct MGroundPhysics
@@ -635,6 +648,30 @@ public unsafe class QadFile : BinaryFile
         public ushort Value;
         public static implicit operator ushort(MMaterialMode value) => value.Value;
         public static implicit operator MMaterialMode(ushort value) => Unsafe.As<ushort, MMaterialMode>(ref value);
+
+        public (int ZOffset, T Type) Decode<T>() where T : unmanaged
+        {
+            AssertIsInteger<T>();
+            int zOffset = Value & 15;
+            int type = Value >> 4;
+            return (zOffset, Unsafe.As<int, T>(ref type));
+        }
+
+        public void Encode<T>((int ZOffset, T Type) mode) where T : unmanaged
+        {
+            Encode(mode.ZOffset, mode.Type);
+        }
+
+        public void Encode<T>(int zOffset, T type) where T : unmanaged
+        {
+            AssertIsInteger<T>();
+            Value = (ushort)((Unsafe.As<T, int>(ref type) << 4) | zOffset);
+        }
+
+        static void AssertIsInteger<T>() where T : unmanaged
+        {
+            if (Unsafe.SizeOf<T>() != sizeof(int)) throw new ArgumentException();
+        }
     }
 
     public struct MLight

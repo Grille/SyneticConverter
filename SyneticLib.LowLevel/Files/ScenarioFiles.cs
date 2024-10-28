@@ -15,6 +15,11 @@ public class ScenarioFiles
     public QadFile Qad;
     public SkyFile Sky;
 
+    public Ro0File Ro1;
+    public Ro0File Ro2;
+    public Ro0File Ro3;
+    public Ro0File Ro4;
+
     // Access through TerrainMesh
     private GeoFile Geo;
     private VtxFile Vtx;
@@ -41,6 +46,11 @@ public class ScenarioFiles
         public string QadPath;
         public string SkyPath;
 
+        public string Ro1Path;
+        public string Ro2Path;
+        public string Ro3Path;
+        public string Ro4Path;
+
         public Paths(string dirPath, string fileName)
         {
             var filePath = Path.Combine(dirPath, fileName);
@@ -51,6 +61,11 @@ public class ScenarioFiles
             VtxPath = filePath + ".vtx";
             QadPath = filePath + ".qad";
             SkyPath = filePath + ".sky";
+
+            Ro1Path = filePath + ".ro1";
+            Ro2Path = filePath + ".ro2";
+            Ro3Path = filePath + ".ro3";
+            Ro4Path = filePath + ".ro4";
         }
     }
 
@@ -64,6 +79,11 @@ public class ScenarioFiles
         Vtx = new VtxFile();
         Qad = new QadFile();
         Sky = new SkyFile();
+
+        Ro1 = new Ro0File();
+        Ro2 = new Ro0File();
+        Ro3 = new Ro0File();
+        Ro4 = new Ro0File();
 
         TerrainMesh = new TerrainMeshView();
         RefreshTerrainMesh(GameVersion.WR2);
@@ -104,11 +124,32 @@ public class ScenarioFiles
 
         LoadTerrainMesh(paths, version);
 
+        if (File.Exists(paths.Ro1Path))
+        {
+            Ro1.Load(paths.Ro1Path);
+        }
+        if (File.Exists(paths.Ro2Path))
+        {
+            Ro2.Load(paths.Ro2Path);
+        }
+        if (File.Exists(paths.Ro3Path))
+        {
+            Ro3.Load(paths.Ro3Path);
+        }
+        if (File.Exists(paths.Ro4Path))
+        {
+            Ro4.Load(paths.Ro4Path);
+        }
+
         if (File.Exists(paths.SniPath))
+        {
             Sni.Load(paths.SniPath);
+        }
 
         if (File.Exists(paths.SkyPath))
+        {
             Sky.Load(paths.SkyPath);
+        }
     }
 
     public void LoadTerrainMesh(string dirPath, string fileName, GameVersion version)
@@ -201,6 +242,23 @@ public class ScenarioFiles
         SaveTerrainMesh(paths, version);
 
         Sni.Save(paths.SniPath);
+
+        if (Ro1.Head.GrassLength > 0)
+        {
+            Ro1.Save(paths.Ro1Path);
+        }
+        if (Ro2.Head.GrassLength > 0)
+        {
+            Ro2.Save(paths.Ro2Path);
+        }
+        if (Ro3.Head.GrassLength > 0)
+        {
+            Ro3.Save(paths.Ro3Path);
+        }
+        if (Ro4.Head.GrassLength > 0)
+        {
+            Ro4.Save(paths.Ro4Path);
+        }
 
         if (version == GameVersion.WR2)
         {

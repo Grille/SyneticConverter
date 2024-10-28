@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,8 @@ using SyneticLib.Files.Common;
 namespace SyneticLib.Files;
 public class MoxFile : BinaryFile, IVertexData, IIndexData
 {
-    public const int MBWR = 65536;
-    public const int SimpleWR2 = 33554432;
-    public const int ComplexWR2 = 33685504;
-
     public MHead Head;
-    public MPaintRegionInt32[] Textures;
+    public MPaintRegionInt32[] PaintRegions;
 
     public Vertex[] Vertecis { get; set; }
     public IdxTriangleInt32[] Indices { get; set; }
@@ -24,96 +21,148 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
     public MPart[]? Parts;
     public MLight[]? Lights;
 
-    public byte[] Rest;
+    public MMaterial[] Materials;
 
     public MoxFile()
     {
-        Textures = Array.Empty<MPaintRegionInt32>();
+        PaintRegions = Array.Empty<MPaintRegionInt32>();
         Vertecis = Array.Empty<Vertex>();
         Indices = Array.Empty<IdxTriangleInt32>();
-        Rest = Array.Empty<byte>();
-
+        Materials = Array.Empty<MMaterial>();
     }
 
-    public unsafe override void Deserialize(BinaryViewReader br)
+    public static Vertex[] ReadVertecis(BinaryViewReader br, int count)
+    {
+        var vertecis = new Vertex[count];
+        for (int i = 0; i < count; i++)
+        {
+            vertecis[i] = (Vertex)br.Read<MVertex>();
+        }
+        return vertecis;
+    }
+
+    private static IdxTriangleInt32[] ReadU16Indices(BinaryViewReader br, int count)
+    {
+        var indicesU16 = br.ReadArray<IdxTriangleUInt16>(count);
+        var indicesI32 = new IdxTriangleInt32[count];
+        for (int i = 0; i < count; i++)
+        {
+            indicesI32[i] = indicesU16[i];
+        }
+        return indicesI32;
+    }
+
+    public static IdxTriangleInt32[] ReadIndices(BinaryViewReader br, int count, int version) => version switch
+    {
+        0 => ReadU16Indices(br, count),
+        1 => br.ReadArray<IdxTriangleInt32>(count),
+        _ => throw new InvalidDataException(),
+    };
+
+    private static MPaintRegionInt32[] ReadU16PaintRegions(BinaryViewReader br, int count)
+    {
+        var i32 = new MPaintRegionInt32[count];
+        for (int i = 0; i < count; i++)
+        {
+            i32[i] = (MPaintRegionInt32)br.Read<MPaintRegionUInt16>();
+        }
+        return i32;
+    }
+
+    public static MPaintRegionInt32[] ReadPaintRegsions(BinaryViewReader br, int count, int version) => version switch
+    {
+        0 => ReadU16PaintRegions(br, count),
+        2 => br.ReadArray<MPaintRegionInt32>(count),
+        _ => throw new InvalidDataException(),
+    };
+
+    public override void Deserialize(BinaryViewReader br)
     {
         Head = br.Read<MHead>();
 
         if (Head.Magic != "!XOM")
-            throw new InvalidOperationException($"Invalid Head '{Head.Magic}'.");
-
-        Vertecis = new Vertex[Head.VertCount];
-        for (int i = 0; i < Vertecis.Length; i++)
         {
-            Vertecis[i] = (Vertex)br.Read<MVertex>();
+            throw new InvalidDataException($"Invalid Head '{Head.Magic}'.");
         }
 
-        var indicesU16 = br.ReadArray<IdxTriangleUInt16>(Head.PolyCount);
-        Indices = new IdxTriangleInt32[indicesU16.Length];
-        for (int i = 0; i < Indices.Length; i++)
-        {
-            Indices[i] = indicesU16[i];
-        }
+        Vertecis = ReadVertecis(br, Head.VtxCount);
+        Indices = ReadIndices(br, Head.PolyCount, Head.Version.V0IndexMode);
+        PaintRegions = ReadPaintRegsions(br, Head.PaintRegionCount, Head.Version.V3ChunkMode);
 
-        if (Head.Version == MBWR)
+        Materials = br.ReadArray<MMaterial>(Head.MatCount);
+    }
+
+    public static void WriteVertecis(BinaryViewWriter bw, Vertex[] vertices)
+    {
+        for (int i = 0; i < vertices.Length; i++)
         {
-            Textures = new MPaintRegionInt32[Head.TextureCount];
-            for (int i = 0; i < Head.TextureCount; i++)
+            bw.Write((MVertex)vertices[i]);
+        }
+    }
+
+    public static void WriteIndices(BinaryViewWriter bw, IdxTriangleInt32[] indices, int version)
+    {
+        if (version == 0)
+        {
+            for (int i = 0; i < indices.Length; i++)
             {
-                Textures[i] = (MPaintRegionInt32)br.Read<MPaintRegionUInt16>();
+                bw.Write((IdxTriangleUInt16)indices[i]);
             }
+        }
+        else if (version == 1)
+        {
+            bw.WriteArray(indices, LengthPrefix.None);
         }
         else
         {
-            Textures = br.ReadArray<MPaintRegionInt32>(Head.TextureCount);
+            throw new ArgumentException(nameof(version));
         }
+    }
 
-        var list = new List<byte>();
-        br.ReadRemainderToIList(list, 0);
-        Rest = list.ToArray();
-
-        /*
-        br.Seek(0x150 * Head.MatCount);
-        br.Seek(0x0C4 * Head.PartCount);
-        br.Seek(0x058 * Head.LightCount);
-        */
+    public static void WritePaintRegions(BinaryViewWriter bw, MPaintRegionInt32[] regions, int version)
+    {
+        if (version == 0)
+        {
+            for (int i = 0; i < regions.Length; i++)
+            {
+                bw.Write((MPaintRegionUInt16)regions[i]);
+            }
+        }
+        else if (version == 1)
+        {
+            bw.WriteArray(regions, LengthPrefix.None);
+        }
+        else
+        {
+            throw new ArgumentException(nameof(version));
+        }
     }
 
     public override void Serialize(BinaryViewWriter bw)
     {
         bw.Write(Head);
 
-        for (int i = 0; i < Vertecis.Length; i++)
-        {
-            bw.Write((MVertex)Vertecis[i]);
-        }
-
-        for (int i = 0; i < Head.PolyCount; i++)
-        {
-            bw.Write((IdxTriangleUInt16)Indices[i]);
-        }
-
-        if (Head.Version == MBWR)
-        {
-            for (int i = 0; i < Head.TextureCount; i++)
-            {
-                bw.Write((MPaintRegionUInt16)Textures[i]);
-            }
-        }
-        else
-        {
-            bw.WriteArray(Textures, LengthPrefix.None);
-        }
-
-        bw.WriteArray(Rest, LengthPrefix.None);
+        WriteVertecis(bw, Vertecis);
+        WriteIndices(bw, Indices, Head.Version.V0IndexMode);
+        WritePaintRegions(bw, PaintRegions, Head.Version.V3ChunkMode);
+        bw.WriteArray(Materials, LengthPrefix.None);
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct MHead
     {
         public String4 Magic;
-        public int Version;
-        public int VertCount, PolyCount, TextureCount, MatCount, PartCount, LightCount;
+        public MVersion Version;
+        public int VtxCount, PolyCount, PaintRegionCount, MatCount, PartCount, LightCount;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MVersion
+    {
+        public byte V0IndexMode;
+        public byte V1;
+        public byte V2Extension;
+        public byte V3ChunkMode;
     }
 
     [StructLayout(LayoutKind.Sequential, Size = 40)]
@@ -148,22 +197,20 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
     public struct MPaintRegionInt32
     {
         public int MatId;
-        public byte Flag0, Flag1;
-        public ushort Clear0;
+        public int Clear0;
         public int PolyOffset, PolyCount, VertBegin, VertEnd;
     }
 
     public struct MPaintRegionUInt16
     {
         public ushort MatId;
-        public byte Flag0, Flag1;
+        public ushort Clear0;
         public ushort PolyOffset, PolyCount, VertBegin, VertEnd;
 
         public static explicit operator MPaintRegionUInt16(MPaintRegionInt32 a) => new MPaintRegionUInt16()
         {
             MatId = (ushort)a.MatId,
-            Flag0 = a.Flag0,
-            Flag1 = a.Flag1,
+            Clear0 = (ushort)a.Clear0,
             PolyOffset = (ushort)a.PolyOffset,
             PolyCount = (ushort)a.PolyCount,
             VertBegin = (ushort)a.VertBegin,
@@ -173,8 +220,7 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
         public static explicit operator MPaintRegionInt32(MPaintRegionUInt16 a) => new MPaintRegionInt32()
         {
             MatId = a.MatId,
-            Flag0 = a.Flag0,
-            Flag1 = a.Flag1,
+            Clear0 = a.Clear0,
             PolyOffset = a.PolyOffset,
             PolyCount = a.PolyCount,
             VertBegin = a.VertBegin,
@@ -190,5 +236,11 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
     public struct MLight
     {
 
+    }
+
+    [StructLayout(LayoutKind.Sequential, Size = 336)]
+    public struct MMaterial
+    {
+        public int ID;
     }
 }

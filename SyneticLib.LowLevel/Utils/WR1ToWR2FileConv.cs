@@ -271,7 +271,7 @@ public static class WR1ToWR2FileConv
 
 
         mox.Load(moxpath);
-        for (int i = 0; i < mox.Head.VertCount; i++)
+        for (int i = 0; i < mox.Head.VtxCount; i++)
         {
             mox.Vertecis[i].Normal.Z = -0.25f;
         }

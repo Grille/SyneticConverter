@@ -16,11 +16,11 @@ namespace SyneticLib.Utils;
 
 public static class TerrainMaterialMapper
 {
-    static readonly TextureTransform MatrixUV;
-    static readonly TextureTransform Matrix64;
-    static readonly TextureTransform Matrix128;
-    static readonly TextureTransform Matrix256;
-    static readonly TextureTransform Matrix512;
+    public static readonly TextureTransform MatrixUV;
+    public static readonly TextureTransform Matrix64;
+    public static readonly TextureTransform Matrix128;
+    public static readonly TextureTransform Matrix256;
+    public static readonly TextureTransform Matrix512;
 
     static TerrainMaterialMapper()
     {
@@ -33,19 +33,19 @@ public static class TerrainMaterialMapper
 
     public static void ConvertWR1ToWR2(ref this QadFile.AbstractMaterialType mat)
     {
-        (var zOffset, var type) = Decode<WR1Type>(mat.Layer0.Mode);
+        (var zOffset, var type) = mat.Layer0.Mode.Decode<WR1Type>();
         WR2Type result;
 
         switch (type)
         {
             case WR1Type.Terrain:
             {
-                result = WR2Type.Terrain;
+                result = WR2Type.L3Terrain;
                 break;
             }
             case WR1Type.Road:
             {
-                result = WR2Type.Road;
+                result = WR2Type.L2Road;
                 mat.Matrix1 = MatrixUV;
                 break;
             }
@@ -61,7 +61,7 @@ public static class TerrainMaterialMapper
             }
             case WR1Type.Windows:
             {
-                result = WR2Type.Windows;
+                result = WR2Type.L1Windows;
                 break;
             }
             case WR1Type.L2SpecFaded:
@@ -87,17 +87,17 @@ public static class TerrainMaterialMapper
             }
             case WR1Type.Water:
             {
-                result = WR2Type.Water;
+                result = WR2Type.L1Water;
                 break;
             }
             case WR1Type.Colorkey:
             {
-                result = WR2Type.Colorkey;
+                result = WR2Type.L1ColorKey;
                 break;
             }
             case WR1Type.Alpha:
             {
-                result = WR2Type.Alpha;
+                result = WR2Type.L1Alpha;
                 break;
             }
             default:
@@ -106,7 +106,7 @@ public static class TerrainMaterialMapper
             }
         }
 
-        mat.Layer0.Mode = Encode(zOffset, result);
+        mat.Layer0.Mode.Encode(zOffset, result);
     }
 
     public static void ConvertC11ToWR2(ref QadFile.AbstractMaterialType mat, TextureTransform[] matrices)
@@ -119,14 +119,14 @@ public static class TerrainMaterialMapper
         mat.Matrix1 = MatrixUV;
         mat.Matrix2 = MatrixUV;
 
-        (var zOffset, var type) = Decode<C11Type>(mat.Layer1.Mode);
+        (var zOffset, var type) = mat.Layer1.Mode.Decode<C11Type>();
         WR2Type result;
 
         switch (type)
         {
             case C11Type.L2Water:
             {
-                result = WR2Type.Water;
+                result = WR2Type.L1Water;
                 mat.Matrix0 = dmat0;
                 break;
             }
@@ -136,10 +136,10 @@ public static class TerrainMaterialMapper
                 mat.Matrix0 = dmat0;
                 break;
             }
-            case C11Type.L2ReflDiff12ColKey12:
-            case C11Type.L2DiffDiff12ColKey1:
+            case C11Type.L2ReflDiff12ColorKey12:
+            case C11Type.L2DiffDiff12ColorKey1:
             {
-                result = WR2Type.Colorkey;
+                result = WR2Type.L1ColorKey;
                 break;
             }
             case C11Type.L3SpecSpecDiff:
@@ -147,20 +147,15 @@ public static class TerrainMaterialMapper
                 result = WR2Type.L2SpecFaded;
                 break;
             }
-            case C11Type.L3ReflReflDiff:
-            {
-                result = WR2Type.L2Refl2;
-                break;
-            }
             case C11Type.L3ReflDiffDiff:
             {
-                result = WR2Type.Road;
+                result = WR2Type.L2Road;
                 mat.Matrix2 = dmat2;
                 break;
             }
             case C11Type.L2ReflDiffWin12:
             {
-                result = WR2Type.Windows;
+                result = WR2Type.L1Windows;
                 break;
             }
             case C11Type.L2ReflDiff13:
@@ -170,26 +165,23 @@ public static class TerrainMaterialMapper
                 result = WR2Type.L1Spec;
                 break;
             }
+            case C11Type.L1Diff:
             case C11Type.L1Refl:
             {
                 result = WR2Type.L1Refl;
                 break;
             }
+            case C11Type.L3DiffDiffDiff:
             case C11Type.L2DiffDiff12:
-            case C11Type.L1Diff:
             {
-                result = WR2Type.Road;
+                result = WR2Type.L2Road;
                 mat.Matrix2 = dmat2;
                 break;
             }
-            case C11Type.L3DiffDiffDiff:
-            {
-                result = WR2Type.L2ReflOvl;
-                break;
-            }
+            case C11Type.L3ReflReflDiff:
             case C11Type.L4Diff1234:
             {
-                result = WR2Type.Terrain;
+                result = WR2Type.L3Terrain;
                 mat.Matrix0 = dmat0;
                 mat.Matrix1 = dmat1;
                 mat.Matrix2 = dmat2;
@@ -207,25 +199,6 @@ public static class TerrainMaterialMapper
             }
         }
 
-        mat.Layer0.Mode = Encode(zOffset, result);
-    }
-
-    public unsafe static (int ZOffset, T Type) Decode<T>(QadFile.MMaterialMode mode) where T : unmanaged
-    {
-        AssertIsInteger<T>();
-        int zOffset = mode & 15;
-        int type = mode >> 4;
-        return (zOffset, Unsafe.As<int, T>(ref type));
-    }
-
-    public unsafe static QadFile.MMaterialMode Encode<T>(int zOffset, T type) where T : unmanaged
-    {
-        AssertIsInteger<T>();
-        return (QadFile.MMaterialMode)((Unsafe.As<T, int>(ref type) << 4) | zOffset);
-    }
-
-    static void AssertIsInteger<T>() where T : unmanaged
-    {
-        if (Unsafe.SizeOf<T>() != sizeof(int)) throw new ArgumentException();
+        mat.Layer0.Mode.Encode(zOffset, result);
     }
 }

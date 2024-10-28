@@ -67,10 +67,10 @@ public static partial class Imports
 
         var mesh = new Mesh(mox.Vertecis, mox.Indices);
 
-        var regions = new ModelMaterialRegion[mox.Textures.Length];
-        for (var i = 0; i < mox.Textures.Length; i++)
+        var regions = new ModelMaterialRegion[mox.PaintRegions.Length];
+        for (var i = 0; i < mox.PaintRegions.Length; i++)
         {
-            ref var src = ref mox.Textures[i];
+            ref var src = ref mox.PaintRegions[i];
             Material material;
             if (src.MatId >= materials.Count)
                 material = materials[0];
