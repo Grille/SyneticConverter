@@ -8,14 +8,14 @@ using SyneticLib.Files;
 using SyneticLib.Files.Common;
 
 namespace SyneticLib.IO;
-public class MeshFileSerializer<TFile> : FileSerializer<TFile, Mesh> where TFile : BaseFile, IVertexData, IIndexData, new()
+public class MeshFileSerializer<TFile> : FileSerializer<TFile, IndexedMesh> where TFile : BaseFile, IVertexData, IIndexData, new()
 {
-    protected override Mesh OnDeserialize(TFile cob)
+    protected override IndexedMesh OnDeserialize(TFile cob)
     {
-        return new Mesh(cob.Vertecis, cob.Indices);
+        return new IndexedMesh(cob.Vertecis, cob.Indices);
     }
 
-    protected override void OnSerialize(TFile cob, Mesh mesh)
+    protected override void OnSerialize(TFile cob, IndexedMesh mesh)
     {
         cob.Vertecis = mesh.Vertices;
         cob.Indices = mesh.Indices;

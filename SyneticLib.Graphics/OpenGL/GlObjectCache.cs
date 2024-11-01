@@ -109,7 +109,7 @@ public class GlObjectCacheGroup : IDisposable
 {
     public GlObjectCache<Texture, TextureBuffer> Textures { get; }
     public GlObjectCache<Material, MaterialUniforms> Materials { get; }
-    public GlObjectCache<Mesh, MeshBuffer> Meshes { get; }
+    public GlObjectCache<IndexedMesh, MeshBuffer> Meshes { get; }
 
     public GlObjectCacheGroup()
     {
@@ -123,7 +123,7 @@ public class GlObjectCacheGroup : IDisposable
         return new TextureBuffer(key);
     }
 
-    MeshBuffer Factory(Mesh key)
+    MeshBuffer Factory(IndexedMesh key)
     {
         return new MeshBuffer(key);
     }

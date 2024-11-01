@@ -42,7 +42,7 @@ public class GLFramebuffer : GLObject
         GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment3, TextureTarget.Texture2D, Color3.TextureID, 0);
         GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, TextureTarget.Texture2D, DepthStencil.TextureID, 0);
 
-        GL.DrawBuffers(3, new[] { DrawBuffersEnum.ColorAttachment0, DrawBuffersEnum.ColorAttachment1, DrawBuffersEnum.ColorAttachment2, DrawBuffersEnum.ColorAttachment3 });
+        GL.DrawBuffers(4, new[] { DrawBuffersEnum.ColorAttachment0, DrawBuffersEnum.ColorAttachment1, DrawBuffersEnum.ColorAttachment2, DrawBuffersEnum.ColorAttachment3 });
     }
 
     public static void BindDefault()
@@ -67,6 +67,7 @@ public class GLFramebuffer : GLObject
         Color0.Dispose();
         Color1.Dispose();
         Color2.Dispose();
+        Color3.Dispose();
         DepthStencil.Dispose();
     }
 }

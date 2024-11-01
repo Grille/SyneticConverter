@@ -13,7 +13,7 @@ public unsafe sealed class MeshBuffer : GLObject
     public int ElementCount { get; }
     public int VertexStride { get; }
 
-    public MeshBuffer(Mesh mesh)
+    public MeshBuffer(IndexedMesh mesh)
     {
         VertexArrayID = GL.GenVertexArray();
         VerticesID = GL.GenBuffer();

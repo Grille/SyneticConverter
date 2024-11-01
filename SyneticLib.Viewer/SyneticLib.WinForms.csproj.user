@@ -7,13 +7,13 @@
     <Compile Update="Controls\EditorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Controls\ProjectExplorerTool.cs">
+    <Compile Update="Controls\Tools\ExplorerTool.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Controls\GdiTextureView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Controls\ViewerDocument.cs">
+    <Compile Update="Controls\Document\ViewerDocument.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Forms\EditorForm.cs">

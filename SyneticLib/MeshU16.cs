@@ -9,9 +9,9 @@ namespace SyneticLib;
 internal class MeshU16
 {
     public int[] Offsets { get; }
-    public Mesh Mesh { get; }
+    public IndexedMesh Mesh { get; }
 
-    public MeshU16(Mesh mesh, int[] offsets)
+    public MeshU16(IndexedMesh mesh, int[] offsets)
     {
         Offsets = offsets;
         Mesh = mesh;

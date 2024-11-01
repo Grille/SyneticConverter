@@ -34,7 +34,7 @@ public class SpriteBatch : IDisposable
         SpriteProgram = new SpriteProgram();
     }
 
-    public static Mesh CreateSpriteMesh()
+    public static IndexedMesh CreateSpriteMesh()
     {
         var indices = new IdxTriangleInt32[2]
         {
@@ -50,7 +50,7 @@ public class SpriteBatch : IDisposable
             new(new(-1, -1, 0), new(0, 1)),
         };
 
-        return new Mesh(vertices, indices);
+        return new IndexedMesh(vertices, indices);
     }
 
     public void Add(Sprite sprite)

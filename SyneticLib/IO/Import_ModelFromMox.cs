@@ -65,7 +65,7 @@ public static partial class Imports
             }
         }
 
-        var mesh = new Mesh(mox.Vertecis, mox.Indices);
+        var mesh = new IndexedMesh(mox.Vertecis, mox.Indices);
 
         var regions = new ModelMaterialRegion[mox.PaintRegions.Length];
         for (var i = 0; i < mox.PaintRegions.Length; i++)

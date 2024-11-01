@@ -122,9 +122,6 @@ public class GlScene : IDisposable
     [MemberNotNull(nameof(Stage0), nameof(Stage1))]
     void AssertFrambuffers(int width, int height)
     {
-
-
-
         if (Stage0 == null)
         {
             Stage0 = new GLFramebuffer(width, height);
@@ -134,7 +131,7 @@ public class GlScene : IDisposable
         {
             Stage1 = new GLFramebuffer(width, height);
         }
-
+        
         if (Stage0.Width != width || Stage0.Height != height)
         {
             Stage0.Dispose();

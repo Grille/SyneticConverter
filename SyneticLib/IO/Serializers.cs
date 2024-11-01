@@ -68,7 +68,7 @@ public static class Serializers
         public static readonly MeshFileSerializer<MoxFile> Mox = new();
         public static readonly MeshFileSerializer<WavefrontObjFile> Obj = new();
 
-        public static readonly SerializerRegistry<SyneticLib.Mesh> Registry = new()
+        public static readonly SerializerRegistry<SyneticLib.IndexedMesh> Registry = new()
         {
             { "cob", Cob },
             { "mox", Mox },

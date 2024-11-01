@@ -17,9 +17,9 @@ using SyneticTool.Nodes;
 
 namespace SyneticLib.WinForms.Controls;
 
-public partial class ProjectExplorerTool : DarkToolWindow
+public partial class ExplorerTool : DarkToolWindow
 {
-    public ProjectExplorerTool()
+    public ExplorerTool()
     {
         InitializeComponent();
 

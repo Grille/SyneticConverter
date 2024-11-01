@@ -23,11 +23,11 @@ public class ScenarioDirectoryNode : SmartDarkTreeNode<DirectoryLocation>
         Text = obj.Name;
         Icon = EmbeddedImageList.World.Bitmap16;
 
-        Files = new DirectoryNode(Object.DirectoryPath, this)
-        {
-            Name = "Files:"
-        };
-        Nodes.Add(Files);
+        //Files = new DirectoryNode(Object.DirectoryPath, this)
+        //{
+        //    Name = "Files:"
+        //};
+        //Nodes.Add(Files);
     }
 
     protected override void OnUpdateContent()

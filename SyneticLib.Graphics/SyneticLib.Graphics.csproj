@@ -7,6 +7,7 @@
 		<RootNamespace>SyneticLib.Graphics</RootNamespace>
 		<AssemblyName>SyneticLibGraphics</AssemblyName>
 		<Nullable>enable</Nullable>
+		<Platforms>AnyCPU;x64</Platforms>
 	</PropertyGroup>
 
 	<ItemGroup>

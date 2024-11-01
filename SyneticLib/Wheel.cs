@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class Wheel : SyneticObject
 {
-    Mesh Mesh;
+    IndexedMesh Mesh;
 
     public Wheel(string name) 
     {

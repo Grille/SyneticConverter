@@ -19,7 +19,7 @@ namespace SyneticLib.WinForms.Forms
 {
     public partial class EditorForm : DarkForm, ISceneProvider
     {
-        static readonly ProjectExplorerTool ProjectExplorerToolInstance = new();
+        static readonly ExplorerTool ProjectExplorerToolInstance = new();
 
         public EditorForm()
         {

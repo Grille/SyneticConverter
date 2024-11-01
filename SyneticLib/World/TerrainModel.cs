@@ -13,11 +13,11 @@ public class TerrainModel
     public int Height { get; }
     public int Length { get; }
 
-    public Mesh Mesh { get; }
+    public IndexedMesh Mesh { get; }
 
     readonly Model[,] _chunks;
 
-    public TerrainModel(Mesh mesh, Model[,] chunks)
+    public TerrainModel(IndexedMesh mesh, Model[,] chunks)
     {
         Width = chunks.GetLength(0);
         Height = chunks.GetLength(1);

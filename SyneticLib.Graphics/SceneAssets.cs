@@ -80,7 +80,7 @@ public class SceneAssets : IDisposable
             new(new(-gridSize, 0, -gridSize), new(0, uvScale)),
         };
 
-        var mesh = new Mesh(vertices, indices);
+        var mesh = new IndexedMesh(vertices, indices);
 
         var submesh = new MeshSegment(mesh);
 

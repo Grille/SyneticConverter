@@ -32,7 +32,11 @@ public abstract class GLObject : IDisposable
         _disposed = true;
     }
 
-    ~GLObject() => Dispose(false);
+    ~GLObject()
+    {
+        GLErrorLog.LogFinalizedObject(this);
+        Dispose(false);
+    }
 
     public void Dispose()
     {

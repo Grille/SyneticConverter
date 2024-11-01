@@ -181,7 +181,7 @@ public class ViewerControl : GLControl
         Camera.ScreenSize = new(ClientSize.Width, ClientSize.Height);
         Camera.CreatePerspective();
         Camera.CreateView();
-
+        
         try
         {
             MakeCurrent();

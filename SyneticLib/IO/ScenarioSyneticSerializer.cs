@@ -229,7 +229,7 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
             offsets[i + 1] = offsets[i] + iOffsets[i];
         }
 
-        var mesh = new Mesh(vertecis, indices);
+        var mesh = new IndexedMesh(vertecis, indices);
 
 
         var models = new Model[qad.Head.BlockCountX, qad.Head.BlockCountZ];

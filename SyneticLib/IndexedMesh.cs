@@ -9,29 +9,29 @@ using OpenTK.Mathematics;
 
 namespace SyneticLib;
 
-public class Mesh : SyneticObject
+public class IndexedMesh : SyneticObject
 {
     public Vertex[] Vertices { get; set; }
     public IdxTriangleInt32[] Indices { get; set; }
 
-    public MeshIndicesType IndicesType { get; private set; }
+    public MeshIndexType IndexType { get; private set; }
 
-    public Mesh(Vertex[] vertices, IdxTriangleInt32[] indices, MeshIndicesType type = MeshIndicesType.UInt32)
+    public IndexedMesh(Vertex[] vertices, IdxTriangleInt32[] indices, MeshIndexType type = MeshIndexType.UInt32)
     {
         Vertices = vertices;
         Indices = indices;
 
-        if (type == MeshIndicesType.Unknown)
+        if (type == MeshIndexType.Unknown)
         {
             UpdateIndicesType();
         }
         else
         {
-            IndicesType = type;
+            IndexType = type;
         }
     }
 
-    public static Mesh CreateBox()
+    public static IndexedMesh CreateBox()
     {
         // Define the vertices of the box (cube), assuming a unit cube centered at the origin
         var vertices = new Vertex[]
@@ -75,13 +75,13 @@ public class Mesh : SyneticObject
         };
 
         // Return a new Mesh object
-        return new Mesh(vertices, indices, MeshIndicesType.UInt16);
+        return new IndexedMesh(vertices, indices, MeshIndexType.UInt16);
     }
 
     public void UpdateIndicesType()
     {
         var range = GetIndicesRange();
-        IndicesType = range.End.Value > ushort.MaxValue ? MeshIndicesType.UInt32 : MeshIndicesType.UInt16;
+        IndexType = range.End.Value > ushort.MaxValue ? MeshIndexType.UInt32 : MeshIndexType.UInt16;
     }
 
     public unsafe Range GetIndicesRange()
@@ -143,7 +143,7 @@ public class Mesh : SyneticObject
     }
 }
 
-public enum MeshIndicesType
+public enum MeshIndexType
 {
     Unknown,
     UInt16,

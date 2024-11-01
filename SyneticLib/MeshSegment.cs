@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SyneticLib;
 public class MeshSegment
 {
-    public Mesh Mesh { get; }
+    public IndexedMesh Mesh { get; }
 
     public int Offset { get; }
     public int Start { get; }
@@ -21,7 +21,7 @@ public class MeshSegment
 
     public Span<IdxTriangleInt32> Indices => new Span<IdxTriangleInt32>(Mesh.Indices, Start, Length);
 
-    public MeshSegment(Mesh mesh)
+    public MeshSegment(IndexedMesh mesh)
     {
         Mesh = mesh;
         Offset = 0;
@@ -31,7 +31,7 @@ public class MeshSegment
         UpdateBoundingBox();
     }
 
-    public MeshSegment(Mesh mesh, int start, int length, int offset = 0)
+    public MeshSegment(IndexedMesh mesh, int start, int length, int offset = 0)
     {
         Mesh = mesh;
         Offset = offset;
@@ -56,12 +56,12 @@ public class MeshSegment
         BoundingBox = new BoundingBox(Vertices, Indices, Offset);
     }
 
-    public Mesh ToMesh()
+    public IndexedMesh ToMesh()
     {
         var vertecies = Vertices.ToArray();
         var indices = Indices.ToArray();
 
-        var mesh = new Mesh(vertecies, indices);
+        var mesh = new IndexedMesh(vertecies, indices);
         mesh.ApplyOffset(Offset);
 
         return mesh;
