@@ -59,16 +59,26 @@ public static class AppSettings
 
         if (Games.Count == 0)
         {
-            var newgames = Games.FindNewGames();
-            ShowApplyGamesDialog(null!, newgames);
+            SearchGamesDialog(null!);
         }
     }
 
-    public static void ShowApplyGamesDialog(IWin32Window owner, List<GameDirectory> games)
+    public static void SearchGamesDialog(IWin32Window owner)
     {
+        var games = GameDirectoryList.Search();
+        var newgames = Games.FilterNewLocations(games);
+
         var sb = new StringBuilder();
-        sb.AppendLine($"Found {games.Count} new game locations.");
-        if (games.Count > 0)
+
+
+        sb.Append($"Found {games.Count} game locations.");
+        if (newgames.Count != games.Count)
+        {
+            sb.Append($" ({newgames.Count} New)");
+        }
+        sb.AppendLine();
+
+        if (newgames.Count > 0)
         {
             sb.AppendLine();
             foreach (var game in games)
@@ -76,7 +86,7 @@ public static class AppSettings
                 sb.AppendLine($"{game.Version} {game.DirectoryPath}");
             }
         }
-        var result = DarkMessageBox.ShowInformation(sb.ToString(), "Find Games", DarkDialogButton.OkCancel);
+        var result = DarkMessageBox.ShowInformation(sb.ToString(), "Find Games", newgames.Count > 0 ? DarkDialogButton.OkCancel : DarkDialogButton.Close);
         if (result == DialogResult.OK)
         {
             foreach (var game in games)

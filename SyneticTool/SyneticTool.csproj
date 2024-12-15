@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SyneticLib.Graphics\SyneticLib.Graphics.csproj" />
-    <ProjectReference Include="..\SyneticLib.Viewer\SyneticLib.WinForms.csproj" />
+    <ProjectReference Include="..\SyneticLib.WinForms\SyneticLib.WinForms.csproj" />
     <ProjectReference Include="..\SyneticLib\SyneticLib.csproj" />
   </ItemGroup>
 

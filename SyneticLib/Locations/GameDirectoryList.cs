@@ -39,26 +39,56 @@ public class GameDirectoryList : List<GameDirectory>
 
     }
 
-    public GameDirectoryList FindNewGames()
+    public void FilterNewLocations(IList<GameDirectory> games, IList<GameDirectory> dst)
     {
-        var locations = new string[]
-{
-            "",
-            "Games",
-            "Programs",
-            "Programme",
-            "Program Files",
-            "Program Files (x86)",
-            "Program Files\\steamapps\\steamapps\\common",
-            "Program Files (x86)\\Steam\\steamapps\\common",
-        };
-        return FindNewGames(locations);
+        foreach (var game in games)
+        {
+            if (!PathExists(game.DirectoryPath))
+            {
+                dst.Add(game);
+            }
+        }
     }
 
-    public GameDirectoryList FindNewGames(string[] locations)
+    public GameDirectoryList FilterNewLocations(IList<GameDirectory> games)
     {
-        var res = new GameDirectoryList();
+        var result = new GameDirectoryList();
+        FilterNewLocations(games, result);
+        return result;
+    }
 
+    public static void Search(IList<GameDirectory> games, string dirPath)
+    {
+        string[] directory;
+        try
+        {
+            directory = Directory.GetDirectories(dirPath);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return;
+        }
+        foreach (var fpath in directory)
+        {
+            GameVersion version;
+            try
+            {
+                version = GameDirectory.GetDirectoryGameVersion(fpath);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                continue;
+            }
+            if (version != GameVersion.None)
+            {
+                var location = new GameDirectory(fpath, version);
+                games.Add(location);
+            }
+        }
+    }
+
+    public static void Search(IList<GameDirectory> games, string[] locations)
+    {
         var names = new string[]
         {
             "", "TDK", "Synetic"
@@ -81,38 +111,32 @@ public class GameDirectoryList : List<GameDirectory>
                     if (!Directory.Exists(path))
                         continue;
 
-                    string[] directory;
-                    try
-                    {
-                        directory = Directory.GetDirectories(path);
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        continue;
-                    }
-                    foreach (var fpath in directory)
-                    {
-                        GameVersion version;
-                        try
-                        {
-                            version = GameDirectory.GetDirectoryGameVersion(fpath);
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            continue;
-                        }
-                        if (version != GameVersion.None)
-                        {
-                            if (!PathExists(fpath))
-                            {
-                                res.Add(new(fpath, version));
-                            }
-                        }
-                    }
+                    Search(games, path);
                 }
             }
         }
+    }
 
-        return res;
+    public static void Search(IList<GameDirectory> games)
+    {
+        var locations = new string[]
+{
+            "",
+            "Games",
+            "Programs",
+            "Programme",
+            "Program Files",
+            "Program Files (x86)",
+            "Program Files\\steamapps\\steamapps\\common",
+            "Program Files (x86)\\Steam\\steamapps\\common",
+        };
+        Search(games, locations);
+    }
+
+    public static GameDirectoryList Search()
+    {
+        var games = new GameDirectoryList();
+        Search(games);
+        return games;
     }
 }

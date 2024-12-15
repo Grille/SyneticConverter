@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using SyneticLib.Files;
 using SyneticLib.Utils;
 
-using static SyneticLib.Files.TgaFile;
+using static SyneticLib.Files.TruevisionTgaFile;
 
 namespace SyneticLib.IO;
-public class TextureTgaSerializer : FileSerializer<TgaFile, Texture>
+public class TextureTgaSerializer : FileSerializer<TruevisionTgaFile, Texture>
 {
-    protected override Texture OnDeserialize(TgaFile tga)
+    protected override Texture OnDeserialize(TruevisionTgaFile tga)
     {
         var format = (tga.Head.ImageType, tga.Head.BitsPerPixel) switch
         {
@@ -37,7 +37,7 @@ public class TextureTgaSerializer : FileSerializer<TgaFile, Texture>
         return new Texture(format, levels);
     }
 
-    protected override void OnSerialize(TgaFile tga, Texture texture)
+    protected override void OnSerialize(TruevisionTgaFile tga, Texture texture)
     {
         ImageType type;
         byte bits;

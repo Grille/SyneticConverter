@@ -12,13 +12,13 @@ using System.Runtime.InteropServices;
 
 namespace SyneticLib.Files;
 
-public class TgaFile : BinaryFile
+public class TruevisionTgaFile : BinaryFile
 {
     public MHead Head;
 
     public byte[] Pixels;
 
-    public TgaFile()
+    public TruevisionTgaFile()
     {
         Pixels = Array.Empty<byte>();
     }

@@ -40,6 +40,7 @@
             explorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             viewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            gHJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             darkMenuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -130,7 +131,7 @@
             // viewToolStripMenuItem
             // 
             viewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-            viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { explorerToolStripMenuItem, toolStripSeparator1, viewerToolStripMenuItem });
+            viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { explorerToolStripMenuItem, toolStripSeparator1, viewerToolStripMenuItem, gHJToolStripMenuItem });
             viewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -141,7 +142,7 @@
             explorerToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
             explorerToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             explorerToolStripMenuItem.Name = "explorerToolStripMenuItem";
-            explorerToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            explorerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             explorerToolStripMenuItem.Text = "Explorer";
             explorerToolStripMenuItem.Click += explorerToolStripMenuItem_Click;
             // 
@@ -151,16 +152,24 @@
             toolStripSeparator1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new System.Drawing.Size(114, 6);
+            toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // viewerToolStripMenuItem
             // 
             viewerToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
             viewerToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             viewerToolStripMenuItem.Name = "viewerToolStripMenuItem";
-            viewerToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            viewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             viewerToolStripMenuItem.Text = "Viewer";
             viewerToolStripMenuItem.Click += viewerToolStripMenuItem_Click;
+            // 
+            // gHJToolStripMenuItem
+            // 
+            gHJToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+            gHJToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            gHJToolStripMenuItem.Name = "gHJToolStripMenuItem";
+            gHJToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            gHJToolStripMenuItem.Text = "GHJ";
             // 
             // EditorForm
             // 
@@ -194,5 +203,6 @@
         private System.Windows.Forms.ToolStripMenuItem viewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem gHJToolStripMenuItem;
     }
 }

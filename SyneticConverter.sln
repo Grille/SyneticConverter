@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.Graphics", "Syne
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.Core", "SyneticLib.LowLevel\SyneticLib.Core.csproj", "{A5207D1F-7466-4307-A29C-9F226C96960C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.WinForms", "SyneticLib.Viewer\SyneticLib.WinForms.csproj", "{A6B862FE-7BA9-4743-B31E-19E5FCA83551}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyneticLib.WinForms", "SyneticLib.WinForms\SyneticLib.WinForms.csproj", "{A6B862FE-7BA9-4743-B31E-19E5FCA83551}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{34D40845-522B-47E3-985E-7BCE84BBBE18}"
 	ProjectSection(SolutionItems) = preProject

@@ -79,6 +79,7 @@
             toolStripButton2.Name = "toolStripButton2";
             toolStripButton2.Size = new System.Drawing.Size(70, 25);
             toolStripButton2.Text = "Remove";
+            toolStripButton2.Click += toolStripButton2_Click;
             // 
             // toolStripButton3
             // 
@@ -89,6 +90,7 @@
             toolStripButton3.Name = "toolStripButton3";
             toolStripButton3.Size = new System.Drawing.Size(62, 25);
             toolStripButton3.Text = "Search";
+            toolStripButton3.Click += toolStripButton3_Click;
             // 
             // ExplorerTool
             // 
@@ -97,7 +99,7 @@
             Controls.Add(darkToolStrip1);
             Controls.Add(darkTreeView1);
             DefaultDockArea = DarkUI.Docking.DarkDockArea.Left;
-            DockText = "Project Explorer";
+            DockText = "Game Explorer";
             Name = "ExplorerTool";
             Size = new System.Drawing.Size(400, 600);
             darkToolStrip1.ResumeLayout(false);

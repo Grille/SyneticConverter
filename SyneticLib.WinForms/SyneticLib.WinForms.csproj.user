@@ -4,9 +4,6 @@
     <_LastSelectedProfileId>C:\Users\Hirch\Documents\GitBewidata_GitLab\SyneticConverter\SyneticLib.Viewer\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="Controls\EditorControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Update="Controls\Tools\ExplorerTool.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -19,7 +19,7 @@ namespace SyneticLib.WinForms.Forms
 {
     public partial class EditorForm : DarkForm, ISceneProvider
     {
-        static readonly ExplorerTool ProjectExplorerToolInstance = new();
+        readonly ExplorerTool ProjectExplorerToolInstance;
 
         public EditorForm()
         {
@@ -31,6 +31,11 @@ namespace SyneticLib.WinForms.Forms
 
             Application.AddMessageFilter(DockPanel.DockContentDragFilter);
             Application.AddMessageFilter(DockPanel.DockResizeFilter);
+
+            ProjectExplorerToolInstance = new()
+            {
+                Owner = this,
+            };
 
             DockPanel.AddContent(ProjectExplorerToolInstance);
             DockPanel.AddContent(new ViewerDocument());
@@ -78,6 +83,15 @@ namespace SyneticLib.WinForms.Forms
             DockPanel.AddContent(doc);
             var load = new SceneLoader(doc, doc.ViewerControl.Scene);
             load.LoadFile();
+            doc.DockText = load.FileName;
+        }
+
+        public void OpenFile(string filename)
+        {
+            var doc = new ViewerDocument();
+            DockPanel.AddContent(doc);
+            var load = new SceneLoader(doc, doc.ViewerControl.Scene);
+            load.LoadFile(filename);
             doc.DockText = load.FileName;
         }
 
