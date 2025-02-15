@@ -50,4 +50,9 @@ public class TextureBitmapSerializer : IFileSerializer<Texture>
 
         return BitmapConverter.ConvertToTexture(bitmap);
     }
+
+    public IReadOnlyCollection<string> GetErrors()
+    {
+        throw new NotImplementedException();
+    }
 }

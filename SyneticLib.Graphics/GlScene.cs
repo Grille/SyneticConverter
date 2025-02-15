@@ -22,6 +22,8 @@ using SyneticLib.World;
 namespace SyneticLib.Graphics;
 public class GlScene : IDisposable
 {
+    public Scene Scene { get; }
+
     public SpriteBatch Sprites { get; }
     TextBatch Text;
 
@@ -202,7 +204,7 @@ public class GlScene : IDisposable
         if (scenarioHandle != null)
         {
             terrainProgram.Bind();
-            scenarioHandle.Terrain.Draw(Camera.Position, 32);
+            scenarioHandle.Terrain.Draw(Camera.Position, 64);
         }
 
         if (modelHandle != null)
@@ -224,42 +226,10 @@ public class GlScene : IDisposable
 
 
 
-        /*
+        
         //GL.Disable(EnableCap.DepthTest);
 
-        {
-            var closest = RayCaster.NoHit;
 
-            var ray = Camera.CastMouseRay();
-
-            if (scenario != null)
-            {
-                foreach (var chunk in scenario.EnumerateChunks())
-                {
-                    closest.ApplyIfCloserHit(RayCaster.RayIntersectsModel(ray, chunk.Terrain));
-                }
-            }
-
-            if (modelHandle != null)
-            {
-                closest.ApplyIfCloserHit(RayCaster.RayIntersectsModel(ray, model!));
-            }
-
-            if (!closest.IsHit)
-            {
-                closest = RayCaster.RayIntersectsGround(ray);
-            }
-
-
-
-            var pos = closest.GetIntersection(ray);
-
-            var mat = Matrix4.CreateTranslation(pos);
-
-
-            assets.Compass.DrawModel(mat);
-        }
-        */
         //GL.DrawElements(PrimitiveType.Triangles, buffer.ElementCount, DrawElementsType.UnsignedInt, 0 * 3 * 4);
 
 

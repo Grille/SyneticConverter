@@ -30,11 +30,26 @@ public static class RayCaster
             return ray.Origin + ray.Direction * Distance;
         }
 
+        public bool IsCloserHit(RayIntersectionResult ray)
+        {
+            return ray.IsHit && (ray.Distance < Distance);
+        }
+
         public void ApplyIfCloserHit(RayIntersectionResult ray)
         {
-            if (ray.IsHit && ray.Distance < Distance) {
+            if (ray < this) {
                 this = ray;
             }
+        }
+
+        public static bool operator <(RayIntersectionResult a, RayIntersectionResult b)
+        {
+            return b.IsCloserHit(a);
+        }
+
+        public static bool operator >(RayIntersectionResult a, RayIntersectionResult b)
+        {
+            return a.IsCloserHit(b);
         }
     }
 
@@ -119,7 +134,7 @@ public static class RayCaster
             );
 
             var result = RayIntersectsTriangle(ray, triangle, indices[i].X + offset);
-            if (result.IsHit && result.Distance < closest.Distance)
+            if (result < closest)
             {
                 closest = result;
                 if (returnFirst)

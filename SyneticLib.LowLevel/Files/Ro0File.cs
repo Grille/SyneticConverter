@@ -41,7 +41,7 @@ public class Ro0File : BinaryFile
         Chunks = br.ReadArray<MChunk>(Head.ChunksLength);
 
         Grass = new GrassGeneric[Head.GrassLength];
-        switch (Head.X1)
+        switch (Head.Version)
         {
             case 0:
             {
@@ -74,7 +74,7 @@ public class Ro0File : BinaryFile
         bw.WriteArray(UV, LengthPrefix.None);
         bw.WriteArray(Chunks, LengthPrefix.None);
 
-        switch (Head.X1)
+        switch (Head.Version)
         {
             case 0:
             {
@@ -108,7 +108,7 @@ public class Ro0File : BinaryFile
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct MHead
     {
-        public ushort X1, X2, X3, X4;
+        public ushort Version, X2, X3, X4;
         public int Variants;
         public int ChunksWidth;
         public int ChunksHeight;
@@ -137,7 +137,7 @@ public class Ro0File : BinaryFile
             Position = a.Position,
             ID = a.ID,
             Size = a.Size,
-            Color0 = a.RgbaColor.Decode(),
+            Color = a.RgbaColor.Decode(),
         };
 
         public static explicit operator MGrassWR2(GrassGeneric a) => new()
@@ -145,7 +145,7 @@ public class Ro0File : BinaryFile
             Position = a.Position,
             ID = a.ID,
             Size = a.Size,
-            RgbaColor = new ColorU16R4G4B4(a.Color0),
+            RgbaColor = new ColorU16R4G4B4(a.Color),
         };
     }
 
@@ -155,16 +155,14 @@ public class Ro0File : BinaryFile
         public Vector3 Position;
         public byte ID;
         public byte Size;
-        public ColorU16R6G5B5 Color0;
-        public ColorU16R6G5B5 Color1;
+        public ColorU32R6G5B5 Color0;
 
         public static implicit operator GrassGeneric(MGrassCT1 a) => new()
         {
             Position = a.Position,
             ID = a.ID,
             Size = a.Size,
-            Color0 = a.Color0.Decode(),
-            Color1 = a.Color1.Decode(),
+            Color = a.Color0.Decode(),
         };
 
         public static explicit operator MGrassCT1(GrassGeneric a) => new()
@@ -172,8 +170,7 @@ public class Ro0File : BinaryFile
             Position = a.Position,
             ID = a.ID,
             Size = a.Size,
-            Color0 = new ColorU16R6G5B5(a.Color0),
-            Color1 = new ColorU16R6G5B5(a.Color1),
+            Color0 = new ColorU32R6G5B5(a.Color),
         };
     }
 
@@ -182,8 +179,7 @@ public class Ro0File : BinaryFile
         public Vector3 Position;
         public byte ID;
         public byte Size;
-        public Vector3 Color0;
-        public Vector3 Color1;
+        public Vector3 Color;
     }
 
     public struct ColorU16R4G4B4
@@ -209,28 +205,42 @@ public class Ro0File : BinaryFile
 
         public void Encode(float r, float g, float b)
         {
-            static int Encode(float value) => (int)(value * 15f + 0.5f);
+            static int Encode(float value) => (int)(Math.Clamp(value, 0, 1) * 15f);
 
-            Value = (ushort)(Encode(r) << 8 | Encode(g) << 4 | Encode(b) << 0);
+            Value = (ushort)(Encode(r ) << 8 | Encode(g) << 4 | Encode(b) << 0);
         }
     }
 
-    public struct ColorU16R6G5B5
+    public struct ColorU32R6G5B5
     {
-        public ushort Value;
+        public uint Value;
 
-        public ColorU16R6G5B5(Vector3 rgb)
+        public ColorU32R6G5B5(Vector3 rgb)
         {
             Encode(rgb);
         }
 
         public Vector3 Decode()
         {
-            float r = ((Value >> 10) & 63) / 63f;
-            float g = ((Value >> 5) & 31) / 31f;
-            float b = ((Value >> 0) & 31) / 31f;
+            float b0 = ((Value >> 0) & 31) / 31f;
+            float g0 = ((Value >> 5) & 31) / 31f;
+            float r0 = ((Value >> 10) & 31) / 31f;
+            uint a0 = (Value >> 15) & 1;
 
-            return new Vector3(r, g, b);
+            float b1 = ((Value >> 16) & 31) / 31f;
+            float g1 = ((Value >> 21) & 31) / 31f;
+            float r1 = ((Value >> 26) & 31) / 31f;
+            uint a1 = (Value >> 31) & 1;
+
+            float a2 = (a1 | (a0 << 1)) / 4f;
+
+            float Mix(float x, float y, float a) => Math.Clamp(((x) * 2f) * (1.25f - a), 0, 1);
+
+            float b2 = Mix(b0, b1, a2);
+            float g2 = Mix(g0, g1, a2);
+            float r2 = Mix(r0, r1, a2);
+
+            return new Vector3(r2, g2, b2);
         }
 
         public void Encode(Vector3 rgb)

@@ -17,22 +17,6 @@ namespace SyneticLib.Utils;
 
 public static class C11ToWR2FileConv
 {
-    static readonly TextureTransform MatrixUV;
-
-    static readonly TextureTransform Matrix64;
-    static readonly TextureTransform Matrix128;
-    static readonly TextureTransform Matrix256;
-    static readonly TextureTransform Matrix512;
-
-    static C11ToWR2FileConv()
-    {
-        MatrixUV = TextureTransform.CreateScale90Deg(1, 1);
-        Matrix64 = TextureTransform.CreateScale(1f / 64f, 1f / 64f);
-        Matrix128 = TextureTransform.CreateScale(1f / 128f, 1f / 128f);
-        Matrix256 = TextureTransform.CreateScale(1f / 256f, 1f / 256f);
-        Matrix512 = TextureTransform.CreateScale(1f / 512f, 1f / 512f);
-    }
-
     public static void Convert(string dirPath, string fileName)
     {
         var paths = new ScenarioFiles.Paths(dirPath, fileName);
@@ -113,19 +97,19 @@ public static class C11ToWR2FileConv
         var lname = name.ToLower();
 
         if (lname == "03gras" || lname == "nk03gras" || lname == "gras13" || lname == "gras14")
-            return Matrix512;
+            return TerrainMaterialMapper.Matrix512;
 
         if (name.Contains("_S"))
-            return Matrix512;
+            return TerrainMaterialMapper.Matrix512;
 
         if (lname.Contains("fels"))
-            return Matrix256;
+            return TerrainMaterialMapper.Matrix256;
         if (lname == "wasserbump")
-            return Matrix256;
+            return TerrainMaterialMapper.Matrix256;
         if (lname.Contains("acker") || lname.Contains("feld"))
-            return Matrix128;
+            return TerrainMaterialMapper.Matrix128;
 
-        return Matrix64;
+        return TerrainMaterialMapper.Matrix64;
     }
 
     public static void ConvertObjectMaterials(string path)

@@ -8,13 +8,21 @@ using SyneticLib.Locations;
 
 using static System.IO.Path;
 using SyneticLib.IO;
+using static SyneticLib.IO.Serializers;
 
 namespace SyneticLib;
 public class ModelDirectory : LazyRessourceDirectory<Model>
 {
-    static bool filter(string path) => File.Exists(path) && GetExtension(path).ToLower() == ".mox";
+    static bool filter(string filePath) => File.Exists(filePath) && GetExtension(filePath).ToLower() == ".mox";
 
-    public ModelDirectory(TextureDirectory textures, string path) : base(path, filter, (a) => Imports.LoadModelFromMox(path, textures))
+    static Model constructor(string filePath, TextureDirectory textures)
+    {
+        var model = Imports.LoadModelFromMox(filePath, textures);
+        model.Name = Path.GetFileNameWithoutExtension(filePath);
+        return model;
+    }
+
+    public ModelDirectory(string dirPath, TextureDirectory textures) : base(dirPath, filter, (filePath) => constructor(filePath, textures))
     {
         //TextureFolder = new();
     }

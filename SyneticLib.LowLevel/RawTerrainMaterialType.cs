@@ -9,11 +9,11 @@ namespace SyneticLib;
 
 public enum TerrainMaterialTypeWR1 : int
 {
-    Terrain,
-    Road,
+    L3Terrain,
+    L2Road,
     L1Refl,
     L1Spec,
-    Windows,
+    L1Windows,
     L2SpecFaded,
     L2SpecOverlay,
     L2SpecOverlayT,
@@ -22,9 +22,9 @@ public enum TerrainMaterialTypeWR1 : int
     Unknown10,
     Unknown11,
     Unknown12,
-    Water,
-    Colorkey,
-    Alpha,
+    L1Water,
+    L1Colorkey,
+    L1Alpha,
 }
 
 public enum TerrainMaterialTypeWR2 : int

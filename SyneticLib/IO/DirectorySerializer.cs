@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 namespace SyneticLib.IO;
 public abstract class DirectorySerializer<TObj> : ISerializer<TObj>
 {
+    public IReadOnlyCollection<string> GetErrors()
+    {
+        throw new NotImplementedException();
+    }
+
     public TObj Load(string dirPath)
     {
         return OnLoad(dirPath);

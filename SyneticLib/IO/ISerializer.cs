@@ -10,4 +10,6 @@ public interface ISerializer<TObj>
     public TObj Load(string path);
 
     public void Save(string path, TObj obj);
+
+    public IReadOnlyCollection<string> GetErrors();
 }

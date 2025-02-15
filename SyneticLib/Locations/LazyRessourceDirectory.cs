@@ -84,12 +84,14 @@ public class LazyRessourceDirectory<T> : DirectoryLocation, IReadOnlyCollection<
         throw new KeyNotFoundException(name);
     }
 
-    public T[] CreateIndexedArray<TList>(TList names) where TList : IList
+    public T[] CreateIndexedArray(IList names)
     {
         var result = new T[names.Count];
         for (var i = 0; i < names.Count; i++)
         {
-            result[i] = GetByFileName(names[i].ToString());
+            var name = names[i]!.ToString();
+            ArgumentNullException.ThrowIfNull(name);
+            result[i] = GetByFileName(name);
         }
         return result;
     }

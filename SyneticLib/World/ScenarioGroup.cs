@@ -5,53 +5,37 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using SyneticLib.Locations;
+using System.Collections;
 
 namespace SyneticLib.World;
 
-public class ScenarioGroup : SyneticObject
+public class ScenarioGroup : SyneticObject, IReadOnlyList<Scenario>
 {
-    public Scenario[] Variants { get; }
+    private readonly Scenario[] _variants;
 
-    public int VariantCount { get => Variants.Length; }
-    public Scenario? V1 { get => Variants.Length > 0 ? Variants[0] : null; }
-    public Scenario? V2 { get => Variants.Length > 1 ? Variants[1] : null; }
-    public Scenario? V3 { get => Variants.Length > 2 ? Variants[2] : null; }
-    public Scenario? V4 { get => Variants.Length > 3 ? Variants[3] : null; }
+    public int Count { get => _variants.Length; }
+    public Scenario? V1 { get => _variants.Length > 0 ? _variants[0] : null; }
+    public Scenario? V2 { get => _variants.Length > 1 ? _variants[1] : null; }
+    public Scenario? V3 { get => _variants.Length > 2 ? _variants[2] : null; }
+    public Scenario? V4 { get => _variants.Length > 3 ? _variants[3] : null; }
 
-    public ScenarioGroup(string name, Scenario[] variants)
+    public ScenarioGroup(string name, IEnumerable<Scenario> variants)
     {
-        Variants = variants;
+        _variants = variants.ToArray();
     }
 
-    /*
-    protected override void OnLoad()
+    public Scenario this[int index]
     {
-        foreach (var variant in Variants)
-        {
-            variant.Load();
-        }
+        get => _variants[index];
     }
 
-    protected override void OnSave()
+    public IEnumerator<Scenario> GetEnumerator()
     {
-        throw new NotImplementedException();
+        return ((IEnumerable<Scenario>)_variants).GetEnumerator();
     }
 
-    protected override void OnSeek()
+    IEnumerator IEnumerable.GetEnumerator()
     {
-        var dirs = Directory.GetDirectories(SourcePath);
-
-        var list = Variants;
-        list.Clear();
-
-        foreach (var dir in dirs)
-        {
-            string variantId = Path.GetFileName(dir);
-            if (variantId.Length == 2 && int.TryParse(variantId.Substring(1, 1), out int result))
-            {
-                list.Add(new Scenario(this, result));
-            }
-        }
+        return _variants.GetEnumerator();
     }
-    */
 }

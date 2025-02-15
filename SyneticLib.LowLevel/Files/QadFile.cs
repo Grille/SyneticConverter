@@ -46,8 +46,7 @@ public unsafe class QadFile : BinaryFile
     public MSound[] Sounds;
     public MPropClass[] PropClassInfo;
     public MLight[] Lights;
-
-    public byte[] CollisionDataBuffer;
+    public byte[] CollisionPointerBuffer;
 
     public QadFile()
     {
@@ -65,7 +64,7 @@ public unsafe class QadFile : BinaryFile
         Sounds = Array.Empty<MSound>();
         PropClassInfo = Array.Empty<MPropClass>();
         Lights = Array.Empty<MLight>();
-        CollisionDataBuffer = Array.Empty<byte>();
+        CollisionPointerBuffer = Array.Empty<byte>();
     }
 
     unsafe void ReadHead(BinaryViewReader br)
@@ -107,7 +106,7 @@ public unsafe class QadFile : BinaryFile
         for (var i = 0; i < Head.BlockCount; i++)
             Chunks[i] = br.Read<MChunk>();
 
-        CollisionDataBuffer = br.ReadArray<byte>(Head.CollisionBufferSize);
+        CollisionPointerBuffer = br.ReadArray<byte>(Head.CollisionBufferSize);
 
         PolyRegions = br.ReadArray<MPolyRegion>(Head.PolyRegionCount);
 
@@ -142,7 +141,7 @@ public unsafe class QadFile : BinaryFile
         Sounds = br.ReadArray<MSound>(Head.SoundCount);
     }
 
-    public unsafe override void Serialize(BinaryViewWriter bw)
+    public override void Serialize(BinaryViewWriter bw)
     {
         bw.LengthPrefix = LengthPrefix.None;
 
@@ -177,7 +176,7 @@ public unsafe class QadFile : BinaryFile
         }
 
         var blockx16 = Head.BlockCount * 16;
-        bw.WriteArray(CollisionDataBuffer);
+        bw.WriteArray(CollisionPointerBuffer);
 
         bw.WriteArray(PolyRegions);
 
@@ -410,6 +409,20 @@ public unsafe class QadFile : BinaryFile
         return endPos;
     }
 
+    #region Types
+
+    public ReadOnlySpan<ushort> GetSubChunkCollisionPointer(int x, int z)
+    {
+        int width = Head.BlockCountX * 4;
+        int height = Head.BlockCountZ * 4;
+        int index = x + z * width;
+
+        int offset = BitConverter.ToInt32(CollisionPointerBuffer, index);
+        int count = BitConverter.ToInt32(CollisionPointerBuffer, offset);
+
+        return MemoryMarshal.Cast<byte, ushort>(CollisionPointerBuffer.AsSpan(offset + 4, count * 2));
+    }
+
     public enum MFileVersion : uint
     {
         None = 0,
@@ -556,14 +569,6 @@ public unsafe class QadFile : BinaryFile
         public int GetSortID(int count) => Layer0.GetSortID(count);
     }
 
-    public struct MCollisionMeshPtr
-    {
-        public int Start;
-        public int End;
-
-        public int Length => End - Start;
-    }
-
     public struct MPropInstanceWR2
     {
         public String32 Name;
@@ -575,7 +580,7 @@ public unsafe class QadFile : BinaryFile
         public float x5;
         public Vector3 x6;
     }
-    
+
     public struct MPropInstanceCT1
     {
         public String32 Name;
@@ -682,4 +687,6 @@ public unsafe class QadFile : BinaryFile
         public byte b1, b2, b3, b4;
         public Matrix4 Matrix;
     }
+
+    #endregion
 }

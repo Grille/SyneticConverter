@@ -10,7 +10,6 @@ using SyneticLib.Files;
 using WR1Type = SyneticLib.TerrainMaterialTypeWR1;
 using WR2Type = SyneticLib.TerrainMaterialTypeWR2;
 using C11Type = SyneticLib.TerrainMaterialTypeC11;
-using System.Runtime.CompilerServices;
 
 namespace SyneticLib.Utils;
 
@@ -38,12 +37,12 @@ public static class TerrainMaterialMapper
 
         switch (type)
         {
-            case WR1Type.Terrain:
+            case WR1Type.L3Terrain:
             {
                 result = WR2Type.L3Terrain;
                 break;
             }
-            case WR1Type.Road:
+            case WR1Type.L2Road:
             {
                 result = WR2Type.L2Road;
                 mat.Matrix1 = MatrixUV;
@@ -59,7 +58,7 @@ public static class TerrainMaterialMapper
                 result = WR2Type.L1Spec;
                 break;
             }
-            case WR1Type.Windows:
+            case WR1Type.L1Windows:
             {
                 result = WR2Type.L1Windows;
                 break;
@@ -85,17 +84,17 @@ public static class TerrainMaterialMapper
                 result = WR2Type.L2SpecOverlayT;
                 break;
             }
-            case WR1Type.Water:
+            case WR1Type.L1Water:
             {
                 result = WR2Type.L1Water;
                 break;
             }
-            case WR1Type.Colorkey:
+            case WR1Type.L1Colorkey:
             {
                 result = WR2Type.L1ColorKey;
                 break;
             }
-            case WR1Type.Alpha:
+            case WR1Type.L1Alpha:
             {
                 result = WR2Type.L1Alpha;
                 break;

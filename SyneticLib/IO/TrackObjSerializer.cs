@@ -38,4 +38,9 @@ public class TrackObjSerializer : ISerializer<Track>
             writer.Write(i + 1);
         }
     }
+
+    IReadOnlyCollection<string> ISerializer<Track>.GetErrors()
+    {
+        throw new NotImplementedException();
+    }
 }

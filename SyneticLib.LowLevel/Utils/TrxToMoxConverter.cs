@@ -39,7 +39,7 @@ public static class TrxToMoxConverter
     {
         mox.Head.Magic = (String4)"!XOM";
         mox.Head.Version.V0IndexMode = 0;
-        mox.Head.Version.V1 = 0;
+        mox.Head.Version.V1 = 255;
         mox.Head.Version.V2Extension = 1;
         mox.Head.Version.V3ChunkMode = 0;
 

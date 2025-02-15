@@ -8,14 +8,14 @@ using SyneticLib.Files;
 using SyneticLib.Files.Extra;
 
 namespace SyneticLib.IO;
-public class ModelWavefrontSerializer : ISerializer<Model>
+public class ModelWavefrontSerializer : FileSerializer<WavefrontObjFile, Model>
 {
-    public Model Load(string path)
+    protected override Model OnDeserialize(WavefrontObjFile file)
     {
         throw new NotImplementedException();
     }
 
-    public void Save(string path, Model obj)
+    protected override void OnSerialize(WavefrontObjFile file, Model value)
     {
         throw new NotImplementedException();
     }

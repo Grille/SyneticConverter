@@ -16,6 +16,8 @@ public class ScenarioChunk : SyneticObject
     public Vector3 Center { get; }
     public float Radius { get; }
 
+    public PropInstance[] PropInstances;
+
     public ScenarioChunk(in ScenarioChunkCreateInfo createInfo)
     {
         X = createInfo.Position.X;

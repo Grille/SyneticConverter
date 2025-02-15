@@ -34,11 +34,11 @@ public class Debug : PipelineTask
 
             var gx = new Ro0File.ColorU16R4G4B4();
 
-            gx.Encode(gras.Color0);
-            gras.Color0 = gx.Decode();
+            gx.Encode(gras.Color);
+            gras.Color = gx.Decode();
 
-            gx.Encode(gras.Color1);
-            gras.Color1 = gx.Decode();
+            gx.Encode(gras.Color);
+            gras.Color = gx.Decode();
 
             //gras.Color0.X = 0;
             //gras.Color1.X = 1;

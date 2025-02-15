@@ -13,8 +13,6 @@ public class Model : SyneticObject
 
     public ModelMaterialRegion[] MaterialRegions { get; }
 
-    public Model[]? SubSections { get; }
-
     public BoundingBox BoundingBox => MeshSection.BoundingBox;
 
     public Model(MeshSegment mesh, ModelMaterialRegion[] regions)

@@ -58,6 +58,10 @@ public class Texture : SyneticObject
         this(format, new[] { new TextureLevel(width, height, pixels) })
     { }
 
+    public Texture(TextureFormat format, TextureLevel level) :
+        this(format, new[] { level })
+    { }
+
     public static Texture CreatePlaceholder(string name)
     {
         throw new NotImplementedException();

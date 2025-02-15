@@ -10,6 +10,11 @@ using SyneticLib.Files;
 namespace SyneticLib.IO;
 public class ModelSyneticSerializer : ISerializer<Model>
 {
+    public IReadOnlyCollection<string> GetErrors()
+    {
+        throw new NotImplementedException();
+    }
+
     public Model Load(string path)
     {
         var moxPath = Path.ChangeExtension(path, "mox");

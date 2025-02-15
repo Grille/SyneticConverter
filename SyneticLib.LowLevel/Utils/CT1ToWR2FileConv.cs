@@ -44,18 +44,18 @@ public static class CT1ToWR2FileConv
         C11ToWR2FileConv.ConvertObjectMaterials(Path.Combine(dirPath, "Objects"));
         TrxToMoxConverter.Convert(Path.Combine(dirPath, "Objects"));
 
+        //UpdateTextures(Path.Combine(dirPath, "Textures"));
+
         files.Save(paths, GameVersion.WR2);
     }
 
     public static void ConvertRo0(Ro0File ro0)
     {
-        ro0.Head.X1 = 0;
+        ro0.Head.Version = 0;
 
         for (int i = 0; i < ro0.Grass.Length; i++)
         {
-            ref var gras = ref ro0.Grass[i];
-
-            gras.Color0 = (gras.Color0 + gras.Color1) / 2f;
+            ro0.Grass[i].Size = byte.MaxValue;
         }
     }
 
@@ -75,7 +75,6 @@ public static class CT1ToWR2FileConv
             VertexColorCorrector.ClampToMax(ref vertex.LightColor, -0.25f);
         }
     }
-
 
     public unsafe static void ConvertQad(QadFile qad)
     {
@@ -97,6 +96,8 @@ public static class CT1ToWR2FileConv
         ushort idxZebra = GetTexId("ASPH01_zebra");
         ushort idxRichtung = GetTexId("ASPH01_richtungen");
         ushort idxRand032 = GetTexId("Rand03_2");
+
+        var rnd = new Random();
 
         for (int i = 0; i < qad.Head.MaterialCount; i++)
         {
@@ -152,7 +153,7 @@ public static class CT1ToWR2FileConv
             if (name.StartsWith("X\\"))
             {
                 qad.PropClassObjNames[i] = (String32)name.Substring(2);
-                qad.PropClassInfo[i].Mode = 3;
+                qad.PropClassInfo[i].Mode = 6;
             }
         }
 
@@ -160,6 +161,10 @@ public static class CT1ToWR2FileConv
         {
             ref var instance = ref qad.PropInstances[i];
             string name = instance.Name;
+            instance.x1 = ushort.MaxValue;
+            instance.x5 = ushort.MaxValue;
+            instance.x6 = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+
             if (name.StartsWith("X\\"))
             {
                 instance.Name = (String32)name.Substring(2);

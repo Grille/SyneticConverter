@@ -6,10 +6,10 @@ using OpenTK.Mathematics;
 namespace SyneticLib;
 public struct BgraColor
 {
-    public byte A;
-    public byte R;
-    public byte G;
     public byte B;
+    public byte G;
+    public byte R;
+    public byte A;
 
     public override string ToString()
     {
@@ -36,7 +36,7 @@ public struct BgraColor
 
     public static BgraColor FromNormalizedRgbVector3(Vector3 vector)
     {
-        return FromArgb(0, Normalize(vector.X), Normalize(vector.Y), Normalize(vector.Z));
+        return FromArgb(255, Normalize(vector.X), Normalize(vector.Y), Normalize(vector.Z));
     }
 
     public Vector4 ToNormalizedRgbaVector4()

@@ -5,16 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-using static System.IO.Path;
 
 using SyneticLib.IO;
 namespace SyneticLib.Locations;
 
 public class TextureDirectory : LazyRessourceDirectory<Texture>
 {
-    static bool filter(string path) => File.Exists(path) && GetExtension(path).ToLower() == ".ptx";
+    static bool filter(string path) => File.Exists(path) && Path.GetExtension(path).ToLower() == ".ptx";
 
-    static Texture constructor(string path) => Serializers.Texture.Ptx.Load(path);
+    static Texture constructor(string path)
+    {
+        var texture = Serializers.Texture.Ptx.Load(path);
+        texture.Name = Path.GetFileNameWithoutExtension(path);
+        return texture;
+    }
 
     public TextureDirectory(string path) :
         base(path, filter, constructor)

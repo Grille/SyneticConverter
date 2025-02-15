@@ -41,7 +41,7 @@ void main()
             vec4 layer0 = texture(uTexture0, fUVMat0);
             vec4 layer1 = texture(uTexture1, fUVMat1);
             vec4 layer2 = texture(uTexture2, fUVMat2);
-
+            
             float a = blend(fBlend.r) * layer2.a;
             float c = blend(fBlend.b) * layer0.a * layer1.a;
 

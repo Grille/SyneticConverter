@@ -19,6 +19,13 @@ public unsafe class TextureLevel
 
     public byte[] Data { get; }
 
+    public TextureLevel(int width, int height, BgraColor[] data)
+    {
+        Width = width;
+        Height = height;
+        Data = MemoryMarshal.Cast<BgraColor, byte>(data).ToArray();
+    }
+
     public TextureLevel(int width, int height, byte[] data, bool copyData = false)
     {
         Width = width;

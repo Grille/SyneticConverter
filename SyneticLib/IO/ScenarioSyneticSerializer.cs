@@ -38,6 +38,7 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
 
         var terrainTextures = new TextureDirectory(Path.Combine(dirPath, "textures"));
         var modelTextures = new TextureDirectory(Path.Combine(dirPath, "objects/textures"));
+        var models = new ModelDirectory(Path.Combine(dirPath, "objects"), modelTextures);
 
         var scenario = new Scenario(0);
 
@@ -47,7 +48,36 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
         scenario.Chunks = new ScenarioChunk[qad.Head.BlockCountX, qad.Head.BlockCountZ];
 
         scenario.Terrain = BuildTerrain(files, terrainTextures);
+        
+        // Props
+        var indexedModels = models.CreateIndexedArray(qad.PropClassObjNames);
+        var propClasses = new Dictionary<string, PropClass>();
+        for (var i = 0; i < qad.Head.PropClassCount; i++)
+        {
+            var name = qad.PropClassObjNames[i];
+            var info = qad.PropClassInfo[i];
+            var prop = new PropClass()
+            {
+                Name = name,
+                AnimationMode = info.Mode,
+                ColliShape = info.Shape,
+                Model = indexedModels[i],
+            };
+            propClasses[name] = prop;
+        }
 
+        var propInstances = new PropInstance[qad.PropInstances.Length];
+        for (var i = 0; i < qad.Head.PropInstanceCount; i++)
+        {
+            var info = qad.PropInstances[i];
+            var prop = propClasses[info.Name];
+            var Instances = new PropInstance(prop)
+            {
+                Class = prop,
+            };
+        }
+
+        // Chunks
         for (int i = 0; i < qad.Chunks.Length; i++)
         {
             var src = qad.Chunks[i];
@@ -55,157 +85,15 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
             {
                 Terrain = scenario.Terrain,
             };
-            scenario.Chunks[cinfo.Position.X, cinfo.Position.Z] = new ScenarioChunk(cinfo);
 
-            for (int j = 0; j < src.Lights.Length; j++)
-            {
-                var obj = qad.Lights[j + src.Lights.Start];
-            }
+            var chunk = new ScenarioChunk(cinfo);
+            scenario.Chunks[cinfo.Position.X, cinfo.Position.Z] = chunk;
 
-            for (int j = 0; j < src.Props.Length; j++)
-            {
-                var obj = qad.PropInstances[j + src.Props.Start];
-            }
+            var instances = src.Props.Length > 0 ? propInstances.AsSpan(src.Props.Start, src.Props.Length).ToArray() : Array.Empty<PropInstance>();
+            chunk.PropInstances = instances;
         }
-
-        for (int j = 0; j < qad.PropInstances.Length; j++)
-        {
-            if (!qad.PropClassObjNames.Contains(qad.PropInstances[j].Name))
-            {
-                throw new InvalidDataException();
-            }
-        }
-
-        /*
-        // Props
-        
-        for (var i = 0; i < qad.Head.PropClassCount; i++)
-        {
-            var name = qad.PropClassObjNames[i];
-            var info = qad.PropClassInfo[i];
-            var prop = new PropClass(target, name);
-            prop.DataState = DataState.Loaded;
-            target.PropClasses.Add(prop);
-        }
-
-        for (var i = 0; i < qad.Head.PropInstanceCount; i++)
-        {
-            var propIntanceInfo = qad.PropInstances[i];
-            var propClass = target.PropClasses[propIntanceInfo.ClassId];
-            target.PropInstances.Add(new PropInstance(Target, propClass)
-            {
-                Class = propClass,
-                Position = propIntanceInfo.Position,
-            });
-        }
-
-
-        target.PropClasses.DataState = DataState.Loaded;
-
-        // Lights
-        foreach (var lightInfo in qad.Lights)
-        {
-            var light = new Light(Target);
-
-            light.Color = lightInfo.Color;
-            light.Position = lightInfo.Matrix.Translation;
-
-            light.DataState = DataState.Loaded;
-            target.Lights.Add(light);
-        }
-
-        target.Lights.DataState = DataState.Loaded;
-
-        
-
-        var terrain = target.Terrain;
-        terrain.Vertices = ivtx.Vertecis;
-        terrain.Polygons = iidx.Indices;
-        terrain.MaterialRegion = new ModelMaterialRegion[qad.PolyRegions.Length];
-        for (var i = 0; i < qad.PolyRegions.Length; i++)
-        {
-            terrain.MaterialRegion[i] = new MaterialRegion
-            (
-                qad.PolyRegions[i].PolyOffset,
-                qad.PolyRegions[i].PolyCount,
-                target.TerrainMaterials[qad.PolyRegions[i].SurfaceId1]
-            );
-        }
-        terrain.DataState = DataState.Loaded;
-
-        /*
-        for (int i = 0; i < qad.Chunks.Length; i++)
-        {
-            ref var chunkInfo = ref qad.Chunks[i];
-            //var chunk = new ScenarioChunk(target, "");
-            //var mesh = new Terrain(terrain);
-            mesh.Vertices = vertices;
-            //chunk.Terrain = terrain.CreateSectionPtr(chunkInfo.PolyRegionOffset, chunkInfo.PolyRegionCount);
-            mesh.DataState = DataState.Loaded;
-            terrain.Chunks.Add(mesh);
-        }
-        */
-
-        // mesh data
-        /*
-        // Terrain mesh
-        if (target.Terrain.Chunks.Count < 1)
-            target.Terrain.Chunks.Add(new TerrainMesh(target.Terrain));
-
-        var terrain = target.Terrain.Chunks[0];
-
-        var vertices = terrain.Vertices = new Vertex[ivtx.Vertecis.Length];
-        for (int i = 0; i < ivtx.Vertecis.Length; i++)
-        {
-            vertices[i] = ivtx.Vertecis[i];
-        }
-
-        terrain.MaterialRegion = new MaterialRegion[qad.PolyRegions.Length];
-        for (int i = 0; i < qad.PolyRegions.Length; i++)
-        {
-            terrain.MaterialRegion[i] = new MaterialRegion
-            (
-                qad.PolyRegions[i].PolyOffset,
-                qad.PolyRegions[i].PolyCount,
-                target.TerrainMaterials[qad.PolyRegions[i].SurfaceId1]
-            );
-        }
-
-        // Inflate terrain indecies 16bit to 32bit
-        terrain.Poligons = new Vector3Int[idx.Polygons.Length];
-        int idxpos = 0;
-        int idxoffset = 0;
-        for (int i = 0; i < vtx.VtxQty.Length; i++)
-        {
-            int count = vtx.VtxQty[i];
-            idxoffset += count;
-
-            for (int i2 = 0; i2 < count; i2++)
-            {
-                terrain.Poligons[idxpos] = idx.Polygons[idxpos] + idxoffset;
-                idxpos++;
-            }
-        }
-        terrain.DataState = DataState.Loaded;
-        */
-
-        // Chunks
-        /*
-        for (var i = 0; i < qad.Chunks.Length; i++)
-        {
-            ref var chunkInfo = ref qad.Chunks[i];
-            var chunk = new ScenarioChunk(target, chunkInfo.PosX, chunkInfo.PosZ);
-            //chunkInfo.
-            chunk.TerrainMaterialRegionOffset = chunkInfo.PolyRegionOffset;
-            chunk.TerrainMaterialRegionOffset = chunkInfo.PolyRegionCount;
-            chunk.DataState = DataState.Loaded;
-            target.Chunks.Add(chunk);
-        }
-        target.Chunks.DataState = DataState.Loaded;
-        */
 
         return scenario;
-
     }
 
     static TerrainModel BuildTerrain(ScenarioFiles files, TextureDirectory terrainTextures)

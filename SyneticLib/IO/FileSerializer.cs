@@ -11,6 +11,8 @@ using SyneticLib.Files.Common;
 namespace SyneticLib.IO;
 public abstract class FileSerializer<TFile, TObj> : IFileSerializer<TObj> where TFile : BaseFile, new()
 {
+    private List<string> _logs = new List<string>();
+
     public void Save(string filePath, TObj value)
     {
         var file = new TFile();
@@ -21,12 +23,12 @@ public abstract class FileSerializer<TFile, TObj> : IFileSerializer<TObj> where 
     public void Serialize(Stream stream, TObj value)
     {
         var file = new TFile();
-        OnSerialize(file, value);
-        file.Serialize(stream);
+        Serialize(file, value);
     }
 
     public void Serialize(TFile file, TObj value)
     {
+        _logs.Clear();
         OnSerialize(file, value);
     }
 
@@ -42,14 +44,24 @@ public abstract class FileSerializer<TFile, TObj> : IFileSerializer<TObj> where 
     public TObj Deserialize(Stream stream)
     {
         var file = new TFile();
-        file.Deserialize(stream);
-        return OnDeserialize(file);
+        return Deserialize(stream);
     }
 
     public TObj Deserialize(TFile file)
     {
+        _logs.Clear();
         return OnDeserialize(file);
     }
 
     protected abstract TObj OnDeserialize(TFile file);
+
+    protected void LogError(string message)
+    {
+        _logs.Add(message);
+    }
+
+    public IReadOnlyCollection<string> GetErrors()
+    {
+        return _logs;
+    }
 }
