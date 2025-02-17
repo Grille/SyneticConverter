@@ -12,20 +12,6 @@ using SyneticLib.Files.Common;
 namespace SyneticLib.Files;
 public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
 {
-    /// <summary>Used by CT5</summary>
-    public bool HasX16VertexBlock = false;
-
-    GameVersion version;
-    GameVersion GameVersion
-    {
-        get => version;
-        set
-        {
-            version = value;
-            SetFlagsAccordingToVersion(version);
-        }
-    }
-
     public MHead Head;
 
     public int[] IndicesOffset { get; set; }
@@ -48,13 +34,13 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
         IndicesOffset = br.ReadArray<int>(Head.IndicesOffsetCount);
 
         int vertexCount = GetVertexCount();
-        assertFileSize(vertexCount, Head.IndicesCount, (int)br.Length);
+        AssertFileSize(vertexCount, Head.IndicesCount, (int)br.Length);
 
         Vertecis = new Vertex[vertexCount];
         for (var i = 0; i < vertexCount; i++)
             Vertecis[i] = br.Read<MVertex>();
 
-        if (HasX16VertexBlock)
+        if (Head.SectionCount == 3)
             br.ReadArray<byte>(vertexCount * 16);
 
         var indices = br.ReadArray<ushort>(Head.IndicesCount);
@@ -76,7 +62,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
         for (int i = 0; i < vertexCount; i++)
             bw.Write<MVertex>(Vertecis[i]);
 
-        if (HasX16VertexBlock)
+        if (Head.SectionCount == 3)
             bw.Seek(vertexCount * 16, SeekOrigin.Current);
 
         var indices = new ushort[Indices.Length * 3];
@@ -93,30 +79,29 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
 
     public int GetVertexCount() => IVertexDataExtension.GetVertexCount(this, this);
 
-    private unsafe int getEndPos(int vtxCount, int idxCount)
+    private unsafe int CalcFileSize(int vtxCount, int idxCount)
     {
-        int calculatedEndPos = sizeof(MHead) + sizeof(int) * 64 + vtxCount * sizeof(MVertex) + idxCount * sizeof(ushort);
-        if (HasX16VertexBlock)
-            calculatedEndPos += vtxCount * 16;
+        int endPos = 0;
+        
+        endPos += sizeof(MHead);
+        endPos += sizeof(int) * 64;
+        endPos += sizeof(MVertex) * vtxCount;
 
-        return calculatedEndPos;
+        if (Head.SectionCount == 3)
+            endPos += vtxCount * 16;
+
+        endPos += sizeof(ushort) * idxCount;
+
+        return endPos;
     }
 
-    private void assertFileSize(int vertexCount, int IndicesCount, int length)
+    private void AssertFileSize(int vertexCount, int IndicesCount, int length)
     {
-        int calculatedEndPos = getEndPos(vertexCount, IndicesCount);
+        int calculatedEndPos = CalcFileSize(vertexCount, IndicesCount);
 
         if (calculatedEndPos != length)
             throw new Exception($"Invalid File Size: ({calculatedEndPos} != {length}) Diff {calculatedEndPos - length}");
-
     }
-
-
-    public void SetFlagsAccordingToVersion(GameVersion version)
-    {
-        HasX16VertexBlock = version >= GameVersion.CT5;
-    }
-
 
     public void FillHead()
     {

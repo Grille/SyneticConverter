@@ -12,14 +12,16 @@ namespace SyneticLib;
 public class IndexedMesh : SyneticObject
 {
     public Vertex[] Vertices { get; set; }
-    public IdxTriangleInt32[] Indices { get; set; }
+    public IdxTriangleInt32[] Triangles { get; set; }
+
+    public Span<int> Indices => MemoryMarshal.Cast<IdxTriangleInt32, int>(Triangles.AsSpan());
 
     public MeshIndexType IndexType { get; private set; }
 
-    public IndexedMesh(Vertex[] vertices, IdxTriangleInt32[] indices, MeshIndexType type = MeshIndexType.UInt32)
+    public IndexedMesh(Vertex[] vertices, IdxTriangleInt32[] triangles, MeshIndexType type = MeshIndexType.UInt32)
     {
         Vertices = vertices;
-        Indices = indices;
+        Triangles = triangles;
 
         if (type == MeshIndexType.Unknown)
         {
@@ -29,6 +31,13 @@ public class IndexedMesh : SyneticObject
         {
             IndexType = type;
         }
+    }
+
+    public IndexedMesh(IndexedMesh mesh)
+    {
+        Vertices = mesh.Vertices.ToArray();
+        Triangles = mesh.Triangles.ToArray();
+        IndexType = mesh.IndexType;
     }
 
     public static IndexedMesh CreateBox()
@@ -80,43 +89,37 @@ public class IndexedMesh : SyneticObject
 
     public void UpdateIndicesType()
     {
-        var range = GetIndicesRange();
+        var range = GetIndicesRange(0, Indices.Length);
         IndexType = range.End.Value > ushort.MaxValue ? MeshIndexType.UInt32 : MeshIndexType.UInt16;
     }
 
-    public unsafe Range GetIndicesRange()
+    public unsafe Range GetIndicesRange(int start, int length, int offset = 0)
     {
-        int length = Indices.Length * 3;
         int min = int.MaxValue;
         int max = int.MinValue;
-        fixed (void* vptr = Indices)
+
+        for (int i = 0; i < length; i++)
         {
-            var ptr = (int*)vptr;
-            for (int i = 0; i < length; i++)
+            int index = start + i;
+
+            if (Indices[index] < min)
             {
-                if (ptr[i] < min)
-                {
-                    min = ptr[i];
-                }
-                if (ptr[i] > max)
-                {
-                    max = ptr[i];
-                }
+                min = Indices[index];
+            }
+            if (Indices[index] > max)
+            {
+                max = Indices[index];
             }
         }
+
         return new Range(min, max);
     }
 
     public unsafe void ApplyOffset(int offset)
     {
-        int length = Indices.Length * 3;
-        fixed (void* vptr = Indices)
+        for (int i = 0; i < Indices.Length; i++)
         {
-            var ptr = (int*)vptr;
-            for (int i = 0; i < length; i++)
-            {
-                ptr[i] += offset;
-            }
+            Indices[i] += offset;
         }
     }
 

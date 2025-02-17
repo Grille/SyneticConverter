@@ -60,8 +60,8 @@ public static class WR1ToWR2FileConv
         FixGrounds(qad);
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
-        qad.Head.FlagX2WR2 = 1;
-        qad.Head.FlagX5WR2 = 1;
+        qad.Head.FlagLightVersion = 1;
+        qad.Head.FlagPropVersion = 1;
         qad.SortMaterials();
         qad.RecalcMaterialMatrixChecksum();
     }

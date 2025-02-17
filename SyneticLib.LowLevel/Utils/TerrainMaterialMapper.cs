@@ -177,6 +177,7 @@ public static class TerrainMaterialMapper
                 mat.Matrix2 = dmat2;
                 break;
             }
+            case C11Type.L3SpecDiffDiff://CT5
             case C11Type.L3ReflReflDiff:
             case C11Type.L4Diff1234:
             {
@@ -194,7 +195,9 @@ public static class TerrainMaterialMapper
             }
             default:
             {
-                throw new NotImplementedException(type.ToString());
+                //throw new NotImplementedException(type.ToString());
+                result = WR2Type.L1Spec;
+                break;
             }
         }
 

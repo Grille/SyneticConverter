@@ -24,7 +24,9 @@ internal class ConvertScnFiles : PipelineTask
         {
             { "WR1 -> WR2", WR1ToWR2FileConv.Convert },
             { "C11 -> WR2", C11ToWR2FileConv.Convert },
-            { "CT1 -> WR2", CT1ToWR2FileConv.Convert }
+            { "CT1 -> WR2", CT1ToWR2FileConv.Convert },
+            { "CT2 -> WR2", (path, name) => CT1ToWR2FileConv.Convert(path,name, SyneticLib.GameVersion.CT2) },
+            { "CT5 -> WR2", (path, name) => CT1ToWR2FileConv.Convert(path,name, SyneticLib.GameVersion.CT5) }
         };
 
         _keys = _converters.Keys.ToArray();

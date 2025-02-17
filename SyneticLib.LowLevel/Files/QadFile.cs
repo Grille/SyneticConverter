@@ -16,10 +16,8 @@ namespace SyneticLib.Files;
 public unsafe class QadFile : BinaryFile
 {
     public bool HasCT2Extension = false;
-    public bool UseSimpleData = false;
     public bool UseExtendedPropInstance = false;
     public GameVersion MaterialVersion;
-    public GameVersion PropInstanceVersion;
 
     GameVersion _version;
     public GameVersion GameVersion
@@ -44,8 +42,8 @@ public unsafe class QadFile : BinaryFile
     public MGroundPhysics[] GroundPhysics;
     public ushort[] Tex2Ground;
     public MSound[] Sounds;
-    public MPropClass[] PropClassInfo;
-    public MLight[] Lights;
+    public MPropClassV1[] PropClassInfo;
+    public MLightV1[] Lights;
     public byte[] CollisionPointerBuffer;
 
     public QadFile()
@@ -62,8 +60,8 @@ public unsafe class QadFile : BinaryFile
         GroundPhysics = Array.Empty<MGroundPhysics>();
         Tex2Ground = Array.Empty<ushort>();
         Sounds = Array.Empty<MSound>();
-        PropClassInfo = Array.Empty<MPropClass>();
-        Lights = Array.Empty<MLight>();
+        PropClassInfo = Array.Empty<MPropClassV1>();
+        Lights = Array.Empty<MLightV1>();
         CollisionPointerBuffer = Array.Empty<byte>();
     }
 
@@ -86,11 +84,6 @@ public unsafe class QadFile : BinaryFile
     {
         ReadHead(br);
 
-        if (Head.FlagX2WR2 != Head.FlagX5WR2)
-            throw new InvalidDataException();
-
-        UseSimpleData = Head.FlagX2WR2 == 0;
-
         AssertBlockCount();
         AssertFileSize(br.Length);
 
@@ -98,9 +91,9 @@ public unsafe class QadFile : BinaryFile
         BumpTexNames = br.ReadArray<String32>(Head.BumpTexturesFileCount);
         PropClassObjNames = br.ReadArray<String32>(Head.PropClassCount);
 
-        PropClassInfo = new MPropClass[Head.PropClassCount];
+        PropClassInfo = new MPropClassV1[Head.PropClassCount];
         for (int i = 0; i < Head.PropClassCount; i++)
-            PropClassInfo[i] = UseSimpleData ? br.Read<MPropClassSimple>() : br.Read<MPropClass>();
+            PropClassInfo[i] = Head.FlagPropVersion == 0 ? br.Read<MPropClassV0>() : br.Read<MPropClassV1>();
 
         Chunks = new MChunk[Head.BlockCount];
         for (var i = 0; i < Head.BlockCount; i++)
@@ -132,12 +125,20 @@ public unsafe class QadFile : BinaryFile
         if (HasCT2Extension)
             br.Position += HeadExtension.StringSkip + HeadExtension.StringCount * sizeof(int) * 2;
 
-        Lights = new MLight[Head.LightCount];
+        Lights = new MLightV1[Head.LightCount];
         for (int i = 0; i < Head.LightCount; i++)
-            Lights[i] = UseSimpleData ? br.Read<MLightSimple>() : br.Read<MLight>();
+        {
+            Lights[i] = Head.FlagLightVersion switch
+            {
+                0 => (MLightV1)br.Read<MLightV0>(),
+                1 => (MLightV1)br.Read<MLightV1>(),
+                2 => (MLightV1)br.Read<MLightV2>(),
+                _ => throw new InvalidDataException(),
+            };
+        }
 
         GroundPhysics = br.ReadArray<MGroundPhysics>(Head.GroundPhysicsCount);
-        Tex2Ground = br.ReadArray<ushort>(256);
+        Tex2Ground = br.ReadArray<ushort>(Math.Max(256, Head.TexturesFileCount + 1));
         Sounds = br.ReadArray<MSound>(Head.SoundCount);
     }
 
@@ -164,8 +165,8 @@ public unsafe class QadFile : BinaryFile
 
         for (int i = 0; i < PropClassInfo.Length; i++)
         {
-            if (UseSimpleData)
-                bw.Write((MPropClassSimple)PropClassInfo[i]);
+            if (Head.FlagPropVersion == 0)
+                bw.Write((MPropClassV0)PropClassInfo[i]);
             else
                 bw.Write(PropClassInfo[i]);
         }
@@ -200,8 +201,8 @@ public unsafe class QadFile : BinaryFile
 
         for (int i = 0; i < Lights.Length; i++)
         {
-            if (UseSimpleData)
-                bw.Write((MLightSimple)Lights[i]);
+            if (Head.FlagLightVersion == 0)
+                bw.Write((MLightV0)Lights[i]);
             else
                 bw.Write(Lights[i]);
         }
@@ -346,8 +347,6 @@ public unsafe class QadFile : BinaryFile
     {
         _version = version;
         MaterialVersion = version;
-        PropInstanceVersion = version;
-        UseSimpleData = version <= GameVersion.WR1;
         HasCT2Extension = version >= GameVersion.CT2;
         UseExtendedPropInstance = version >= GameVersion.CT1;
     }
@@ -383,8 +382,20 @@ public unsafe class QadFile : BinaryFile
         endPos += sizeof(String32) * Head.BumpTexturesFileCount;
         endPos += sizeof(String32) * Head.PropClassCount;
 
-        endPos += (UseSimpleData ? sizeof(MPropClassSimple) : sizeof(MPropClass)) * Head.PropClassCount;
-        endPos += (UseSimpleData ? sizeof(MLightSimple) : sizeof(MLight)) * Head.LightCount;
+        endPos += Head.FlagPropVersion switch
+        {
+            0 => sizeof(MPropClassV0),
+            1 => sizeof(MPropClassV1),
+            _ => 0,
+        } * Head.PropClassCount;
+
+        endPos += Head.FlagLightVersion switch
+        {
+            0 => sizeof(MLightV0),
+            1 => sizeof(MLightV1),
+            2 => sizeof(MLightV2),
+            _ => 0,
+        } * Head.LightCount;
 
         endPos += sizeof(MChunk) * Head.BlockCount;
 
@@ -396,7 +407,7 @@ public unsafe class QadFile : BinaryFile
         endPos += materialSize * Head.MaterialCount;
 
         if (HasCT2Extension)
-            endPos += 224 * sizeof(int);
+            endPos += sizeof(int) * 224;
 
         endPos += (UseExtendedPropInstance ? sizeof(MPropInstanceWR2) : sizeof(MPropInstanceWR2) - sizeof(Vector3)) * Head.PropInstanceCount;
 
@@ -404,7 +415,7 @@ public unsafe class QadFile : BinaryFile
             endPos += HeadExtension.StringSkip + HeadExtension.StringCount * sizeof(int) * 2;
 
         endPos += sizeof(MGroundPhysics) * Head.GroundPhysicsCount;
-        endPos += 2 * 256;
+        endPos += sizeof(ushort) * Math.Max(256, Head.TexturesFileCount + 1);
         endPos += sizeof(MSound) * Head.SoundCount;
         return endPos;
     }
@@ -441,7 +452,7 @@ public unsafe class QadFile : BinaryFile
         public ushort TexturesFileCount, BumpTexturesFileCount;
         public int PropClassCount, PolyCount, MaterialCount, PropInstanceCount, GroundPhysicsCount, CollisionBufferSize;
         public ushort LightCount;
-        public byte FlagX1, FlagX2WR2, FlagX3, FlagX4, FlagX5WR2, FlagX6;
+        public byte FlagX1, FlagLightVersion, FlagX3, FlagX4, FlagPropVersion, FlagX6;
         public int SoundCount;
     }
 
@@ -610,41 +621,59 @@ public unsafe class QadFile : BinaryFile
         public fixed byte Misc[12];
     }
 
-    public struct MPropClassSimple
+    public struct MPropClassV0
     {
         public ushort Mode;
 
-        public static implicit operator MPropClass(MPropClassSimple a) => new MPropClass()
+        public static implicit operator MPropClassV1(MPropClassV0 a) => new MPropClassV1()
         {
             Mode = a.Mode,
         };
-        public static explicit operator MPropClassSimple(MPropClass a) => new MPropClassSimple()
+        public static explicit operator MPropClassV0(MPropClassV1 a) => new MPropClassV0()
         {
             Mode = a.Mode,
         };
     }
 
-    public struct MPropClass
+    public struct MPropClassV1
     {
         public ushort Mode, Shape, Weight, p4;
         public int x1, x2, x3;
         public String48 HitSound, FallSound;
     }
 
-    public struct MLightSimple
+    public struct MLightV0
     {
         public Vector3 Position;
         public BgraColor Color;
 
-        public static implicit operator MLight(MLightSimple a) => new MLight()
+        public static implicit operator MLightV1(MLightV0 a) => new MLightV1()
         {
             Matrix = Matrix4.CreateTranslation(a.Position),
             Color = a.Color,
         };
-        public static explicit operator MLightSimple(MLight a) => new MLightSimple()
+        public static explicit operator MLightV0(MLightV1 a) => new MLightV0()
         {
             Position = a.Matrix.ExtractTranslation(),
             Color = a.Color,
+        };
+    }
+
+    public struct MLightV1
+    {
+        public int Mode;
+        public float Size, Offset, Freq;
+        public BgraColor Color;
+        public byte b1, b2, b3, b4;
+        public Matrix4 Matrix;
+    }
+
+    [StructLayout(LayoutKind.Explicit, Size=70)]
+    public struct MLightV2
+    {
+        public static implicit operator MLightV1(MLightV2 a) => new MLightV1()
+        {
+
         };
     }
 
@@ -679,14 +708,6 @@ public unsafe class QadFile : BinaryFile
         }
     }
 
-    public struct MLight
-    {
-        public int Mode;
-        public float Size, Offset, Freq;
-        public BgraColor Color;
-        public byte b1, b2, b3, b4;
-        public Matrix4 Matrix;
-    }
 
     #endregion
 }

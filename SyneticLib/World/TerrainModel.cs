@@ -57,4 +57,28 @@ public class TerrainModel
     {
         return _chunks[x, y];
     }
+
+    public Model ToModel()
+    {
+        var vtx = new List<Vertex>();
+        var idx = new List<IdxTriangleInt32>();
+        var mat = new List<ModelMaterialRegion>();
+
+        for (int ix = 0; ix < Width; ix++)
+        {
+            for (int iz = 0; iz < Height; iz++)
+            {
+                var src = _chunks[ix, iz];
+
+                foreach (var srcmat in src.MaterialRegions)
+                {
+                    mat.Add(new ModelMaterialRegion(0, 0, srcmat.Material));
+                }
+            }
+        }
+
+        var mesh = new IndexedMesh(vtx.ToArray(), idx.ToArray());
+        var section = new MeshSegment(mesh);
+        return new Model(section, mat.ToArray());
+    }
 }

@@ -118,7 +118,7 @@ public static class RayCaster
             return NoHit;
         }
 
-        var indices = mesh.Indices;
+        var indices = mesh.Triangles;
         var vertices = mesh.Vertices;
 
         var offset = mesh.Offset;

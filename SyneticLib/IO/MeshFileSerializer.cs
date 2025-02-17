@@ -18,6 +18,6 @@ public class MeshFileSerializer<TFile> : FileSerializer<TFile, IndexedMesh> wher
     protected override void OnSerialize(TFile cob, IndexedMesh mesh)
     {
         cob.Vertecis = mesh.Vertices;
-        cob.Indices = mesh.Indices;
+        cob.Indices = mesh.Triangles;
     }
 }

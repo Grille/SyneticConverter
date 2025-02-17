@@ -19,10 +19,10 @@ public unsafe sealed class MeshBuffer : GLObject
         VerticesID = GL.GenBuffer();
         IndicesID = GL.GenBuffer();
 
-        ElementCount = mesh.Indices.Length * 3;
+        ElementCount = mesh.Triangles.Length * 3;
         VertexStride = sizeof(Vertex);
 
-        var indices = mesh.Indices;
+        var indices = mesh.Triangles;
         var vertices = mesh.Vertices;
 
         GL.BindVertexArray(VertexArrayID);

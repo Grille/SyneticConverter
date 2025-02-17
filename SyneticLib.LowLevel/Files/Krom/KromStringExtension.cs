@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Grille.IO;
 using Grille.IO.Interfaces;
 
-namespace SyneticLib;
+namespace SyneticLib.Files.Krom;
 
-public static class KromString
+public static class KromStringExtension
 {
 
     public static string ReadKromString(this BinaryViewReader br)

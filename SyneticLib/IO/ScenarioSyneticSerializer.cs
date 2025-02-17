@@ -28,7 +28,7 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
     {
         var files = new ScenarioFiles();
 
-        files.Load(dirPath, fileName, GameVersion.WR2);
+        files.Load(dirPath, fileName);
 
         var syn = files.Syn;
         var lvl = files.Lvl;
@@ -50,6 +50,7 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
         scenario.Terrain = BuildTerrain(files, terrainTextures);
         
         // Props
+        /*
         var indexedModels = models.CreateIndexedArray(qad.PropClassObjNames);
         var propClasses = new Dictionary<string, PropClass>();
         for (var i = 0; i < qad.Head.PropClassCount; i++)
@@ -76,7 +77,7 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
                 Class = prop,
             };
         }
-
+        */
         // Chunks
         for (int i = 0; i < qad.Chunks.Length; i++)
         {
@@ -89,8 +90,8 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
             var chunk = new ScenarioChunk(cinfo);
             scenario.Chunks[cinfo.Position.X, cinfo.Position.Z] = chunk;
 
-            var instances = src.Props.Length > 0 ? propInstances.AsSpan(src.Props.Start, src.Props.Length).ToArray() : Array.Empty<PropInstance>();
-            chunk.PropInstances = instances;
+            //var instances = src.Props.Length > 0 ? propInstances.AsSpan(src.Props.Start, src.Props.Length).ToArray() : Array.Empty<PropInstance>();
+            //chunk.PropInstances = instances;
         }
 
         return scenario;

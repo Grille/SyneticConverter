@@ -162,7 +162,6 @@ public class ScenarioFiles
     {
         if (version >= GameVersion.C11)
         {
-            Geo.SetFlagsAccordingToVersion(version);
             Geo.Load(paths.GeoPath);
         }
         else
@@ -218,7 +217,6 @@ public class ScenarioFiles
 
         if (version >= GameVersion.C11)
         {
-            Geo.SetFlagsAccordingToVersion(version);
             Geo.Save(paths.GeoPath);
         }
         else

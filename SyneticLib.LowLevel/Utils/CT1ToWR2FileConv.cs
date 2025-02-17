@@ -19,9 +19,14 @@ public static class CT1ToWR2FileConv
 {
     public static void Convert(string dirPath, string fileName)
     {
+        Convert(dirPath, fileName, GameVersion.CT1);
+    }
+
+    public static void Convert(string dirPath, string fileName, GameVersion version)
+    {
         var paths = new ScenarioFiles.Paths(dirPath, fileName);
         var files = new ScenarioFiles();
-        files.Load(paths, GameVersion.CT1);
+        files.Load(paths, version);
 
         ConvertGeo(files.TerrainMesh.Vertices);
         ConvertQad(files.Qad);
@@ -40,9 +45,9 @@ public static class CT1ToWR2FileConv
         ConvertRo0(files.Ro3);
         ConvertRo0(files.Ro4);
 
-        WR2CobFileCreator.CreateCobFiles(dirPath);
+        //WR2CobFileCreator.CreateCobFiles(dirPath);
         C11ToWR2FileConv.ConvertObjectMaterials(Path.Combine(dirPath, "Objects"));
-        TrxToMoxConverter.Convert(Path.Combine(dirPath, "Objects"));
+        //TrxToMoxConverter.Convert(Path.Combine(dirPath, "Objects"));
 
         //UpdateTextures(Path.Combine(dirPath, "Textures"));
 
@@ -78,6 +83,8 @@ public static class CT1ToWR2FileConv
 
     public unsafe static void ConvertQad(QadFile qad)
     {
+        qad.Head.FlagPropVersion = 1;
+        qad.Head.FlagLightVersion = 1;
         qad.Head.BumpTexturesFileCount = 0;
         qad.BumpTexNames = Array.Empty<String32>();
 
@@ -90,7 +97,7 @@ public static class CT1ToWR2FileConv
         ushort GetTexId(string name)
         {
             int idx = Array.FindIndex(qad.TextureNames, (a) => a == name);
-            return idx > 0 ? (ushort)idx : throw new IndexOutOfRangeException();
+            return idx > 0 ? (ushort)idx : (ushort)0;// throw new IndexOutOfRangeException();
         }
 
         ushort idxZebra = GetTexId("ASPH01_zebra");

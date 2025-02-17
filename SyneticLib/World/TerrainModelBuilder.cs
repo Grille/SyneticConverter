@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 namespace SyneticLib.World;
 
 
-public unsafe class TerrainModelGenerator
+public unsafe class TerrainModelBuilder
 {
+
+
     record struct TrianglePtr(IdxTriangleInt32 Triangle, Material Material);
 
     public void DoStuff(Model model)
@@ -16,7 +18,7 @@ public unsafe class TerrainModelGenerator
         var materialsSet = new HashSet<Material>();
 
         var srcVertices = model.MeshSection.Vertices;
-        var srcIndices = model.MeshSection.Indices;
+        var srcIndices = model.MeshSection.Triangles;
 
         var triangles = new TrianglePtr[srcIndices.Length];
 
@@ -31,6 +33,11 @@ public unsafe class TerrainModelGenerator
                 triangles[iDst++] = new TrianglePtr(srcIndices[iSrc + region.ElementStart], material);
             }
         }
+    }
+
+    public void AddModel()
+    {
+
     }
 
 }
