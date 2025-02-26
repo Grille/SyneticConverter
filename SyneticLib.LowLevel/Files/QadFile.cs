@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using SyneticLib.Files.Common;
 using System.Runtime.CompilerServices;
+using static SyneticLib.Files.MoxFile;
 
 namespace SyneticLib.Files;
 
@@ -313,20 +314,26 @@ public unsafe class QadFile : BinaryFile
 
     }
 
-    record class SortContainer<T>(int ID, T Value);
-    public void SortMaterials() 
+    private record struct MatSortContainer(int ID, AbstractMaterialType Value)
+    {
+        public int Type0 => Value.Layer0.Mode.Decode<int>().Type;
+    }
+
+    private List<MatSortContainer> GetMatSortList()
     {
         var materials = Materials;
 
-        var list = new List<SortContainer<AbstractMaterialType>>();
+        var list = new List<MatSortContainer>(materials.Length);
 
         for (int i = 0; i < materials.Length; i++)
             list.Add(new(i, materials[i]));
 
-        int size = TextureNames.Length;
-        list.Sort((a, b) =>
-            a.Value.GetSortID(size) - b.Value.GetSortID(size)
-        );
+        return list;
+    }
+
+    private void ReorderMaterials(List<MatSortContainer> list)
+    {
+        var materials = Materials;
 
         for (int i = 0; i < materials.Length; i++)
             materials[i] = list[i].Value;
@@ -342,6 +349,54 @@ public unsafe class QadFile : BinaryFile
         }
     }
 
+    public void SortMaterials() 
+    {
+        var list = GetMatSortList();
+
+        int size = TextureNames.Length;
+        list.Sort((a, b) =>
+            a.Value.GetSortID(size) - b.Value.GetSortID(size)
+        );
+
+        ReorderMaterials(list);
+    }
+
+    public void ShuffleMaterials()
+    {
+        var list = GetMatSortList();
+
+        int count = 1;
+
+        void switchmat(int idx0, int idx1, int idx2)
+        {
+            var m0 = list[idx0];
+            var m1 = list[idx1];
+            var m2 = list[idx2];
+            if (m0.Type0 == m1.Type0 && m1.Type0 != m2.Type0)
+            {
+                list[idx1] = m2;
+                list[idx2] = m1;
+                count += 1;
+            }
+        }
+
+        while (count > 0)
+        {
+            count = 0;
+            for (int i = 0; i < list.Count - 2; i++)
+            {
+                switchmat(i, i + 1, i + 2);
+            }
+
+            if (list.Count > 3)
+            {
+                switchmat(list.Count - 2, list.Count - 1, 0);
+                switchmat(list.Count - 1, 0, 1);
+            }
+        }
+
+        ReorderMaterials(list);
+    }
 
     public void SetFlagsAccordingToVersion(GameVersion version)
     {
@@ -364,6 +419,21 @@ public unsafe class QadFile : BinaryFile
         if (diff != 0)
             throw new Exception($"Invalid File Size: ({endPos} != {length}) Diff {diff}");
 
+    }
+
+    public void SortDrawCallsByMaterial()
+    {
+        for (int i = 0; i < Chunks.Length; i++)
+        {
+            ref var chunk = ref Chunks[i];
+            var poly = PolyRegions.AsSpan(chunk.PolyRegion.Start, chunk.PolyRegion.Length);
+
+            poly.Sort((a, b) => {
+                int typea = Materials[a.SurfaceId1].Layer0.Mode.Decode<int>().Type;
+                int typeb = Materials[b.SurfaceId1].Layer0.Mode.Decode<int>().Type;
+                return typea - typea;
+            });
+        }
     }
 
     public unsafe int CalcFileSize()

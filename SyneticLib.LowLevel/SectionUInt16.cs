@@ -10,6 +10,8 @@ namespace SyneticLib;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct SectionUInt16
 {
+    public static readonly SectionUInt16 Empty = new SectionUInt16();
+
     public ushort Start;
     public ushort Length;
 
@@ -19,6 +21,8 @@ public struct SectionUInt16
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct SectionInt32
 {
+    public static readonly SectionInt32 Empty = new SectionInt32();
+
     public int Start;
     public int Length;
 

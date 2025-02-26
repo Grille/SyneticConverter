@@ -9,8 +9,6 @@ public class Model : SyneticObject
 {
     public MeshSegment MeshSection { get; }
 
-    public Material[] Materials { get; }
-
     public ModelMaterialRegion[] MaterialRegions { get; }
 
     public BoundingBox BoundingBox => MeshSection.BoundingBox;
@@ -29,8 +27,6 @@ public class Model : SyneticObject
 
             materials.Add(material);
         }
-
-        Materials = materials.ToArray();
     }
 
     public Model(MeshSegment mesh, Material material) :

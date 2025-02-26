@@ -178,13 +178,17 @@ public static class TerrainMaterialMapper
                 break;
             }
             case C11Type.L3SpecDiffDiff://CT5
-            case C11Type.L3ReflReflDiff:
             case C11Type.L4Diff1234:
             {
                 result = WR2Type.L3Terrain;
                 mat.Matrix0 = dmat0;
                 mat.Matrix1 = dmat1;
                 mat.Matrix2 = dmat2;
+                break;
+            }
+            case C11Type.L3ReflReflDiff:
+            {
+                result = WR2Type.L2Refl2;
                 break;
             }
             case C11Type.L2MetalDiff12:

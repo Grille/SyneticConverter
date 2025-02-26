@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,13 +8,15 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 
 namespace SyneticLib.World;
-public class TerrainModel
+public class TerrainModel : IReadOnlyCollection<Model>
 {
     public int Width { get; }
     public int Height { get; }
     public int Length { get; }
 
     public IndexedMesh Mesh { get; }
+
+    public int Count => _chunks.Length;
 
     readonly Model[,] _chunks;
 
@@ -80,5 +83,21 @@ public class TerrainModel
         var mesh = new IndexedMesh(vtx.ToArray(), idx.ToArray());
         var section = new MeshSegment(mesh);
         return new Model(section, mat.ToArray());
+    }
+
+    public IEnumerator<Model> GetEnumerator()
+    {
+        for (int ix = 0; ix < Width; ix++)
+        {
+            for (int iz = 0; iz < Height; iz++)
+            {
+                yield return _chunks[ix, iz];
+            }
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

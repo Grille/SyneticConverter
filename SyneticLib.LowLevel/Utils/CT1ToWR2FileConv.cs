@@ -45,9 +45,9 @@ public static class CT1ToWR2FileConv
         ConvertRo0(files.Ro3);
         ConvertRo0(files.Ro4);
 
-        //WR2CobFileCreator.CreateCobFiles(dirPath);
+        WR2CobFileCreator.CreateCobFiles(dirPath);
         C11ToWR2FileConv.ConvertObjectMaterials(Path.Combine(dirPath, "Objects"));
-        //TrxToMoxConverter.Convert(Path.Combine(dirPath, "Objects"));
+        TrxToMoxConverter.Convert(Path.Combine(dirPath, "Objects"));
 
         //UpdateTextures(Path.Combine(dirPath, "Textures"));
 
@@ -67,7 +67,7 @@ public static class CT1ToWR2FileConv
     public static void ConvertGeo(Vertex[] vertecis)
     {
         var mul = new Vector3(0.6f, 0.5f, 0.5f);
-        var offset = new Vector3(-0.1f);
+        var offset = new Vector3(-0.0f);
 
         for (int i = 0; i < vertecis.Length; i++)
         {
@@ -77,7 +77,7 @@ public static class CT1ToWR2FileConv
             vertex.Blending = new Vector3(blend.Y, blend.Z, blend.X);
             vertex.LightColor = Vector3.Clamp((vertex.LightColor + offset) * mul, Vector3.Zero, Vector3.One);
 
-            VertexColorCorrector.ClampToMax(ref vertex.LightColor, -0.25f);
+            //VertexColorCorrector.ClampToMax(ref vertex.LightColor, -0.25f);
         }
     }
 
@@ -129,6 +129,8 @@ public static class CT1ToWR2FileConv
             }
         }
 
+        qad.SortDrawCallsByMaterial();
+
         for (int i = 0; i < qad.PropInstances.Length; i++)
         {
             ref var instance = ref qad.PropInstances[i];
@@ -143,10 +145,16 @@ public static class CT1ToWR2FileConv
             instance.InShadow = ct.InShadow;
         }
 
+        for (int i = 0;i < qad.Chunks.Length; i++)
+        {
+            ref var chunk = ref qad.Chunks[i];
+            chunk.x1 = short.MaxValue;
+        }
+
         ConvertXTreeReferences(qad);
 
         qad.SetFlagsAccordingToVersion(GameVersion.WR2);
-        qad.SortMaterials();
+        qad.ShuffleMaterials();
         qad.ForceUniqueChecksums();
 
         qad.Validate();
@@ -160,7 +168,7 @@ public static class CT1ToWR2FileConv
             if (name.StartsWith("X\\"))
             {
                 qad.PropClassObjNames[i] = (String32)name.Substring(2);
-                qad.PropClassInfo[i].Mode = 6;
+                qad.PropClassInfo[i].Mode = 3;
             }
         }
 
