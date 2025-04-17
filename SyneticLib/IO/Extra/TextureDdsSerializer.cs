@@ -5,12 +5,14 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+
 using SyneticLib.Files.Extra;
+using SyneticLib.IO.Generic;
 
 using static SyneticLib.Files.Extra.DdsFile;
 using static SyneticLib.IO.Serializers;
 
-namespace SyneticLib.IO;
+namespace SyneticLib.IO.Extra;
 public class TextureDdsSerializer : FileSerializer<DdsFile, Texture>
 {
     protected override Texture OnDeserialize(DdsFile dds)
@@ -20,7 +22,7 @@ public class TextureDdsSerializer : FileSerializer<DdsFile, Texture>
         var ddsLevels = dds.Levels;
         var levels = new TextureLevel[ddsLevels.Length];
 
-        for (int i = 0; i < levels.Length; i++)
+        for (var i = 0; i < levels.Length; i++)
         {
             var src = ddsLevels[i];
             var level = new TextureLevel(src.Width, src.Height, src.Data, false);
@@ -36,8 +38,8 @@ public class TextureDdsSerializer : FileSerializer<DdsFile, Texture>
         ref var pFormat = ref head.PixelFormat;
         if (pFormat.FourCC == 0)
         {
-            bool blueFirst = pFormat.BBitMask == 255;
-            int size = (int)pFormat.Size;
+            var blueFirst = pFormat.BBitMask == 255;
+            var size = (int)pFormat.Size;
             return (blueFirst, size) switch
             {
                 (true, 24) => TextureFormat.Bgr24,
@@ -69,8 +71,8 @@ public class TextureDdsSerializer : FileSerializer<DdsFile, Texture>
         dds.Magic = MagicValue;
 
         head.Size = 124;
-        head.Caps1 = MHeaderCaps1.Complex | MHeaderCaps1.Texture | MHeaderCaps1.Mipmap;
-        head.Flags = MHeaderFlags.Width | MHeaderFlags.Height | MHeaderFlags.PixelFormat | MHeaderFlags.MipmapCount | MHeaderFlags.LinearSize;
+        head.Flags = MHeaderFlags.Caps | MHeaderFlags.Width | MHeaderFlags.Height | MHeaderFlags.PixelFormat | MHeaderFlags.MipmapCount | MHeaderFlags.LinearSize;
+        head.Caps1 = MHeaderCaps1.Texture | MHeaderCaps1.Mipmap;
 
         SetFormat(ref head, texture.Format);
 
@@ -81,7 +83,7 @@ public class TextureDdsSerializer : FileSerializer<DdsFile, Texture>
 
 
         var levels = new Level[texture.Levels.Length];
-        for (int i = 0; i < texture.Levels.Length; i++)
+        for (var i = 0; i < texture.Levels.Length; i++)
         {
             var src = texture.Levels[i];
             levels[i] = new Level(src.Data, src.Width, src.Height);
@@ -96,19 +98,23 @@ public class TextureDdsSerializer : FileSerializer<DdsFile, Texture>
         {
             case TextureFormat.Rgb24Dxt1:
             {
+                pFormat.Size = 32;
+                pFormat.RGBBitCount = 32;
                 pFormat.Flags = MPixelFormatFlags.FourCC;
                 pFormat.FourCC = MFourCharCode.DXT1;
                 break;
             }
             case TextureFormat.Rgba32Dxt5:
             {
+                pFormat.Size = 32;
+                pFormat.RGBBitCount = 32;
                 pFormat.Flags = MPixelFormatFlags.FourCC;
                 pFormat.FourCC = MFourCharCode.DXT5;
                 break;
             }
             default:
             {
-                int size = format.BitSize();
+                var size = format.BitSize();
                 pFormat.Size = (uint)size;
                 pFormat.RGBBitCount = (uint)size;
                 pFormat.Flags = MPixelFormatFlags.RGB | MPixelFormatFlags.AlphaPixels;

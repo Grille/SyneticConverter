@@ -18,13 +18,13 @@ public class TreeFile : BinaryFile, IVertexData, IIndexData
     public MHead Head;
 
     public Vertex[] Vertecis { get; set; }
-    public IdxTriangleInt32[] Indices { get; set; }
+    public IdxTriangleInt32[] Triangles { get; set; }
 
     public TreeFile()
     {
         Head.Magic = Magic;
         Vertecis = Array.Empty<Vertex>();
-        Indices = Array.Empty<IdxTriangleInt32>();
+        Triangles = Array.Empty<IdxTriangleInt32>();
     }
 
     public override void Deserialize(BinaryViewReader br)

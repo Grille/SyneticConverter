@@ -32,4 +32,35 @@ public class Model : SyneticObject
     public Model(MeshSegment mesh, Material material) :
         this(mesh, new[] { new ModelMaterialRegion(0, mesh.Length, material) })
     { }
+
+    public void GetMaterials(ISet<Material> set)
+    {
+        foreach (var region in MaterialRegions)
+        {
+            set.Add(region.Material);
+        }
+    }
+
+    public HashSet<Material> GetMaterials()
+    {
+        var set = new HashSet<Material>();
+        GetMaterials(set);
+        return set;
+    }
+
+    public void GetTextures(ISet<Texture> set)
+    {
+        var materials = GetMaterials();
+        foreach (var material in materials)
+        {
+            material.GetTextures(set);
+        }
+    }
+
+    public HashSet<Texture> GetTextures()
+    {
+        var set = new HashSet<Texture>();
+        GetTextures(set);
+        return set;
+    }
 }

@@ -17,20 +17,19 @@ namespace SyneticLib.Utils;
 
 public static class CT1ToWR2FileConv
 {
-    public static void Convert(string dirPath, string fileName)
-    {
-        Convert(dirPath, fileName, GameVersion.CT1);
-    }
-
-    public static void Convert(string dirPath, string fileName, GameVersion version)
+    public static void Convert(string dirPath, string fileName, Action<string>? callback = null, GameVersion version = GameVersion.CT1)
     {
         var paths = new ScenarioFiles.Paths(dirPath, fileName);
         var files = new ScenarioFiles();
         files.Load(paths, version);
 
+        callback?.Invoke("Convert Geo");
         ConvertGeo(files.TerrainMesh.Vertices);
+
+        callback?.Invoke("Convert Qad");
         ConvertQad(files.Qad);
 
+        callback?.Invoke("Purge Files");
         foreach (var file in Directory.EnumerateFiles(dirPath))
         {
             var ext = Path.GetExtension(file).ToLower();
@@ -40,6 +39,7 @@ public static class CT1ToWR2FileConv
             }
         }
 
+        callback?.Invoke("Convert Ro0");
         ConvertRo0(files.Ro1);
         ConvertRo0(files.Ro2);
         ConvertRo0(files.Ro3);

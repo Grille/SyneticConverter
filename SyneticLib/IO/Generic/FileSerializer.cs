@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using SyneticLib.Files.Common;
 
-namespace SyneticLib.IO;
+namespace SyneticLib.IO.Generic;
 public abstract class FileSerializer<TFile, TObj> : IFileSerializer<TObj> where TFile : BaseFile, new()
 {
     private List<string> _logs = new List<string>();

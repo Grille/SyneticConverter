@@ -62,7 +62,7 @@ public class SceneLoader
 
     public void LoadModel(string path)
     {
-        var model = Imports.LoadModelFromMox(path);
+        var model = Serializers.Model.Synetic.Load(path);
         GLScene.ClearScene();
         GLScene.SubmitSingleModel(model);
     }

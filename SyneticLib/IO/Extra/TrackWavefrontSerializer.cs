@@ -6,9 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SyneticLib.Files.Extra;
+using SyneticLib.IO.Generic;
 
-namespace SyneticLib.IO;
-public class TrackObjSerializer : ISerializer<Track>
+namespace SyneticLib.IO.Extra;
+public class TrackWavefrontSerializer : ISerializer<Track>
 {
     public Track Load(string path)
     {
@@ -24,7 +25,7 @@ public class TrackObjSerializer : ISerializer<Track>
 
         writer.WriteLine("o track");
 
-        for (int i = 0; i < nodes.Length; i++)
+        for (var i = 0; i < nodes.Length; i++)
         {
             var v = nodes[i].Position;
             writer.WriteLine($"v {v.X} {v.Y} {v.Z}");
@@ -32,7 +33,7 @@ public class TrackObjSerializer : ISerializer<Track>
 
         writer.Write("l");
 
-        for (int i = 0; i < nodes.Length; i++)
+        for (var i = 0; i < nodes.Length; i++)
         {
             writer.Write(' ');
             writer.Write(i + 1);

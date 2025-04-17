@@ -9,6 +9,7 @@ using Grille.PipelineTool;
 
 using SyneticLib;
 using SyneticLib.IO;
+using SyneticLib.IO.Generic;
 
 
 namespace SyneticPipelineTool.Tasks.IO;
@@ -21,6 +22,7 @@ static class SerializerTaskUtils
     public readonly static string[] MeshFileTypes = new string[] { Auto, ".COB", ".CPO", ".MOX", ".OBJ" };
     public readonly static string[] TrackFileTypes = new string[] { Auto, ".TRK", ".OBJ" };
     public readonly static string[] ModelTypes = new string[] { "Synetic (Mox/Mtl/Ptx)", "Wavefront (Obj/Mtl/Dds)" };
+    public readonly static string[] ScenarioTypes = new string[] { "Synetic (Qad)" };
 
     public static string GetFilter()
     {
@@ -91,6 +93,12 @@ static class SerializerTaskUtils
     {
         var key = type.Split(' ', 2)[0].ToLowerInvariant();
         return Load(Serializers.Model.Registry, path, key);
+    }
+
+    public static VariableValue LoadScenario(string path, string type)
+    {
+        var key = type.Split(' ', 2)[0].ToLowerInvariant();
+        return Load(Serializers.Scenario.Registry, path, key);
     }
 
     public static T GetValue<T>(VariableValue variable, SerializerRegistry<T> registry = null)

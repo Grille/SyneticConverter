@@ -18,7 +18,7 @@ public class TrxFile : BinaryFile, IVertexData, IIndexData
     public MPaintRegionInt32[] PaintRegions;
 
     public Vertex[] Vertecis { get; set; }
-    public IdxTriangleInt32[] Indices { get; set; }
+    public IdxTriangleInt32[] Triangles { get; set; }
 
     public MMaterial[] Materials;
 
@@ -26,7 +26,7 @@ public class TrxFile : BinaryFile, IVertexData, IIndexData
     {
         PaintRegions = Array.Empty<MPaintRegionInt32>();
         Vertecis = Array.Empty<Vertex>();
-        Indices = Array.Empty<IdxTriangleInt32>();
+        Triangles = Array.Empty<IdxTriangleInt32>();
         Materials = Array.Empty<MMaterial>();
     }
 
@@ -51,7 +51,7 @@ public class TrxFile : BinaryFile, IVertexData, IIndexData
 
         br.Position += Head.LodCount * sizeof(int);
         Vertecis = ReadVertecis(br, Head.VtxCount);
-        Indices = ReadIndices(br, Head.PolyCount, 0);
+        Triangles = ReadIndices(br, Head.PolyCount, 0);
         PaintRegions = br.ReadArray<MPaintRegionInt32>(Head.PaintRegionCount);
         br.Position += Head.LodCount * sizeof(ushort) * 4;
 
@@ -68,7 +68,7 @@ public class TrxFile : BinaryFile, IVertexData, IIndexData
         bw.Write(Head);
         WriteVertecis(bw, Vertecis);
         bw.Position += 12;
-        WriteIndices(bw, Indices, 0);
+        WriteIndices(bw, Triangles, 0);
         bw.WriteArray(PaintRegions, LengthPrefix.None);
     }
 

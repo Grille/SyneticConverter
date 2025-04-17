@@ -380,7 +380,9 @@ public unsafe class QadFile : BinaryFile
             }
         }
 
-        while (count > 0)
+        var timestamp = DateTime.Now;
+        var timeout = TimeSpan.FromSeconds(1);
+        while (count > 0 && DateTime.Now - timestamp < timeout)
         {
             count = 0;
             for (int i = 0; i < list.Count - 2; i++)

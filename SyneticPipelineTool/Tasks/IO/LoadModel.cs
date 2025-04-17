@@ -12,7 +12,7 @@ using SyneticLib.IO;
 
 namespace SyneticPipelineTool.Tasks.IO;
 
-//[PipelineTask("Synetic/IO/Model.Load")]
+[PipelineTask("Synetic/IO/Model.Load")]
 internal class LoadModel : PipelineTask
 {
     protected override void OnInit()

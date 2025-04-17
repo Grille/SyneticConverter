@@ -54,6 +54,11 @@ public class MeshSegment
         UpdateBoundingBox();
     }
 
+    public void ApplyOffset()
+    {
+
+    }
+
     public void UpdateBoundingBox()
     {
         BoundingBox = new BoundingBox(Vertices, Triangles, Offset);

@@ -38,6 +38,8 @@ public class ScenarioFiles
 
     public class Paths
     {
+        public string DirPath;
+
         public string GeoPath;
         public string IdxPath;
         public string LvlPath;
@@ -53,6 +55,8 @@ public class ScenarioFiles
 
         public Paths(string dirPath, string fileName)
         {
+            DirPath = dirPath;
+
             var filePath = Path.Combine(dirPath, fileName);
             GeoPath = filePath + ".geo";
             IdxPath = filePath + ".idx";
@@ -184,13 +188,13 @@ public class ScenarioFiles
         if (version >= GameVersion.C11)
         {
             TerrainMesh.Vertices = Geo.Vertecis;
-            TerrainMesh.Indices = Geo.Indices;
+            TerrainMesh.Indices = Geo.Triangles;
             TerrainMesh.Offsets = Geo.IndicesOffset;
         }
         else
         {
             TerrainMesh.Vertices = Vtx.Vertecis;
-            TerrainMesh.Indices = Idx.Indices;
+            TerrainMesh.Indices = Idx.Triangles;
             TerrainMesh.Offsets = Vtx.IndicesOffset;
         }
     }
@@ -201,13 +205,13 @@ public class ScenarioFiles
         {
             Geo.Vertecis = TerrainMesh.Vertices;
             Geo.IndicesOffset = TerrainMesh.Offsets;
-            Geo.Indices = TerrainMesh.Indices;
+            Geo.Triangles = TerrainMesh.Indices;
         }
         else
         {
             Vtx.Vertecis = TerrainMesh.Vertices;
             Vtx.IndicesOffset = TerrainMesh.Offsets;
-            Idx.Indices = TerrainMesh.Indices;
+            Idx.Triangles = TerrainMesh.Indices;
         }
     }
 

@@ -63,8 +63,8 @@ public class TerrainModel : IReadOnlyCollection<Model>
 
     public Model ToModel()
     {
-        var vtx = new List<Vertex>();
-        var idx = new List<IdxTriangleInt32>();
+        var vtx = Mesh.Vertices.ToArray();
+        var idx = Mesh.Triangles.ToArray();
         var mat = new List<ModelMaterialRegion>();
 
         for (int ix = 0; ix < Width; ix++)
@@ -73,9 +73,14 @@ public class TerrainModel : IReadOnlyCollection<Model>
             {
                 var src = _chunks[ix, iz];
 
+                for (int i = 0; i < src.MeshSection.Length; i++)
+                {
+                    idx[src.MeshSection.Start + i] += src.MeshSection.Offset;
+                }
+
                 foreach (var srcmat in src.MaterialRegions)
                 {
-                    mat.Add(new ModelMaterialRegion(0, 0, srcmat.Material));
+                    mat.Add(new ModelMaterialRegion(srcmat.ElementStart, srcmat.ElementCount, srcmat.Material));
                 }
             }
         }

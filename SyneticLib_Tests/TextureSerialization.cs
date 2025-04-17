@@ -1,4 +1,6 @@
-﻿namespace SyneticLib_Tests;
+﻿using SyneticLib.IO.Generic;
+
+namespace SyneticLib_Tests;
 
 public static unsafe class TextureSerialization
 {

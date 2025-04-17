@@ -18,13 +18,13 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
 
     public Vertex[] Vertecis { get; set; }
 
-    public IdxTriangleInt32[] Indices { get; set; }
+    public IdxTriangleInt32[] Triangles { get; set; }
 
     public GeoFile()
     {
         IndicesOffset = Array.Empty<int>();
         Vertecis = Array.Empty<Vertex>();
-        Indices = Array.Empty<IdxTriangleInt32>();
+        Triangles = Array.Empty<IdxTriangleInt32>();
     }
 
     public unsafe override void Deserialize(BinaryViewReader br)
@@ -45,10 +45,10 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
 
         var indices = br.ReadArray<ushort>(Head.IndicesCount);
 
-        Indices = new IdxTriangleInt32[indices.Length / 3];
+        Triangles = new IdxTriangleInt32[indices.Length / 3];
 
-        for (int i = 0; i < Indices.Length; i++)
-            Indices[i] = new IdxTriangleInt32(indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2]);
+        for (int i = 0; i < Triangles.Length; i++)
+            Triangles[i] = new IdxTriangleInt32(indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2]);
     }
 
     public override void Serialize(BinaryViewWriter bw)
@@ -65,13 +65,13 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
         if (Head.SectionCount == 3)
             bw.Seek(vertexCount * 16, SeekOrigin.Current);
 
-        var indices = new ushort[Indices.Length * 3];
+        var indices = new ushort[Triangles.Length * 3];
 
-        for (int i = 0; i < Indices.Length; i++)
+        for (int i = 0; i < Triangles.Length; i++)
         {
-            indices[i * 3 + 0] = (ushort)Indices[i].X;
-            indices[i * 3 + 1] = (ushort)Indices[i].Y;
-            indices[i * 3 + 2] = (ushort)Indices[i].Z;
+            indices[i * 3 + 0] = (ushort)Triangles[i].X;
+            indices[i * 3 + 1] = (ushort)Triangles[i].Y;
+            indices[i * 3 + 2] = (ushort)Triangles[i].Z;
         }
 
         bw.WriteArray(indices, LengthPrefix.None);
@@ -110,7 +110,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
         Head.X1 = 1;
         Head.SectionCount = 2;
         Head.IndicesOffsetCount = IndicesOffset.Length;
-        Head.IndicesCount = Indices.Length * 3;
+        Head.IndicesCount = Triangles.Length * 3;
         Head.Clear0 = 0;
         Head.Clear1 = 0;
         Head.Clear2 = 0;

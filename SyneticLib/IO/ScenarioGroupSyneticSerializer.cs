@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SyneticLib.World;
+using SyneticLib.IO.Generic;
 
 namespace SyneticLib.IO;
 public class ScenarioGroupSyneticSerializer : DirectorySerializer<ScenarioGroup>

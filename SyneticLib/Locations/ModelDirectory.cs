@@ -17,7 +17,7 @@ public class ModelDirectory : LazyRessourceDirectory<Model>
 
     static Model constructor(string filePath, TextureDirectory textures)
     {
-        var model = Imports.LoadModelFromMox(filePath, textures);
+        var model = Serializers.Model.Synetic.Load(filePath);
         model.Name = Path.GetFileNameWithoutExtension(filePath);
         return model;
     }

@@ -16,17 +16,18 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
 {
     public Vertex[] Vertecis { get; set; }
 
-    public IdxTriangleInt32[] Indices { get; set; }
+    public IdxTriangleInt32[] Triangles { get; set; }
 
     public Section[]? Sections { get; set; }
 
+    public ObjModel[]? Models { get; set; }
 
     public bool IncludeColor = false;
 
     public WavefrontObjFile()
     {
         Vertecis = Array.Empty<Vertex>();
-        Indices = Array.Empty<IdxTriangleInt32>();
+        Triangles = Array.Empty<IdxTriangleInt32>();
     }
 
     public override void Deserialize(StreamReader reader)
@@ -133,7 +134,7 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
         }
 
         Vertecis = vertecis.ToArray();
-        Indices = indices;
+        Triangles = indices;
     }
 
     private void ParseSingles<T>(List<T> list, ReadOnlySpan<string> span) where T : unmanaged
@@ -222,7 +223,7 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
         for (var i = 0; i < Vertecis.Length; i++)
         {
             ref var vertex = ref Vertecis[i];
-            writer.WriteLine($"vt {vertex.UV0.X} {vertex.UV0.Y}");
+            writer.WriteLine($"vt {vertex.UV0.X} {1-vertex.UV0.Y}");
         }
 
         void WriteIndex(int index)
@@ -234,9 +235,8 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
             writer.Write(index + 1);
         }
 
-        for (var i = 0; i < Indices.Length; i++)
+        void WriteFace(IdxTriangleInt32 index)
         {
-            ref var index = ref Indices[i];
             WritePrefix("f");
             WriteIndex(index.X);
             WriteSpace();
@@ -244,6 +244,36 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
             WriteSpace();
             WriteIndex(index.Z);
             WriteLine();
+        }
+
+        void WriteCmd(string command, string value)
+        {
+            WritePrefix(command);
+            writer.Write(value);
+            WriteLine();
+        }
+
+        if (Models == null)
+        {
+            for (var i = 0; i < Triangles.Length; i++)
+            {
+                WriteFace(Triangles[i]);
+            }
+        }
+        else
+        {
+            foreach (var model in Models)
+            {
+                WriteCmd("o", model.Name);
+                foreach (var region in model.Regions)
+                {
+                    WriteCmd("usemtl", region.Material);
+                    for (int i = 0; i < region.Length; i++)
+                    {
+                        WriteFace(Triangles[i + region.Offset]);
+                    }
+                }
+            }
         }
     }
 
@@ -261,7 +291,16 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
         }
     }
 
-    
+    public record class ObjModel(string Name, MtlRegion[] Regions);
+
+    public struct MtlRegion
+    {
+        public string Material;
+        public int Offset;
+        public int Length;
+    }
+
+
 
     private struct FaceIndices
     {

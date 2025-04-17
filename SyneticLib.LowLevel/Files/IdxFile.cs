@@ -9,35 +9,35 @@ using SyneticLib.Files.Common;
 namespace SyneticLib.Files;
 public class IdxFile : BinaryFile, IIndexData
 {
-    public IdxTriangleInt32[] Indices { get; set; }
+    public IdxTriangleInt32[] Triangles { get; set; }
 
     public IdxFile()
     {
-        Indices = Array.Empty<IdxTriangleInt32>();
+        Triangles = Array.Empty<IdxTriangleInt32>();
     }
 
     public override void Deserialize(BinaryViewReader br)
     {
         var indices = br.ReadArray<ushort>(LengthPrefix.Int32);
 
-        Indices = new IdxTriangleInt32[indices.Length / 3];
+        Triangles = new IdxTriangleInt32[indices.Length / 3];
 
-        for (int i = 0; i < Indices.Length; i++)
+        for (int i = 0; i < Triangles.Length; i++)
         {
-            Indices[i] = new IdxTriangleInt32(indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2]);
+            Triangles[i] = new IdxTriangleInt32(indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2]);
         }
     }
 
     public override void Serialize(BinaryViewWriter bw)
     {
 
-        var indices = new ushort[Indices.Length * 3];
+        var indices = new ushort[Triangles.Length * 3];
 
-        for (int i = 0; i < Indices.Length; i++)
+        for (int i = 0; i < Triangles.Length; i++)
         {
-            indices[i * 3 + 0] = (ushort)Indices[i].X;
-            indices[i * 3 + 1] = (ushort)Indices[i].Y;
-            indices[i * 3 + 2] = (ushort)Indices[i].Z;
+            indices[i * 3 + 0] = (ushort)Triangles[i].X;
+            indices[i * 3 + 1] = (ushort)Triangles[i].Y;
+            indices[i * 3 + 2] = (ushort)Triangles[i].Z;
         }
 
         bw.WriteArray(indices, LengthPrefix.Int32);

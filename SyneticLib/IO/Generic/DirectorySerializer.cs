@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib.IO;
+namespace SyneticLib.IO.Generic;
 public abstract class DirectorySerializer<TObj> : ISerializer<TObj>
 {
     public IReadOnlyCollection<string> GetErrors()

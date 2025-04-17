@@ -82,6 +82,16 @@ public class MtlFile : SyneticCfgFile<MtlFile.MtlMaterial>
         {
             return $"{value:0.000000}";
         }
+
+        public static string DeserializeString(string value)
+        {
+            return value.Substring(1, value.Length-2);
+        }
+
+        public static string SerializeString(string value)
+        {
+            return $"\"{value}\"";
+        }
     }
 
     public class HexArrayProperty : SyneticCfgFileArrayProperty<int>
@@ -111,6 +121,15 @@ public class MtlFile : SyneticCfgFile<MtlFile.MtlMaterial>
         protected override string Serialize(float value) => PropertySerializer.SerializePercentage(value);
     }
 
+    public class TextureProperty : SyneticCfgFileProperty<string>
+    {
+        public TextureProperty(Dictionary<string, string> dict, string key) : base(dict, key) { }
+
+        protected override string Deserialize(string value) => PropertySerializer.DeserializeString(value);
+
+        protected override string Serialize(string value) => PropertySerializer.SerializeString(value);
+    }
+
     public class MtlMaterial : Dictionary<string, string>
     {
         public PercentageProperty Alpha { get; }
@@ -123,6 +142,7 @@ public class MtlFile : SyneticCfgFile<MtlFile.MtlMaterial>
         public HexArrayProperty Specular2 { get; }
         public HexArrayProperty XDiffuse { get; }
         public HexArrayProperty XSpecular { get; }
+        public TextureProperty Tex1Name { get; }
 
         public MtlMaterial()
         {
@@ -137,6 +157,7 @@ public class MtlFile : SyneticCfgFile<MtlFile.MtlMaterial>
             Specular2 = new(this, "Specular2");
             XDiffuse = new(this, "XDiffuse");
             XSpecular = new(this, "XSpecular");
+            Tex1Name = new(this, "Tex1Name");
         }
     }
 

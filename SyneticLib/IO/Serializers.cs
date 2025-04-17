@@ -7,8 +7,11 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
+using SyneticLib;
 using SyneticLib.Files;
 using SyneticLib.Files.Extra;
+using SyneticLib.IO.Extra;
+using SyneticLib.IO.Generic;
 
 namespace SyneticLib.IO;
 public static class Serializers
@@ -29,19 +32,28 @@ public static class Serializers
 
     public static class Track
     {
-        public static readonly TrackObjSerializer Obj = new();
+        public static readonly TrackWavefrontSerializer Wavefront = new();
         public static readonly TrackTrkSerializer Trk = new();
 
         public static readonly SerializerRegistry<SyneticLib.Track> Registry = new()
         {
-            { "obj", Obj },
             { "trk", Trk },
+            { "wavefront", Wavefront },
         };
     }
 
     public static class Scenario
     {
         public static readonly ScenarioSyneticSerializer Synetic = new();
+        public static readonly ScenarioWavefrontSerializer Wavefront = new();
+        public static readonly ScenarioBeamSerializer BeamNG = new();
+
+        public static readonly SerializerRegistry<World.Scenario> Registry = new()
+        {
+            { "synetic", Synetic },
+            { "wavefront", Wavefront },
+            { "beamng", BeamNG },
+        };
     }
 
     public static class ScenarioGroup
@@ -66,13 +78,20 @@ public static class Serializers
     {
         public static readonly MeshFileSerializer<CobFile> Cob = new();
         public static readonly MeshFileSerializer<MoxFile> Mox = new();
-        public static readonly MeshFileSerializer<WavefrontObjFile> Obj = new();
+        public static readonly MeshFileSerializer<WavefrontObjFile> Wavefront = new();
 
         public static readonly SerializerRegistry<IndexedMesh> Registry = new()
         {
             { "cob", Cob },
             { "mox", Mox },
-            { "obj", Obj },
+            { "wavefront", Wavefront },
         };
+    }
+
+    public static class Terrain
+    {
+        public static readonly TerrainSyneticSerializer Synetic = new();
+        public static readonly TerrainWavefrontSerializer Wavefront = new();
+        public static readonly TerrainGltfSerializer Gltf = new();
     }
 }

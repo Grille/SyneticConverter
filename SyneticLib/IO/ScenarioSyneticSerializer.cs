@@ -8,23 +8,18 @@ using System.Threading.Tasks;
 using SyneticLib.Files;
 using SyneticLib.Locations;
 using SyneticLib.World;
+using SyneticLib.IO.Generic;
+using OpenTK.Mathematics;
 
 namespace SyneticLib.IO;
-public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
+public class ScenarioSyneticSerializer : DirectoryFileSerializer<Scenario>
 {
-    protected override void OnSave(string dirPath, Scenario obj)
+    protected override void OnSave(string dirPath, string fileName, Scenario obj)
     {
         throw new NotImplementedException();
     }
 
-    protected override Scenario OnLoad(string filePath)
-    {
-        var dirPath = Path.GetDirectoryName(filePath);
-        var fileName = Path.GetFileNameWithoutExtension(filePath);
-        return Load(dirPath!, fileName);
-    }
-
-    public Scenario Load(string dirPath, string fileName)
+    protected override Scenario OnLoad(string dirPath, string fileName)
     {
         var files = new ScenarioFiles();
 
@@ -47,7 +42,36 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
 
         scenario.Chunks = new ScenarioChunk[qad.Head.BlockCountX, qad.Head.BlockCountZ];
 
-        scenario.Terrain = BuildTerrain(files, terrainTextures);
+        scenario.Terrain = Serializers.Terrain.Synetic.Load(files, terrainTextures);
+
+        var lights = new Light[qad.Lights.Length];
+        for (int i = 0; i <lights.Length; i++)
+        {
+            var src = qad.Lights[i];
+            var light = new Light(src.Matrix.ExtractTranslation(), src.Color);
+            lights[i] = light;
+        }
+
+        scenario.Lights = lights;
+
+        var instances = new PropInstance[qad.PropInstances.Length];
+
+        var names = new string[qad.PropClassObjNames.Length];
+        for (int i = 0; i < names.Length; i++)
+        {
+            names[i] = qad.PropClassObjNames[i];
+        }
+
+        for (int i = 0; i < instances.Length; i++)
+        {
+            var src = qad.PropInstances[i];
+            var instance = new PropInstance(names[src.ClassId]);
+            instance.Position = src.Position;
+            instance.Matrix = Matrix3.Identity;
+            instances[i] = instance;
+        }
+
+        scenario.PropInstances = instances;
         
         // Props
         /*
@@ -97,96 +121,6 @@ public class ScenarioSyneticSerializer : DirectorySerializer<Scenario>
         return scenario;
     }
 
-    static TerrainModel BuildTerrain(ScenarioFiles files, TextureDirectory terrainTextures)
-    {
-        var syn = files.Syn;
-        var lvl = files.Lvl;
-        var sni = files.Sni;
-        var qad = files.Qad;
-        var sky = files.Sky;
-
-        var vertecis = files.TerrainMesh.Vertices;
-        var indices = files.TerrainMesh.Indices;
-        var iOffsets = files.TerrainMesh.Offsets;
-
-        var indexedTextures = terrainTextures.CreateIndexedArray(qad.TextureNames);
-        var terrainMaterials = GetTerrainMaterials(qad, indexedTextures);
-
-        var offsets = new int[iOffsets.Length + 1];
-        for (var i = 0; i < offsets.Length - 1; i++)
-        {
-            offsets[i + 1] = offsets[i] + iOffsets[i];
-        }
-
-        var mesh = new IndexedMesh(vertecis, indices);
 
 
-        var models = new Model[qad.Head.BlockCountX, qad.Head.BlockCountZ];
-
-        for (int i = 0; i < qad.Chunks.Length; i++)
-        {
-            ref var srcChunk = ref qad.Chunks[i];
-
-            int offset = offsets[srcChunk.MeshOffsetIndex];
-            var submesh = new MeshSegment(mesh, srcChunk.Poly.Start, srcChunk.Poly.Length, offset);
-
-            var regions = new ModelMaterialRegion[srcChunk.PolyRegion.Length];
-            for (int iy = 0; iy < regions.Length; iy++)
-            {
-                var srcRegion = qad.PolyRegions[iy + srcChunk.PolyRegion.Start];
-                var region = new ModelMaterialRegion(srcRegion.PolyOffset, srcRegion.PolyCount, terrainMaterials[srcRegion.SurfaceId1]);
-                regions[iy] = region;
-            }
-
-            var model = new Model(submesh, regions);
-            models[srcChunk.Position.X, srcChunk.Position.Z] = model;
-        }
-
-        return new TerrainModel(mesh, models);
-    }
-
-    static Material[] GetTerrainMaterials(QadFile qad, Texture[] textures)
-    {
-        var materials = new Material[qad.Materials.Length];
-
-        for (var i = 0; i < qad.Materials.Length; i++)
-        {
-            var matInfo = qad.Materials[i];
-            var mat = new TerrainMaterial();
-
-            mat.GameVersion = qad.GameVersion;
-            mat.Layer0.Mode = matInfo.Layer0.Mode;
-            mat.Layer1.Mode = matInfo.Layer1.Mode;
-            mat.Matrix0 = matInfo.Matrix0;
-            mat.Matrix1 = matInfo.Matrix1;
-            mat.Matrix2 = matInfo.Matrix2;
-
-            EnableLayer(mat, 0, ref matInfo.Layer0, textures);
-            EnableLayer(mat, 3, ref matInfo.Layer1, textures);
-
-            materials[i] = mat;
-        }
-
-        return materials;
-    }
-
-    static void EnableLayer(Material material, int slot, ref QadFile.MMaterialLayer layer, Texture[] textures)
-    {
-        void EnableSlot(int slot, int textureId)
-        {
-            if (textureId < textures.Length)
-            {
-                material.TextureSlots[slot].Enable(textures[textureId]);
-            }
-        }
-
-        EnableSlot(slot + 0, layer.Tex0Id);
-        EnableSlot(slot + 1, layer.Tex1Id);
-        EnableSlot(slot + 2, layer.Tex2Id);
-    }
-
-    static void BuildTerrainChunks()
-    {
-
-    }
 }

@@ -111,7 +111,7 @@ public partial class ViewerForm : Form
 
     public void LoadModel(string path)
     {
-        var model = Imports.LoadModelFromMox(path);
+        var model = Serializers.Model.Synetic.Load(path);
         scene.ClearScene();
         scene.SubmitSingleModel(model);
     }

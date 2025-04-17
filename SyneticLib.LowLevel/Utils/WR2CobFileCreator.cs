@@ -86,10 +86,10 @@ public class WR2CobFileCreator
     {
         var cob = new CobFile();
         cob.Vertecis = vtx.Vertecis;
-        cob.Indices = idx.Indices;
+        cob.Triangles = idx.Triangles;
         cob.Head.VerticeCount = cob.Vertecis.Length;
-        cob.Head.PolyCount = cob.Indices.Length;
-        cob.Head.BoundingBox = new BoundingBox(cob.Vertecis, cob.Indices);
+        cob.Head.PolyCount = cob.Triangles.Length;
+        cob.Head.BoundingBox = new BoundingBox(cob.Vertecis, cob.Triangles);
         return cob;
     }
 

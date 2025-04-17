@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SyneticLib.Files;
+using SyneticLib.IO.Generic;
 using SyneticLib.Utils;
 
 using static SyneticLib.IO.Serializers;

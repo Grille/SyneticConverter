@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SyneticLib.IO;
+namespace SyneticLib.IO.Generic;
 public class SerializerRegistry<T> : IEnumerable<ISerializer<T>>
 {
     private readonly Dictionary<string, ISerializer<T>> _dict = new();

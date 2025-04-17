@@ -16,7 +16,7 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
     public MPaintRegionInt32[] PaintRegions;
 
     public Vertex[] Vertecis { get; set; }
-    public IdxTriangleInt32[] Indices { get; set; }
+    public IdxTriangleInt32[] Triangles { get; set; }
 
     public MPart[]? Parts;
     public MLight[]? Lights;
@@ -27,7 +27,7 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
     {
         PaintRegions = Array.Empty<MPaintRegionInt32>();
         Vertecis = Array.Empty<Vertex>();
-        Indices = Array.Empty<IdxTriangleInt32>();
+        Triangles = Array.Empty<IdxTriangleInt32>();
         Materials = Array.Empty<MMaterial>();
     }
 
@@ -86,7 +86,7 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
         }
 
         Vertecis = ReadVertecis(br, Head.VtxCount);
-        Indices = ReadIndices(br, Head.PolyCount, Head.Version.V0IndexMode);
+        Triangles = ReadIndices(br, Head.PolyCount, Head.Version.V0IndexMode);
         PaintRegions = ReadPaintRegsions(br, Head.PaintRegionCount, Head.Version.V3ChunkMode);
 
         Materials = br.ReadArray<MMaterial>(Head.MatCount);
@@ -143,7 +143,7 @@ public class MoxFile : BinaryFile, IVertexData, IIndexData
         bw.Write(Head);
 
         WriteVertecis(bw, Vertecis);
-        WriteIndices(bw, Indices, Head.Version.V0IndexMode);
+        WriteIndices(bw, Triangles, Head.Version.V0IndexMode);
         WritePaintRegions(bw, PaintRegions, Head.Version.V3ChunkMode);
         bw.WriteArray(Materials, LengthPrefix.None);
     }

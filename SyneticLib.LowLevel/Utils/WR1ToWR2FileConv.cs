@@ -15,7 +15,7 @@ namespace SyneticLib.Utils;
 
 public static class WR1ToWR2FileConv
 {
-    public static void Convert(string dirPath, string fileName)
+    public static void Convert(string dirPath, string fileName, Action<string>? callback = null)
     {
         var paths = new ScenarioFiles.Paths(dirPath, fileName);
         var files = new ScenarioFiles();

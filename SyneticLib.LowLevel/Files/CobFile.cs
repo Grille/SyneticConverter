@@ -20,13 +20,13 @@ public class CobFile : BinaryFile, IVertexData, IIndexData
 
     public Vertex[] Vertecis { get; set; }
 
-    public IdxTriangleInt32[] Indices { get; set; }
+    public IdxTriangleInt32[] Triangles { get; set; }
 
     public CobFile()
     {
         IndicesOffset = new int[1] { 0 };
         Vertecis = Array.Empty<Vertex>();
-        Indices = Array.Empty<IdxTriangleInt32>();
+        Triangles = Array.Empty<IdxTriangleInt32>();
     }
 
     public override void Deserialize(BinaryViewReader br)
@@ -47,9 +47,9 @@ public class CobFile : BinaryFile, IVertexData, IIndexData
             };
         }
 
-        Indices = new IdxTriangleInt32[Head.PolyCount];
+        Triangles = new IdxTriangleInt32[Head.PolyCount];
         for (int i = 0; i < Head.PolyCount; i++){
-            Indices[i] = indices[i];
+            Triangles[i] = indices[i];
         }
     }
 
@@ -64,7 +64,7 @@ public class CobFile : BinaryFile, IVertexData, IIndexData
 
         for (int i = 0; i < Head.PolyCount; i++)
         {
-            bw.Write((IdxTriangleUInt16)Indices[i]);
+            bw.Write((IdxTriangleUInt16)Triangles[i]);
         }
 
         for (int i = 0; i < Head.VerticeCount; i++)

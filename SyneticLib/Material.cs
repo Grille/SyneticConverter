@@ -61,4 +61,21 @@ public abstract class Material : SyneticObject
         }
     }
 
+    public void GetTextures(ISet<Texture> set)
+    {
+        foreach (var slot in TextureSlots)
+        {
+            if (slot.Enabled)
+            {
+                set.Add(slot.Texture);
+            }
+        }
+    }
+
+    public HashSet<Texture> GetTextures()
+    {
+        var set = new HashSet<Texture>();
+        GetTextures(set);
+        return set;
+    }
 }

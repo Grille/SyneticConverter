@@ -12,7 +12,7 @@ using SyneticLib.IO;
 
 namespace SyneticPipelineTool.Tasks.IO;
 
-//[PipelineTask("Synetic/IO/Model.Save")]
+[PipelineTask("Synetic/IO/Model.Save")]
 internal class SaveModel : PipelineTask
 {
     protected override void OnInit()

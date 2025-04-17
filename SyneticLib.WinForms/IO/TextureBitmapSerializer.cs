@@ -6,8 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using SyneticLib.Files.Extra;
-using SyneticLib.IO;
+using SyneticLib.IO.Generic;
 
 namespace SyneticLib.WinForms.IO;
 public class TextureBitmapSerializer : IFileSerializer<Texture>

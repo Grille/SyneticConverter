@@ -49,12 +49,12 @@ public static class TrxToMoxConverter
         mox.Head.MatCount = trx.Head.MatCount;
 
         mox.Vertecis = trx.Vertecis;
-        mox.Indices = trx.Indices;
+        mox.Triangles = trx.Triangles;
         mox.Materials = trx.Materials;
 
         var obj = new WavefrontObjFile();
         obj.Vertecis = mox.Vertecis;
-        obj.Indices = mox.Indices;
+        obj.Triangles = mox.Triangles;
 
         mox.PaintRegions = new MoxFile.MPaintRegionInt32[trx.PaintRegions.Length];
         for (int i = 0; i < trx.PaintRegions.Length; i++)
