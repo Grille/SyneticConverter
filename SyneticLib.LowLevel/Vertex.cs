@@ -58,12 +58,6 @@ public struct Vertex
     [FieldOffset(Layout.Unknown0)]
     public float Unknown0;
 
-    public BgraColor RGBANormal
-    {
-        get => BgraColor.FromArgb((byte)(Normal.X * 255), (byte)(Normal.Y * 255), (byte)(Normal.Z * 255),0);
-        set => Normal = new Vector3(value.A / 255f, value.R / 255f, value.G / 255f);
-    }
-
     public BlendColor RGBABlend
     {
         get => new BlendColor()
@@ -110,7 +104,7 @@ public struct Vertex
 
     public override bool Equals([NotNullWhen(true)] object? obj)
     {
-        if (obj is not Vertex vertex) 
+        if (obj is not Vertex vertex)
             return false;
         return Equals(ref vertex);
     }

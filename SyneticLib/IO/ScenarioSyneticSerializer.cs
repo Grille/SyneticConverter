@@ -67,12 +67,13 @@ public class ScenarioSyneticSerializer : DirectoryFileSerializer<Scenario>
             var src = qad.PropInstances[i];
             var instance = new PropInstance(names[src.ClassId]);
             instance.Position = src.Position;
-            instance.Matrix = Matrix3.Identity;
+            instance.Rotation = Quaternion.FromEulerAngles(0, 0, src.Angl);
+            instance.Scale = new Vector3(src.Size);
             instances[i] = instance;
         }
 
         scenario.PropInstances = instances;
-        
+
         // Props
         /*
         var indexedModels = models.CreateIndexedArray(qad.PropClassObjNames);

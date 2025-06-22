@@ -45,8 +45,17 @@ public class ModelWavefrontSerializer : DirectoryFileSerializer<Model>
             var src = materials[i];
             var dst = mtlmaterials[i] = new WavefrontMtlFile.MtlMaterial();
 
-            
             var tex0 = src.TextureSlots[0].Texture;
+
+            if (src is TerrainMaterial tsrc)
+            {
+
+            }
+            else
+            {
+
+            }
+
 
             if (tex0 != null)
             {

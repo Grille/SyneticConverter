@@ -12,7 +12,8 @@ public class PropInstance : SyneticObject
     public string Class;
     public bool InShadow = false;
     public Vector3 Position;
-    public Matrix3 Matrix;
+    public Vector3 Scale;
+    public Quaternion Rotation;
 
     public PropInstance(string @class)
     {

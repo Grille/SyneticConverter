@@ -16,7 +16,7 @@ public class ScenarioBeamSerializer : DirectoryFileSerializer<Scenario>
 
     public Vector3 GetPosition(Vector3 pos)
     {
-        return new Vector3(pos.X * 0.1f, pos.Z * 0.1f, pos.Y * 0.1f + 150);
+        return new Vector3(pos.X * 0.1f, pos.Z * 0.1f, pos.Y * 0.1f);
 
     }
 
@@ -72,13 +72,37 @@ public class ScenarioBeamSerializer : DirectoryFileSerializer<Scenario>
             list.Add(instance);
         }
 
+        var managedItemData = new Dictionary<string, Dictionary<string, string>>();
+
         foreach (var pair in dict)
         {
-            var filePath = Path.Combine(dirPath, $"{pair.Key}.forest4.json");
+            var key = pair.Key;
+            if (key.StartsWith("T\\"))
+            {
+                key = key.Substring(2);
+            }
 
+            managedItemData.Add(key, CreateItemDataDict(key));
+
+            var filePath = Path.Combine(dirPath, $"{key}.forest4.json");
             using var writer = new StreamWriter(filePath, false);
             SerializePropInstances(writer, pair.Value);
         }
+
+        var options = new JsonSerializerOptions() { WriteIndented = true };
+        var json = JsonSerializer.Serialize(managedItemData, options);
+        var filePathMid = Path.Combine(dirPath, $"managedItemData.json");
+        File.WriteAllText(filePathMid, json);
+    }
+
+    private Dictionary<string,string> CreateItemDataDict(string key)
+    {
+        var dict = new Dictionary<string, string>();
+        dict["class"] = "TSForestItemData";
+        dict["name"] = key;
+        dict["internalName"] = key;
+        dict["shapeFile"] = $"levels/shapepath/{key}.dae";
+        return dict;
     }
 
     public void SerializePropInstances(TextWriter writer, ICollection<PropInstance> instances)
@@ -93,11 +117,36 @@ public class ScenarioBeamSerializer : DirectoryFileSerializer<Scenario>
     {
         var pos = GetPosition(instance.Position);
 
+        var scale = instance.Scale.X;
+        var rotateX = Quaternion.FromAxisAngle(Vector3.UnitX, -MathF.PI / 2);
+        var matrix4 = Matrix4.CreateFromQuaternion(instance.Rotation);
+        var matrix3 = new Matrix3(matrix4.M11, matrix4.M12, matrix4.M13, matrix4.M21, matrix4.M22, matrix4.M23, matrix4.M31, matrix4.M32, matrix4.M33);
+
+        void WriteVec3(Vector3 vec)
+        {
+            writer.Write(vec.X);
+            writer.Write(',');
+            writer.Write(vec.Y);
+            writer.Write(',');
+            writer.Write(vec.Z);
+        }
+
         writer.Write("{");
         writer.Write($"\"ctxid\":1,");
-        writer.Write($"\"pos\":[{pos.X},{pos.Y},{pos.Z}],");
-        writer.Write($"\"rotationMatrix\":[1,0,0,0,5.96046448e-08,-0.99999994,0,0.99999994,5.96046448e-08],");
-        writer.Write($"\"scale\":1,");
+
+        writer.Write($"\"pos\":[");
+        WriteVec3(pos + new Vector3(0, 0, 150));
+        writer.Write("],");
+
+        writer.Write($"\"rotationMatrix\":[");
+        WriteVec3(matrix3.Column0);
+        writer.Write(",");
+        WriteVec3(matrix3.Column1);
+        writer.Write(",");
+        WriteVec3(matrix3.Column2);
+        writer.Write("],");
+
+        writer.Write($"\"scale\":{scale},");
         writer.Write($"\"type\":\"{instance.Class}\"");
         writer.Write("}");
 

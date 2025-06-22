@@ -49,7 +49,7 @@ public class VtxFile : BinaryFile, IVertexData, IIndexDataOffsets
     public struct MVertex
     {
         public Vector3 Position;
-        public BgraColor Normal;
+        public UInt8NormalVector Normal;
         public Vector2 UV;
         public BlendColor Blend;
         public RgbColor Color;
@@ -58,7 +58,7 @@ public class VtxFile : BinaryFile, IVertexData, IIndexDataOffsets
         public static implicit operator Vertex(MVertex a) => new Vertex()
         {
             Position = a.Position,
-            RGBANormal = a.Normal,
+            Normal = a.Normal,
             UV0 = a.UV,
             UV1 = Vector2.Zero,
             RGBABlend = a.Blend,
@@ -69,7 +69,7 @@ public class VtxFile : BinaryFile, IVertexData, IIndexDataOffsets
         public static implicit operator MVertex(Vertex a) => new MVertex()
         {
             Position = a.Position,
-            Normal = a.RGBANormal,
+            Normal = (UInt8NormalVector)a.Normal,
             UV = a.UV0,
             Blend = a.RGBABlend,
             Color = RgbColor.FromNormalizedRgbVector3(a.LightColor),

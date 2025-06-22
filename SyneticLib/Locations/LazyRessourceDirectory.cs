@@ -46,7 +46,7 @@ public class LazyRessourceDirectory<T> : DirectoryLocation, IReadOnlyCollection<
             {
                 var path = GetFullPath(entry).ToLower();
                 var factory = () => Constructor(path);
-                dict[path] = new Lazy<T>(factory); ;
+                dict[path] = new Lazy<T>(factory);
             }
         }
     }
@@ -73,6 +73,7 @@ public class LazyRessourceDirectory<T> : DirectoryLocation, IReadOnlyCollection<
     public string GetPath(string key)
     {
         var ckey = GetKey(key);
+        var path = Path.Combine(DirectoryPath, ckey);
         return dict.Keys.First((path) => GetKey(path) == ckey);
         //return Combine(Path, key);
     }

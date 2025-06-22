@@ -129,7 +129,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
     private struct MVertex
     {
         public Vector3 Position;
-        public BgraColor Normal;
+        public UInt8NormalVector Normal;
         public Vector2 UV0;
         public Vector2 UV1;
         public BlendColor Blend;
@@ -139,7 +139,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
         public static implicit operator Vertex(MVertex a) => new Vertex()
         {
             Position = a.Position,
-            RGBANormal = a.Normal,
+            Normal = a.Normal,
             UV0 = a.UV0,
             UV1 = a.UV1,
             RGBABlend = a.Blend,
@@ -150,7 +150,7 @@ public class GeoFile : BinaryFile, IIndexData, IVertexData, IIndexDataOffsets
         public static implicit operator MVertex(Vertex a) => new MVertex()
         {
             Position = a.Position,
-            Normal = a.RGBANormal,
+            Normal = (UInt8NormalVector)a.Normal,
             UV0 = a.UV0,
             UV1 = a.UV1,
             Blend = a.RGBABlend,
