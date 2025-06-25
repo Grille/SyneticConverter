@@ -45,6 +45,7 @@ public static class Serializers
     public static class Scenario
     {
         public static readonly ScenarioSyneticSerializer Synetic = new();
+        public static readonly ScenarioSbeSerializer Sbe = new();
         public static readonly ScenarioWavefrontSerializer Wavefront = new();
         public static readonly ScenarioBeamSerializer BeamNG = new();
 
@@ -52,6 +53,7 @@ public static class Serializers
         {
             { "synetic", Synetic },
             { "wavefront", Wavefront },
+            { "sbe", Sbe },
             { "beamng", BeamNG },
         };
     }
@@ -64,12 +66,13 @@ public static class Serializers
     public static class Model
     {
         public static readonly ModelSyneticSerializer Synetic = new();
-
+        public static readonly ModelSbeSerializer Sbe = new();
         public static readonly ModelWavefrontSerializer Wavefront = new();
 
         public static readonly SerializerRegistry<SyneticLib.Model> Registry = new()
         {
             { "synetic", Synetic },
+            { "sbe", Sbe },
             { "wavefront", Wavefront },
         };
     }
@@ -92,6 +95,6 @@ public static class Serializers
     {
         public static readonly TerrainSyneticSerializer Synetic = new();
         public static readonly TerrainWavefrontSerializer Wavefront = new();
-        public static readonly TerrainGltfSerializer Gltf = new();
+        public static readonly TerrainSbeSerializer Sbe = new();
     }
 }

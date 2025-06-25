@@ -27,6 +27,7 @@ namespace SyneticPipelineTool.Tasks.IO
             {
                 { "Wavefront", Serializers.Scenario.Wavefront },
                 { "BeamNG", Serializers.Scenario.BeamNG },
+                { "Blender", Serializers.Scenario.Sbe },
             };
 
             _keys = _exporters.Keys.ToArray();

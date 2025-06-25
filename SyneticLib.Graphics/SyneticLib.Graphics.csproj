@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<LangVersion>10</LangVersion>
+		<LangVersion>12</LangVersion>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<RootNamespace>SyneticLib.Graphics</RootNamespace>
 		<AssemblyName>SyneticLibGraphics</AssemblyName>

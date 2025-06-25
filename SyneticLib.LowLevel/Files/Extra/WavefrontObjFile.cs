@@ -18,8 +18,6 @@ public unsafe class WavefrontObjFile : TextFile, IVertexData, IIndexData
 
     public IdxTriangleInt32[] Triangles { get; set; }
 
-    public Section[]? Sections { get; set; }
-
     public ObjModel[]? Models { get; set; }
 
     public bool IncludeColor = false;

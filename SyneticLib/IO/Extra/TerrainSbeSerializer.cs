@@ -8,15 +8,15 @@ using SyneticLib.IO.Generic;
 using SyneticLib.World;
 
 namespace SyneticLib.IO.Extra;
-public class TerrainGltfSerializer : DirectoryFileSerializer<TerrainModel>
+public class TerrainSbeSerializer : DirectoryFileSerializer<TerrainModel>
 {
     protected override TerrainModel OnLoad(string dirPath, string fileName)
     {
         throw new NotImplementedException();
     }
 
-    protected override void OnSave(string dirPath, string fileName, TerrainModel obj)
+    protected override void OnSave(string dirPath, string fileName, TerrainModel terrain)
     {
-        throw new NotImplementedException();
+        Serializers.Model.Sbe.Save(dirPath, fileName, terrain.ToModel());
     }
 }
